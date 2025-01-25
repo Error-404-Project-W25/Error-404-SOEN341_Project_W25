@@ -19,5 +19,5 @@ Adam Purcell| - | -
 Amanda Yuen | 40031699| Frontend
 Annie Nguyen Ly  | - | -
 Asley Kate Antonio | - | -
-Tonny Zhao  | - | -
+Tonny Zhao  | 40283194 | -
 Ysa Francesca Sison |- | -
