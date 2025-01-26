@@ -18,6 +18,6 @@ Name  | Student ID | Role
 Adam Purcell| - | -
 Amanda Yuen | 40031699 | Frontend
 Annie Nguyen Ly  | - | -
-Asley Kate Antonio | - | -
+Asley Kate Antonio | 40240741 | -
 Tonny Zhao  | 40283194 | -
 Ysa Francesca Sison | 40287483 | -
