@@ -22,5 +22,5 @@ This web application facilitates group communication by allowing users to create
 | Amanda Yuen         | 40031699   | Frontend |
 | Annie Nguyen Ly     | 40273050   | -        |
 | Asley Kate Antonio  | 40240741   | -        |
-| Tonny Zhao          | 40283194   | -        |
+| Tonny Zhao          | 40283194   | Frontend |
 | Ysa Francesca Sison | 40287483   | -        |
