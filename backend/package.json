@@ -1,0 +1,17 @@
+{
+  "name": "chat-haven-backend",
+  "version": "1.0.0",
+  "description": "backend of chat-haven application",
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "nodemon src/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "latest",
+    "mongodb": "latest",
+    "nodemon": "latest" 
+  }
+}
