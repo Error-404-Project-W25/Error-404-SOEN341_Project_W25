@@ -16,8 +16,8 @@ This web application facilitates group communication by allowing users to create
 Name  | Student ID | Role
 ------------- | -------------| -------------
 Adam Purcell| - | -
-Amanda Yuen | 40031699| Frontend
+Amanda Yuen | 40031699 | Frontend
 Annie Nguyen Ly  | - | -
 Asley Kate Antonio | - | -
 Tonny Zhao  | 40283194 | -
-Ysa Francesca Sison |- | -
+Ysa Francesca Sison | 40287483 | -
