@@ -5,13 +5,18 @@
   "type": "module",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon src/app.js"
+    "start": "nodemon --exec ts-node src/app.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "latest",
     "mongodb": "latest",
-    "nodemon": "latest" 
+    "mongoose": "^8.9.5",
+    "nodemon": "latest"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/mongoose": "^5.11.97"
   }
 }
