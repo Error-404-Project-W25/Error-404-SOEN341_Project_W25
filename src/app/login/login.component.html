@@ -1,0 +1,110 @@
+<div class="container">
+    <a routerLink="/">
+      <img class="logoImg" src="./assets/icons8-logo-50.png" />
+    </a>
+  
+    <!-- Sign In Form -->
+    <div class="signinForm form-transition" *ngIf="showSignInForm">
+      <h1>Sign In</h1>
+      <form>
+        <input
+          type="text"
+          placeholder="Email"
+          [(ngModel)]="signInData.email"
+          name="email"
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          [(ngModel)]="signInData.password"
+          name="password"
+          required
+        />
+        <span *ngIf="loginError" id="logInError">Incorrect email or password</span>
+        <label>
+          Remember Me
+          <input type="checkbox" />
+        </label>
+        <div class="submit">
+          <button type="submit">Sign In</button>
+        </div>
+      </form>
+      <p>Having trouble signing in?</p>
+      <a href="#" class="smallBtn">Reset your Password</a>
+      <hr />
+      <p>Don't have an account?</p>
+      <a href="#" class="smallBtn" (click)="toggleForm()">Sign Up</a>
+    </div>
+  
+    <!-- Sign Up Form -->
+    <div class="signupForm form-transition" *ngIf="!showSignInForm">
+      <h1>Sign Up</h1>
+      <form>
+        <input
+          type="text"
+          placeholder="First Name"
+          [(ngModel)]="signUpData.firstName"
+          name="firstName"
+          required
+        />
+        <span *ngIf="errors.firstName">Please fill in the input</span>
+        <input
+          type="text"
+          placeholder="Last Name"
+          [(ngModel)]="signUpData.lastName"
+          name="lastName"
+          required
+        />
+        <span *ngIf="errors.lastName">Please fill in the input</span>
+        <hr />
+        <input
+          type="text"
+          placeholder="Email"
+          [(ngModel)]="signUpData.email"
+          name="email"
+          required
+        />
+        <span *ngIf="errors.emailEmpty">Please fill in your E-mail</span>
+        <span *ngIf="errors.emailInvalid">Please enter a valid E-mail</span>
+        <input
+          type="password"
+          placeholder="Password"
+          [(ngModel)]="signUpData.password"
+          name="password"
+          required
+        />
+        <span *ngIf="errors.password">Password must be at least 8 characters</span>
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          [(ngModel)]="signUpData.confirmPassword"
+          name="confirmPassword"
+          required
+        />
+        <span *ngIf="errors.confirmPassword">Passwords don't match</span>
+        <label for="provider">Provider</label>
+        <input
+          type="radio"
+          [(ngModel)]="signUpData.provider"
+          name="provider"
+          value="true"
+        />
+        <label for="provider">Client</label>
+        <input
+          type="radio"
+          [(ngModel)]="signUpData.provider"
+          name="provider"
+          value="false"
+          checked
+        />
+        <div class="submit">
+          <button type="submit">Sign Up</button>
+        </div>
+      </form>
+      <hr />
+      <p>Already have an account?</p>
+      <a href="#" class="smallBtn" (click)="toggleForm()">Sign In</a>
+    </div>
+  </div>
+  
