@@ -1,0 +1,56 @@
+:root {
+    --primary-color: #ffffff;
+    --primary-color-light: #9ea4b1;
+    --secondary-color: #f0483e;
+    --secondary-color-dark: #c90c02;
+  }
+  
+  .container {
+    position: relative;
+    border: 2px solid lightgrey;
+    border-radius: 25px;
+    width: 500px;
+    height: 600px;
+    text-align: center;
+    background-color: var(--primary-color-light);
+  }
+  
+  .signinForm, 
+  .signupForm {
+    display: none;
+  }
+  
+  .signinForm {
+    display: block;
+  }
+  
+  .ani {
+    position: absolute;
+    z-index: -1;
+    width: 200%;
+    height: 200%;
+    transform: rotate(70deg);
+  }
+  
+  .elem span {
+    width: 30px;
+    height: 200px;
+    background-color: var(--secondary-color);
+    border-radius: 35px;
+    animation: animate linear infinite;
+    animation-duration: calc(150s / var(--i));
+  }
+  
+  .elem span:nth-child(even) {
+    background-color: var(--secondary-color-dark);
+  }
+  
+  @keyframes animate {
+    0% {
+      transform: translateY(-1000%) scaleY(calc(var(--i) / 100));
+    }
+    100% {
+      transform: translateY(1000%) scaleY(calc(var(--i) / 50));
+    }
+  }
+  
