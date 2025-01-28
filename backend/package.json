@@ -10,13 +10,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "latest",
     "express": "latest",
     "mongodb": "latest",
-    "mongoose": "^8.9.5",
+    "mongoose": "latest",
     "nodemon": "latest"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/mongoose": "^5.11.97"
+    "@types/express": "latest",
+    "@types/mongoose": "latest", 
+    "@types/node": "latest"
   }
 }
