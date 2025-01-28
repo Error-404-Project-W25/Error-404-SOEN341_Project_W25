@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import { connectDB } from '../app';  
 
 const router: Router = Router();
 

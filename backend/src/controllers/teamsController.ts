@@ -6,6 +6,7 @@ import { Team } from '../models/teamsModel';
 export const getAllTeams = async (req: Request, res: Response): Promise<void> => {
   try {
     const teams = await Team.find(); 
+    console.log('Fetched teams:', teams); 
     res.json(teams);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching teams' });

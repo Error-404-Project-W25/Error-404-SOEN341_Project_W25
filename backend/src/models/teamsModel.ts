@@ -1,17 +1,17 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, model, Document } from 'mongoose';
 
 // Define interfaces for nested objects
-interface userInterface {
+interface IUser {
   user_id: string;
   username: string;
   role: string;
 }
 
-interface teamInterface extends Document {
+interface ITeam extends Document {
   team_id: string;
   team_name: string;
-  creator: userInterface;
-  members: userInterface[];
+  creator: IUser;  // Change this to IUser instead of MongoCursorInUseError
+  members: IUser[];
   created_at: Date;
 }
 
@@ -21,7 +21,6 @@ const userSchema: Schema = new Schema({
   username: { type: String, required: true },
   role: { type: String, required: true }, // either admin or member
 });
-
 
 const teamSchema: Schema = new Schema(
   {
@@ -33,8 +32,9 @@ const teamSchema: Schema = new Schema(
   },
   {
     timestamps: false, // Disable Mongoose timestamps, seems like it creates one on its own
-  }
+    collection: 'Teams' 
+  },
 );
 
-// Create the model based on the schema
-export const Team = mongoose.model<teamInterface>('Team', teamSchema);
+// Create the model "Team" based on the "teamSchema"
+export const Team = mongoose.model('Team', teamSchema);
