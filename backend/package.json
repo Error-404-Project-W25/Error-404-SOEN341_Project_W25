@@ -10,8 +10,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "latest",
+    "firebase": "^11.2.0",
     "mongodb": "latest",
-    "nodemon": "latest" 
+    "nodemon": "latest"
   }
 }
