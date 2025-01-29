@@ -11,7 +11,7 @@ import {
   AuthStatus,
   UserSignInData,
   UserSignUpData,
-} from '../../shared/user-credentials.types';
+} from '../../../shared/user-credentials.types';
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: process.env.FIREBASE_API_KEY,
