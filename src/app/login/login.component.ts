@@ -21,7 +21,6 @@ export class LoginComponent {
     email: '',
     password: '',
     confirmPassword: '',
-    provider: 'false',
   };
 
   // Validation Errors

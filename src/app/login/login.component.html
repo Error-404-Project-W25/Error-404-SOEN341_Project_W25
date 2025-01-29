@@ -83,21 +83,6 @@
           required
         />
         <span *ngIf="errors.confirmPassword">Passwords don't match</span>
-        <label for="provider">Provider</label>
-        <input
-          type="radio"
-          [(ngModel)]="signUpData.provider"
-          name="provider"
-          value="true"
-        />
-        <label for="provider">Client</label>
-        <input
-          type="radio"
-          [(ngModel)]="signUpData.provider"
-          name="provider"
-          value="false"
-          checked
-        />
         <div class="submit">
           <button type="submit">Sign Up</button>
         </div>
