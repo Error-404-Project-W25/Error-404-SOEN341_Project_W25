@@ -6,10 +6,10 @@
   --channel-background: #1e1f22;
 
   /*Sidebar #1 (User Menu)*/
-  --user-menu-background: #1e1f22;
   --button-background: #313338;
   --button-background-hover: #23a55a;
-  --button-text: #dbdee1;
+  --button-text: #278851;
+  --button-text-hover: #ffffff;
 
   /* Sidebar #2 (Chat List) */
   --chat-list-background: #2b2d31;
@@ -36,11 +36,10 @@ body {
 }
 
 .container {
-  background-color: black; /* background color black */
-  color: white; /* text color white */
-  width: 100vw; /* take full screen */
-  height: 100vh; /* take full screen */
-  background-color: #1e1f22;
+  /*background color black*/
+  /*text color white*/
+  /*take full screen*/
+  background-color: var(--channel-background);
   display: flex;
   height: 100vh;
 }
@@ -54,8 +53,8 @@ body {
   flex-direction: column;
   align-items: center; /* Center items horizontally */
   justify-content: center; /* Center items vertically */
-  background-color: #1e1f22;
-  color: #dbdee1;
+  background-color: var(--channel-background);
+  color: var(--channel-letter-color);
 }
 
 .channel-list ul {
@@ -81,15 +80,15 @@ body {
   min-height: 50px; /* Prevent shrinking */
   border-radius: 50%; /* Make the buttons perfectly round */
   cursor: pointer;
-  color: #dbdee1;
-  background-color: #2f3136;
+  color: var(--channel-letter-color);
+  background-color: var(--channel-button-background);
   text-align: center;
   font-size: 14px; /* Adjust font size if needed */
   white-space: nowrap; /* Prevent text from wrapping */
 }
 
 .channel-list li:hover {
-  background-color: #5865f2;
+  background-color: var(--channel-button-hover);
   border-radius: 30%; /* Keep the circular shape on hover */
 }
 
@@ -101,8 +100,8 @@ body {
   flex-direction: column;
   align-items: center; /* Center items horizontally */
   justify-content: center; /* Center items vertically */
-  background-color: #1e1f22;
-  color: #278851;
+  background-color: var(--channel-background);
+  color: var(--channel-letter-color);
 }
 
 .user-menu ul {
@@ -128,22 +127,22 @@ body {
   min-height: 50px; /* Prevent shrinking */
   border-radius: 50%; /* Make the buttons perfectly round */
   cursor: pointer;
-  color: #dbdee1;
-  background-color: #313338;
+  color: var(--channel-letter-color);
+  background-color: var(--channel-button-background);
   text-align: center;
   font-size: 14px; /* Adjust font size if needed */
   white-space: nowrap; /* Prevent text from wrapping */
 }
 
 .user-menu li:hover {
-  background-color: #23a55a;
+  background-color: var(--channel-button-hover);
   border-radius: 30%; /* Keep the circular shape on hover */
 }
 
 /* Chat List */
 .chat-list {
   /*width: 300*/
-  background-color: #2b2d31;
+  background-color: var(--chat-list-background);
   width: 300px;
   overflow-y: auto;
 }
@@ -159,17 +158,17 @@ body {
   height: 50px;
   border-radius: 10px;
   cursor: pointer;
-  color: #949ba4;
+  color: var(--chat-list-text);
 }
 
 .chat-list li:hover {
-  background-color: #404249;
+  background-color: var(--chat-list-backround-hover);
 }
 
 /* Chat Log */
 /*width around 1000 will be automatic*/
 .chat-log {
-  background-color: #313338;
+  background-color: var(--chat-log-background);
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -182,21 +181,17 @@ body {
 }
 
 .messages div {
-  background-color: #313338;
+  background-color: var(--message-background);
   margin-bottom: 10px;
   padding: 10px;
   border-radius: 5px;
-  color: #c4c7ca;
-}
-
-.messages div:hover {
-  background-color: #2e3035;
+  color: var(--message-text);
 }
 
 /* Message Input */
 .message-input {
   width: auto;
-  background-color: #383a40;
+  background-color: var(--input-background);
   padding: 10px;
 }
 
@@ -204,14 +199,32 @@ body {
   margin: 10px 0;
   width: 80%;
   padding: 10px;
-  border: 1px solid #2f3136;
+  border: 1px solid var(--channel-button-background);
   border-radius: 5px;
-  background-color: #383a40;
-  color: #949ba4;
+  background-color: var(--input-background);
+  color: var(--chat-list-text);
 }
 
 .message-input button {
   padding: 10px;
-  border: 1px solid #2f3136;
+  border: 1px solid var(--channel-button-background);
   border-radius: 5px;
+  background-color: var(--input-send-button);
+  color: var(--button-text-hover);
+  cursor: pointer;
+}
+
+.message-input button:hover {
+  background-color: var(--input-send-button-hover);
+}
+
+.user-profil-menu {
+  /*width: 400 */
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--channel-button-background);
+  color: var(--channel-letter-color);
 }
