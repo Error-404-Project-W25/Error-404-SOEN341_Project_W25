@@ -20,7 +20,7 @@ This web application facilitates group communication by allowing users to create
 | ------------------- | ---------- | -------- |
 | Adam Purcell        | 40272334   | Backend  |
 | Amanda Yuen         | 40031699   | Frontend |
-| Annie Nguyen Ly     | 40273050   | -        |
-| Asley Kate Antonio  | 40240741   | -        |
+| Annie Nguyen Ly     | 40273050   | Backend  |
+| Asley Kate Antonio  | 40240741   | Backend  |
 | Tonny Zhao          | 40283194   | Frontend |
-| Ysa Francesca Sison | 40287483   | -        |
+| Ysa Francesca Sison | 40287483   | Frontend |
