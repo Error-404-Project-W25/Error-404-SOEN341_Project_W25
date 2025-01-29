@@ -17,12 +17,15 @@ export const createTeams = async (req: Request, res: Response): Promise<void> =>
   try {
     //get from request
     //const authenticatedUser = req.user; UNCOMMENT
+    const authenticatedUser = "testing API"
 
     const { team_id, team_name } = req.body;
 
+  
     // Validate required fields
     if (!team_id || !team_name) {
-      //return res.status(400).json({ error: 'Missing required fields' }); UNCOMMENT
+      res.status(400).json({ error: 'Missing required fields' }); 
+      return;
     }
 
     // Create a new team document
@@ -30,16 +33,30 @@ export const createTeams = async (req: Request, res: Response): Promise<void> =>
       team_id,
       team_name,
       creator: {
+        user_id: "1", 
+        username: authenticatedUser, 
         //user_id: authenticatedUser.user_id, UNCOMMENT
         //username: authenticatedUser.username,
         role: 'admin', //creator always admin
       },
       members: [], // No members initially
+      channels: [
+        {
+          channel_name: "General", 
+          description: "This is the default channel",
+          members: [], 
+        },
+      ],
     });
 
     const savedTeam = await newTeam.save();
     res.status(201).json(savedTeam);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create team', details: "get error idk from where yet" }); // FIND
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      res.status(500).json({ error: 'Failed to create team', details: error.message });
+    } else {
+      res.status(500).json({ error: 'Failed to create team', details: 'Unknown error' });
+    }
   }
+  
 };
