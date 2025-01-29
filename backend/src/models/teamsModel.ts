@@ -1,7 +1,6 @@
-import { kStringMaxLength } from 'buffer';
-import mongoose, { Schema, model, Document } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
-// Define interfaces for nested objects
 interface IUser {
   user_id: string;
   username: string;
@@ -10,12 +9,12 @@ interface IUser {
 
 interface IChannel {
   channel_name: string;
-  description: string; 
+  description: string;
   members: IUser[];
 }
 
 interface ITeam extends Document {
-  team_id: string;
+  team_id: string; // Will be set manually
   team_name: string;
   creator: IUser;
   members: IUser[];
@@ -24,40 +23,46 @@ interface ITeam extends Document {
 }
 
 // Schema for user
-const userSchema: Schema = new Schema({
+const userSchema = new Schema({
   user_id: { type: String, required: true },
   username: { type: String, required: true },
-  role: { type: String, required: true }, // either admin or member
+  role: { type: String, required: true },
 });
 
 // Schema for channel
-const channelSchema: Schema = new Schema({
+const channelSchema = new Schema({
   channel_name: { type: String, required: true },
-  description: {type: String, required: true},
-  members: { type: [userSchema], default: [] }, // Default to an empty array
-
+  description: { type: String, required: true },
+  members: { type: [userSchema], default: [] },
 });
 
 // Schema for team
-const teamSchema: Schema = new Schema(
+const teamSchema = new Schema(
   {
-    team_id: { type: String, required: true, unique: true },
+    team_id: { type: String, unique: true },
     team_name: { type: String, required: true },
     creator: { type: userSchema, required: true },
     members: { type: [userSchema], default: [] },
-    channels: { 
-      type: [channelSchema], 
-      default: [{ 
-        channel_name: "General", 
-        description: "This is the default channel", 
-        members: [] }] }, // Default to "General" channel
+    channels: {
+      type: [channelSchema],
+      default: [{ channel_name: "General", description: "This is the default channel", members: [] }],
+    },
     created_at: { type: Date, default: Date.now },
   },
   {
-    timestamps: false, // Disable Mongoose timestamps
+    timestamps: false,
     collection: 'Teams',
   }
 );
 
-// Create the model "Team" based on the "teamSchema"
+// Remove _id and __v before sending response to the client
+teamSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    delete ret.id;
+    delete ret._id;     // Remove Mongoose's default _id field
+    delete ret.__v;     // Remove version key __v
+return ret;
+  },
+});
+
 export const Team = mongoose.model<ITeam>('Team', teamSchema);

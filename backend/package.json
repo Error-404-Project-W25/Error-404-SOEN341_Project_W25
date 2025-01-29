@@ -13,12 +13,16 @@
     "express": "latest",
     "mongodb": "latest",
     "mongoose": "latest",
-    "nodemon": "latest", 
-    "ts-node": "latest"
+    "mongoose-sequence": "^6.0.1",
+    "nodemon": "latest",
+    "ts-node": "latest",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@types/express": "latest",
-    "@types/mongoose": "latest", 
-    "@types/node": "latest"
+    "@types/mongoose": "latest",
+    "@types/mongoose-sequence": "^3.0.11",
+    "@types/node": "latest",
+    "@types/uuid": "^10.0.0"
   }
 }
