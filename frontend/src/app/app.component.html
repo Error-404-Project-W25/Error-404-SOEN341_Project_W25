@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CSS Variable Example</title>
+    <title>CSS Test</title>
     <link rel="stylesheet" href="app.component.css" />
   </head>
   <body>
@@ -61,42 +61,47 @@
         </div>
       </div>
 
-      <!-- Chat Log -->
-      <div class="chat-log">
-        <div class="messages">
-          <div>Message 1</div>
-          <div>Message 2</div>
-          <div>Message 3</div>
-          <div>Message 4</div>
-          <div>Message 5</div>
-          <div>Message 6</div>
-          <div>Message 7</div>
-          <div>Message 8</div>
-          <div>Message 9</div>
-          <div>Message 10</div>
-          <div>Message 11</div>
-          <div>Message 12</div>
-          <div>Message 13</div>
-          <div>Message 14</div>
-          <div>Message 15</div>
-          <div>Message 16</div>
-          <div>Message 17</div>
-          <div>Message 18</div>
-          <div>Message 19</div>
-          <div>Message 20</div>
-          <div>Message 21</div>
-          <div>Message 22</div>
-          <div>Message 23</div>
-          <div>Message 24</div>
-          <div>Message 25</div>
-          <div>Message 26</div>
-          <div>Message 27</div>
-          <div>Message 28</div>
-          <div>Message 29</div>
-          <div>Message 30</div>
+      <div class="chat-box">
+        <div class="message-log">
+          <div class="message">
+            <div class="message-profile-picture"></div>
+            <div class="message-content">
+              <div class="message-header">
+                <span class="message-author">User1</span>
+                <span class="message-date">10:30 AM</span>
+              </div>
+              <div class="message-text">Hello, how are you??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????</div>
+            </div>
+          </div>
+
+          <div class="message">
+            <div class="message-profile-picture"></div>
+            <div class="message-content">
+              <div class="message-header">
+                <span class="message-author">User2</span>
+                <span class="message-date">10:31 AM</span>
+              </div>
+              <div class="message-text">I'm good, thanks! How about you?</div>
+            </div>
+          </div>
+
+          <div class="message">
+            <div class="message-profile-picture"></div>
+            <div class="message-content">
+              <div class="message-header">
+                <span class="message-author">User1</span>
+                <span class="message-date">10:32 AM</span>
+              </div>
+              <div class="message-text">Doing great, thanks for asking!</div>
+            </div>
+          </div>
         </div>
-        <div class="message-input">
-          <input type="text" placeholder="Type your message..." />
+        <div class="input-box">
+          <input
+            type="text"
+            class="message-input"
+            placeholder="Type a message..."
+          />
           <button class="send-button">Send</button>
         </div>
       </div>

@@ -29,15 +29,11 @@
   --channel-list-text-hover: #f3fcff;
 
   /* channel Log */
-  --channel-username: #f3fcff;
-  --channel-log-background: #313338;
   --message-background: #313338;
   --message-background-hover: #2e3035;
-  --message-text: #c4c7ca;
-
-  --input-background: #383a40;
-  --input-send-button: #b5bac1;
-  --input-send-button-hover: #dbdee1;
+  --message-text: #bbbdc1;
+  --message-username: #f2f3f5;
+  --message-date: #797f87;
 }
 body {
   height: 100%;
@@ -193,7 +189,8 @@ body {
 }
 .side-bar-2 {
   margin: 0;
-  padding-top: 10px;
+  padding-top: 7px;
+  padding-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -252,46 +249,143 @@ body {
   color: var(--channel-list-text-hover);
 }
 
-/* Chat Log */
-/*width around 1000 will be automatic*/
-.chat-log {
-  background-color: #313338;
-  flex: 1;
+/*Chat Log*/
+.chat-box {
   display: flex;
   flex-direction: column;
-}
-.messages {
-  flex: 1;
+  width: 50%;
+  height: 100%;
+  background-color: var(--message-background);
+  color: var(--message-text);
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.message {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--message-background);
+  color: var(--message-text);
+  border: none;
+  width: 100%;
+  min-height: 50px;
+  max-height: auto;
+  border-radius: 10px;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  padding: 5px;
+  margin: 5px 0;
+  white-space: nowrap;
+  display: flex;
+}
+.message:hover {
+  background-color: var(--message-background-hover);
+}
+.message-profile-picture {
+  display: flex;
+  color: green;
+  background-color: green;
+  max-width: 48px;
+  min-width: 48px;
+  max-height: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  padding: 5px;
+}
+.message-header {
+  display: flex;
+  gap: 5px;
+  flex-direction: row;
+  align-items: flex-start;
+  margin: 5px;
+  padding: 0;
+}
+.message-author {
+  color: var(--message-username);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+.message-date {
+  color: var(--message-date);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+.message-text {
+  width: 100%;
+  color: var(--message-text);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+.input-box {
+  position: absolute;
+  bottom: 0;
+  width: 75%;
+  height: 50px;
+  background-color: red /*var(--input-background)*/;
+  color: #dbdee1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px;
+  box-sizing: border-box;
 }
-.messages div {
-  background-color: #313338;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  color: #c4c7ca;
-}
-.messages div:hover {
-  background-color: #2e3035;
-}
-/* Message Input */
-.message-input {
-  width: auto;
-  background-color: #383a40;
-  padding: 10px;
-}
-.message-input input {
-  margin: 10px 0;
+.input-box input {
   width: 80%;
+  height: 30px;
   padding: 10px;
-  border: 1px solid #2f3136;
-  border-radius: 5px;
-  background-color: #383a40;
-  color: #949ba4;
+  border-radius: 10px;
+  border: 2px solid #555;
+  background-color: var(--search-bar-background);
+  color: var(--search-bar-text);
+  outline: none;
+  font-size: 16px;
+  gap: 5px;
 }
-.message-input button {
+.input-box input :hover {
+  color: #bbb;
+}
+.input-button {
+  background-color: var(--add-server-button-background);
+  color: var(--add-server-button-text);
+  border: none;
+  max-width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
   padding: 10px;
-  border: 1px solid #2f3136;
-  border-radius: 5px;
+  margin: 5px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
