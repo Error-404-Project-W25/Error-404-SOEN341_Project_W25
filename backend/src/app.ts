@@ -14,7 +14,7 @@ dotenv.config({path: path.resolve(__dirname, '../../.env')});
 const DB_CONN_STRING = process.env.DB_CONN_STRING || ''; 
 const DB_NAME = process.env.DB_NAME || ''; 
 
-export const connectDB = async (): Promise<void> => {
+const connectDB = async (): Promise<void> => {
   try {
     await mongoose.connect(DB_CONN_STRING, {
       dbName: DB_NAME,
@@ -26,25 +26,22 @@ export const connectDB = async (): Promise<void> => {
   }
 };
 
-// Call connectDB before starting the server
-connectDB().then(() => {
-  // After successful connection, start the server
-  app.use(express.json());
 
-  // Register routes
-  app.use('/teams', teamsRoutes);
+const startServer = async () => {
+  try {
+    await connectDB();
+    // After successful connection, start the server
+    app.use(express.json());
 
-  const PORT: number = Number(process.env.PORT) || 3000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-});
+    // Register routes
+    app.use('/teams', teamsRoutes);
 
+    const PORT: number = Number(process.env.PORT) || 3000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  } catch (error) {
+    console.error('Failed to connect to the database', error);
+    process.exit(1); // Exit the process with failure
+  }
+};
 
-// app.use(express.json());
-
-// // Register routes
-// app.use('/', indexRoutes);
-// app.use('/teams', teamsRoutes);
-
-
-// const PORT: number = Number(process.env.PORT) || 3000;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+startServer();

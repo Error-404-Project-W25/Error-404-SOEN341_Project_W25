@@ -3,7 +3,7 @@ import { Team } from '../models/teamsModel';
 import { v4 as uuidv4 } from 'uuid';
 
 // Get all teams
-export const getAllTeams = async (req: Request, res: Response): Promise<void> => {
+export const getAllTeams = async (req: Request, res: Response) => {
   try {
     const teams = await Team.find(); 
     console.log('Fetched teams:', teams); 
@@ -14,15 +14,12 @@ export const getAllTeams = async (req: Request, res: Response): Promise<void> =>
 };
 
 // Create a new team
-export const createTeams = async (req: Request, res: Response): Promise<void> => {
+export const createTeams = async (req: Request, res: Response) => {
   try {
-    // Simulate an authenticated user (use real authentication logic here)
-    const authenticatedUser = "testing API";  // Replace with authenticated user's data
-
-    const { team_name } = req.body;
+    const { user_id, username, email, team_name, description } = req.body;
 
     // Validate required fields
-    if (!team_name) {
+    if (!team_name || !description || !user_id || !username || !email) {
       res.status(400).json({ error: 'Missing required fields' });
       return;
     }
@@ -34,28 +31,40 @@ export const createTeams = async (req: Request, res: Response): Promise<void> =>
     const newTeam = new Team({
       team_id,
       team_name,
-      creator: {
-        user_id: "1", // Replace with real user ID
-        username: authenticatedUser, // Replace with real username
+      admin: [{
+        user_id: user_id,
+        username: username,
+        email: email,
         role: 'admin', // Creator is always admin
-      },
-      members: [], // No members initially
+      }],
+      members: [{
+        user_id: user_id,
+        username: username,
+        email: email,
+        role: 'admin', // Add the creator as a member with admin role
+      }],
       channels: [
         {
-          channel_name: "General", 
+          id: uuidv4(),
+          name: "General", 
           description: "This is the default channel",
-          members: [],
+          team: team_id, 
+          members: [{
+            user_id: user_id,
+            username: username,
+            email: email,
+            role: 'admin', // Add the creator to the default channel members
+          }],
         },
       ],
+      created_at: new Date(),
     });
 
     const savedTeam = await newTeam.save();
     res.status(201).json(savedTeam);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: 'Failed to create team', details: error.message });
-    } else {
-      res.status(500).json({ error: 'Failed to create team', details: 'Unknown error' });
-    }
+  } catch (error) {
+      const errorMessage = (error as Error).message;
+      res.status(500).json({ error: 'Failed to create team', details: errorMessage });
+      console.error('Failed to create team:', errorMessage);
   }
 };

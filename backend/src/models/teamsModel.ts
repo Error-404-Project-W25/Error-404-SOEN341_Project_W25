@@ -1,52 +1,25 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
-
-interface IUser {
-  user_id: string;
-  username: string;
-  role: string;
-}
-
-interface IChannel {
-  channel_name: string;
-  description: string;
-  members: IUser[];
-}
+import { IUser, userSchema } from './userModel'; 
+import { IChannel, channelSchema } from './channelsModel'; 
 
 interface ITeam extends Document {
   team_id: string; // Will be set manually
   team_name: string;
-  creator: IUser;
+  description: string; 
+  admin: IUser[];
   members: IUser[];
   channels: IChannel[];
   created_at: Date;
 }
-
-// Schema for user
-const userSchema = new Schema({
-  user_id: { type: String, required: true },
-  username: { type: String, required: true },
-  role: { type: String, required: true },
-});
-
-// Schema for channel
-const channelSchema = new Schema({
-  channel_name: { type: String, required: true },
-  description: { type: String, required: true },
-  members: { type: [userSchema], default: [] },
-});
 
 // Schema for team
 const teamSchema = new Schema(
   {
     team_id: { type: String, unique: true },
     team_name: { type: String, required: true },
-    creator: { type: userSchema, required: true },
+    admin: { type: [userSchema], required: true },
     members: { type: [userSchema], default: [] },
-    channels: {
-      type: [channelSchema],
-      default: [{ channel_name: "General", description: "This is the default channel", members: [] }],
-    },
+    channels: { type: [channelSchema], required: true },
     created_at: { type: Date, default: Date.now },
   },
   {
@@ -59,9 +32,9 @@ const teamSchema = new Schema(
 teamSchema.set('toJSON', {
   transform: (doc, ret) => {
     delete ret.id;
-    delete ret._id;     // Remove Mongoose's default _id field
-    delete ret.__v;     // Remove version key __v
-return ret;
+    delete ret._id;     
+    delete ret.__v;     
+    return ret;
   },
 });
 
