@@ -1,18 +1,18 @@
-import express, { application, Application } from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv'; 
-import path from 'path'; 
+// Load env variables right away
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
+import express, { Application } from 'express';
+import mongoose from 'mongoose';
 import teamsRoutes from './routes/teams';
+import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
 
-//Load env variables (elements hidden in .env)
-dotenv.config({path: path.resolve(__dirname, '../../.env')}); 
-
-//Connect to database 
-const DB_CONN_STRING = process.env.DB_CONN_STRING || ''; 
-const DB_NAME = process.env.DB_NAME || ''; 
+// Connect to database
+const DB_CONN_STRING = process.env.DB_CONN_STRING || '';
+const DB_NAME = process.env.DB_NAME || '';
 
 export const connectDB = async (): Promise<void> => {
   try {
@@ -22,7 +22,7 @@ export const connectDB = async (): Promise<void> => {
     console.log('Connected to MongoDB successfully');
   } catch (error) {
     console.error('Error connecting to MongoDB:', error);
-    process.exit(1); 
+    process.exit(1);
   }
 };
 
@@ -36,15 +36,7 @@ connectDB().then(() => {
 
   const PORT: number = Number(process.env.PORT) || 3000;
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+  // Tests (uncomment to run)
+  // runAuthTests();
 });
-
-
-// app.use(express.json());
-
-// // Register routes
-// app.use('/', indexRoutes);
-// app.use('/teams', teamsRoutes);
-
-
-// const PORT: number = Number(process.env.PORT) || 3000;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

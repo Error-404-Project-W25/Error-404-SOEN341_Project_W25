@@ -22,8 +22,6 @@ const firebaseConfig: FirebaseOptions = {
   appId: process.env.FIREBASE_APP_ID,
 };
 
-console.log(firebaseConfig);
-
 const app: FirebaseApp = initializeApp(firebaseConfig);
 const auth: Auth = getAuth(app);
 
@@ -64,7 +62,7 @@ const signOutUser = async (): Promise<AuthStatus> => {
     return { isSignedIn: false };
   } catch (error: any) {
     return {
-      // See if the signout truly worked
+      // See if the signout truly occurred
       isSignedIn: auth.currentUser ? true : false,
       errorMessage: error.message,
     };
