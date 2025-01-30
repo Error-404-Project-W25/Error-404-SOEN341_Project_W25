@@ -20,5 +20,8 @@ export const addUsersToChannel = (req, res) => {
     // STEP 3: check if desired user is part of the TEAM
         // if yes, proceed. if no, keep prompting
 
-    // STEP 4: add user to channel database
+    // STEP 4: check if desired user is part of the CHANNEL
+        // if no, procees. if yes, keep prompting
+
+    // STEP 4: push user to channel database
 }
