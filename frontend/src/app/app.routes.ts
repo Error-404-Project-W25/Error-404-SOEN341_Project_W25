@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-//import { LoginComponent } from './login/login.component'; /
+import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
 
-/*export const routes: Routes = [
-  { path: '', component: LoginComponent }, // Default route
-  { path: 'login', component: LoginComponent }, // Optional explicit login route
+export const routes: Routes = [
+  { path: '', component: HomeComponent },  // Home Page (default)
+  { path: 'login', component: LoginComponent },  // Login Page
 ];
-*/
