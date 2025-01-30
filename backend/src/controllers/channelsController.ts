@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
-import { User } from '../models/usersModel';
+import { User } from '../models/userModel'; // to add
 import { v4 as uuidv4 } from 'uuid';
 
 // Create a new channel 
@@ -10,10 +10,12 @@ export const createChannel = async (req, res) => {
     const { channelName, channelDescription } = req.body; // get channel info
 
     try {
-        const team = Team.findbyId(team_id); // look up the team by ID
+        const team = await Team.findbyId(team_id); // look up the team by ID
         if (!team) { // if not found
             return res.status(404).json({ error: 'Team not found' });
         } 
+
+        // fetch the admin from the team to initialize members
 
         const channel_id = uuidv4(); // unique identifier for channel id
 
@@ -22,8 +24,7 @@ export const createChannel = async (req, res) => {
             name: channelName,
             description: channelDescription,
             team_id: team_id, // associated team
-            members: [admin] // admin is default member
-            // !!!! retrieve admin?
+            members: team.admin // admin is default member
         });
 
         const savedTeam = await newChannel.save();

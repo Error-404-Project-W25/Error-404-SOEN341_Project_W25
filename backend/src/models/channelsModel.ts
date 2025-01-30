@@ -1,11 +1,11 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
-interface IChannel {
+interface IChannel extends Document {
     id: string;
     name: string;
     description: string;
-    team_id: string;;
+    team_id: string;
     members: IUser[];
   }
 
@@ -17,4 +17,5 @@ const channelSchema = new Schema({
     members: { type: [userSchema], default: [] },
 });
 
+export { IChannel, channelSchema };
 export const Channel = mongoose.model<IChannel>('Channel', channelSchema);
