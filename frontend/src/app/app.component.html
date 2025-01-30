@@ -1,132 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSS Variable Example</title>
-  <link rel="stylesheet" href="app.component.css">
-</head>
-<body>
-  <div class="container">
-    <!-- Channel List -->
-    <div class="channel-list">
-      <ul>
-        <li>C 1</li>
-        <li>C 2</li>
-        <li>C 3</li>
-        <li>C 4</li>
-        <li>C 5</li>
-        <li>C 6</li>
-        <li>C 7</li>
-        <li>C 8</li>
-        <li>C 9</li>
-        <li>C 10</li>
-        <li>C 11</li>
-        <li>C 12</li>
-        <li>C 13</li>
-        <li>C 14</li>
-        <li>C 15</li>
-        <li>C 16</li>
-        <li>C 17</li>
-        <li>C 18</li>
-        <li>C 19</li>
-        <li>C 20</li>
-        <li>C 21</li>
-        <li>C 22</li>
-        <li>C 23</li>
-        <li>C 24</li>
-        <li>C 25</li>
-        <li>C 26</li>
-        <li>C 27</li>
-        <li>C 28</li>
-        <li>C 29</li>
-        <li>C 30</li>
-      </ul>
-      <div class="user-menu">
-        <ul>
-          <li>Profile</li>
-          <li>Settings</li>
-          <li>Logout</li>
-        </ul>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS Variable Example</title>
+    <link rel="stylesheet" href="app.component.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="side-bar-1">
+        <button class="add-server-button">+</button>
+        <hr class="separator" />
+        <div class="server-list">
+          <ul>
+            <li>C1</li>
+            <li>C2</li>
+            <li>C3</li>
+            <li>C4</li>
+            <li>C5</li>
+            <li>C6</li>
+            <li>C7</li>
+            <li>C8</li>
+            <li>C9</li>
+            <li>C10</li>
+            <li>C11</li>
+            <li>C12</li>
+            <li>C13</li>
+            <li>C14</li>
+            <li>C15</li>
+          </ul>
+        </div>
+        <hr class="separator" />
+        <button class="user-menu">Menu</button>
+        <button class="user-menu">Set</button>
+      </div>
+
+      <div class="side-bar-2">
+        <div class="search-container">
+          <input type="text" class="search-bar" placeholder="Search..." />
+        </div>
+        <hr class="separator" />
+        <div class="channel-list">
+          <ul>
+            <li>Chat 1</li>
+            <li>Chat 2</li>
+            <li>Chat 3</li>
+            <li>Chat 4</li>
+            <li>Chat 5</li>
+            <li>Chat 6</li>
+            <li>Chat 7</li>
+            <li>Chat 8</li>
+            <li>Chat 9</li>
+            <li>Chat 10</li>
+            <li>Chat 11</li>
+            <li>Chat 12</li>
+            <li>Chat 13</li>
+            <li>Chat 14</li>
+            <li>Chat 15</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Chat Log -->
+      <div class="chat-log">
+        <div class="messages">
+          <div>Message 1</div>
+          <div>Message 2</div>
+          <div>Message 3</div>
+          <div>Message 4</div>
+          <div>Message 5</div>
+          <div>Message 6</div>
+          <div>Message 7</div>
+          <div>Message 8</div>
+          <div>Message 9</div>
+          <div>Message 10</div>
+          <div>Message 11</div>
+          <div>Message 12</div>
+          <div>Message 13</div>
+          <div>Message 14</div>
+          <div>Message 15</div>
+          <div>Message 16</div>
+          <div>Message 17</div>
+          <div>Message 18</div>
+          <div>Message 19</div>
+          <div>Message 20</div>
+          <div>Message 21</div>
+          <div>Message 22</div>
+          <div>Message 23</div>
+          <div>Message 24</div>
+          <div>Message 25</div>
+          <div>Message 26</div>
+          <div>Message 27</div>
+          <div>Message 28</div>
+          <div>Message 29</div>
+          <div>Message 30</div>
+        </div>
+        <div class="message-input">
+          <input type="text" placeholder="Type your message..." />
+          <button class="send-button">Send</button>
+        </div>
       </div>
     </div>
-
-    <!-- Chat List -->
-    <div class="chat-list">
-      <ul>
-        <li>Chat 1</li>
-        <li>Chat 2</li>
-        <li>Chat 3</li>
-        <li>Chat 4</li>
-        <li>Chat 5</li>
-        <li>Chat 6</li>
-        <li>Chat 7</li>
-        <li>Chat 8</li>
-        <li>Chat 9</li>
-        <li>Chat 10</li>
-        <li>Chat 11</li>
-        <li>Chat 12</li>
-        <li>Chat 13</li>
-        <li>Chat 14</li>
-        <li>Chat 15</li>
-        <li>Chat 16</li>
-        <li>Chat 17</li>
-        <li>Chat 18</li>
-        <li>Chat 19</li>
-        <li>Chat 20</li>
-        <li>Chat 21</li>
-        <li>Chat 22</li>
-        <li>Chat 23</li>
-        <li>Chat 24</li>
-        <li>Chat 25</li>
-        <li>Chat 26</li>
-        <li>Chat 27</li>
-        <li>Chat 28</li>
-        <li>Chat 29</li>
-        <li>Chat 30</li>
-      </ul>
-    </div>
-
-    <!-- Chat Log -->
-    <div class="chat-log">
-      <div class="messages">
-        <div>Message 1</div>
-        <div>Message 2</div>
-        <div>Message 3</div>
-        <div>Message 4</div>
-        <div>Message 5</div>
-        <div>Message 6</div>
-        <div>Message 7</div>
-        <div>Message 8</div>
-        <div>Message 9</div>
-        <div>Message 10</div>
-        <div>Message 11</div>
-        <div>Message 12</div>
-        <div>Message 13</div>
-        <div>Message 14</div>
-        <div>Message 15</div>
-        <div>Message 16</div>
-        <div>Message 17</div>
-        <div>Message 18</div>
-        <div>Message 19</div>
-        <div>Message 20</div>
-        <div>Message 21</div>
-        <div>Message 22</div>
-        <div>Message 23</div>
-        <div>Message 24</div>
-        <div>Message 25</div>
-        <div>Message 26</div>
-        <div>Message 27</div>
-        <div>Message 28</div>
-        <div>Message 29</div>
-        <div>Message 30</div>
-      </div>
-      <div class="message-input">
-        <input type="text" placeholder="Type your message...">
-        <button class="send-button">Send</button>
-      </div>
-    </div>
-  </div>
-
-</body>
+  </body>
 </html>
