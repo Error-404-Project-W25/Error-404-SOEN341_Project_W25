@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Create a new channel 
 export const createChannel = async (req: Request, res: Response): Promise<void> => {
-    const team_id = req.params; // get team that user is currently in
+    const {team_id} = req.params; // get team that user is currently in
     const { channelName, channelDescription } = req.body; // get channel info
 
     try {
