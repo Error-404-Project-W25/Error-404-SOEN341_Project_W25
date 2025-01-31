@@ -32,6 +32,8 @@ frontend/.angular
 /libpeerconnection.log
 testem.log
 /typings
+.clj-kondo
+.lsp
 
 # System files
 .DS_Store
