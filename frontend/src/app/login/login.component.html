@@ -90,6 +90,16 @@
           required
         />
         <span *ngIf="errors.confirmPassword">Passwords don't match</span>
+        <div class="radio">        
+          <label>
+            <input type="radio" name="userType" [(ngModel)]="signUpData.userType" value="admin" required />
+            Admin 
+          </label>
+          <label>
+            <input type="radio" name="userType" [(ngModel)]="signUpData.userType" value="user" required />
+            User
+          </label>
+        </div>
         <div class="submit">
           <button type="submit">Sign Up</button>
         </div>
