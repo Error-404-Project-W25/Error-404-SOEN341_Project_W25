@@ -126,4 +126,38 @@ export class BackendService {
     }
   }
 
+
+
+
+//////////////////////////// CHANNELS ////////////////////////////
+//create channel
+async createChannel(team_id: string, channelName: string, channelDescription: string): Promise<void> {
+  try {
+    await firstValueFrom(
+      this.http.post<void>(`${this.backendURL}/channels/create/${team_id}`, {
+        channelName,
+        channelDescription,
+      }),
+    );
+  } catch (error) {
+    console.error('Error creating channel:', error);
+  }
+
+
+
+}
+
+async addUserToChannel(channel_id: string, user_id: string, team_id: string): Promise<void> {
+  try {
+    await firstValueFrom(
+      this.http.post<void>(`${this.backendURL}/channels/addUser/${channel_id}/${team_id}`, {
+        user_id,
+      }),
+    );
+  } catch (error) {
+    console.error('Error adding user to channel:', error);
+  }
+}
+
+
 }

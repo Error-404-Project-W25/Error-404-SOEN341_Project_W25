@@ -3,8 +3,8 @@
  
  const router: Router = Router();
  
- router.post('/', createChannel);
- router.post('/', addUserToChannel);
+ router.post('/create', createChannel);
+ router.post('/addUser', addUserToChannel);
  
  export default router;
  
