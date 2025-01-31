@@ -16,10 +16,10 @@ export const getAllTeams = async (req: Request, res: Response) => {
 // Create a new team
 export const createTeams = async (req: Request, res: Response) => {
   try {
-    const { user_id, username, email, team_name, description } = req.body;
+    const { user_id, username, team_name, description } = req.body;
 
     // Validate required fields
-    if (!team_name || !description || !user_id || !username || !email) {
+    if (!team_name || !description || !user_id || !username ) {
       res.status(400).json({ error: 'Missing required fields' });
       return;
     }
@@ -34,13 +34,11 @@ export const createTeams = async (req: Request, res: Response) => {
       admin: [{
         user_id: user_id,
         username: username,
-        email: email,
         role: 'admin', // Creator is always admin
       }],
       members: [{
         user_id: user_id,
         username: username,
-        email: email,
         role: 'admin', // Add the creator as a member with admin role
       }],
       channels: [
@@ -52,7 +50,6 @@ export const createTeams = async (req: Request, res: Response) => {
           members: [{
             user_id: user_id,
             username: username,
-            email: email,
             role: 'admin', // Add the creator to the default channel members
           }],
         },
