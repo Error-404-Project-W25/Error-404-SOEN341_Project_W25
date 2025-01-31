@@ -5,15 +5,15 @@ interface IChannel {
     id?: string;
     name: string;
     description?: string;
-    team_id: string;
+    team_id?: string;
     members: IUser[];
   }
 
 const channelSchema = new Schema({
     id: { type: String, unique: true },
-    name: { type: String, required: true },
+    name: { type: String },
     description: { type: String },
-    team: { type: String, required: true}, 
+    team: { type: String}, 
     members: { type: [userSchema], default: [] },
 });
 

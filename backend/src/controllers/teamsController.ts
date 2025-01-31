@@ -56,8 +56,6 @@ export const createTeams = async (req: Request, res: Response) => {
       }],
       members: [{
         user_id,
-        username,
-        email,
         role: 'admin', // Add the creator as a member with admin role
       }],
       channels: [
@@ -69,7 +67,6 @@ export const createTeams = async (req: Request, res: Response) => {
           members: [{
             user_id,
             username,
-            email,
             role: 'admin', // Add the creator to the default channel members
           }],
         },
@@ -125,8 +122,22 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
 
     // Add the new members to the team
     members.forEach((member: IUser) => {
-      team.members.push(member);
-      team.channels[0].members.push(member); 
+      if (member.role !== 'admin' && member.role !== 'user') {
+        console.log ('Invalid role:', member.role);
+        member.role = 'user'; // Default role
+      }
+      console.log ("member role: " + member.role);
+      team.members.push({
+        user_id: member.user_id,
+        username: member.username,
+        role: member.role,
+      });
+
+      team.channels[0].members.push({
+        user_id: member.user_id,
+        username: member.username,
+        role: member.role,
+      }); 
     });
 
     const updatedTeam = await team.save();

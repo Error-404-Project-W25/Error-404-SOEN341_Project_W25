@@ -4,7 +4,7 @@ import mongoose, { Schema } from 'mongoose';
   user_id: string;
   firstName?: string;
   lastName?: string;
-  username: string;
+  username?: string;
   email?: string;
   role: 'admin' | 'user';
 }
@@ -15,9 +15,9 @@ const userSchema = new Schema(
     user_id: { type: String, unique: true, required: true },
     firstName: { type: String},
     lastName: { type: String},
-    username: { type: String, required: true },
+    username: { type: String},
     email: { type: String, unique: true },
-    role: { type: String, enum: ['admin', 'user'], default: 'user' },
+    role: { type: String, enum: ['admin', 'user'], default: 'user', required: true },
   },
   {
     collection: 'Users',
