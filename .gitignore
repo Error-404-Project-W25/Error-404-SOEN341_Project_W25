@@ -22,25 +22,23 @@ yarn-error.log
 *.sublime-workspace
 
 # Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
+.vscode/
 
 # Miscellaneous
-/.angular/cache
+frontend/.angular
 .sass-cache/
 /connect.lock
 /coverage
 /libpeerconnection.log
 testem.log
 /typings
+.clj-kondo
+.lsp
 
 # System files
 .DS_Store
 Thumbs.db
+node_modules
 
 # Environment variables
 .env
