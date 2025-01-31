@@ -9,9 +9,9 @@
       <form>
         <input
           type="text"
-          placeholder="Email"
-          [(ngModel)]="signInData.email"
-          name="email"
+          placeholder="Username"
+          [(ngModel)]="signInData.username"
+          name="username"
           required
         />
         <input
@@ -58,6 +58,13 @@
         />
         <span *ngIf="errors.lastName">Please fill in the input</span>
         <hr />
+        <input
+        type="text"
+        placeholder="Username"
+        [(ngModel)]="signUpData.username"
+        name="username"
+        required
+      />
         <input
           type="text"
           placeholder="Email"

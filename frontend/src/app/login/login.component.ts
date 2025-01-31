@@ -16,10 +16,11 @@ export class LoginComponent implements OnInit {
   loginError = false;
 
   // Data Models
-  signInData = { email: '', password: '' };
+  signInData = { username: '', password: '' };
   signUpData = {
     firstName: '',
     lastName: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
