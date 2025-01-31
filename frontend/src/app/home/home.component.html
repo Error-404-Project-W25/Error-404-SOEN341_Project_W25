@@ -4,11 +4,11 @@
       <h2 id="title">ChatHaven</h2>
     </div>
     <ul class="nav-links">
-      <li class="link"><a routerLink="/">Home</a></li>
-      <!-- <li class="link"><a href="#">Features</a></li>
-      <li class="link"><a routerLink="/pricing">Pricing</a></li>
-      <li class="link"><a routerLink="/about">About Us</a></li>
-      <li class="link"><a routerLink="/contact">Contact Us</a></li> -->
+      <li class="link"><a href="/home">Home</a></li>
+      <li class="link"><a href="#">Discover</a></li>
+       <li class="link"><a href="#">About Us</a></li>
+      <li class="link"><a href="/about">Blog</a></li>
+      <li class="link"><a href="/contact">Contact Us</a></li> 
     </ul>
     <div id="signInDiv">
         <button (click)="goToLogin()" class="btn">Log In</button>
@@ -66,8 +66,8 @@
         Join a community or create one yourself! Exchange messages one-on-one or interact with others in a channel.
       </p>
       <div id="signInDiv-side">
-        <button class="btn" routerLink="/login">Sign Up Now</button>
-      </div>
+        <button class="btn" [routerLink]="['/login']" [queryParams]="{ signup: true }">Sign Up Now</button>
+    </div>
     </div>
   </section>
   
