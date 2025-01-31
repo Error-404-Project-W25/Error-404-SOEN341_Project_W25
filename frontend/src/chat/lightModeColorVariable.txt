@@ -1,0 +1,35 @@
+/*Side bar #1*/
+--side-bar-1-separator: #dcdfe4;
+/*Side bar #1 (Add server Button)*/
+--add-server-button-background: #ffffff;
+--add-server-button-hover: #ff6b6b;
+--add-server-button-text: #2c2f33;
+
+/*Sidebar #1 (server List) */
+--server-letter-color: #2c2f33;
+--server-button-background: #ffffff;
+--server-button-hover: #ff6b6b;
+--server-background: #f2f3f5;
+
+/*Sidebar #1 (User Menu)*/
+--user-button-background: #e3e5e8;
+--user-button-background-hover: #ff6b6b;
+--user-button-text: #ff6b6b;
+--user-button-text-hover: #ffffff;
+
+/* Sidebar #2 (Search box)*/
+--search-bar-background: #f2f3f5;
+--search-bar-text: #2c2f33;
+
+/* Sidebar #2 (channel List) */
+--channel-list-background: #ffffff;
+--channel-list-backround-hover: #d3d6db;
+--channel-list-text: #5c6269;
+--channel-list-text-hover: #1c1f22;
+
+/* channel Log */
+--message-background: #ffffff;
+--message-background-hover: #e6e8eb;
+--message-text: #2c2f33;
+--message-username: #1c1f22;
+--message-date: #797f87;
