@@ -1,11 +1,10 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import {IUser, userSchema} from './userModel';
-import { v4 as uuidv4 } from 'uuid';
 
 interface IChannel {
-    id: string;
+    id?: string;
     name: string;
-    description: string;
+    description?: string;
     team_id: string;
     members: IUser[];
   }
@@ -13,7 +12,7 @@ interface IChannel {
 const channelSchema = new Schema({
     id: { type: String, unique: true },
     name: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String },
     team: { type: String, required: true}, 
     members: { type: [userSchema], default: [] },
 });

@@ -6,7 +6,7 @@ import mongoose, { Schema } from 'mongoose';
   lastName?: string;
   username: string;
   email?: string;
-  role: string;
+  role: 'admin' | 'user';
 }
 
 // User Schema
@@ -17,7 +17,7 @@ const userSchema = new Schema(
     lastName: { type: String},
     username: { type: String, required: true },
     email: { type: String, unique: true },
-    role: { type: String, default: 'user' },
+    role: { type: String, enum: ['admin', 'user'], default: 'user' },
   },
   {
     collection: 'Users',
