@@ -36,6 +36,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+node_modules
 
 # Environment variables
 .env
