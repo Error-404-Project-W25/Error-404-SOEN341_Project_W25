@@ -7,7 +7,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const result = await signUpUser(req.body);
     if (result.isSignedIn) {
       // Extract user information from the request body
-      const { firstName, lastName, username, email } = req.body;
+      const { firstName, lastName, username, email, role } = req.body;
       const user_id = result.uid;
 
       // Store user information in MongoDB
@@ -17,7 +17,7 @@ export const registerUser = async (req: Request, res: Response) => {
         lastName,
         username,
         email,
-        role: 'user', // Default role
+        role: role
       });
 
       await newUser.save();

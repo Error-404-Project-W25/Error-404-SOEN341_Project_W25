@@ -33,11 +33,16 @@ export const getTeamById = async (req: Request, res: Response) => {
 // Create a new team
 export const createTeams = async (req: Request, res: Response) => {
   try {
-    const { user_id, username, email, team_name, description, members } = req.body;
+    const { user_id, username, team_name, description, members, role } = req.body;
 
     // Validate required fields
-    if (!team_name || !description || !user_id || !username || !email) {
+    if (!team_name || !description || !user_id || !username || !role) {
       res.status(400).json({ error: 'Missing required fields' });
+      return;
+    }
+
+    if (role !== 'admin') {
+      res.status(400).json({ error: 'Invalid role, not allowed to create a team' });
       return;
     }
 
@@ -51,7 +56,6 @@ export const createTeams = async (req: Request, res: Response) => {
       admin: [{
         user_id,
         username,
-        email,
         role: 'admin', // Creator is always admin
       }],
       members: [{
