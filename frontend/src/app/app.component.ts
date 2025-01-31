@@ -3,9 +3,9 @@ import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  standalone: true,
+  imports: [RouterOutlet], // Include RouterOutlet to enable routing
+  template: '<router-outlet></router-outlet>', // Renders the routed component
 })
 export class AppComponent {
   title = 'ChatHaven';
