@@ -1,8 +1,8 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { IUser, userSchema } from './userModel'; 
 import { IChannel, channelSchema } from './channelsModel'; 
 
-interface ITeam extends Document {
+interface ITeam  {
   team_id: string; // Will be set manually
   team_name: string;
   description: string; 
