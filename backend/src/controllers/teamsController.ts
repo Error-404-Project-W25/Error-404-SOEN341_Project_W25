@@ -3,7 +3,7 @@ import { Team } from '../models/teamsModel';
 import { v4 as uuidv4 } from 'uuid';
 
 // Get all teams
-export const getAllTeams = async (req: Request, res: Response): Promise<void> => {
+export const getAllTeams = async (req: Request, res: Response) => {
   try {
     const teams = await Team.find(); 
     console.log('Fetched teams:', teams); 
@@ -13,16 +13,29 @@ export const getAllTeams = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-// Create a new team
-export const createTeams = async (req: Request, res: Response): Promise<void> => {
+export const getTeamById = async (req: Request, res: Response) => {
   try {
-    // Simulate an authenticated user (use real authentication logic here)
-    const authenticatedUser = "testing API";  // Replace with authenticated user's data
+    const teamId = req.body
+    const team = await Team.findOne({ team_id: teamId });
+    if (!team) {
+      res.status(404).json({ error: 'Team not found' });
+      return;
+    }
+    res.json(team);
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    res.status(500).json({ error: 'Failed to create team', details: errorMessage });
+    console.error('Failed to create team:', errorMessage);
+  }
+}; 
 
-    const { team_name } = req.body;
+// Create a new team
+export const createTeams = async (req: Request, res: Response) => {
+  try {
+    const { user_id, username, email, team_name, description } = req.body;
 
     // Validate required fields
-    if (!team_name) {
+    if (!team_name || !description || !user_id || !username || !email) {
       res.status(400).json({ error: 'Missing required fields' });
       return;
     }
@@ -34,28 +47,82 @@ export const createTeams = async (req: Request, res: Response): Promise<void> =>
     const newTeam = new Team({
       team_id,
       team_name,
-      creator: {
-        user_id: "1", // Replace with real user ID
-        username: authenticatedUser, // Replace with real username
+      admin: [{
+        user_id,
+        username,
+        email,
         role: 'admin', // Creator is always admin
-      },
-      members: [], // No members initially
+      }],
+      members: [{
+        user_id,
+        username,
+        email,
+        role: 'admin', // Add the creator as a member with admin role
+      }],
       channels: [
         {
-          channel_name: "General", 
+          id: uuidv4(),
+          name: "General", 
           description: "This is the default channel",
-          members: [],
+          team: team_id, 
+          members: [{
+            user_id,
+            username,
+            email,
+            role: 'admin', // Add the creator to the default channel members
+          }],
         },
       ],
+      description,
+      created_at: new Date(),
     });
 
     const savedTeam = await newTeam.save();
     res.status(201).json(savedTeam);
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: 'Failed to create team', details: error.message });
-    } else {
-      res.status(500).json({ error: 'Failed to create team', details: 'Unknown error' });
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    res.status(500).json({ error: 'Failed to create team', details: errorMessage });
+    console.error('Failed to create team:', errorMessage);
+  }
+};
+
+// Add a member to a team
+export const addMemberToTeam = async (req: Request, res: Response) => {
+  try {
+    const { team_id, user_id, username, role } = req.body;
+
+    // Validate required fields
+    if (!team_id || !user_id || !username || !role) {
+      res.status(400).json({ error: 'Missing required fields' });
+      return;
     }
+
+    // Find the team by team_id
+    const team = await Team.findOne({ team_id });
+    if (!team) {
+      res.status(404).json({ error: 'Team not found' });
+      return;
+    }
+
+    // Check if the user is already a member of the team (use === to ensure same)
+    const existingMember = team.members.find((member) => member.user_id === user_id); 
+    if (existingMember) {
+      res.status(400).json({ error: 'User is already a member of the team' });
+      return;
+    }
+
+    // Add the new member to the team
+    team.members.push({
+      user_id,
+      username,
+      role,
+    });
+
+    const updatedTeam = await team.save();
+    res.json(updatedTeam);
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    res.status(500).json({ error: 'Failed to add member to team', details: errorMessage });
+    console.error('Failed to add member to team:', errorMessage);
   }
 };

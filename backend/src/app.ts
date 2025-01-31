@@ -5,7 +5,8 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 import express, { Application } from 'express';
 import mongoose from 'mongoose';
-import teamsRoutes from './routes/teams';
+import teamsRoutes from './routes/teamsRoutes';
+import userRoutes from './routes/usersRoutes';
 import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
@@ -14,7 +15,7 @@ const app: Application = express();
 const DB_CONN_STRING = process.env.DB_CONN_STRING || '';
 const DB_NAME = process.env.DB_NAME || '';
 
-export const connectDB = async (): Promise<void> => {
+const connectDB = async (): Promise<void> => {
   try {
     await mongoose.connect(DB_CONN_STRING, {
       dbName: DB_NAME,
@@ -26,17 +27,25 @@ export const connectDB = async (): Promise<void> => {
   }
 };
 
-// Call connectDB before starting the server
-connectDB().then(() => {
-  // After successful connection, start the server
-  app.use(express.json());
 
-  // Register routes
-  app.use('/teams', teamsRoutes);
+const startServer = async () => {
+  try {
+    await connectDB();
+    // After successful connection, start the server
+    app.use(express.json());
 
-  const PORT: number = Number(process.env.PORT) || 3000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    // Register routes
+    app.use('/teams', teamsRoutes);
+    app.use('/users', userRoutes);
 
-  // Tests (uncomment to run)
-  // runAuthTests();
-});
+    const PORT: number = Number(process.env.PORT) || 3000;
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    // Tests (uncomment to run)
+    //runAuthTests();
+  } catch (error) {
+    console.error('Failed to connect to the database', error);
+    process.exit(1); // Exit the process with failure
+  }
+};
+
+startServer();
