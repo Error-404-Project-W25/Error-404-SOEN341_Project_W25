@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CSS Test</title>
+    <title>ChatHaven</title>
     <link rel="stylesheet" href="chat.component.css" />
   </head>
   <body>
@@ -31,6 +31,12 @@
         </div>
       </div>
       <div class="side-bar-2">
+        <div class="side-bar-2-title-container">
+          <div class="side-bar-2-title">S1</div>
+          <div class="add-server-button-container">
+            <div class="add-channel-button">+</div>
+          </div>
+        </div>
         <div class="search-container">
           <input type="text" class="search-bar" placeholder="Search..." />
         </div>
@@ -41,15 +47,15 @@
               *ngFor="let channel of channels"
               [ngClass]="{ selected: channel === selectedChannel }"
               (click)="selectChannel(channel)"
+              href="#"
             >
-              <a href="#">{{ channel }}</a>
+              {{ channel }}
             </li>
           </ul>
         </div>
       </div>
       <div class="chat-box">
         <div class="chat-log">
-
           <div class="message">
             <div class="message-profile-picture"></div>
             <div class="message-content">
