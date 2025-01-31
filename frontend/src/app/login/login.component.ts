@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation} from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -34,7 +34,10 @@ export class LoginComponent {
     confirmPassword: false,
   };
 
+  constructor(private cdr: ChangeDetectorRef) {} // Inject ChangeDetectorRef
+
   toggleForm() {
     this.showSignInForm = !this.showSignInForm;
+    this.cdr.detectChanges(); // Force UI update
   }
 }
