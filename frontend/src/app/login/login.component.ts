@@ -30,6 +30,7 @@ export class LoginComponent implements OnInit {
   errors = {
     firstName: false,
     lastName: false,
+    username: false,
     emailEmpty: false,
     emailInvalid: false,
     password: false,
