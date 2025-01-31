@@ -77,12 +77,12 @@ body {
 .separator {
   margin: 0;
   padding: 0;
-  background-color: var(--side-bar-1-separator);
-  border-top: var(--side-bar-1-separator);
-  border-bottom: var(--side-bar-1-separator);
-  border-right: var(--side-bar-1-separator);
-  border-left: var(--side-bar-1-separator);
-  color: var(--side-bar-1-separator);
+  background-color: #35363c;
+  border-top: #35363c;
+  border-bottom: #35363c;
+  border-right: #35363c;
+  border-left: #35363c;
+  color: #35363c;
   width: 80%;
   height: 2px;
   align-self: center;
@@ -91,7 +91,7 @@ body {
 /*Sidebar #1*/
 .side-bar-1 {
   margin: 0;
-  background-color: var(--server-background);
+  background-color: #1e1f22;
   color: #dbdee1;
   max-width: 80px;
   min-width: 80px;
@@ -111,8 +111,8 @@ body {
   padding: 0;
 }
 .add-server-button {
-  background-color: var(--add-server-button-background);
-  color: var(--add-server-button-text);
+  background-color: #2f3136;
+  color: #dbdee1;
   border: none;
   max-width: 48px;
   min-width: 48px;
@@ -126,7 +126,7 @@ body {
   cursor: pointer;
 }
 .add-server-button:hover {
-  background-color: var(--add-server-button-hover);
+  background-color: #f53f3d;
   border-radius: 30%;
 }
 .server-list {
@@ -150,8 +150,8 @@ body {
   -ms-overflow-style: none;
 }
 .server-list li {
-  background-color: var(--server-button-background);
-  color: var(--server-letter-color);
+  background-color: #2f3136;
+  color: #dbdee1;
   border: none;
   min-width: 48px;
   max-width: 48px;
@@ -168,8 +168,8 @@ body {
   display: flex;
 }
 .server-list li a {
-  background-color: var(--server-button-background);
-  color: var(--server-letter-color);
+  background-color: #2f3136;
+  color: #dbdee1;
   border: none;
   min-width: 48px;
   max-width: 48px;
@@ -189,7 +189,7 @@ body {
   margin: 0;
 }
 .server-list li a:hover {
-  background-color: var(--server-button-hover);
+  background-color: #f53f3d;
   border-radius: 30%;
 }
 .user-menu-container {
@@ -202,8 +202,8 @@ body {
   flex-shrink: 0;
 }
 .user-menu {
-  background-color: var(--user-button-background);
-  color: var(--user-button-text);
+  background-color: #313338;
+  color: #f53f3d;
   border: none;
   max-width: 48px;
   min-width: 48px;
@@ -218,8 +218,8 @@ body {
   margin: 5px;
 }
 .user-menu:hover {
-  background-color: var(--user-button-background-hover);
-  color: var(--user-button-text-hover);
+  background-color: #f53f3d;
+  color: #ffffff;
   border-radius: 30%;
 }
 
@@ -233,7 +233,7 @@ body {
   flex-direction: column;
   align-items: horizontal;
   justify-content: horizontal;
-  background-color: var(--channel-list-background);
+  background-color: #2b2d31;
   color: #dbdee1;
   width: 400px;
   max-width: 400px;
@@ -249,9 +249,9 @@ body {
   justify-content: center;
   position: relative;
   width: 100%;
-  background-color: var(--channel-list-background);
+  background-color: #2b2d31;
   height: 5.5%;
-  border-bottom: 2px solid var(--side-bar-1-separator);
+  border-bottom: 2px solid #35363c;
 }
 .side-bar-2-title {
   display: flex;
@@ -262,10 +262,11 @@ body {
   padding: 0;
   width: 80%;
   height: 90%;
-  background-color: var(--title-box-background);
-  color: var(--title-box-text);
+  background-color: #2b2d31;
+  color: #d1d4d8;
   font-size: 20px;
   font-weight: bold;
+  overflow: hidden;
 }
 .add-channel-button-container {
   background-color: red;
@@ -284,20 +285,18 @@ body {
   margin: 0;
   padding: 0;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  background-color: var(--add-channel-button-background);
-  color: var(--add-channel-button-text);
+  width: 35px;
+  height: 35px;
+  background-color: #b5bac1;
+  color: #2f3136;
 }
-
 .add-channel-button:hover {
-  background-color: var(--add-channel-button-background-hover);
-  color: var(--add-channel-button-text-hover);
+  background-color: #ff6b6b;
+  color: #2f3136;
   border-radius: 30%;
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
 }
-
 .search-container {
   flex-shrink: 0;
   padding: 0;
@@ -306,7 +305,7 @@ body {
   justify-content: center;
   position: relative;
   width: 100%;
-  background-color: var(--channel-list-background);
+  background-color: #2b2d31;
   height: 5%;
 }
 .search-bar {
@@ -316,8 +315,8 @@ body {
   padding: 10px;
   border-radius: 10px;
   border: 2px solid #555;
-  background-color: var(--search-bar-background);
-  color: var(--search-bar-text);
+  background-color: #1e1f22;
+  color: #dbdee1;
   outline: none;
   font-size: 16px;
 }
@@ -325,7 +324,7 @@ body {
   color: #bbb;
 }
 .channel-list {
-  background-color: var(--channel-list-background);
+  background-color: #2b2d31;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -350,8 +349,8 @@ body {
 }
 .channel-list li {
   display: flex;
-  background-color: var(--channel-list-background);
-  color: var(--channel-list-text);
+  background-color: #2b2d31;
+  color: #949ba4;
   border: none;
   min-width: 95%;
   max-width: 95%;
@@ -366,29 +365,11 @@ body {
   white-space: nowrap;
   display: flex;
   text-decoration: none;
-}
-.channel-list li a {
-  display: flex;
-  background-color: var(--channel-list-background);
-  color: var(--channel-list-text);
-  border: none;
-  min-width: 90%;
-  max-width: 90%;
-  min-height: 80%;
-  max-height: 80%;
-  border-radius: 10px;
-  padding: 0;
-  text-align: center;
-  cursor: pointer;
-  padding: 5px;
-  margin: 5px 0;
-  white-space: nowrap;
-  display: flex;
-  text-decoration: none;
+  overflow: hidden;
 }
 .channel-list li:hover {
-  background-color: var(--channel-list-backround-hover);
-  color: var(--channel-list-text-hover);
+  background-color: #404249;
+  color: #f3fcff;
 }
 
 /*Chat Log*/
@@ -397,8 +378,8 @@ body {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: var(--message-background);
-  color: var(--message-text);
+  background-color: #313338;
+  color: #bbbdc1;
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -417,8 +398,8 @@ body {
 .message {
   display: flex;
   flex-direction: row;
-  background-color: var(--message-background);
-  color: var(--message-text);
+  background-color: #313338;
+  color: #bbbdc1;
   border: none;
   width: 100%;
   min-height: 50px;
@@ -434,7 +415,7 @@ body {
   gap: 5px;
 }
 .message:hover {
-  background-color: var(--message-background-hover);
+  background-color: #2e3035;
 }
 .message-profile-picture {
   display: flex;
@@ -471,7 +452,7 @@ body {
   padding: 0;
 }
 .message-author {
-  color: var(--message-username);
+  color: #f2f3f5;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -480,7 +461,7 @@ body {
   padding: 0;
 }
 .message-date {
-  color: var(--message-date);
+  color: #797f87;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -490,7 +471,7 @@ body {
 }
 .message-text {
   width: auto;
-  color: var(--message-text);
+  color: #bbbdc1;
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -501,7 +482,7 @@ body {
 .input-container {
   width: 100%;
   height: 7%;
-  background-color: var(--input-background);
+  background-color: #383a40;
   color: #dbdee1;
   display: flex;
   flex-direction: row;
@@ -517,20 +498,20 @@ body {
   padding: 10px;
   border-radius: 10px;
   border: 2px solid #555;
-  background-color: var(--message-box);
-  color: var(--message-box-text);
+  background-color: #383a40;
+  color: #6c6e78;
   outline: none;
   font-size: 16px;
   gap: 5px;
 }
 .input-container input :hover {
-  background-color: var(--message-box-hover);
+  background-color: #4f5360;
 }
 .send-button {
   border: 2px solid #555;
   font-weight: bold;
-  background-color: var(--send-button-background);
-  color: var(--send-button-text);
+  background-color: #b5bac1;
+  color: black;
   border: none;
   width: 30%;
   display: flex;
