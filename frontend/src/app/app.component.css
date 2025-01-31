@@ -1,0 +1,167 @@
+:host {
+  --bright-blue: #4a90e2;
+  --electric-violet: #8e44ad;
+  --french-violet: #6c3483;
+  --vivid-pink: #e91e63;
+  --hot-red: #e74c3c;
+  --orange-red: #e67e22;
+
+  --gray-900: #2c3e50;
+  --gray-700: #7f8c8d;
+  --gray-400: #bdc3c7;
+
+  --red-to-pink-to-purple-vertical-gradient: linear-gradient(
+    180deg,
+    #e67e22 0%,
+    #e91e63 50%,
+    #8e44ad 100%
+  );
+
+  --red-to-pink-to-purple-horizontal-gradient: linear-gradient(
+    90deg,
+    #e67e22 0%,
+    #e91e63 50%,
+    #8e44ad 100%
+  );
+
+  --pill-accent: #4a90e2;
+
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  font-size: 3.125rem;
+  color: #2c3e50;
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: -0.125rem;
+  margin: 0;
+  font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol";
+}
+
+p {
+  margin: 0;
+  color: #7f8c8d;
+}
+
+main {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: inherit;
+  position: relative;
+}
+
+.angular-logo {
+  max-width: 9.2rem;
+}
+
+.content {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 3rem;
+}
+
+.content h1 {
+  margin-top: 1.75rem;
+}
+
+.content p {
+  margin-top: 1.5rem;
+}
+
+.divider {
+  width: 1px;
+  background: linear-gradient(180deg, #e67e22 0%, #e91e63 50%, #8e44ad 100%);
+  margin-inline: 0.5rem;
+}
+
+.pill-group {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  --pill-accent: #4a90e2;
+  background: color-mix(in srgb, #4a90e2 5%, transparent);
+  color: #4a90e2;
+  padding-inline: 0.75rem;
+  padding-block: 0.375rem;
+  border-radius: 2.75rem;
+  border: 0;
+  transition: background 0.3s ease;
+  font-family: var(--inter-font);
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.4rem;
+  letter-spacing: -0.00875rem;
+  text-decoration: none;
+}
+
+.pill:hover {
+  background: color-mix(in srgb, #4a90e2 15%, transparent);
+}
+
+.pill-group .pill:nth-child(6n + 1) {
+  --pill-accent: #4a90e2;
+}
+.pill-group .pill:nth-child(6n + 2) {
+  --pill-accent: #6c3483;
+}
+.pill-group .pill:nth-child(6n + 3),
+.pill-group .pill:nth-child(6n + 4),
+.pill-group .pill:nth-child(6n + 5) {
+  --pill-accent: #e74c3c;
+}
+
+.pill-group svg {
+  margin-inline-start: 0.25rem;
+}
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 0.73rem;
+  margin-top: 1.5rem;
+}
+
+.social-links path {
+  transition: fill 0.3s ease;
+  fill: #bdc3c7;
+}
+
+.social-links a:hover svg path {
+  fill: #2c3e50;
+}
+
+@media screen and (max-width: 650px) {
+  .content {
+    flex-direction: column;
+    width: max-content;
+  }
+
+  .divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, #e67e22 0%, #e91e63 50%, #8e44ad 100%);
+    margin-block: 1.5rem;
+  }
+}
