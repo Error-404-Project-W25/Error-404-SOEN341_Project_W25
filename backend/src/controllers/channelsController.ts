@@ -48,26 +48,30 @@ export const addUserToChannel = async (req: Request, res: Response): Promise<voi
     const team_id = req.params; // get team that user is currently in
 
     try {
-        const channel = Channel.findById(channel_id); // get the channel
-        const team = Team.findById(team_id); // get the team
+        const channel = await Channel.findById(channel_id); // get the channel
+        const team = await Team.findById(team_id); // get the team
         
         // check if the user is part of the team
-        if (!team.members.includes(user_id)) {
+        if (team && !team.members.includes(user_id)) {
             res.status(400).json({ error: 'The user entered is not part of the team' });
             return;
         }
 
         // check if the user is part of the channel
-        if (channel.members.includes(user_id)) {
+        if (channel && channel.members.includes(user_id)) {
             res.status(400).json({ error: 'The user entered is already part of the channel' });
             return;
         }
 
         // otherwise, add the user to the members of the channel
-        channel.members.push(user_id);
-        res.status(201).json({
-            message: 'The user has been added to the channel successfully'
-        });
+        if (channel) {
+            channel.members.push(user_id);
+            res.status(201).json({
+                message: 'The user has been added to the channel successfully'
+            });
+        } else {
+            res.status(404).json({ error: 'Channel not found' });
+        }
 
     } catch (error: unknown) {
         if (error instanceof Error) {
