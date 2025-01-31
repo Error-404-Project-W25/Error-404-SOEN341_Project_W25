@@ -13,7 +13,8 @@ export class HomeComponent {
 
   constructor(private router: Router) {}
 
-  goToLogin() {
-    this.router.navigate(['/login']);
+  // Navigate to the login page and open sign-up form (detect query parameters()
+  goToLogin(showSignUp: boolean = false) {
+    this.router.navigate(['/login'], { queryParams: { signup: showSignUp } });
   }
 }

@@ -4,14 +4,14 @@
       <h2 id="title">ChatHaven</h2>
     </div>
     <ul class="nav-links">
-      <li class="link"><a href="/home">Home</a></li>
+      <li class="link"><a href="/home/">Home</a></li>
       <li class="link"><a href="#">Discover</a></li>
        <li class="link"><a href="#">About Us</a></li>
       <li class="link"><a href="/about">Blog</a></li>
       <li class="link"><a href="/contact">Contact Us</a></li> 
     </ul>
     <div id="signInDiv">
-        <button (click)="goToLogin()" class="btn">Log In</button>
+      <button (click)="goToLogin(false)" class="btn">Log In</button>
     </div>
   </nav>
   
@@ -66,7 +66,7 @@
         Join a community or create one yourself! Exchange messages one-on-one or interact with others in a channel.
       </p>
       <div id="signInDiv-side">
-        <button class="btn" [routerLink]="['/login']" [queryParams]="{ signup: true }">Sign Up Now</button>
+        <button (click)="goToLogin(true)" class="btn">Sign Up Now</button>
     </div>
     </div>
   </section>

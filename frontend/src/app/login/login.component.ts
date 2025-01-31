@@ -1,6 +1,7 @@
-import { Component, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -10,8 +11,8 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./login.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class LoginComponent {
-  showSignInForm = true; // Toggles between Sign In and Sign Up forms
+export class LoginComponent implements OnInit {
+  showSignInForm = true; // By default, show the Sign In form
   loginError = false;
 
   // Data Models
@@ -34,7 +35,18 @@ export class LoginComponent {
     confirmPassword: false,
   };
 
-  constructor(private cdr: ChangeDetectorRef) {} // Inject ChangeDetectorRef
+  constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute) {} // Inject ActivatedRoute
+
+  ngOnInit() {
+    // Check for query parameters when the component loads
+    this.route.queryParams.subscribe(params => {
+      if (params['signup'] === 'true') {
+        this.showSignInForm = false; // Show the Sign Up form instead
+      }
+    });
+
+    this.cdr.detectChanges(); // Ensure UI updates correctly
+  }
 
   toggleForm() {
     this.showSignInForm = !this.showSignInForm;
