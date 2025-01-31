@@ -13,6 +13,7 @@ export class AppComponent {
 
   /*Server Name max 64 characters*/
   serverSelectedName = 'ChatHaven Test Server #12345678901234567890';
+
   /*ServerLogo: (*now text, later image) max 3 characters*/
   servers: string[] = [
     'S1',
@@ -31,6 +32,7 @@ export class AppComponent {
     'S14',
     'S15',
   ];
+
   channels: string[] = [
     'Channel 1',
     'Channel 2',
@@ -48,26 +50,37 @@ export class AppComponent {
     'Channel 14',
     'Channel 15',
   ];
+
   selectedServer: string | null = null;
   selectedChannel: string | null = null;
+
+  addServer(server: string) {
+    /*function for adding a server*/
+    console.log('You are inside the addServer function');
+    console.log('Server:', server);
+  }
 
   selectServer(server: string) {
     /*function for when server is clicked*/
     console.log('You are inside the selectServer function');
-    console.log();
+    console.log('Server:', server);
   }
 
   selectChannel(channel: string) {
     /*function for when channel is clicked*/
     console.log('You are inside the selectChannel function');
-    console.log();
+    console.log('Channel:', channel);
   }
-  onEnter($event: KeyboardEvent): void {
-    // Handle the enter key event
-    console.log('Enter key pressed', $event);
+  selectSetting(setting: string) {
+    /*function for when setting is clicked*/
+    console.log('You are inside the selectSetting function');
+    console.log('Setting:', setting);
   }
-  onSearch($event: Event): void {
-    console.log($event);
+
+  selectMenu(menu: string) {
+    /*function for when menu is clicked*/
+    console.log('You are inside the selectMenu function');
+    console.log('Menu:', menu);
   }
 
   messages: Message[] = [
@@ -105,6 +118,7 @@ export class AppComponent {
     new Message('User1', '10:44 AM', 'Sounds good! Have a great weekend.'),
   ];
 }
+
 class Message {
   constructor(
     public author: string,
