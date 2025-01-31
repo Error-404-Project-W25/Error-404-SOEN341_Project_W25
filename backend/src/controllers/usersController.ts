@@ -22,12 +22,20 @@ export const registerUser = async (req: Request, res: Response) => {
 
       await newUser.save();
 
-      res.status(201).json({ message: 'User registered and stored in MongoDB', user: newUser });
+      res.status(201).json({
+        message: 'User registered and stored in MongoDB',
+        user: newUser,
+      });
     } else {
-      res.status(400).json({ error: 'Failed to register user', details: result.errorMessage });
+      res.status(400).json({
+        error: 'Failed to register user',
+        details: result.errorMessage,
+      });
     }
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to register user', details: error.message });
+    res
+      .status(500)
+      .json({ error: 'Failed to register user', details: error.message });
   }
 };
 
@@ -37,22 +45,32 @@ export const loginUser = async (req: Request, res: Response) => {
     if (result.isSignedIn) {
       res.status(200).json({ message: 'User signed in', uid: result.uid });
     } else {
-      res.status(400).json({ error: 'Failed to sign in user', details: result.errorMessage });
+      res.status(400).json({
+        error: 'Failed to sign in user',
+        details: result.errorMessage,
+      });
     }
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to sign in user', details: error.message });
+    res
+      .status(500)
+      .json({ error: 'Failed to sign in user', details: error.message });
   }
 };
 
-export const logoutUser = async (req: Request, res: Response) => {
+export const logoutUser = async (_: Request, res: Response) => {
   try {
     const result = await signOutUser();
     if (!result.isSignedIn) {
       res.status(200).json({ message: 'User signed out' });
     } else {
-      res.status(400).json({ error: 'Failed to sign out user', details: result.errorMessage });
+      res.status(400).json({
+        error: 'Failed to sign out user',
+        details: result.errorMessage,
+      });
     }
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to sign out user', details: error.message });
+    res
+      .status(500)
+      .json({ error: 'Failed to sign out user', details: error.message });
   }
 };

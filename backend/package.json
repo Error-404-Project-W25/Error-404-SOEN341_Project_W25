@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "latest",
     "express": "latest",
     "firebase": "^11.2.0",
@@ -20,6 +21,7 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "latest",
     "@types/mongoose": "latest",
     "@types/mongoose-sequence": "^3.0.11",

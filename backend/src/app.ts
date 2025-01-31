@@ -4,9 +4,10 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 import express, { Application } from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import teamsRoutes from './routes/teamsRoutes';
-import userRoutes from './routes/usersRoutes';
+import authRoutes from './routes/authRoutes';
 import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
@@ -27,16 +28,16 @@ const connectDB = async (): Promise<void> => {
   }
 };
 
-
 const startServer = async () => {
   try {
     await connectDB();
     // After successful connection, start the server
+    app.use(cors());
     app.use(express.json());
 
     // Register routes
     app.use('/teams', teamsRoutes);
-    app.use('/users', userRoutes);
+    app.use('/auth', authRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
