@@ -13,6 +13,22 @@ export const getAllTeams = async (req: Request, res: Response) => {
   }
 };
 
+export const getTeamById = async (req: Request, res: Response) => {
+  try {
+    const teamId = req.body
+    const team = await Team.findOne({ team_id: teamId });
+    if (!team) {
+      res.status(404).json({ error: 'Team not found' });
+      return;
+    }
+    res.json(team);
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    res.status(500).json({ error: 'Failed to create team', details: errorMessage });
+    console.error('Failed to create team:', errorMessage);
+  }
+}; 
+
 // Create a new team
 export const createTeams = async (req: Request, res: Response) => {
   try {
