@@ -44,42 +44,49 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
 
 // Add users to a channel
 export const addUserToChannel = async (req: Request, res: Response): Promise<void> => {
-    const {team_id, channel_id} = req.params; // get channel id that user is currently in
-    const {user_id} = req.body; // get name of the user to add
+    const { team_id, channel_id } = req.params; // get channel id and team id from params
+    const { user_id } = req.body; // get user_id from the request body
 
     try {
-        const channel = await Channel.findOne({id: channel_id}); // get the channel
-        const team = await Team.findOne({team_id}); // get the team
-        
-        // check if the user is part of the team
-        if (team && !team.members.includes(user_id)) {
+        const channel = await Channel.findOne({ id: channel_id }); // get the channel by id
+        if (!channel) {
+            res.status(404).json({ error: 'Channel not found' });
+            return;
+        }
+
+        const team = await Team.findOne({ team_id }); // get the team by team_id
+        if (!team) {
+            res.status(404).json({ error: 'Team not found' });
+            return;
+        }
+
+        // Check if the user is part of the team
+        const userInTeam = team.members.find((member) => member.user_id === user_id);
+        if (!userInTeam) {
             res.status(400).json({ error: 'The user entered is not part of the team' });
             return;
         }
 
-        // check if the user is part of the channel
-        if (channel && channel.members.includes(user_id)) {
+        // Check if the user is part of the channel
+        const userInChannel = channel.members.find((member) => member.user_id === user_id);
+        if (userInChannel) {
             res.status(400).json({ error: 'The user entered is already part of the channel' });
             return;
         }
 
-        // otherwise, add the user to the members of the channel
-        if (channel) {
-            channel.members.push(user_id);
-            const savedChannel = await channel.save();
-            res.status(201).json({
-                message: 'The user has been added to the channel successfully',
-                channel: savedChannel
-            });
-        } else {
-            res.status(404).json({ error: 'Channel not found' });
-        }
+        // Otherwise, add the user to the members of the channel
+        channel.members.push(userInTeam);
+        const savedChannel = await channel.save();
+        res.status(201).json({
+            message: 'The user has been added to the channel successfully',
+            channel: savedChannel
+        });
 
     } catch (error: unknown) {
         if (error instanceof Error) {
-          res.status(500).json({ error: 'Failed to create channel', details: error.message });
+          res.status(500).json({ error: 'Failed to add user to channel', details: error.message });
         } else {
-          res.status(500).json({ error: 'Failed to create channel', details: 'Unknown error' });
+          res.status(500).json({ error: 'Failed to add user to channel', details: 'Unknown error' });
         }
       }
 }
