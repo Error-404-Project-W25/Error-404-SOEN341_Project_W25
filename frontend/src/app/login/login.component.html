@@ -1,8 +1,9 @@
-<div class="container">
+<div class="container-back">
+  <div class="container">
     <a routerLink="/">
       <!-- <img class="logoImg" src=" "/> INSERT LOGO-->
     </a>
-  
+
     <!-- Sign In Form -->
     <div class="signinForm form-transition" *ngIf="showSignInForm">
       <h1>Sign In</h1>
@@ -21,7 +22,9 @@
           name="password"
           required
         />
-        <span *ngIf="loginError" id="logInError">Incorrect email or password</span>
+        <span *ngIf="loginError" id="logInError"
+          >Incorrect email or password</span
+        >
         <label>
           Remember Me
           <input type="checkbox" />
@@ -36,7 +39,7 @@
       <p>Don't have an account?</p>
       <a href="#" class="smallBtn" (click)="toggleForm()">Sign Up</a>
     </div>
-  
+
     <!-- Sign Up Form -->
     <div class="signupForm form-transition" *ngIf="!showSignInForm">
       <h1>Sign Up</h1>
@@ -59,12 +62,12 @@
         <span *ngIf="errors.lastName">Please fill in the input</span>
         <hr />
         <input
-        type="text"
-        placeholder="Username"
-        [(ngModel)]="signUpData.username"
-        name="username"
-        required
-      />
+          type="text"
+          placeholder="Username"
+          [(ngModel)]="signUpData.username"
+          name="username"
+          required
+        />
         <input
           type="text"
           placeholder="Email"
@@ -81,7 +84,9 @@
           name="password"
           required
         />
-        <span *ngIf="errors.password">Password must be at least 8 characters</span>
+        <span *ngIf="errors.password"
+          >Password must be at least 8 characters</span
+        >
         <input
           type="password"
           placeholder="Confirm Password"
@@ -99,4 +104,4 @@
       <a href="#" class="smallBtn" (click)="toggleForm()">Sign In</a>
     </div>
   </div>
-  
+</div>
