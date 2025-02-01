@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
-import { User, userSchema } from '../models/userModel'; // to add
 import { v4 as uuidv4 } from 'uuid';
 
 // Create a new channel 
@@ -10,7 +9,7 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
     const { channelName, channelDescription } = req.body; // get channel info
 
     try {
-        const team = await Team.findById(team_id); // returns the team object
+        const team = await Team.findOne({team_id}); // returns the team object
         if (!team) { // if not found
             res.status(404).json({ error: 'Team not found' });
             return;
@@ -27,6 +26,8 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
         });
 
         const savedChannel = await newChannel.save();
+        team.channels.push(savedChannel); // add channel to team
+        await team.save();
         res.status(201).json({
             message: 'The channel has been created successfully'
         });
@@ -43,9 +44,9 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
 
 // Add users to a channel
 export const addUserToChannel = async (req: Request, res: Response): Promise<void> => {
-    const channel_id = req.params; // get channel id that user is currently in
-    const user_id = req.body; // get name of the user to add
-    const team_id = req.params; // get team that user is currently in
+    const {channel_id} = req.params; // get channel id that user is currently in
+    const {user_id} = req.body; // get name of the user to add
+    const {team_id} = req.params; // get team that user is currently in
 
     try {
         const channel = await Channel.findById(channel_id); // get the channel

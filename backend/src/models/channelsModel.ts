@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import {IUser, userSchema} from './userModel';
 
 interface IChannel {
@@ -15,7 +15,10 @@ const channelSchema = new Schema({
     description: { type: String },
     team: { type: String}, 
     members: { type: [userSchema], default: [] },
-});
+}, 
+{ collection: 'Channels' }
+
+);
 
 export { IChannel, channelSchema };
 export const Channel = mongoose.model<IChannel>('Channel', channelSchema);
