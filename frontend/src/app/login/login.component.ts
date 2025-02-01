@@ -78,6 +78,12 @@ export class LoginComponent implements OnInit {
 
   async onRegister() {
     console.log('Sign-up button clicked');
+
+    if (!this.signUpData.firstName || !this.signUpData.lastName || !this.signUpData.username || !this.signUpData.email || !this.signUpData.password || !this.signUpData.confirmPassword || !this.signUpData.role) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+
     if (this.signUpData.password !== this.signUpData.confirmPassword) {
       alert('Passwords do not match!');
       return;
