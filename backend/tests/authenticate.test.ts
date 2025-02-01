@@ -11,8 +11,10 @@ const runAuthTests = async (): Promise<void> => {
   const testUser: UserSignUpData = {
     firstName: `Test${randomSeed}`,
     lastName: `Testman${randomSeed}`,
+    username: `test${randomSeed}`,
     email: `${randomSeed}test@testsuite.com`,
     password: '12345678',
+    role: 'admin',
   };
 
   const testUserValidSignInData: UserSignInData = {

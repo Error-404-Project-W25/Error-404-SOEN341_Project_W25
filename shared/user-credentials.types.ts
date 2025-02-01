@@ -1,8 +1,10 @@
 export type UserSignUpData = {
   firstName: string;
   lastName: string;
+  username: string;
   email: string;
   password: string;
+  role: 'admin' | 'user';
 };
 
 export type UserSignInData = {
