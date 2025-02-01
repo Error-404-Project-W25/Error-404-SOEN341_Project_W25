@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatHaven</title>
+    <link rel="stylesheet" href="chat.component.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="side-bar-1">
+        <div class="add-server-button-container">
+            <button mat-raised-button (click)="openChannelDialog()">+</button>
+        </div>
+        <hr class="separator" />
+        <div class="server-list">
+          <ul>
+            <li
+              *ngFor="let server of servers"
+              [ngClass]="{ selected: server === selectedServer }"
+              (click)="selectServer(server)"
+            >
+              <a href="#">{{ server }}</a>
+            </li>
+          </ul>
+        </div>
+        <hr class="separator" />
+        <div class="user-menu-container">
+            <button class="user-menu">Menu</button>
+            <button class="user-menu">Set</button>
+        </div>
+      </div>
+      <div class="side-bar-2">
+        <div class="side-bar-2-title-container">
+          <div class="side-bar-2-title">
+            {{ serverSelectedName }}
+          </div>
+          <div class="add-server-button-container">
+              <button mat-raised-button (click)="openChannelDialog()">+</button>
+          </div>
+        </div>
+        <div class="search-container">
+          <input type="text" class="search-bar" placeholder="Search..." />
+        </div>
+        <hr class="separator" />
+        <div class="channel-list">
+          <ul>
+            <li
+              *ngFor="let channel of channels"
+              [ngClass]="{ selected: channel === selectedChannel }"
+              (click)="selectChannel(channel)"
+              href="#"
+            >
+              {{ channel }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="chat-box">
+        <div class="chat-log">
+          <div class="message" *ngFor="let message of messages">
+            <div class="message-profile-picture"></div>
+            <div class="message-content">
+              <div class="message-header">
+                <span class="message-author">{{ message.author }}</span>
+                <span class="message-date">{{ message.date }}</span>
+              </div>
+              <textarea class="message-text">{{ message.text }}</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="input-container">
+          <input type="text" placeholder="Type a message..." />
+          <button class="send-button">Send</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
