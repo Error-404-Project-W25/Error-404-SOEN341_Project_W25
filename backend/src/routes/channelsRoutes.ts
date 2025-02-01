@@ -4,7 +4,7 @@
  const router: Router = Router();
  
  router.post('/:team_id/create', createChannel);
- router.post('/:channel_id/addUser', addUserToChannel);
+ router.post('/:team_id/:channel_id/addUser', addUserToChannel);
  
  export default router;
  

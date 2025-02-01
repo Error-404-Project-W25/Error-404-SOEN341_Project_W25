@@ -44,13 +44,12 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
 
 // Add users to a channel
 export const addUserToChannel = async (req: Request, res: Response): Promise<void> => {
-    const {channel_id} = req.params; // get channel id that user is currently in
+    const {team_id, channel_id} = req.params; // get channel id that user is currently in
     const {user_id} = req.body; // get name of the user to add
-    const {team_id} = req.params; // get team that user is currently in
 
     try {
-        const channel = await Channel.findById(channel_id); // get the channel
-        const team = await Team.findById(team_id); // get the team
+        const channel = await Channel.findOne({id: channel_id}); // get the channel
+        const team = await Team.findOne({team_id}); // get the team
         
         // check if the user is part of the team
         if (team && !team.members.includes(user_id)) {
@@ -67,8 +66,10 @@ export const addUserToChannel = async (req: Request, res: Response): Promise<voi
         // otherwise, add the user to the members of the channel
         if (channel) {
             channel.members.push(user_id);
+            const savedChannel = await channel.save();
             res.status(201).json({
-                message: 'The user has been added to the channel successfully'
+                message: 'The user has been added to the channel successfully',
+                channel: savedChannel
             });
         } else {
             res.status(404).json({ error: 'Channel not found' });
