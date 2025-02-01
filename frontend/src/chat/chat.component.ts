@@ -12,7 +12,7 @@ import { AddTeamDialogComponent} from './create-team-pop-up.component.ts/add-tea
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
 })
-export class AppComponent {
+export class ChatComponent {
   title = 'chatHaven';
 
   constructor(public dialog: MatDialog) {}

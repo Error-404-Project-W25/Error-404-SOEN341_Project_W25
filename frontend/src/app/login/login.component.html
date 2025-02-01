@@ -2,7 +2,7 @@
     <a routerLink="/">
       <!-- <img class="logoImg" src=" "/> INSERT LOGO-->
     </a>
-  
+
     <!-- Sign In Form -->
     <div class="signinForm form-transition" *ngIf="showSignInForm">
       <h1>Sign In</h1>
@@ -27,8 +27,7 @@
           <input type="checkbox" />
         </label>
         <div class="submit">
-          <button type="submit">Sign In</button>
-        </div>
+          <button type="submit" (click)="goToChat()">SIGN In</button>        </div>
       </form>
       <p>Having trouble signing in?</p>
       <a href="#" class="smallBtn">Reset your Password</a>
@@ -36,7 +35,7 @@
       <p>Don't have an account?</p>
       <a href="#" class="smallBtn" (click)="toggleForm()">Sign Up</a>
     </div>
-  
+
     <!-- Sign Up Form -->
     <div class="signupForm form-transition" *ngIf="!showSignInForm">
       <h1>Sign Up</h1>
@@ -90,10 +89,10 @@
           required
         />
         <span *ngIf="errors.confirmPassword">Passwords don't match</span>
-        <div class="radio">        
+        <div class="radio">
           <label>
             <input type="radio" name="userType" [(ngModel)]="signUpData.userType" value="admin" required />
-            Admin 
+            Admin
           </label>
           <label>
             <input type="radio" name="userType" [(ngModel)]="signUpData.userType" value="user" required />
@@ -101,7 +100,7 @@
           </label>
         </div>
         <div class="submit">
-          <button type="submit">Sign Up</button>
+          <button type="submit" (click)="goToChat()">SIGN Up</button>
         </div>
       </form>
       <hr />
@@ -109,4 +108,3 @@
       <a href="#" class="smallBtn" (click)="toggleForm()">Sign In</a>
     </div>
   </div>
-  

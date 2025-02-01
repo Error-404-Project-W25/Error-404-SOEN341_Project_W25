@@ -2,6 +2,7 @@ import { Component, ViewEncapsulation, ChangeDetectorRef, OnInit } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -38,7 +39,7 @@ export class LoginComponent implements OnInit {
     confirmPassword: false,
   };
 
-  constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute) {} // Inject ActivatedRoute
+  constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute, private router: Router) {} // Inject ActivatedRoute
 
   ngOnInit() {
     // Check for query parameters when the component loads
@@ -54,5 +55,9 @@ export class LoginComponent implements OnInit {
   toggleForm() {
     this.showSignInForm = !this.showSignInForm;
     this.cdr.detectChanges(); // Force UI update
+  }
+
+  goToChat() {
+    this.router.navigate(['/chat']);  // Navigates to the '/server' route
   }
 }
