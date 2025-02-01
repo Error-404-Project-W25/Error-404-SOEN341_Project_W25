@@ -1,3 +1,4 @@
+
 import {
   Component,
   ViewEncapsulation,
@@ -62,7 +63,6 @@ export class LoginComponent implements OnInit {
     this.showSignInForm = !this.showSignInForm;
     this.cdr.detectChanges(); // Force UI update
   }
-
   validateName(event: any) {
     // Letters or hypens, 2-20 characters
     const validNameRegex: RegExp = /^(?=.*([A-Za-z]{2,}))[A-Za-z-]{2,20}$/;

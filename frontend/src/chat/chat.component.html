@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CSS Test</title>
+    <title>ChatHaven</title>
     <link rel="stylesheet" href="chat.component.css" />
   </head>
   <body>
     <div class="container">
       <div class="side-bar-1">
         <div class="add-server-button-container">
-          <button class="add-server-button">+</button>
+            <button mat-raised-button (click)="openChannelDialog()">+</button>
         </div>
         <hr class="separator" />
         <div class="server-list">
@@ -26,11 +26,19 @@
         </div>
         <hr class="separator" />
         <div class="user-menu-container">
-          <button class="user-menu">Menu</button>
-          <button class="user-menu">Set</button>
+            <button class="user-menu">Menu</button>
+            <button class="user-menu">Set</button>
         </div>
       </div>
       <div class="side-bar-2">
+        <div class="side-bar-2-title-container">
+          <div class="side-bar-2-title">
+            {{ serverSelectedName }}
+          </div>
+          <div class="add-server-button-container">
+              <button mat-raised-button (click)="openChannelDialog()">+</button>
+          </div>
+        </div>
         <div class="search-container">
           <input type="text" class="search-bar" placeholder="Search..." />
         </div>
@@ -41,213 +49,23 @@
               *ngFor="let channel of channels"
               [ngClass]="{ selected: channel === selectedChannel }"
               (click)="selectChannel(channel)"
+              href="#"
             >
-              <a href="#">{{ channel }}</a>
+              {{ channel }}
             </li>
           </ul>
         </div>
       </div>
       <div class="chat-box">
         <div class="chat-log">
-
-          <div class="message">
+          <div class="message" *ngFor="let message of messages">
             <div class="message-profile-picture"></div>
             <div class="message-content">
               <div class="message-header">
-                <span class="message-author">User3</span>
-                <span class="message-date">10:29 AM</span>
+                <span class="message-author">{{ message.author }}</span>
+                <span class="message-date">{{ message.date }}</span>
               </div>
-              <div class="message-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
-                Curabitur pretium tincidunt lacus. Nulla gravida orci a odio.
-                Nullam varius, turpis et commodo pharetra, est eros bibendum
-                elit,
-              </div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User1</span>
-                <span class="message-date">10:30 AM</span>
-              </div>
-              <div class="message-text">Hello, how are you?</div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User2</span>
-                <span class="message-date">10:31 AM</span>
-              </div>
-              <div class="message-text">I'm good, thanks! How about you?</div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User1</span>
-                <span class="message-date">10:32 AM</span>
-              </div>
-              <div class="message-text">Doing great, thanks for asking!</div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User2</span>
-                <span class="message-date">10:33 AM</span>
-              </div>
-              <div class="message-text">What have you been up to lately?</div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User1</span>
-                <span class="message-date">10:34 AM</span>
-              </div>
-              <div class="message-text">
-                Just working on some projects. You?
-              </div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User2</span>
-                <span class="message-date">10:35 AM</span>
-              </div>
-              <div class="message-text">
-                Same here, been really busy with work.
-              </div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User1</span>
-                <span class="message-date">10:36 AM</span>
-              </div>
-              <div class="message-text">
-                Yeah, it’s been a hectic week for me too.
-              </div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User2</span>
-                <span class="message-date">10:37 AM</span>
-              </div>
-              <div class="message-text">Any plans for the weekend?</div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User1</span>
-                <span class="message-date">10:38 AM</span>
-              </div>
-              <div class="message-text">
-                Not yet, but thinking of going hiking. You?
-              </div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User2</span>
-                <span class="message-date">10:39 AM</span>
-              </div>
-              <div class="message-text">
-                That sounds fun! I might just relax at home.
-              </div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User1</span>
-                <span class="message-date">10:40 AM</span>
-              </div>
-              <div class="message-text">
-                Nice, that sounds like a good break.
-              </div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User2</span>
-                <span class="message-date">10:41 AM</span>
-              </div>
-              <div class="message-text">
-                Yeah, I could use one after this week.
-              </div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User1</span>
-                <span class="message-date">10:42 AM</span>
-              </div>
-              <div class="message-text">Understandable. Hope you enjoy it!</div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User2</span>
-                <span class="message-date">10:43 AM</span>
-              </div>
-              <div class="message-text">Thanks! Let’s catch up next week.</div>
-            </div>
-          </div>
-
-          <div class="message">
-            <div class="message-profile-picture"></div>
-            <div class="message-content">
-              <div class="message-header">
-                <span class="message-author">User1</span>
-                <span class="message-date">10:44 AM</span>
-              </div>
-              <div class="message-text">Sounds good! Have a great weekend.</div>
+              <textarea class="message-text">{{ message.text }}</textarea>
             </div>
           </div>
         </div>
