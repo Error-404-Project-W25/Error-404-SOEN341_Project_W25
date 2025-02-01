@@ -42,7 +42,7 @@
   <!-- Sign Up Form -->
   <div class="signupForm form-transition" *ngIf="!showSignInForm">
     <h1>Sign Up</h1>
-    <form>
+    <form (ngSubmit)="onRegister()">
       <input
         type="text"
         placeholder="First Name"
@@ -91,7 +91,8 @@
         (input)="validatePassword($event)"
         autocomplete="new-password"
       />
-      <span *ngIf="errors.passwordInvalid">Password must be valid</span>
+      <span *ngIf="errors.passwordInvalid" class="password-requirements">Password must be valid:
+</span>
       <input
         type="password"
         placeholder="Confirm Password"

@@ -12,11 +12,18 @@ import {
   UserSignUpData,
   UserSignInData,
 } from '../../../../shared/user-credentials.types';
+import { BackendService } from '../../services/backend.service'; 
+import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule
+import { Router } from '@angular/router';
+
+
+
 
 @Component({
   selector: 'app-login',
   standalone: true, // Declare as a standalone component
-  imports: [CommonModule, FormsModule], // Import dependencies
+  imports: [CommonModule, FormsModule, HttpClientModule], // Import dependencies
+  providers: [BackendService], // Provide the BackendService
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   encapsulation: ViewEncapsulation.None,
@@ -47,7 +54,7 @@ export class LoginComponent implements OnInit {
     noPasswordMatch: false,
   };
 
-  constructor(private cdr: ChangeDetectorRef, private route: ActivatedRoute) {} // Inject ActivatedRoute
+  constructor(private router: Router, private backendService: BackendService, private cdr: ChangeDetectorRef, private route: ActivatedRoute) {} // Inject ActivatedRoute
 
   ngOnInit() {
     // Check for query parameters when the component loads
@@ -60,10 +67,40 @@ export class LoginComponent implements OnInit {
     this.cdr.detectChanges(); // Ensure UI updates correctly
   }
 
+  goToChat() {
+    this.router.navigate(['/chat']);  // Navigates to the '/server' route
+  }
+
   toggleForm() {
     this.showSignInForm = !this.showSignInForm;
     this.cdr.detectChanges(); // Force UI update
   }
+
+  async onRegister() {
+    console.log('Sign-up button clicked');
+    if (this.signUpData.password !== this.signUpData.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+
+    try {
+      await this.backendService.registerUser(
+        this.signUpData.firstName,
+        this.signUpData.lastName,
+        this.signUpData.username,
+        this.signUpData.email,
+        this.signUpData.password,
+        this.signUpData.role
+      );
+      alert('User registered successfully!');
+      this.router.navigate(['/chat']);  // Navigate to the '/chat' route
+    } catch (error) {
+      console.error('Error registering user:', error);
+      alert('Failed to register user.');
+    }
+  }
+
+
   validateName(event: any) {
     // Letters or hypens, 2-20 characters
     const validNameRegex: RegExp = /^(?=.*([A-Za-z]{2,}))[A-Za-z-]{2,20}$/;
@@ -88,8 +125,9 @@ export class LoginComponent implements OnInit {
 
   currEnteredPassword: string = '';
   validatePassword(event: any) {
-    // 8 - 20 characters, at least 1 letter upper, 1 letter lower, 1 number, 1 special character, no spaces
-    // 1 uppercase, 1 lowercase, 1 number, 1 special characer, spaces not allowed
+    /* 8 - 20 characters, at least 1 letter upper, 1 letter lower, 1 number, 1 special character, no spaces
+    1 uppercase, 1 lowercase, 1 number, 1 special characer, spaces not allowed
+    */
     const validPasswordRegex: RegExp =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
