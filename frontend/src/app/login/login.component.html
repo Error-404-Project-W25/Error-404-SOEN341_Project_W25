@@ -6,7 +6,7 @@
   <!-- Sign In Form -->
   <div class="signinForm form-transition" *ngIf="showSignInForm">
     <h1>Sign In</h1>
-    <form>
+    <form (ngSubmit)="onLogin()">
       <input
         type="text"
         placeholder="Username"

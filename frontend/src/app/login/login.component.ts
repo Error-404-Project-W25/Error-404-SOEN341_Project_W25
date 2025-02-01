@@ -17,8 +17,6 @@ import { HttpClientModule } from '@angular/common/http'; // Import HttpClientMod
 import { Router } from '@angular/router';
 
 
-
-
 @Component({
   selector: 'app-login',
   standalone: true, // Declare as a standalone component
@@ -78,6 +76,7 @@ export class LoginComponent implements OnInit {
 
   async onRegister() {
     console.log('Sign-up button clicked');
+    console.log('Sign-up Data:', this.signUpData);  // Logs user data to browser console
 
     if (!this.signUpData.firstName || !this.signUpData.lastName || !this.signUpData.username || !this.signUpData.email || !this.signUpData.password || !this.signUpData.confirmPassword || !this.signUpData.role) {
       alert('Please fill in all required fields.');
@@ -147,4 +146,30 @@ export class LoginComponent implements OnInit {
     this.errors.noPasswordMatch =
       this.currEnteredPassword !== event.target.value;
   }
+
+  async onLogin() {
+    console.log('Login button clicked');
+    console.log('Sign-up Data:', this.signUpData);  // Logs user data to browser console
+  
+    // Check if fields are empty
+    if (!this.signInData.username || !this.signInData.password) {
+      alert('Username and password are required.');
+      return;
+    }
+  
+    try {
+      // Send login request to the backend
+      await this.backendService.loginUser(this.signInData.username, this.signInData.password);
+  
+      alert('Login successful!');
+      this.router.navigate(['/chat']);
+  
+    } catch (error) {
+      console.error('Error logging in:', error);
+      alert('Failed to log in.');
+    }
+  }
+  
+
 }
+
