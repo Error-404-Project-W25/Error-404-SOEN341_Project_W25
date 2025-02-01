@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
     email: '',
     password: '',
     confirmPassword: '',
+    role: ''
   };
 
   // Validation Errors
