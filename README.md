@@ -24,3 +24,10 @@ This web application facilitates group communication by allowing users to create
 | Asley Kate Antonio  | 40240741   | Backend  |
 | Tonny Zhao          | 40283194   | Frontend |
 | Ysa Francesca Sison | 40287483   | Frontend |
+
+## Technologies
+
+1. Angular 
+2. ExpressJS
+3. MongoDB
+4. Firebase
