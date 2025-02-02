@@ -94,7 +94,11 @@ export const createTeams = async (req: Request, res: Response) => {
     //add team to the user given in the request
     const user = await User.findOne({ user_id: user_id });
     if (user) {
-      user.teams.push(savedTeam);
+      if (user.teams) {
+        user.teams.push(savedTeam);
+      } else {
+        user.teams = [savedTeam];
+      }
       await user.save();
     }
 
