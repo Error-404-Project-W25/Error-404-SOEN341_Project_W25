@@ -269,7 +269,7 @@ body {
   overflow: hidden;
 }
 .add-channel-button-container {
-  background-color: red;
+  /* background-color: red; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -296,6 +296,7 @@ body {
   border-radius: 30%;
   width: 35px;
   height: 35px;
+  border-color: none;
 }
 .search-container {
   flex-shrink: 0;
