@@ -50,6 +50,18 @@ export class BackendService {
     }
   }
 
+  async getUserInfo(user_id: string): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.http.post<void>(`${this.backendURL}/auth/getUserInfo`, {
+          user_id,
+        })
+      );
+    } catch (error) {
+      console.error('Error getting user info:', error);
+    }
+  }
+
   //////////////////////////// TEAMS ////////////////////////////
 
   //create teams

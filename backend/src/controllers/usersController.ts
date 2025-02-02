@@ -74,3 +74,17 @@ export const logoutUser = async (_: Request, res: Response) => {
       .json({ error: 'Failed to sign out user', details: error.message });
   }
 };
+
+
+export const getUserInfo = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findOne({ user_id: req.body.user_id });
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to get user info', details: error.message });
+  }
+}
