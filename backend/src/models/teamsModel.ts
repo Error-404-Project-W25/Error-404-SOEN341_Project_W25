@@ -3,7 +3,7 @@ import { IUser, userSchema } from './userModel';
 import { IChannel, channelSchema } from './channelsModel'; 
 
 interface ITeam  {
-  team_id: string; // Will be set manually
+  team_id: string; 
   team_name: string;
   description: string; 
   admin: IUser[];
@@ -38,4 +38,5 @@ teamSchema.set('toJSON', {
   },
 });
 
+export { ITeam, teamSchema };
 export const Team = mongoose.model<ITeam>('Team', teamSchema);

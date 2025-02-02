@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   loginError = false;
 
   // Data Models
-  signInForm = { username: '', password: '' };
+  signInForm: UserSignInData = { email: '', password: '' };
   signUpForm: RegistrationData = {
     firstName: '',
     lastName: '',
@@ -259,20 +259,19 @@ export class LoginComponent implements OnInit {
     console.log('Sign-up Data:', this.signUpForm); // Logs user data to browser console
 
     // Check if fields are empty
-    if (!this.signInForm.username || !this.signInForm.password) {
-      alert('Username and password are required.');
+    if (!this.signInForm.email || !this.signInForm.password) {
+      alert('Email and password are required.');
       return;
     }
 
     try {
       // Send login request to the backend
-      await this.backendService.loginUser(
-        this.signInForm.username,
-        this.signInForm.password
-      );
+      await this.backendService.loginUser(this.signInForm);
 
-      alert('Login successful!');
-      this.router.navigate(['/chat']);
+      // TODO: validate
+
+      // alert('Login successful!');
+      // this.router.navigate(['/chat']);
     } catch (error) {
       console.error('Error logging in:', error);
       alert('Failed to log in.');
