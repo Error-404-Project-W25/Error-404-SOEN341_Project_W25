@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddTeamDialogComponent} from './create-team-pop-up.component.ts/add-team-dialog.component';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +15,7 @@ import { HttpClient } from '@angular/common/http';
 export class AppComponent {
   title = 'chatHaven';
 
-  constructor(public dialog: MatDialog, private http: HttpClient) {}
+  constructor(public dialog: MatDialog) {}
   /*Server Name max 64 characters*/
   serverSelectedName = 'ChatHaven Test Server #12345678901234567890';
 
@@ -89,36 +88,6 @@ export class AppComponent {
     /*function for when menu is clicked*/
     console.log('You are inside the selectMenu function');
     console.log('Menu:', menu);
-  }
-
-  createTeam() {
-    const teamData = {
-      user_id: 'exampleUserId',
-      username: 'exampleUsername',
-      team_name: 'New Team',
-      description: 'This is a new team',
-      members: [],
-      role: 'admin'
-    };
-
-    this.http.post('/api/teams', teamData).subscribe(response => {
-      console.log('Team created:', response);
-    }, error => {
-      console.error('Error creating team:', error);
-    });
-  }
-
-  createChannel() {
-    const channelData = {
-      channelName: 'New Channel',
-      channelDescription: 'This is a new channel'
-    };
-
-    this.http.post('/api/teams/{team_id}/channels', channelData).subscribe(response => {
-      console.log('Channel created:', response);
-    }, error => {
-      console.error('Error creating channel:', error);
-    });
   }
 
 messages: Message[] = [
