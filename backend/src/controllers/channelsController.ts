@@ -77,10 +77,16 @@ export const addUserToChannel = async (req: Request, res: Response): Promise<voi
         // Otherwise, add the user to the members of the channel
         channel.members.push(userInTeam);
         const savedChannel = await channel.save();
+        // add member to the teams.channels.members
+        team.channels.find((teamChannel) => teamChannel.id === channel_id)?.members.push(userInTeam);
+        await team.save();
         res.status(201).json({
             message: 'The user has been added to the channel successfully',
             channel: savedChannel
         });
+
+        //add channel to the user given in the request
+        
 
     } catch (error: unknown) {
         if (error instanceof Error) {

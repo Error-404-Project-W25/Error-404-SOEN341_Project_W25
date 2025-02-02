@@ -160,6 +160,18 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
     });
 
     const updatedTeam = await team.save();
+    // Add the team to the users
+    members.forEach(async (member: IUser) => {
+      const user = await User.findOne({ user_id: member.user_id });
+      if (user) {
+        if (user.teams) {
+          user.teams.push(updatedTeam);
+        } else {
+          user.teams = [updatedTeam];
+        }
+        await user.save();
+      }
+    });
     res.json(updatedTeam);
   } catch (error) {
     const errorMessage = (error as Error).message;
