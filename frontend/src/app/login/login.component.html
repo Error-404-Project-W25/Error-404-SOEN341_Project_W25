@@ -6,7 +6,7 @@
   <!-- Sign In Form -->
   <div class="signinForm form-transition" *ngIf="showSignInForm">
     <h1>Sign In</h1>
-    <form>
+    <form (ngSubmit)="onLogin()">
       <input
         type="text"
         placeholder="Username"
@@ -34,7 +34,7 @@
     </form>
     <p>Having trouble signing in?</p>
     <a href="#" class="smallBtn">Reset your Password</a>
-    <hr />
+    <hr/>
     <p>Don't have an account?</p>
     <a href="#" class="smallBtn" (click)="toggleForm()">Sign Up</a>
   </div>
@@ -42,7 +42,7 @@
   <!-- Sign Up Form -->
   <div class="signupForm form-transition" *ngIf="!showSignInForm">
     <h1>Sign Up</h1>
-    <form>
+    <form (ngSubmit)="onRegister()">
       <input
         type="text"
         placeholder="First Name"
@@ -91,7 +91,8 @@
         (input)="validatePassword($event)"
         autocomplete="new-password"
       />
-      <span *ngIf="errors.passwordInvalid">Password must be valid</span>
+      <span *ngIf="errors.passwordInvalid" class="password-requirements">Password must be valid:
+</span>
       <input
         type="password"
         placeholder="Confirm Password"
@@ -102,10 +103,21 @@
         autocomplete="new-password"
       />
       <span *ngIf="errors.noPasswordMatch">Passwords don't match</span>
+      &nbsp;<div class="radio">        
+        <label>
+          <input type="radio" name="role" [(ngModel)]="signUpData.role" value="admin" required />
+          Admin 
+        </label>
+        <label>
+          <input type="radio" name="role" [(ngModel)]="signUpData.role" value="user" required />
+          User
+        </label>
+      </div>
       <div class="submit">
         <button type="submit">Sign Up</button>
       </div>
     </form>
+    &nbsp;
     <hr />
     <p>Already have an account?</p>
     <a href="#" class="smallBtn" (click)="toggleForm()">Sign In</a>

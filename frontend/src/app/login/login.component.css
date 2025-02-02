@@ -305,9 +305,15 @@ button:hover{
     color: var(--secondary-color-dark);
 }
 .container form label {
+<<<<<<< HEAD
     display: inline-block;
     vertical-align: middle;
     margin: 5px 0;
+=======
+    display: inline-block; 
+    vertical-align: middle; 
+    margin: 5px 10px; 
+>>>>>>> 2c559ca321536de57928d21dca9693723a02c090
 }
 .submit{
     margin: 5px;
@@ -598,3 +604,4 @@ button:hover{
   font-size: 15px;
   color: red;
 }
+
