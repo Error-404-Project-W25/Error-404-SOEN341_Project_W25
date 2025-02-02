@@ -26,7 +26,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
       res.status(201).json({
         message: 'User registered and stored in MongoDB',
-        user: newUser,
+        uid: newUser.user_id,
       });
     } else {
       res.status(400).json({
@@ -44,7 +44,6 @@ export const registerUser = async (req: Request, res: Response) => {
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const result: AuthStatus = await signInUser(req.body.signInData);
-    console.log(req.body.signInData);
     if (result.isSignedIn) {
       res.status(200).json({ message: 'User signed in', uid: result.uid });
     } else {

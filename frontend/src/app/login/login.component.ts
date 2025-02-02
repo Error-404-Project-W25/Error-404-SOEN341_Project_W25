@@ -14,6 +14,7 @@ import {
 import { BackendService } from '../../services/backend.service';
 import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule
 import { Router } from '@angular/router';
+import { UserAuthResponse } from '../../types/http-response.types';
 
 @Component({
   selector: 'app-login',
@@ -226,8 +227,6 @@ export class LoginComponent implements OnInit {
   /////////////////// REGISTER ///////////////////
 
   async onRegister() {
-    console.log('Sign-up Data:', this.signUpForm);
-
     for (let field in this.signUpForm) {
       if (!field) {
         alert('Please fill in all required fields');
@@ -240,11 +239,21 @@ export class LoginComponent implements OnInit {
     }
 
     try {
-      await this.backendService.registerUser(this.signUpForm);
+      const response: UserAuthResponse | undefined =
+        await this.backendService.registerUser(this.signUpForm);
 
-      // TODO: check response, proceed accordingly
+      if (response) {
+        if (response.uid) {
+          // return data from mongo
+          // TODO: this.goToChat(); // using mongo data (function already set up)
+        } else if (response.error) {
+          // should write in a div eventually
+          console.log('Error:', response.error);
+          console.log('Details:', response.details);
+        }
+        console.log('Message:', response.message);
+      }
 
-      // alert('User registered successfully!');
       // this.goToChat();
     } catch (error) {
       console.error('Error registering user:', error);
@@ -255,10 +264,6 @@ export class LoginComponent implements OnInit {
   //////////////////// LOGIN ////////////////////
 
   async onLogin() {
-    console.log('Login button clicked');
-    console.log('Sign-up Data:', this.signUpForm); // Logs user data to browser console
-
-    // Check if fields are empty
     if (!this.signInForm.email || !this.signInForm.password) {
       alert('Email and password are required.');
       return;
@@ -266,12 +271,20 @@ export class LoginComponent implements OnInit {
 
     try {
       // Send login request to the backend
-      await this.backendService.loginUser(this.signInForm);
+      const response: UserAuthResponse | undefined =
+        await this.backendService.loginUser(this.signInForm);
 
-      // TODO: validate
-
-      // alert('Login successful!');
-      // this.router.navigate(['/chat']);
+      if (response) {
+        if (response.uid) {
+          // return data from mongo
+          // TODO: this.goToChat(); // using mongo data (function already set up)
+        } else if (response.error) {
+          // should write in a div eventually
+          console.log('Error:', response.error);
+          console.log('Details:', response.details);
+        }
+        console.log('Message:', response.message);
+      }
     } catch (error) {
       console.error('Error logging in:', error);
       alert('Failed to log in.');

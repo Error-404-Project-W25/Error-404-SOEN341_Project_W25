@@ -5,6 +5,7 @@ import {
   RegistrationData,
   UserSignInData,
 } from '../../../shared/user-credentials.types';
+import { UserAuthResponse } from '../types/http-response.types';
 
 @Injectable({
   providedIn: 'root',
@@ -13,49 +14,56 @@ export class BackendService {
   private backendURL: string = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
+
   //////////////////////////// USERS ////////////////////////////
 
-  //register user
-  async registerUser(registrationData: RegistrationData): Promise<void> {
+  async registerUser(
+    registrationData: RegistrationData
+  ): Promise<UserAuthResponse | undefined> {
+    console.log(registrationData);
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/auth/register`, {
+      const response: UserAuthResponse = await firstValueFrom(
+        this.http.post<UserAuthResponse>(`${this.backendURL}/auth/register`, {
           registrationData,
         })
       );
+      return response;
     } catch (error) {
       console.error('Error registering user:', error);
     }
+    return undefined;
   }
 
-  //login user
-  async loginUser(signInData: UserSignInData): Promise<void> {
-    console.log(signInData);
+  async loginUser(
+    signInData: UserSignInData
+  ): Promise<UserAuthResponse | undefined> {
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/auth/login`, {
+      const response: UserAuthResponse = await firstValueFrom(
+        this.http.post<UserAuthResponse>(`${this.backendURL}/auth/login`, {
           signInData,
         })
       );
+      return response;
     } catch (error) {
       console.error('Error logging in user:', error);
     }
+    return undefined;
   }
 
-  //logout user
-  async logoutUser(): Promise<void> {
+  async logoutUser(): Promise<UserAuthResponse | undefined> {
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/auth/logout`, {})
+      const response: UserAuthResponse = await firstValueFrom(
+        this.http.post<UserAuthResponse>(`${this.backendURL}/auth/logout`, {})
       );
+      return response;
     } catch (error) {
       console.error('Error logging out user:', error);
     }
+    return undefined;
   }
 
   //////////////////////////// TEAMS ////////////////////////////
 
-  //create teams
   async createTeams(
     user_id: string,
     username: string,
@@ -80,7 +88,6 @@ export class BackendService {
     }
   }
 
-  //get team by id
   async getTeamById(team_id: string): Promise<void> {
     try {
       await firstValueFrom(
@@ -93,7 +100,6 @@ export class BackendService {
     }
   }
 
-  //add member to team
   async addMemberToTeam(
     user_id: string,
     username: string,
@@ -114,7 +120,6 @@ export class BackendService {
     }
   }
 
-  //get all teams
   async getAllTeams(): Promise<void> {
     try {
       await firstValueFrom(this.http.get<void>(`${this.backendURL}/teams/`));
@@ -124,7 +129,7 @@ export class BackendService {
   }
 
   //////////////////////////// CHANNELS ////////////////////////////
-  //create channel
+
   async createChannel(
     team_id: string,
     channelName: string,
