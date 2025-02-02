@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { RegistrationData } from '../../../shared/user-credentials.types';
+import {
+  RegistrationData,
+  UserSignInData,
+} from '../../../shared/user-credentials.types';
 
 @Injectable({
   providedIn: 'root',
@@ -26,12 +29,12 @@ export class BackendService {
   }
 
   //login user
-  async loginUser(email: string, password: string): Promise<void> {
+  async loginUser(signInData: UserSignInData): Promise<void> {
+    console.log(signInData);
     try {
       await firstValueFrom(
         this.http.post<void>(`${this.backendURL}/auth/login`, {
-          email,
-          password,
+          signInData,
         })
       );
     } catch (error) {
