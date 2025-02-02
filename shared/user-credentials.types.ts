@@ -1,10 +1,12 @@
-export type UserSignUpData = {
+export type Role = 'admin' | 'user';
+
+export type RegistrationData = {
   firstName: string;
   lastName: string;
   username: string;
   email: string;
   password: string;
-  role: 'admin' | 'user';
+  role: Role;
 };
 
 export type UserSignInData = {

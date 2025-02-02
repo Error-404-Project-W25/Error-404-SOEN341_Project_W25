@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+import { ITeam, teamSchema } from './teamsModel';
 
  interface IUser  {
   user_id: string;
@@ -7,10 +8,11 @@ import mongoose, { Schema } from 'mongoose';
   username?: string;
   email?: string;
   role: 'admin' | 'user';
+  teams?: ITeam[];
 }
 
 // User Schema
-const userSchema = new Schema(
+const userSchema: Schema = new Schema(
   {
     user_id: { type: String, unique: true, required: true },
     firstName: { type: String},
@@ -18,6 +20,7 @@ const userSchema = new Schema(
     username: { type: String},
     email: { type: String, unique: true },
     role: { type: String, enum: ['admin', 'user'], default: 'user', required: true },
+    teams: { type: [teamSchema], default: [] },
   },
   {
     collection: 'Users',

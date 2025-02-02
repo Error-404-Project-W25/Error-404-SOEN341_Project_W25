@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Team } from '../models/teamsModel';
-import { IUser } from '../models/userModel';
+import { User, IUser } from '../models/userModel';
 import { v4 as uuidv4 } from 'uuid';
 
 // Get all teams
@@ -35,16 +35,17 @@ export const createTeams = async (req: Request, res: Response) => {
   try {
     const { user_id, username, team_name, description, members, role } = req.body;
 
+    if (role !== 'admin') {
+      res.status(400).json({ error: 'Invalid role, not allowed to create a team' });
+      return;
+    }
+
     // Validate required fields
     if (!team_name || !description || !user_id || !username || !role) {
       res.status(400).json({ error: 'Missing required fields' });
       return;
     }
 
-    if (role !== 'admin') {
-      res.status(400).json({ error: 'Invalid role, not allowed to create a team' });
-      return;
-    }
 
     // Generate a UUID for the team_id
     const team_id = uuidv4();
@@ -88,6 +89,20 @@ export const createTeams = async (req: Request, res: Response) => {
     }
 
     const savedTeam = await newTeam.save();
+    
+
+    //add team to the user given in the request
+    const user = await User.findOne({ user_id: user_id });
+    if (user) {
+      if (user.teams) {
+        user.teams.push(savedTeam);
+      } else {
+        user.teams = [savedTeam];
+      }
+      await user.save();
+    }
+
+
     res.status(201).json(savedTeam);
   } catch (error) {
     const errorMessage = (error as Error).message;
@@ -145,6 +160,18 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
     });
 
     const updatedTeam = await team.save();
+    // Add the team to the users
+    members.forEach(async (member: IUser) => {
+      const user = await User.findOne({ user_id: member.user_id });
+      if (user) {
+        if (user.teams) {
+          user.teams.push(updatedTeam);
+        } else {
+          user.teams = [updatedTeam];
+        }
+        await user.save();
+      }
+    });
     res.json(updatedTeam);
   } catch (error) {
     const errorMessage = (error as Error).message;
