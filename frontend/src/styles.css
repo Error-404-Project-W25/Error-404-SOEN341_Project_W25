@@ -1,1 +1,5 @@
 /*@import './app/home/home.component.css';*/
+.body {
+  margin: 0;
+  padding: 0;
+}
