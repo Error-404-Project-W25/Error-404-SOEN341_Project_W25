@@ -8,36 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-add-channel-dialog',
-  template: `
-    <h1 mat-dialog-title>Create Channel</h1>
-    <form class="custom-pop-up-centered">
-      <mat-form-field>
-        <mat-label>Channel Name</mat-label>
-        <input matInput>
-      </mat-form-field>
-    </form>
-    <form class="custom-pop-up-centered">
-      <mat-form-field>
-        <mat-label>Description</mat-label>
-        <input matInput>
-      </mat-form-field>
-    </form>
-    <form class="custom-pop-up-centered">
-      <mat-form-field>
-        <mat-label>Search Members</mat-label>
-        <input matInput [(ngModel)]="searchQuery">
-        <button mat-raised-button matSuffix (click)="search()" class="custom-dark-button-theme">Add
-        </button>
-      </mat-form-field>
-    </form>
-    <div mat-dialog-actions>
-      <button mat-fab  mat-dialog-close class="custom-dark-button-theme">Cancel</button>
-      <button mat-fab mat-dialog-close class="custom-dark-button-theme">Finish</button>
-    </div>
-  `,
+  templateUrl: './add-channel-dialog.component.html',
   styleUrls: ['../../app/app.component.css'],
   standalone: true,
-  imports: [MatDialogModule, MatInputModule,FormsModule, MatButtonModule]
+  imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule]
 })
 export class AddChannelDialogComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
