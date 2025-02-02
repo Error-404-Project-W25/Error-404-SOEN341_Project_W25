@@ -51,9 +51,9 @@ body{
 .input-container span {
   font-size: 0.75rem;
   font-style: bold;
-  font-weight: 600;
+  font-weight: 700;
   display: block;
-  color: var(--secondary-color);
+  color: white;
   text-align: left;
   margin-left: 10px;
 }
@@ -180,12 +180,6 @@ button:hover{
     font-size: 13px;
     margin-bottom: 10px;
 }
-
-/*
-.signupForm{
-    display: none;
-}
-    */
 
 .signinForm{
     display: block;
