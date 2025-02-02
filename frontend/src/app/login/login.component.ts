@@ -93,9 +93,9 @@ export class LoginComponent implements OnInit {
     let error: string = '';
 
     if (val.length < 2) {
-      error = 'name too short';
+      error = 'name is too short';
     } else if (val.length > 20) {
-      error = 'name too long';
+      error = 'name is too long';
     } else if (!validNameRegex.test(val)) {
       error = 'name must only contains letters or hyphens';
     }
@@ -136,9 +136,9 @@ export class LoginComponent implements OnInit {
     let error: string = '';
 
     if (username.length < 2) {
-      error = 'username too short';
+      error = 'Username is too short';
     } else if (username.length > 15) {
-      error = 'username too long';
+      error = 'Username is too long';
     } else if (!validUsernameRegex.test(username)) {
       error =
         'name can only contain letters, numbers, dashes, underscores or periods';
@@ -174,9 +174,9 @@ export class LoginComponent implements OnInit {
     let error: string = '';
 
     if (pw.length < 8) {
-      error = 'Password too short';
+      error = 'Password is too short';
     } else if (pw.length > 20) {
-      error = 'Password too long';
+      error = 'Password is too long';
     } else if (!/[A-Z]/.test(pw)) {
       error = 'Password must contain at least one uppercase letter';
     } else if (!/[a-z]/.test(pw)) {
