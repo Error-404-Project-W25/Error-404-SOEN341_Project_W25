@@ -10,14 +10,14 @@
       <input
         type="text"
         placeholder="Username"
-        [(ngModel)]="signInData.username"
+        [(ngModel)]="signInForm.username"
         name="username"
         required
       />
       <input
         type="password"
         placeholder="Password"
-        [(ngModel)]="signInData.password"
+        [(ngModel)]="signInForm.password"
         name="password"
         required
       />
@@ -34,7 +34,7 @@
     </form>
     <p>Having trouble signing in?</p>
     <a href="#" class="smallBtn">Reset your Password</a>
-    <hr/>
+    <hr />
     <p>Don't have an account?</p>
     <a href="#" class="smallBtn" (click)="toggleForm()">Sign Up</a>
   </div>
@@ -46,70 +46,91 @@
       <input
         type="text"
         placeholder="First Name"
-        [(ngModel)]="signUpData.firstName"
+        [(ngModel)]="signUpForm.firstName"
         name="firstName"
         required
-        (input)="validateName($event)"
       />
-      <span *ngIf="errors.firstNameInvalid">Please fill in the input</span>
+      <span *ngIf="!validationErrors.firstNameValid">{{
+        validationErrorMessages.firstNameError
+      }}</span>
       <input
         type="text"
         placeholder="Last Name"
-        [(ngModel)]="signUpData.lastName"
+        [(ngModel)]="signUpForm.lastName"
         name="lastName"
         required
-        (input)="validateName($event)"
       />
-      <span *ngIf="errors.lastNameInvalid">Please fill in the input</span>
+      <span *ngIf="!validationErrors.lastNameValid">{{
+        validationErrorMessages.lastNameError
+      }}</span>
       <hr />
-      <!-- Block autofill in signup page -->
+      <!-- Block autofill in signup page using autocomplete="new-password" -->
       <input
         type="text"
         placeholder="Username"
-        [(ngModel)]="signUpData.username"
+        [(ngModel)]="signUpForm.username"
         name="username"
         required
-        (input)="validateUsername($event)"
         autocomplete="new-password"
       />
+      <span *ngIf="!validationErrors.usernameValid">
+        {{ validationErrorMessages.usernameError }}
+      </span>
       <input
         type="text"
         placeholder="Email"
-        [(ngModel)]="signUpData.email"
+        [(ngModel)]="signUpForm.email"
         name="email"
         required
-        (input)="validateEmail($event)"
         autocomplete="new-password"
       />
-      <span *ngIf="errors.emailInvalid">Please enter a valid E-mail</span>
+      <span *ngIf="!validationErrors.emailValid">{{
+        validationErrorMessages.emailError
+      }}</span>
       <input
         type="password"
         placeholder="Password"
-        [(ngModel)]="signUpData.password"
+        [(ngModel)]="signUpForm.password"
         name="password"
         required
-        (input)="validatePassword($event)"
         autocomplete="new-password"
       />
-      <span *ngIf="errors.passwordInvalid" class="password-requirements">Password must be valid:
-</span>
+      <span
+        *ngIf="!validationErrors.passwordValid"
+        class="password-requirements"
+        >{{ validationErrorMessages.passwordError }}
+      </span>
       <input
         type="password"
         placeholder="Confirm Password"
-        [(ngModel)]="signUpData.confirmPassword"
         name="confirmPassword"
         required
-        (input)="confirmPasswordMatch($event)"
         autocomplete="new-password"
+        (input)="confirmPasswordMatch($event)"
       />
-      <span *ngIf="errors.noPasswordMatch">Passwords don't match</span>
-      &nbsp;<div class="radio">        
+      <span *ngIf="!validationErrors.passwordsMatch">{{
+        validationErrorMessages.passwordMatchError
+      }}</span>
+      &nbsp;
+      <div class="radio">
         <label>
-          <input type="radio" name="role" [(ngModel)]="signUpData.role" value="admin" required />
-          Admin 
+          <input
+            type="radio"
+            name="role"
+            [(ngModel)]="signUpForm.role"
+            value="admin"
+            required
+          />
+          Admin
         </label>
         <label>
-          <input type="radio" name="role" [(ngModel)]="signUpData.role" value="user" required />
+          <input
+            type="radio"
+            name="role"
+            [(ngModel)]="signUpForm.role"
+            value="user"
+            required
+          />
           User
         </label>
       </div>

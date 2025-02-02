@@ -10,7 +10,7 @@ import {
 import {
   AuthStatus,
   UserSignInData,
-  UserSignUpData,
+  RegistrationData,
 } from '../../../shared/user-credentials.types';
 
 const firebaseConfig: FirebaseOptions = {
@@ -26,13 +26,13 @@ const app: FirebaseApp = initializeApp(firebaseConfig);
 const auth: Auth = getAuth(app);
 
 const signUpUser = async (
-  userSignUpData: UserSignUpData
+  registrationData: RegistrationData
 ): Promise<AuthStatus> => {
   try {
     const userCredential: UserCredential = await createUserWithEmailAndPassword(
       auth,
-      userSignUpData.email,
-      userSignUpData.password
+      registrationData.email,
+      registrationData.password
     );
     // User also gets signed in automatically
     return { isSignedIn: true, uid: userCredential.user.uid };
