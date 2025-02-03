@@ -6,6 +6,7 @@ import {
   UserSignInData,
 } from '../../../shared/user-credentials.types';
 import { UserAuthResponse } from '../types/http-response.types';
+import { IUser } from '../../../shared/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class BackendService {
 
   async registerUser(
     registrationData: RegistrationData
-  ): Promise<UserAuthResponse | undefined> {
+  ): Promise<UserAuthResponse | null> {
     console.log(registrationData);
     try {
       const response: UserAuthResponse = await firstValueFrom(
@@ -31,12 +32,12 @@ export class BackendService {
     } catch (error) {
       console.error('Error registering user:', error);
     }
-    return undefined;
+    return null;
   }
 
   async loginUser(
     signInData: UserSignInData
-  ): Promise<UserAuthResponse | undefined> {
+  ): Promise<UserAuthResponse | null> {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/login`, {
@@ -47,10 +48,10 @@ export class BackendService {
     } catch (error) {
       console.error('Error logging in user:', error);
     }
-    return undefined;
+    return null;
   }
 
-  async logoutUser(): Promise<UserAuthResponse | undefined> {
+  async logoutUser(): Promise<UserAuthResponse | null> {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/logout`, {})
@@ -59,19 +60,24 @@ export class BackendService {
     } catch (error) {
       console.error('Error logging out user:', error);
     }
-    return undefined;
+    return null;
   }
 
-  async getUserInfo(user_id: string): Promise<void> {
+  // TODO: using POST for now (easier), might be worth changing to GET
+  async getUserInfo(user_id: string): Promise<IUser | null> {
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/auth/getUserInfo`, {
+      const response: IUser = await firstValueFrom(
+        this.http.post<IUser>(`${this.backendURL}/auth/getUserInfo`, {
           user_id,
         })
       );
+
+      return response;
     } catch (error) {
       console.error('Error getting user info:', error);
     }
+
+    return null;
   }
 
   //////////////////////////// TEAMS ////////////////////////////

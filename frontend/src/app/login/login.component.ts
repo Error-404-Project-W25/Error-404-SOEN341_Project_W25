@@ -12,14 +12,15 @@ import {
   UserSignInData,
 } from '../../../../shared/user-credentials.types';
 import { BackendService } from '../../services/backend.service';
-import { HttpClientModule } from '@angular/common/http'; // Import HttpClientModule
 import { Router } from '@angular/router';
 import { UserAuthResponse } from '../../types/http-response.types';
+import { IUser } from '../../../../shared/interfaces';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
   standalone: true, // Declare as a standalone component
-  imports: [CommonModule, FormsModule, HttpClientModule], // Import dependencies
+  imports: [CommonModule, FormsModule], // Import dependencies
   providers: [BackendService], // Provide the BackendService
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -62,7 +63,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private backendService: BackendService,
     private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private userService: UserService
   ) {} // Inject ActivatedRoute
 
   ngOnInit() {
@@ -77,7 +79,7 @@ export class LoginComponent implements OnInit {
   }
 
   goToChat() {
-    this.router.navigate(['/chat']); // Navigates to the '/server' route
+    this.router.navigate(['/chat']);
   }
 
   toggleForm() {
@@ -226,7 +228,7 @@ export class LoginComponent implements OnInit {
 
   /////////////////// REGISTER ///////////////////
 
-  async onRegister() {
+  async register() {
     for (let field in this.signUpForm) {
       if (!field) {
         alert('Please fill in all required fields');
@@ -239,13 +241,19 @@ export class LoginComponent implements OnInit {
     }
 
     try {
-      const response: UserAuthResponse | undefined =
+      const response: UserAuthResponse | null =
         await this.backendService.registerUser(this.signUpForm);
 
       if (response) {
         if (response.uid) {
-          // return data from mongo
-          // TODO: this.goToChat(); // using mongo data (function already set up)
+          const user: IUser | null = await this.backendService.getUserInfo(
+            response.uid
+          );
+
+          if (user) {
+            this.userService.loadUser(user.user_id);
+            this.goToChat();
+          }
         } else if (response.error) {
           // should write in a div eventually
           console.log('Error:', response.error);
@@ -253,8 +261,6 @@ export class LoginComponent implements OnInit {
         }
         console.log('Message:', response.message);
       }
-
-      // this.goToChat();
     } catch (error) {
       console.error('Error registering user:', error);
       alert('Failed to register user.');
@@ -263,7 +269,7 @@ export class LoginComponent implements OnInit {
 
   //////////////////// LOGIN ////////////////////
 
-  async onLogin() {
+  async login() {
     if (!this.signInForm.email || !this.signInForm.password) {
       alert('Email and password are required.');
       return;
@@ -271,13 +277,19 @@ export class LoginComponent implements OnInit {
 
     try {
       // Send login request to the backend
-      const response: UserAuthResponse | undefined =
+      const response: UserAuthResponse | null =
         await this.backendService.loginUser(this.signInForm);
 
       if (response) {
         if (response.uid) {
-          // return data from mongo
-          // TODO: this.goToChat(); // using mongo data (function already set up)
+          const user: IUser | null = await this.backendService.getUserInfo(
+            response.uid
+          );
+
+          if (user) {
+            this.userService.loadUser(user.user_id);
+            this.goToChat();
+          }
         } else if (response.error) {
           // should write in a div eventually
           console.log('Error:', response.error);

@@ -6,7 +6,7 @@
   <!-- Sign In Form -->
   <div class="signinForm form-transition" *ngIf="showSignInForm">
     <h1>Sign In</h1>
-    <form (ngSubmit)="onLogin()">
+    <form (ngSubmit)="login()">
       <input
         type="text"
         placeholder="Email"
@@ -39,11 +39,10 @@
     <a href="#" class="smallBtn" (click)="toggleForm()">Sign Up</a>
   </div>
 
-   <!-- Sign Up Form -->
-   <div class="signupForm form-transition" *ngIf="!showSignInForm">
+  <!-- Sign Up Form -->
+  <div class="signupForm form-transition" *ngIf="!showSignInForm">
     <h1>Sign Up</h1>
-    <form (ngSubmit)="onRegister()">
-
+    <form (ngSubmit)="register()">
       <div class="input-container">
         <input
           type="text"
