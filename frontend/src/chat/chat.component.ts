@@ -27,26 +27,26 @@ export class ChatComponent {
   constructor(public dialog: MatDialog, private userService: UserService) {
   }
 
-  /*Server Name max 64 characters*/
-  serverSelectedName = 'ChatHaven Test Server #12345678901234567890';
+  /*Team Name max 64 characters*/
+  teamSelectedName = 'ChatHaven Test Team #12345678901234567890';
 
-  /*ServerLogo: (*now text, later image) max 3 characters (for now make server name S#)*/
-  /*Replace list with actual servers list*/
+  /*TeamLogo: (*now text, later image) max 3 characters (for now make team name S#)*/
+  /*Replace list with actual teams list*/
 
-  servers: ITeam[] = [];
+  teams: ITeam[] = [];
 
   /*Channel Name max 64 characters*/
-  /*Replace list with actual channels list, making dependent to server selected*/
+  /*Replace list with actual channels list, making dependent to team selected*/
   channels: string[] = [];
 
-  selectedServer: string | null = null;
+  selectedTeam: string | null = null;
   selectedChannel: string | null = null;
 
-  selectServer(server: string) {
+  selectTeam(team: string) {
     /*get channel list to display */
-    /*channels: string[] = (server.getChannelList()) */
-    console.log('You are inside the selectServer function');
-    console.log('Server:', server);
+    /*channels: string[] = (team.getChannelList()) */
+    console.log('You are inside the selectTeam function');
+    console.log('Team:', team);
   }
   selectChannel(channel: string) {
     /*function for when channel is clicked*/

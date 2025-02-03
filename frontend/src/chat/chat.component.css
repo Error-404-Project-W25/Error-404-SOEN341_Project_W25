@@ -2,21 +2,21 @@
   /*Side bar #1*/
   --side-bar-1-separator: #35363c;
 
-  /*Side bar #1 (Add server Button)*/
-  --add-server-button-background: #ffffff;
-  --add-server-button-hover: #ff6b6b;
-  --add-server-button-text: #2c2f33;
+  /*Side bar #1 (Add team Button)*/
+  --add-team-button-background: #ffffff;
+  --add-team-button-hover: #ff6b6b;
+  --add-team-button-text: #2c2f33;
 
-  /*Side bar #1 (Add server Button)*/
-  --add-server-button-background: #2f3136;
-  --add-server-button-hover: #f53f3d;
-  --add-server-button-text: #dbdee1;
+  /*Side bar #1 (Add team Button)*/
+  --add-team-button-background: #2f3136;
+  --add-team-button-hover: #f53f3d;
+  --add-team-button-text: #dbdee1;
 
-  /*Sidebar #1 (server List) */
-  --server-letter-color: #dbdee1;
-  --server-button-background: #2f3136;
-  --server-button-hover: #f53f3d;
-  --server-background: #1e1f22;
+  /*Sidebar #1 (team List) */
+  --team-letter-color: #dbdee1;
+  --team-button-background: #2f3136;
+  --team-button-hover: #f53f3d;
+  --team-background: #1e1f22;
 
   /*Sidebar #1 (User Menu)*/
   --user-button-background: #313338;
@@ -24,7 +24,7 @@
   --user-button-text: #f53f3d;
   --user-button-text-hover: #ffffff;
 
-  /*Sidebar #2 (Server title + add channel button)*/
+  /*Sidebar #2 (Team title + add channel button)*/
   --title-box-background: #2b2d31;
   --title-box-text: #d1d4d8;
   --add-channel-button-background: #b5bac1;
@@ -101,7 +101,7 @@ body {
   align-items: center;
   justify-content: center;
 }
-.add-server-button-container {
+.add-team-button-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -110,7 +110,7 @@ body {
   margin: 0;
   padding: 0;
 }
-.add-server-button {
+.add-team-button {
   background-color: #2f3136;
   color: #dbdee1;
   border: none;
@@ -125,11 +125,11 @@ body {
   justify-content: center;
   cursor: pointer;
 }
-.add-server-button:hover {
+.add-team-button:hover {
   background-color: #f53f3d;
   border-radius: 30%;
 }
-.server-list {
+.team-list {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -137,7 +137,7 @@ body {
   margin: 0;
   padding-top: 0;
 }
-.server-list ul {
+.team-list ul {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -149,7 +149,7 @@ body {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-.server-list li {
+.team-list li {
   background-color: #2f3136;
   color: #dbdee1;
   border: none;
@@ -167,7 +167,7 @@ body {
   white-space: nowrap;
   display: flex;
 }
-.server-list li a {
+.team-list li a {
   background-color: #2f3136;
   color: #dbdee1;
   border: none;
@@ -188,7 +188,7 @@ body {
   padding: 0;
   margin: 0;
 }
-.server-list li a:hover {
+.team-list li a:hover {
   background-color: #f53f3d;
   border-radius: 30%;
 }

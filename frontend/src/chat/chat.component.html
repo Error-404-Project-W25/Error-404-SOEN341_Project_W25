@@ -9,18 +9,18 @@
   <body>
     <div class="container">
       <div class="side-bar-1">
-        <div class="add-server-button-container">
-            <button class="add-server-button" (click)="openTeamDialog()">+</button>
+        <div class="add-team-button-container">
+            <button class="add-team-button" (click)="openTeamDialog()">+</button>
         </div>
         <hr class="separator" />
-        <div class="server-list">
+        <div class="team-list">
           <ul>
             <li
-              *ngFor="let server of servers"
-              [ngClass]="{ selected: server.team_id === selectedServer }"
-              (click)="selectServer(server.team_id)"
+              *ngFor="let team of teams"
+              [ngClass]="{ selected: team.team_id === selectedTeam }"
+              (click)="selectTeam(team.team_id)"
             >
-              <a href="#">{{ server }}</a>
+              <a href="#">{{ team }}</a>
             </li>
           </ul>
         </div>
@@ -33,10 +33,10 @@
       <div class="side-bar-2">
         <div class="side-bar-2-title-container">
           <div class="side-bar-2-title">
-            {{ serverSelectedName }}
+            {{ teamSelectedName }}
           </div>
-          <div class="add-server-button-container">
-              <button class="add-server-button" (click)="openChannelDialog()">+</button>
+          <div class="add-team-button-container">
+              <button class="add-team-button" (click)="openChannelDialog()">+</button>
           </div>
         </div>
         <div class="search-container">
