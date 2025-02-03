@@ -5,8 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
-import { ITeam } from '../../../shared/interfaces';
-
+import { IChannel, ITeam } from '../../../shared/interfaces';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +15,8 @@ import { ITeam } from '../../../shared/interfaces';
   styleUrls: ['./chat.component.css'],
 })
 export class ChatComponent {
+  constructor(public dialog: MatDialog, private userService: UserService) {}
+
   openChannelDialog(): void {
     this.dialog.open(AddChannelDialogComponent);
   }
@@ -24,31 +25,29 @@ export class ChatComponent {
   }
   title = 'chatHaven';
 
-  constructor(public dialog: MatDialog, private userService: UserService) {
-  }
-
   /*Team Name max 64 characters*/
-  teamSelectedName = 'ChatHaven Test Team #12345678901234567890';
+  teamSelectedName = '';
 
   /*TeamLogo: (*now text, later image) max 3 characters (for now make team name S#)*/
   /*Replace list with actual teams list*/
-
   teams: ITeam[] = [];
 
   /*Channel Name max 64 characters*/
   /*Replace list with actual channels list, making dependent to team selected*/
-  channels: string[] = [];
+  channels: IChannel[] = [];
 
   selectedTeam: string | null = null;
   selectedChannel: string | null = null;
 
-  selectTeam(team: string) {
+  selectTeam(team: ITeam) {
     /*get channel list to display */
     /*channels: string[] = (team.getChannelList()) */
+    this.teamSelectedName = team.team_name;
+    this.channels = team.channels;
     console.log('You are inside the selectTeam function');
     console.log('Team:', team);
   }
-  selectChannel(channel: string) {
+  selectChannel(channel: IChannel) {
     /*function for when channel is clicked*/
     console.log('You are inside the selectChannel function');
     console.log('Channel:', channel);

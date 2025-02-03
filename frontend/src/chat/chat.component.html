@@ -18,7 +18,7 @@
             <li
               *ngFor="let team of teams"
               [ngClass]="{ selected: team.team_id === selectedTeam }"
-              (click)="selectTeam(team.team_id)"
+              (click)="selectTeam(team)"
             >
               <a href="#">{{ team }}</a>
             </li>
@@ -47,7 +47,7 @@
           <ul>
             <li
               *ngFor="let channel of channels"
-              [ngClass]="{ selected: channel === selectedChannel }"
+              [ngClass]="{ selected: channel.name === selectedChannel }"
               (click)="selectChannel(channel)"
               href="#"
             >
