@@ -39,6 +39,25 @@ body{
     position:relative;
     display: flex;
 }
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.input-container span {
+  font-size: 0.75rem;
+  font-style: bold;
+  font-weight: 700;
+  display: block;
+  color: white;
+  text-align: left;
+  margin-left: 10px;
+}
+
 .elem span{
     position:relative;
     /* top: 0; */
@@ -161,12 +180,6 @@ button:hover{
     font-size: 13px;
     margin-bottom: 10px;
 }
-
-/*
-.signupForm{
-    display: none;
-}
-    */
 
 .signinForm{
     display: block;
@@ -380,54 +393,3 @@ button:hover{
       text-align: center;
     }
   }
-
-
-#passowrdError{
-  display: none;
-  width: 300px;
-  font-size: 10px;
-  color: red;
-}
-
-#confirmPassowrdError{
-  display: none;
-  width: 300px;
-  font-size: 10px;
-  color: red;
-}
-
-#FirstInputEmpty{
-  display: none;
-  width: 300px;
-  font-size: 10px;
-  color: red;
-}
-
-#lastInputEmpty{
-  display: none;
-  width: 300px;
-  font-size: 10px;
-  color: red;
-}
-
-#emptyEmailError{
-  display: none;
-  width: 300px;
-  font-size: 10px;
-  color: red;
-}
-
-#emailError{
-  display: none;
-  width: 300px;
-  font-size: 10px;
-  color: red;
-}
-
-#logInError{
-  display: none;
-  width: 300px;
-  font-size: 15px;
-  color: red;
-}
-
