@@ -1,9 +1,12 @@
+import { UserService } from './../services/user.service';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
+import { ITeam } from '../../../shared/interfaces';
+
 
 @Component({
   selector: 'app-root',
@@ -21,14 +24,16 @@ export class ChatComponent {
   }
   title = 'chatHaven';
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private userService: UserService) {
+  }
 
   /*Server Name max 64 characters*/
   serverSelectedName = 'ChatHaven Test Server #12345678901234567890';
 
   /*ServerLogo: (*now text, later image) max 3 characters (for now make server name S#)*/
   /*Replace list with actual servers list*/
-  servers: string[] = [];
+
+  servers: ITeam[] = [];
 
   /*Channel Name max 64 characters*/
   /*Replace list with actual channels list, making dependent to server selected*/

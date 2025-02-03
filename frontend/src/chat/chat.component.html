@@ -17,8 +17,8 @@
           <ul>
             <li
               *ngFor="let server of servers"
-              [ngClass]="{ selected: server === selectedServer }"
-              (click)="selectServer(server)"
+              [ngClass]="{ selected: server.team_id === selectedServer }"
+              (click)="selectServer(server.team_id)"
             >
               <a href="#">{{ server }}</a>
             </li>
