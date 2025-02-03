@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 // Get all teams
 export const getAllTeams = async (req: Request, res: Response) => {
   try {
-    const teams = await Team.find(); 
-    console.log('Fetched teams:', teams); 
+    const teams = await Team.find();
+    console.log('Fetched teams:', teams);
     res.json(teams);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching teams' });
@@ -28,7 +28,7 @@ export const getTeamById = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to get team', details: errorMessage });
     console.error('Failed to get team:', errorMessage);
   }
-}; 
+};
 
 // Create a new team
 export const createTeams = async (req: Request, res: Response) => {
@@ -66,9 +66,9 @@ export const createTeams = async (req: Request, res: Response) => {
       channels: [
         {
           id: uuidv4(),
-          name: "General", 
+          name: "General",
           description: "This is the default channel",
-          team: team_id, 
+          team: team_id,
           members: [{
             user_id,
             username,
@@ -84,12 +84,12 @@ export const createTeams = async (req: Request, res: Response) => {
     if (members && Array.isArray(members)) {
       members.forEach((member: IUser) => {
         newTeam.members.push(member);
-        newTeam.channels[0].members.push(member); 
+        newTeam.channels[0].members.push(member);
       });
     }
 
     const savedTeam = await newTeam.save();
-    
+
 
     //add team to the user given in the request
     const user = await User.findOne({ user_id: user_id });
@@ -156,7 +156,7 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
         user_id: member.user_id,
         username: member.username,
         role: member.role,
-      }); 
+      });
     });
 
     const updatedTeam = await team.save();
