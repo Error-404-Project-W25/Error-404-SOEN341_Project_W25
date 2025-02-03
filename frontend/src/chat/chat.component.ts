@@ -41,6 +41,9 @@ export class ChatComponent {
   openChannelDialog(): void {
     this.dialog.open(AddChannelDialogComponent);
   }
+  openTeamDialog(): void {
+    this.dialog.open(AddTeamDialogComponent);
+  }
 
   selectChannel(channel: string) {
     /*function for when channel is clicked*/
