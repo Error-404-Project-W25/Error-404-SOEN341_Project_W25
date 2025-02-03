@@ -1,28 +1,23 @@
 <div class="container">
-  <h1>Create Team</h1>
-  <form class="custom-pop-up-centered">
-    <div>
-      <label>Team Name</label>
-      <input [(ngModel)]="teamName" name="teamName" />
-    </div>
-  </form>
-  <form class="custom-pop-up-centered">
-    <div>
-      <label>Description</label>
-      <input [(ngModel)]="description" name="description" />
-    </div>
-  </form>
-  <form class="custom-pop-up-centered">
-    <div>
-      <label>Search Members</label>
-      <input [(ngModel)]="searchQuery" name="searchQuery" />
-      <button (click)="search()" class="custom-dark-button-theme">Add</button>
-    </div>
-  </form>
-  <div>
-    <button class="custom-dark-button-theme">Cancel</button>
-    <button (click)="createTeam()" class="custom-dark-button-theme">
-      Finish
-    </button>
+  <div class="form-container">
+    <h1>Create Team</h1>
+    <form class="form" (ngSubmit)="createTeam()">
+      <div class="form-group">
+        <label>Team Name</label>
+        <input required="" type="text" [(ngModel)]="teamName" name="teamName" />
+      </div>
+      <div class="form-group">
+        <label for="textarea">Description</label>
+        <textarea required="" cols="50" rows="10" id="textarea" name="textarea" [(ngModel)]="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Add Member</label>
+        <div class="container-add-member">
+          <input required="" type="text" [(ngModel)]="searchQuery" name="searchQuery" />
+          <button class="add-member-btn" type="button" (click)="search()">Add</button>
+        </div>
+      </div>
+      <button type="submit" class="form-submit-btn">Submit</button>
+    </form>
   </div>
 </div>

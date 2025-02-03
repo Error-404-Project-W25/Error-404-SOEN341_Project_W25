@@ -1,77 +1,172 @@
-body {
-  background-color: #121212;
-  color: #e0e0e0;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 20px;
-}
-
+/* From Uiverse.io by omriluz */
 .container {
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 100%;
+  background-color: #313338;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #121212;
+}
+.h1 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.form-container {
+  font-family: Arial, Helvetica, sans-serif;
   height: auto;
-  width: auto;
+  width: 400px;
+  background: linear-gradient(#313338, #313338) padding-box,
+    linear-gradient(145deg, transparent 35%, #ff6b6b, #ff6b6b) border-box;
+  border: 2px solid transparent;
+  padding: 32px 24px;
+  font-size: 14px;
+  font-family: inherit;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  background-size: 200% 100%;
+  animation: gradient 5s ease infinite;
 }
 
-h1 {
-  color: #ffffff;
-  text-align: center;
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-.custom-pop-up-centered {
-  background-color: #121212;
-  padding: 15px;
-  border-radius: 8px;
-  margin: 10px auto;
-  max-width: 400px;
+.form-container button:active {
+  scale: 0.95;
 }
 
-label {
+.form-container .form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-container .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.form-container .form-group label {
+  font-family: Arial, Helvetica, sans-serif;
   display: block;
   margin-bottom: 5px;
-  color: #b0b0b0;
+  color: #717171;
+  font-weight: 600;
+  font-size: 12px;
 }
 
-input[type="text"],
-input[type="search"],
-input {
+.form-container .form-group input {
   width: 90%;
-  padding: 10px;
-  background-color: #2a2a2a;
-  border: 1px solid #444;
-  border-radius: 4px;
-  color: #ffffff;
-  margin-bottom: 10px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: #fff;
+  font-family: inherit;
+  background-color: transparent;
+  border: 1px solid #414141;
 }
 
-input:focus {
+.form-container .form-group textarea {
+  width: 90%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  resize: none;
+  color: #fff;
+  height: 96px;
+  border: 1px solid #414141;
+  background-color: transparent;
+  font-family: inherit;
+}
+
+.form-container .form-group input::placeholder {
+  opacity: 0.5;
+}
+
+.form-container .form-group input:focus {
   outline: none;
-  border-color: #6200ea;
-  box-shadow: 0 0 5px rgba(98, 0, 234, 0.8);
+  border-color: #ff6b6b;
 }
 
-.custom-dark-button-theme {
-  background-color: #6200ea;
-  color: #ffffff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
+.form-container .form-group textarea:focus {
+  outline: none;
+  border-color: #ff6b6b;
+}
+
+.form-container .form-submit-btn {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: flex-start;
+  font-family: inherit;
+  color: #717171;
+  font-weight: 600;
+  width: 40%;
+  background: #313131;
+  border: 1px solid #414141;
+  padding: 12px 16px;
+  font-size: inherit;
+  gap: 8px;
+  margin-top: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  margin: 5px;
+  border-radius: 6px;
 }
 
-.custom-dark-button-theme:hover {
-  background-color: #3700b3;
+.form-container .form-submit-btn:hover {
+  background-color: #fff;
+  border-color: #fff;
 }
 
-button {
-  display: inline-block;
+.container-add-member {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
-div {
-  text-align: center;
+.add-member-btn {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: flex-start;
+  font-family: inherit;
+  color: #717171;
+  font-weight: 600;
+  width: 40%;
+  background: #313131;
+  border: 1px solid #414141;
+  padding: 12px 16px;
+  font-size: inherit;
+  gap: 8px;
+  margin-top: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.add-member-btn:hover {
+  background-color: #fff;
+  border-color: #fff;
 }

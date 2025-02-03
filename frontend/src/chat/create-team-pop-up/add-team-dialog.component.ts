@@ -12,14 +12,23 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
   templateUrl: './add-team-dialog.component.html',
   styleUrls: ['./add-team-dialog.component.css'],
   standalone: true,
-  imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule, HttpClientModule],
+  imports: [
+    MatDialogModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    HttpClientModule,
+  ],
 })
 export class AddTeamDialogComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   teamName = '';
   description = '';
 
-  constructor(private http: HttpClient, private dialogRef: MatDialogRef<AddTeamDialogComponent>) {}
+  constructor(
+    private http: HttpClient,
+    private dialogRef: MatDialogRef<AddTeamDialogComponent>
+  ) {}
 
   search() {
     // when the button is clicked, the search function is called
@@ -33,15 +42,15 @@ export class AddTeamDialogComponent {
       team_name: this.teamName,
       description: this.description,
       members: [],
-      role: 'admin'
+      role: 'admin',
     };
 
     this.http.post('/api/teams', teamData).subscribe(
-      response => {
-        console.log('Team created successfully:', response);
+      (response) => {
+        console.log('team created successfully:', response);
         this.dialogRef.close(); // Close the dialog
       },
-      error => {
+      (error) => {
         console.error('Error creating team:', error);
       }
     );

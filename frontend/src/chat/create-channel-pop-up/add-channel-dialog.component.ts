@@ -12,14 +12,23 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
   templateUrl: './add-channel-dialog.component.html',
   styleUrls: ['./add-channel-dialog.component.css'],
   standalone: true,
-  imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule, HttpClientModule],
+  imports: [
+    MatDialogModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    HttpClientModule,
+  ],
 })
 export class AddChannelDialogComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   channelName = '';
   description = '';
 
-  constructor(private http: HttpClient, private dialogRef: MatDialogRef<AddChannelDialogComponent>) {}
+  constructor(
+    private http: HttpClient,
+    private dialogRef: MatDialogRef<AddChannelDialogComponent>
+  ) {}
 
   search() {
     // when the button is clicked, the search function is called
@@ -33,15 +42,15 @@ export class AddChannelDialogComponent {
       channel_name: this.channelName,
       description: this.description,
       members: [],
-      role: 'admin'
+      role: 'admin',
     };
 
     this.http.post('/api/channels', channelData).subscribe(
-      response => {
+      (response) => {
         console.log('channel created successfully:', response);
         this.dialogRef.close(); // Close the dialog
       },
-      error => {
+      (error) => {
         console.error('Error creating channel:', error);
       }
     );
