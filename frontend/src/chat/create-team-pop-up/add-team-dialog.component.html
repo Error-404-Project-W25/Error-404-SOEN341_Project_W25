@@ -1,26 +1,28 @@
-<h1>Create Team</h1>
-<form class="custom-pop-up-centered">
+<div class="container">
+  <h1>Create Team</h1>
+  <form class="custom-pop-up-centered">
+    <div>
+      <label>Team Name</label>
+      <input [(ngModel)]="teamName" name="teamName" />
+    </div>
+  </form>
+  <form class="custom-pop-up-centered">
+    <div>
+      <label>Description</label>
+      <input [(ngModel)]="description" name="description" />
+    </div>
+  </form>
+  <form class="custom-pop-up-centered">
+    <div>
+      <label>Search Members</label>
+      <input [(ngModel)]="searchQuery" name="searchQuery" />
+      <button (click)="search()" class="custom-dark-button-theme">Add</button>
+    </div>
+  </form>
   <div>
-    <label>Team Name</label>
-    <input [(ngModel)]="teamName" name="teamName" />
+    <button class="custom-dark-button-theme">Cancel</button>
+    <button (click)="createTeam()" class="custom-dark-button-theme">
+      Finish
+    </button>
   </div>
-</form>
-<form class="custom-pop-up-centered">
-  <div>
-    <label>Description</label>
-    <input [(ngModel)]="description" name="description" />
-  </div>
-</form>
-<form class="custom-pop-up-centered">
-  <div>
-    <label>Search Members</label>
-    <input [(ngModel)]="searchQuery" />
-    <button (click)="search()" class="custom-dark-button-theme">Add</button>
-  </div>
-</form>
-<div>
-  <button class="custom-dark-button-theme">Cancel</button>
-  <button (click)="createTeam()" class="custom-dark-button-theme">
-    Finish
-  </button>
 </div>

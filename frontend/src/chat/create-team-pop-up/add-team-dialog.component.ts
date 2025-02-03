@@ -10,7 +10,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-add-team-dialog',
   templateUrl: './add-team-dialog.component.html',
-  styleUrls: ['../../app/app.component.css'],
+  styleUrls: ['./add-team-dialog.component.css'],
   standalone: true,
   imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule, HttpClientModule],
 })
