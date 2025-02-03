@@ -22,23 +22,7 @@ export class ChatComponent {
 
   /*ServerLogo: (*now text, later image) max 3 characters (for now make server name S#)*/
   /*Replace list with actual servers list*/
-  servers: string[] = [
-    'S1',
-    'S2',
-    'S3',
-    'S4',
-    'S5',
-    'S6',
-    'S7',
-    'S8',
-    'S9',
-    'S10',
-    'S11',
-    'S12',
-    'S13',
-    'S14',
-    'S15',
-  ];
+  servers: string[] = [];
 
   /*Channel Name max 64 characters*/
   /*Replace list with actual channels list, making dependent to server selected*/
@@ -65,6 +49,7 @@ export class ChatComponent {
   }
   selectSetting(setting: string) {
     /*function for when setting is clicked*/
+    /*use for logout now */
     console.log('You are inside the selectSetting function');
     console.log('Setting:', setting);
   }
