@@ -13,6 +13,12 @@ import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.com
   styleUrls: ['./chat.component.css'],
 })
 export class ChatComponent {
+  openChannelDialog(): void {
+    this.dialog.open(AddChannelDialogComponent);
+  }
+  openTeamDialog(): void {
+    this.dialog.open(AddTeamDialogComponent);
+  }
   title = 'chatHaven';
 
   constructor(public dialog: MatDialog) {}
@@ -37,11 +43,6 @@ export class ChatComponent {
     console.log('You are inside the selectServer function');
     console.log('Server:', server);
   }
-
-  openChannelDialog(): void {
-    this.dialog.open(AddChannelDialogComponent);
-  }
-
   selectChannel(channel: string) {
     /*function for when channel is clicked*/
     console.log('You are inside the selectChannel function');
@@ -53,13 +54,11 @@ export class ChatComponent {
     console.log('You are inside the selectSetting function');
     console.log('Setting:', setting);
   }
-
   selectMenu(menu: string) {
     /*function for when menu is clicked*/
     console.log('You are inside the selectMenu function');
     console.log('Menu:', menu);
   }
-
   messages: Message[] = [
     new Message(
       'User3',

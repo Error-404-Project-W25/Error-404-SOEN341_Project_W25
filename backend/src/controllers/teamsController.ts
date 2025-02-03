@@ -147,11 +147,9 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
         (m) => m.user_id === member.user_id
       );
       if (existingMember) {
-        res
-          .status(400)
-          .json({
-            error: `User with user_id ${member.user_id} is already a member of the team`,
-          });
+        res.status(400).json({
+          error: `User with user_id ${member.user_id} is already a member of the team`,
+        });
         return;
       }
     }
