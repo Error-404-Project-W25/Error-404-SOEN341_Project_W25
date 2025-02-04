@@ -27,7 +27,7 @@
         <hr class="separator" />
         <div class="user-menu-container">
           <button class="user-menu" (click)="selectMenu()">Menu</button>
-          <button class="user-menu" (click)="selectSetting()">Out</button>
+          <button class="user-menu" (click)="signOut()">Out</button>
         </div>
       </div>
       <div class="side-bar-2">
@@ -66,7 +66,9 @@
                 <span class="message-author">{{ message.author }}</span>
                 <span class="message-date">{{ message.date }}</span>
               </div>
-              <textarea class="message-text" readonly>{{ message.text }}</textarea>
+              <textarea class="message-text" readonly>{{
+                message.text
+              }}</textarea>
             </div>
           </div>
         </div>
