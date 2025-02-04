@@ -6,6 +6,9 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { BackendService} from '../../services/backend.service';
+import { UserService } from '../../services/user.service';
+import { IUser } from '../../../../shared/interfaces';
 
 @Component({
   selector: 'app-add-channel-dialog',
@@ -22,37 +25,48 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 })
 export class AddChannelDialogComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
+  channelId = '';
   channelName = '';
   description = '';
+  members: { username: string }[] = []; // stores selected members to be added
 
   constructor(
     private http: HttpClient,
-    private dialogRef: MatDialogRef<AddChannelDialogComponent>
+    private dialogRef: MatDialogRef<AddChannelDialogComponent>,
+    private backendService: BackendService,
+    private userService: UserService
   ) {}
 
-  search() {
-    // when the button is clicked, the search function is called
-    console.log('searching for:', this.searchQuery);
+
+ async createChannel() {
+
+    try {
+      await this.backendService.createChannel(this.channelId, this.channelName, this.description);
+      console.log('Channel created successfully');
+      this.dialogRef.close(); // Close the dialog
+    } catch (error) {
+      console.error('Error creating channel:', error);
+    }
   }
+/*
+  async addMemberToChannel() {
+    try {
+      const memberUsername = this.members[0].username;  // Assuming members array stores only usernames
+      const member = await this.userService.getUser();  // Get the full user data using username
 
-  createChannel() {
-    const channelData = {
-      user_id: 'exampleUserId', // Replace with actual user ID
-      username: 'exampleUsername', // Replace with actual username
-      channel_name: this.channelName,
-      description: this.description,
-      members: [],
-      role: 'admin',
-    };
+      if (member) {
+        const memberId = member.user_id;  // Extract the user_id
 
-    this.http.post('/api/channels', channelData).subscribe(
-      (response) => {
-        console.log('channel created successfully:', response);
+        // Now that you have the user_id, you can add the member to the channel
+        await this.backendService.addUserToChannel(this.channelId, memberId, this.channelId);
+        console.log('Member added to channel successfully');
         this.dialogRef.close(); // Close the dialog
-      },
-      (error) => {
-        console.error('Error creating channel:', error);
+      } else {
+        console.error('Member not found');
       }
-    );
+    } catch (error) {
+      console.error('Error adding member to channel:', error);
+    }
   }
+*/
 }
