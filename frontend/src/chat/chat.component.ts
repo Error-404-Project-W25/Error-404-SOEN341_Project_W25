@@ -33,16 +33,17 @@ export class ChatComponent {
   /*current user*/
   currentUser: IUser | null = null;
 
-  /*TeamLogo: (*now text, later image) max 3 characters (for now make team name S#)*/
-  /*Replace list with actual teams list*/
-
-  teams: ITeam[] = this.currentUser?.teams || [];
-
+  teams: ITeam[] = [];
   channels: IChannel[] = [];
 
   selectedTeam: string | null = null;
   selectedChannel: string | null = null;
 
+  ngOnInit() {
+    if (this.currentUser) {
+      this.teams = this.currentUser.teams || [];
+    }
+  }
   selectTeam(team: ITeam) {
     this.teamSelectedName = team.team_name;
     this.channels = team.channels;
