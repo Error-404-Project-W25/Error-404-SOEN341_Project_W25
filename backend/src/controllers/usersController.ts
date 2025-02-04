@@ -94,3 +94,16 @@ export const getUserInfo = async (req: Request, res: Response) => {
       .json({ error: 'Failed to get user info', details: error.message });
   }
 };
+
+
+export const searchUsers = async (req: Request, res: Response) => {
+  try {
+    const query = typeof req.query.q === 'string' ? req.query.q : '';
+    const users = await User.find({
+      username: new RegExp(query, 'i') // Only search by username
+    });
+    res.status(200).json(users);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to search users', details: error.message });
+  }
+};

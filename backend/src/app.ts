@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 import teamsRoutes from './routes/teamsRoutes';
 import authRoutes from './routes/authRoutes';
 import channelsRoutes from './routes/channelsRoutes';
+import userRoutes from './routes/userRoutes';
 import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
@@ -40,6 +41,7 @@ const startServer = async () => {
     app.use('/teams', teamsRoutes);
     app.use('/auth', authRoutes);
     app.use('/channels', channelsRoutes);
+    app.use('/users', userRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

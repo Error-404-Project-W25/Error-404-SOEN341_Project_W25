@@ -80,6 +80,20 @@ export class BackendService {
     return null;
   }
 
+  async searchUsers(query: string): Promise<IUser[]> {
+    try {
+      const response: IUser[] = await firstValueFrom(
+        this.http.get<IUser[]>(`${this.backendURL}/users/search`, {
+          params: { q: query },
+        })
+      );
+      return response;
+    } catch (error) {
+      console.error('Error searching users:', error);
+      return [];
+    }
+  }
+
   //////////////////////////// TEAMS ////////////////////////////
 
   async createTeams(
@@ -87,7 +101,7 @@ export class BackendService {
     username: string,
     team_name: string,
     description: string,
-    members: string[],
+    members: IUser[],
     role: string
   ): Promise<void> {
     try {

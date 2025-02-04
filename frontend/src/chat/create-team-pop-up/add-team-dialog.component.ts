@@ -27,7 +27,7 @@ export class AddTeamDialogComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   teamName = '';
   description = '';
-  teamMembers: string[] = [];
+  teamMembers: IUser[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<AddTeamDialogComponent>,
@@ -35,9 +35,18 @@ export class AddTeamDialogComponent {
     private userService: UserService
   ) {}
 
-  search() {
+  async search() {
     console.log('searching for:', this.searchQuery);
-    this.teamMembers.push(this.searchQuery);
+    try {
+      const foundUsers = await this.backendService.searchUsers(this.searchQuery);
+      if (foundUsers.length > 0) {
+        this.teamMembers.push(...foundUsers);
+      } else {
+        console.log('No users found');
+      }
+    } catch (error) {
+      console.error('Error searching users:', error);
+    }
   }
 
 
