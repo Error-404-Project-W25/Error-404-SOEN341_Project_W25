@@ -1,4 +1,3 @@
-import { getUserInfo } from './../../../../backend/src/controllers/usersController';
 /* Create team Pop Up */
 import { Component } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -27,7 +26,6 @@ export class AddTeamDialogComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   teamName = '';
   description = '';
-  teamMembers: IUser[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<AddTeamDialogComponent>,
@@ -35,37 +33,30 @@ export class AddTeamDialogComponent {
     private userService: UserService
   ) {}
 
-  async search() {
+  teamMembers: IUser[] = [];
+
+  search() {
     console.log('searching for:', this.searchQuery);
-    try {
-      const foundUsers = await this.backendService.searchUsers(this.searchQuery);
-      if (foundUsers.length > 0) {
-        this.teamMembers.push(...foundUsers);
-      } else {
-        console.log('No users found');
-      }
-    } catch (error) {
+    this.backendService.searchUsers(this.searchQuery).then((users: IUser[]) => {
+      this.teamMembers = users;
+    }).catch((error) => {
       console.error('Error searching users:', error);
-    }
+    });
   }
-
-
 
   createTeam() {
     const currentUser = this.userService.getUser();
     if (!currentUser) {
-      console.error('No current user found');
+      console.error('No user found');
       return;
     }
-
     if (!currentUser.username) {
-      console.error('Current user does not have a username');
+      console.error('No username found');
       return;
     }
-
     const teamData = {
-      user_id: currentUser.user_id,
-      username: currentUser.username,
+      user_id: currentUser.user_id, // Replace with actual user ID
+      username: currentUser.username, // Replace with actual username
       team_name: this.teamName,
       description: this.description,
       members: this.teamMembers,
