@@ -57,33 +57,15 @@ export const createTeams = async (req: Request, res: Response) => {
       team_id,
       team_name,
       description,
-      admin: [
-        {
-          user_id,
-          username,
-          role: 'admin', // Creator is always admin
-        },
-      ],
-      members: [
-        {
-          user_id,
-          username,
-          role: 'admin', // Add the creator as a member with admin role
-        },
-      ],
+      admin: [user_id], // Add the creator as admin
+      members: [user_id], // Add the creator as a member
       channels: [
         {
           id: uuidv4(),
           name: 'General',
           description: 'This is the default channel',
           team: team_id,
-          members: [
-            {
-              user_id,
-              username,
-              role: 'admin', // Add the creator to the default channel members
-            },
-          ],
+          members: [user_id], // Add the creator to the default channel members
         },
       ],
       created_at: new Date(),
@@ -92,8 +74,8 @@ export const createTeams = async (req: Request, res: Response) => {
     // Add additional members if provided
     if (members && Array.isArray(members)) {
       members.forEach((member: IUser) => {
-        newTeam.members.push(member);
-        newTeam.channels[0].members.push(member);
+        newTeam.members.push(member.user_id);
+        newTeam.channels[0].members.push(member.user_id); 
       });
     }
 
@@ -103,9 +85,9 @@ export const createTeams = async (req: Request, res: Response) => {
     const user = await User.findOne({ user_id });
     if (user) {
       if (user.teams) {
-        user.teams.push(savedTeam);
+        user.teams.push(savedTeam); 
       } else {
-        user.teams = [savedTeam];
+        user.teams = [savedTeam]; 
       }
       await user.save();
     }
@@ -137,20 +119,11 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
       return;
     }
 
-    // Ensure team.members is initialized
-    if (!team.members) {
-      team.members = [];
-    }
-
-    // Ensure team.members is initialized
-    if (!team.members) {
-      team.members = [];
-    }
 
     // Check if any of the users are already members of the team
     for (const member of members) {
       const existingMember = team.members.find(
-        (m) => m.user_id === member.user_id
+        (m) => m === member.user_id
       );
       if (existingMember) {
         res.status(400).json({
@@ -167,21 +140,10 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
         member.role = 'user'; // Default role
       }
       console.log('member role: ' + member.role);
-      // Ensure team.members is initialized
-      if (!team.members) {
-        team.members = [];
-      }
-      team.members.push({
-        user_id: member.user_id,
-        username: member.username,
-        role: member.role,
-      });
+      
+      team.members.push(member.user_id);
 
-      team.channels[0].members.push({
-        user_id: member.user_id,
-        username: member.username,
-        role: member.role,
-      });
+      team.channels[0].members.push(member.user_id);
     });
 
     const updatedTeam = await team.save();

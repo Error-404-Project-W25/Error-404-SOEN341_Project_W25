@@ -3,7 +3,7 @@ export interface IChannel {
   name: string;
   description?: string;
   team_id?: string;
-  members: IUser[];
+  members: string[];
 }
 
 export interface ITeam {
@@ -11,7 +11,7 @@ export interface ITeam {
   team_name: string;
   description?: string;
   admin: IUser[];
-  members: IUser[];
+  members: string[];
   channels: IChannel[];
   created_at?: Date;
 }
