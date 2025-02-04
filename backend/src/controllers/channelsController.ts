@@ -97,10 +97,10 @@ export const addUserToChannel = async (req: Request, res: Response): Promise<voi
       }
 }
 
-// get channel by channel_name
-export const getChannelWithName = async (req: Request, res: Response): Promise<void> => {
-    const { team_id, channel_name } = req.params; // get channel id, team_id from params
-    if (!team_id || !channel_name) {
+// get channel by channel_id
+export const getChannelById = async (req: Request, res: Response): Promise<void> => {
+    const { team_id, channel_id } = req.params; // get channel_id, team_id from params
+    if (!team_id || !channel_id) {
         res.status(400).json({ error: 'Missing required fields' });
         return;
     }
@@ -110,7 +110,7 @@ export const getChannelWithName = async (req: Request, res: Response): Promise<v
             res.status(404).json({ error: 'Team not found' });
             return;
         }
-        const channel = team.channels.find((channel) => channel.name === channel_name); // find the channel by name
+        const channel = team.channels.find((channel) => channel.id === channel_id); // find the channel by id
         if (!channel) {
             res.status(404).json({ error: 'Channel not found' });
             return;

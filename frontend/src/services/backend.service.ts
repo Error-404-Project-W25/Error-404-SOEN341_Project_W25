@@ -197,18 +197,19 @@ async createChannel(
   }
 
 
-  async getChannelWithName(
+  async getChannelById(
     team_id: string,
-    channel_name: string
+    channel_id: string
   ): Promise<void> {
     try {
       await firstValueFrom(
         this.http.get<void>(
-          `${this.backendURL}/channels/${team_id}/${channel_name}`
+          `${this.backendURL}/channels/${team_id}/${channel_id}`
         )
       );
     } catch (error) {
-      console.error('Error getting channel by name:', error);
+      console.error('Error getting channel by id:', error);
     }
   }
 }
+
