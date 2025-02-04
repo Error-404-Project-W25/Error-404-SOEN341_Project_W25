@@ -1,6 +1,6 @@
 /* Create channel Pop Up */
 
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
@@ -29,6 +29,8 @@ export class AddChannelDialogComponent {
   channelName = '';
   description = '';
   members: { username: string; userID: string }[] = []; // stores selected members to be added
+
+  @Output() channelCreated = new EventEmitter<void>();
 
   constructor(
     private http: HttpClient,
@@ -71,6 +73,7 @@ export class AddChannelDialogComponent {
         this.description
       );
       console.log('Channel created successfully');
+      this.channelCreated.emit(); // Emit event when channel is created
       this.dialogRef.close(); // Close the dialog
     } catch (error) {
       console.error('Error creating channel:', error);

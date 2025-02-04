@@ -7,6 +7,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
 import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -20,12 +21,59 @@ export class ChatComponent {
     this.currentUser = this.userService.getUser();
   }
 
+  private teamCreatedSubscription: Subscription | null = null;
+  private channelCreatedSubscription: Subscription | null = null;
+
   openChannelDialog(): void {
-    this.dialog.open(AddChannelDialogComponent);
+    const dialogRef = this.dialog.open(AddChannelDialogComponent);
+    this.channelCreatedSubscription = dialogRef.componentInstance.channelCreated.subscribe(() => {
+      this.onChannelCreated();
+    });
   }
+
   openTeamDialog(): void {
-    this.dialog.open(AddTeamDialogComponent);
+    const dialogRef = this.dialog.open(AddTeamDialogComponent);
+    this.teamCreatedSubscription = dialogRef.componentInstance.teamCreated.subscribe(() => {
+      this.onTeamCreated();
+    });
   }
+
+  ngOnDestroy() {
+    if (this.teamCreatedSubscription) {
+      this.teamCreatedSubscription.unsubscribe();
+    }
+    if (this.channelCreatedSubscription) {
+      this.channelCreatedSubscription.unsubscribe();
+    }
+  }
+
+  onTeamCreated() {
+    console.log('Team created, performing necessary actions...');
+    this.refreshTeams(); // Call the function to refresh teams array
+  }
+
+  onChannelCreated() {
+    console.log('Channel created, performing necessary actions...');
+    this.refreshChannels(); // Call the function to refresh channels array
+  }
+
+  refreshTeams() {
+    if (this.currentUser) {
+      this.teams = [...(this.currentUser.teams || [])]; // Ensure teams array is updated
+      console.log('Teams updated:', this.teams);
+    }
+  }
+
+  refreshChannels() {
+    if (this.selectedTeam) {
+      const team = this.teams.find(t => t.team_id === this.selectedTeam);
+      if (team) {
+        this.channels = team.channels;
+        console.log('Channels updated:', this.channels);
+      }
+    }
+  }
+
   title = 'chatHaven';
 
   /*Team Name max 64 characters*/
@@ -40,9 +88,7 @@ export class ChatComponent {
   selectedChannel: string | null = null;
 
   ngOnInit() {
-    if (this.currentUser) {
-      this.teams = this.currentUser.teams || [];
-    }
+    this.refreshTeams(); // Initialize teams array
   }
   selectTeam(team: ITeam) {
     this.teamSelectedName = team.team_name;
