@@ -96,3 +96,31 @@ export const addUserToChannel = async (req: Request, res: Response): Promise<voi
         }
       }
 }
+
+// get channel by channel_name
+export const getChannelWithName = async (req: Request, res: Response): Promise<void> => {
+    const { team_id, channel_name } = req.params; // get channel id, team_id from params
+    if (!team_id || !channel_name) {
+        res.status(400).json({ error: 'Missing required fields' });
+        return;
+    }
+    try {
+        const team = await Team.findOne({ team_id }); // get the team by team_id    
+        if (!team) {
+            res.status(404).json({ error: 'Team not found' });
+            return;
+        }
+        const channel = team.channels.find((channel) => channel.name === channel_name); // find the channel by name
+        if (!channel) {
+            res.status(404).json({ error: 'Channel not found' });
+            return;
+        }
+        res.status(200).json(channel); // return the channel
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+          res.status(500).json({ error: 'Failed to get channel', details: error.message });
+        } else {
+          res.status(500).json({ error: 'Failed to get channel', details: 'Unknown error' });
+        }
+      }
+}
