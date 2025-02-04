@@ -1,4 +1,3 @@
-import { getUserInfo } from './../../../../backend/src/controllers/usersController';
 /* Create team Pop Up */
 import { Component } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -27,7 +26,7 @@ export class AddTeamDialogComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   teamName = '';
   description = '';
-  teamMembers: IUser[] = [];
+  found = '';
 
   constructor(
     private dialogRef: MatDialogRef<AddTeamDialogComponent>,
@@ -35,47 +34,67 @@ export class AddTeamDialogComponent {
     private userService: UserService
   ) {}
 
-  search() {
-  }
+  teamMembers: IUser[] = [];
 
-  
+  search() {
+    console.log('searching for:', this.searchQuery);
+    this.backendService
+      .searchUsers(this.searchQuery)
+      .then((users: IUser[]) => {
+        if (users.length > 0) {
+          this.found = 'User found';
+          setTimeout(() => {
+            this.found = '';
+          }, 2000);
+        } else {
+          this.found = 'No user found';
+          setTimeout(() => {
+            this.found = '';
+          }, 2000);
+        }
+        this.teamMembers = users;
+      })
+      .catch((error) => {
+        console.error('Error searching users:', error);
+      });
+  }
 
   createTeam() {
     const currentUser = this.userService.getUser();
     if (!currentUser) {
-      console.error('No current user found');
+      console.error('No user found');
       return;
     }
-
     if (!currentUser.username) {
-      console.error('Current user does not have a username');
+      console.error('No username found');
       return;
     }
-
     const teamData = {
-      user_id: currentUser.user_id,
-      username: currentUser.username,
+      user_id: currentUser.user_id, // Replace with actual user ID
+      username: currentUser.username, // Replace with actual username
       team_name: this.teamName,
       description: this.description,
       members: this.teamMembers,
       role: 'admin',
     };
 
-    this.backendService.createTeams(
-      teamData.user_id,
-      teamData.username,
-      teamData.team_name,
-      teamData.description,
-      teamData.members,
-      teamData.role
-    ).then(
-      () => {
-        console.log('Team created successfully');
-        this.dialogRef.close(); // Close the dialog
-      },
-      (error) => {
-        console.error('Error creating team:', error);
-      }
-    );
+    this.backendService
+      .createTeams(
+        teamData.user_id,
+        teamData.username,
+        teamData.team_name,
+        teamData.description,
+        teamData.members,
+        teamData.role
+      )
+      .then(
+        () => {
+          console.log('Team created successfully');
+          this.dialogRef.close(); // Close the dialog
+        },
+        (error) => {
+          console.error('Error creating team:', error);
+        }
+      );
   }
 }

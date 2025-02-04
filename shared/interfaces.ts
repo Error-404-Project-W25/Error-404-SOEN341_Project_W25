@@ -3,17 +3,17 @@ export interface IChannel {
   name: string;
   description?: string;
   team_id?: string;
-  members: IUser[];
+  members: string[];
 }
 
 export interface ITeam {
-  team_id: string;
+  team_id?: string;
   team_name: string;
-  description: string;
+  description?: string;
   admin: IUser[];
-  members: IUser[];
+  members: string[];
   channels: IChannel[];
-  created_at: Date;
+  created_at?: Date;
 }
 
 export interface IUser {

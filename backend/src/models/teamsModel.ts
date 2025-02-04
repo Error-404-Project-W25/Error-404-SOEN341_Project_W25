@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { userSchema } from './userModel';
 import { channelSchema } from './channelsModel';
 import { ITeam } from '../../../shared/interfaces';
 
@@ -8,8 +7,9 @@ const teamSchema = new Schema(
   {
     team_id: { type: String, unique: true },
     team_name: { type: String, required: true },
-    admin: { type: [userSchema], required: true },
-    members: { type: [userSchema], default: [] },
+    description: { type: String },
+    admin: { type: [String], required: true },
+    members: { type: [String], default: [] },
     channels: { type: [channelSchema], required: true },
     created_at: { type: Date, default: Date.now },
   },

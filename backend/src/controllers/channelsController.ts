@@ -61,14 +61,14 @@ export const addUserToChannel = async (req: Request, res: Response): Promise<voi
         }
 
         // Check if the user is part of the team
-        const userInTeam = team.members.find((member) => member.user_id === user_id);
+        const userInTeam = team.members.find((member) => member === user_id);
         if (!userInTeam) {
             res.status(400).json({ error: 'The user entered is not part of the team' });
             return;
         }
 
         // Check if the user is part of the channel
-        const userInChannel = channel.members.find((member) => member.user_id === user_id);
+        const userInChannel = channel.members.find((member) => member === user_id);
         if (userInChannel) {
             res.status(400).json({ error: 'The user entered is already part of the channel' });
             return;

@@ -80,6 +80,18 @@ export class BackendService {
     return null;
   }
 
+  async searchUsers(user_id: string): Promise<IUser[]> {
+    try {
+      const response: IUser[] = await firstValueFrom(
+        this.http.get<IUser[]>(`${this.backendURL}/users/search/${user_id}`)
+      );
+      return response;
+    } catch (error) {
+      console.error('Error searching users:', error);
+      return [];
+    }
+  }
+
   //////////////////////////// TEAMS ////////////////////////////
 
   async createTeams(
@@ -87,7 +99,7 @@ export class BackendService {
     username: string,
     team_name: string,
     description: string,
-    members: string[],
+    members: IUser[],
     role: string
   ): Promise<void> {
     try {
@@ -109,7 +121,7 @@ export class BackendService {
   async getTeamById(team_id: string): Promise<void> {
     try {
       await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/getTeamById`, {
+        this.http.post<void>(`${this.backendURL}/teams/getTeamById`, {
           team_id,
         })
       );
