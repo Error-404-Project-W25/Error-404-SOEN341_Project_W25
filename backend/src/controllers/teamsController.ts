@@ -15,10 +15,10 @@ export const getAllTeams = async (req: Request, res: Response) => {
   }
 };
 
-export const getTeamByName = async (req: Request, res: Response) => {
+export const getTeamById = async (req: Request, res: Response) => {
   try {
-    const { team_name } = req.body;
-    const team = await Team.findOne({ team_name });
+    const { team_id } = req.params; // 
+    const team = await Team.findOne({ team_id });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;

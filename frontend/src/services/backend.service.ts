@@ -120,15 +120,13 @@ export class BackendService {
   }
 
 
-  async getTeamByName(team_name: string): Promise<void> {
+  async getTeamById(team_id: string): Promise<void> {
     try {
       await firstValueFrom(
-        this.http.get<void>(`${this.backendURL}/teams/getTeamByName`, {
-          params: { team_name }, // Send query parameter
-        })
+        this.http.get<void>(`${this.backendURL}/teams/getTeamById/${team_id}`)
       );
     } catch (error) {
-      console.error('Error getting team by name:', error);
+      console.error('Error getting team by id:', error);
     }
   }
 
