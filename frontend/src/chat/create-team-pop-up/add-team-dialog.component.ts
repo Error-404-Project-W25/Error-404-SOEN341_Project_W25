@@ -5,7 +5,8 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+import { BackendService } from '../../services/backend.service';
 
 @Component({
   selector: 'app-add-team-dialog',
@@ -26,13 +27,22 @@ export class AddTeamDialogComponent {
   description = '';
 
   constructor(
-    private http: HttpClient,
-    private dialogRef: MatDialogRef<AddTeamDialogComponent>
+    private dialogRef: MatDialogRef<AddTeamDialogComponent>,
+    private backendService: BackendService
   ) {}
 
   search() {
     // when the button is clicked, the search function is called
     console.log('searching for:', this.searchQuery);
+    // this.backendService.searchUser(this.searchQuery).then(
+    //   (response) => {
+    //     console.log('User found:', response);
+    //     // Add user to the team or perform any other action
+    //   },
+    //   (error) => {
+    //     console.error('Error searching for user:', error);
+    //   }
+    // );
   }
 
   createTeam() {
@@ -45,9 +55,16 @@ export class AddTeamDialogComponent {
       role: 'admin',
     };
 
-    this.http.post('/api/teams', teamData).subscribe(
-      (response) => {
-        console.log('team created successfully:', response);
+    this.backendService.createTeams(
+      teamData.user_id,
+      teamData.username,
+      teamData.team_name,
+      teamData.description,
+      teamData.members,
+      teamData.role
+    ).then(
+      () => {
+        console.log('Team created successfully');
         this.dialogRef.close(); // Close the dialog
       },
       (error) => {
