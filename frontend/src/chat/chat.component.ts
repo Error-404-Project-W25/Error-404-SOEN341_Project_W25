@@ -60,11 +60,16 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   openTeamDialog(): void {
-    const dialogRef = this.dialog.open(AddTeamDialogComponent);
-    this.teamCreatedSubscription =
-      dialogRef.componentInstance.teamCreated.subscribe(() => {
-        this.onTeamCreated();
-      });
+    if (this.currentUser?.role === 'admin') {
+      const dialogRef = this.dialog.open(AddTeamDialogComponent);
+      this.teamCreatedSubscription =
+        dialogRef.componentInstance.teamCreated.subscribe(() => {
+          this.onTeamCreated();
+        });
+    }else{
+      console.error('Permission denied: Only admins can create a team.');
+      alert('You do not have the permission to create a team');
+    }
   }
 
   onTeamCreated() {
