@@ -6,7 +6,7 @@
   align-items: center;
   height: auto;
   width: 100%;
-  background-color: #313338;
+  background-color: #212121;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,7 @@
   font-family: Arial, Helvetica, sans-serif;
   height: auto;
   width: 400px;
-  background: linear-gradient(#313338, #313338) padding-box,
+  background: linear-gradient(#212121, #212121) padding-box,
     linear-gradient(145deg, transparent 35%, #ff6b6b, #ff6b6b) border-box;
   border: 2px solid transparent;
   padding: 32px 24px;
