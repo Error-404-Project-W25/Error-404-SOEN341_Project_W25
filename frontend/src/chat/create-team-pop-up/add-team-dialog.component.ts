@@ -42,12 +42,14 @@ export class AddTeamDialogComponent {
       .searchUsers(this.searchQuery)
       .then((users: IUser[]) => {
         if (users.length > 0) {
-          this.found = 'User found';
+            this.found = 'User found';
+            console.log('User found:', users);
           setTimeout(() => {
             this.found = '';
           }, 2000);
         } else {
           this.found = 'No user found';
+          console.log('No user found:', users);
           setTimeout(() => {
             this.found = '';
           }, 2000);
