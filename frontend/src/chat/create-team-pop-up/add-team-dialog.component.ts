@@ -26,6 +26,7 @@ export class AddTeamDialogComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   teamName = '';
   description = '';
+  found = '';
 
   constructor(
     private dialogRef: MatDialogRef<AddTeamDialogComponent>,
@@ -37,11 +38,25 @@ export class AddTeamDialogComponent {
 
   search() {
     console.log('searching for:', this.searchQuery);
-    this.backendService.searchUsers(this.searchQuery).then((users: IUser[]) => {
-      this.teamMembers = users;
-    }).catch((error) => {
-      console.error('Error searching users:', error);
-    });
+    this.backendService
+      .searchUsers(this.searchQuery)
+      .then((users: IUser[]) => {
+        if (users.length > 0) {
+          this.found = 'User found';
+          setTimeout(() => {
+            this.found = '';
+          }, 2000);
+        } else {
+          this.found = 'No user found';
+          setTimeout(() => {
+            this.found = '';
+          }, 2000);
+        }
+        this.teamMembers = users;
+      })
+      .catch((error) => {
+        console.error('Error searching users:', error);
+      });
   }
 
   createTeam() {
@@ -63,21 +78,23 @@ export class AddTeamDialogComponent {
       role: 'admin',
     };
 
-    this.backendService.createTeams(
-      teamData.user_id,
-      teamData.username,
-      teamData.team_name,
-      teamData.description,
-      teamData.members,
-      teamData.role
-    ).then(
-      () => {
-        console.log('Team created successfully');
-        this.dialogRef.close(); // Close the dialog
-      },
-      (error) => {
-        console.error('Error creating team:', error);
-      }
-    );
+    this.backendService
+      .createTeams(
+        teamData.user_id,
+        teamData.username,
+        teamData.team_name,
+        teamData.description,
+        teamData.members,
+        teamData.role
+      )
+      .then(
+        () => {
+          console.log('Team created successfully');
+          this.dialogRef.close(); // Close the dialog
+        },
+        (error) => {
+          console.error('Error creating team:', error);
+        }
+      );
   }
 }
