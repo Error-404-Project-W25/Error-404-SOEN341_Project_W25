@@ -1,39 +1,63 @@
 <div class="container">
   <div class="form-container">
     <h1>Create Team</h1>
-    <form class="form" (ngSubmit)="createTeam()">
+    <form class="form" (ngSubmit)="createTeam()" #teamForm="ngForm">
+      <!-- Team Name -->
       <div class="form-group">
-        <label>Team Name</label>
-        <input required="" type="text" [(ngModel)]="teamName" name="teamName" />
+        <label for="teamName">Team Name</label>
+        <input
+          type="text"
+          id="teamName"
+          [(ngModel)]="teamName"
+          name="teamName"
+          required
+          #teamNameInput="ngModel"
+        />
+        <div *ngIf="teamNameInput.invalid && teamNameInput.touched" class="error-message">
+          Team name is required.
+        </div>
       </div>
+
+      <!-- Description -->
       <div class="form-group">
-        <label for="textarea">Description</label>
+        <label for="description">Description</label>
         <textarea
-          required=""
+          id="description"
           cols="50"
           rows="10"
-          id="textarea"
-          name="textarea"
           [(ngModel)]="description"
+          name="description"
+          required
+          #descriptionInput="ngModel"
         ></textarea>
+        <div *ngIf="descriptionInput.invalid && descriptionInput.touched" class="error-message">
+          Description is required.
+        </div>
       </div>
+
+      <!-- Add Member -->
       <div class="form-group">
-        <label>Add Member</label>
+        <label for="searchQuery">Add Member</label>
         <div class="container-add-member">
           <input
-            required=""
             type="text"
+            id="searchQuery"
             [(ngModel)]="searchQuery"
             name="searchQuery"
+            required
+            #searchQueryInput="ngModel"
           />
-          <button class="add-member-btn" type="button" (click)="search()">
-            Add
-          </button>
+          <button class="add-member-btn" type="button" (click)="search()">Add</button>
         </div>
-        <!-- need to work on that -->
-        <div style="text-align: center; height: 10px;">{{ found }}</div>
+        <div class="found-message" *ngIf="found">
+          {{ found }}
+        </div>
       </div>
-      <button type="submit" class="form-submit-btn">Submit</button>
+
+      <!-- Submit Button -->
+      <button type="submit" class="form-submit-btn" [disabled]="teamForm.invalid">
+        Submit
+      </button>
     </form>
   </div>
 </div>

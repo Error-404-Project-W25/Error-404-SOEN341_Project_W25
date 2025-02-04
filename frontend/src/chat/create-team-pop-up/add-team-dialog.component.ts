@@ -1,10 +1,11 @@
 /* Create team Pop Up */
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common'; // Import CommonModule
 import { BackendService } from '../../services/backend.service';
 import { UserService } from '../../services/user.service';
 import { IChannel, ITeam, IUser } from '../../../../shared/interfaces';
@@ -15,6 +16,7 @@ import { IChannel, ITeam, IUser } from '../../../../shared/interfaces';
   styleUrls: ['./add-team-dialog.component.css'],
   standalone: true,
   imports: [
+    CommonModule, // Add CommonModule to imports
     MatDialogModule,
     MatInputModule,
     FormsModule,
@@ -23,6 +25,7 @@ import { IChannel, ITeam, IUser } from '../../../../shared/interfaces';
   ],
 })
 export class AddTeamDialogComponent {
+  @Output() teamCreated = new EventEmitter<void>();
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   teamName = '';
   description = '';
@@ -100,6 +103,7 @@ export class AddTeamDialogComponent {
       .then(
         () => {
           console.log('Team created successfully');
+          this.teamCreated.emit(); // Emit event when team is created
           this.dialogRef.close(); // Close the dialog
         },
         (error) => {

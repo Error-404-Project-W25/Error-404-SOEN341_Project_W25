@@ -1,12 +1,13 @@
 import { UserService } from './../services/user.service';
 import { BackendService } from './../services/backend.service';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
 import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -15,56 +16,119 @@ import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
 })
-export class ChatComponent {
-  constructor(public dialog: MatDialog, private userService: UserService) {
+export class ChatComponent implements OnInit, OnDestroy {
+  currentUser: IUser | null = null;
+  teams: ITeam[] = [];
+  channels: IChannel[] = [];
+  selectedTeam: string | null = null;
+  selectedChannel: string | null = null;
+  teamSelectedName = '';
+  title = 'chatHaven';
+
+  private teamCreatedSubscription: Subscription | null = null;
+  private channelCreatedSubscription: Subscription | null = null;
+
+  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
+  teams$ = this.teamsSubject.asObservable();
+
+  private channelsSubject = new BehaviorSubject<IChannel[]>([]);
+  channels$ = this.channelsSubject.asObservable();
+
+  constructor(
+    public dialog: MatDialog,
+    private userService: UserService,
+    private backendService: BackendService
+  ) {
     this.currentUser = this.userService.getUser();
   }
 
-  openChannelDialog(): void {
-    this.dialog.open(AddChannelDialogComponent);
-  }
-  openTeamDialog(): void {
-    this.dialog.open(AddTeamDialogComponent);
-  }
-  title = 'chatHaven';
-
-  /*Team Name max 64 characters*/
-  teamSelectedName = '';
-  /*current user*/
-  currentUser: IUser | null = null;
-
-  teams: ITeam[] = [];
-  channels: IChannel[] = [];
-
-  selectedTeam: string | null = null;
-  selectedChannel: string | null = null;
-
   ngOnInit() {
-    if (this.currentUser) {
-      this.teams = this.currentUser.teams || [];
+    this.refreshTeams(); // Initialize teams array
+  }
+
+  ngOnDestroy() {
+    this.teamCreatedSubscription?.unsubscribe();
+    this.channelCreatedSubscription?.unsubscribe();
+  }
+
+  openChannelDialog(): void {
+    const dialogRef = this.dialog.open(AddChannelDialogComponent);
+    this.channelCreatedSubscription =
+      dialogRef.componentInstance.channelCreated.subscribe(() => {
+        this.onChannelCreated();
+      });
+  }
+
+  openTeamDialog(): void {
+    if (this.currentUser?.role === 'admin') {
+      const dialogRef = this.dialog.open(AddTeamDialogComponent);
+      this.teamCreatedSubscription =
+        dialogRef.componentInstance.teamCreated.subscribe(() => {
+          this.onTeamCreated();
+        });
+    }else{
+      console.error('Permission denied: Only admins can create a team.');
+      alert('You do not have the permission to create a team');
     }
   }
+
+  onTeamCreated() {
+    console.log('Team created, performing necessary actions...');
+    this.refreshTeams(); // Call the function to refresh teams array
+  }
+
+  onChannelCreated() {
+    console.log('Channel created, performing necessary actions...');
+    this.refreshChannels(); // Call the function to refresh channels array
+  }
+
+  refreshTeams() {
+    if (this.currentUser) {
+      const teams = [...(this.currentUser.teams || [])]; // Ensure teams array is updated
+      this.teamsSubject.next(teams);
+      console.log('Teams updated:', teams);
+      if (teams.length > 0 && !this.selectedTeam) {
+        this.selectTeam(teams[0]); // Select the first team if none is selected
+      }
+    }
+  }
+
+  refreshChannels() {
+    if (this.selectedTeam) {
+      const team = this.teamsSubject
+        .getValue()
+        .find((t) => t.team_id === this.selectedTeam);
+      if (team) {
+        this.channelsSubject.next(team.channels);
+        console.log('Channels updated:', team.channels);
+      }
+    }
+  }
+
   selectTeam(team: ITeam) {
+    this.selectedTeam = team.team_id ?? null;
     this.teamSelectedName = team.team_name;
-    this.channels = team.channels;
+    this.channelsSubject.next(team.channels);
     console.log('You are inside the selectTeam function');
     console.log('Team:', team);
   }
+
   selectChannel(channel: IChannel) {
+    this.selectedChannel = channel.name;
     console.log('You are inside the selectChannel function');
     console.log('Channel:', channel);
   }
-  selectSetting(setting: string) {
-    /*function for when setting is clicked*/
-    /*use for logout now */
-    console.log('You are inside the selectSetting function');
-    console.log('Setting:', setting);
+
+  selectSetting() {
+    this.backendService.logoutUser();
+    console.log('Logging out from:', this.currentUser?.username);
+    window.location.href = '/';
   }
-  selectMenu(menu: string) {
-    /*function for when menu is clicked*/
+
+  selectMenu() {
     console.log('You are inside the selectMenu function');
-    console.log('Menu:', menu);
   }
+
   messages: Message[] = [
     new Message(
       'User3',
