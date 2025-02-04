@@ -57,8 +57,8 @@ export const createTeams = async (req: Request, res: Response) => {
       team_id,
       team_name,
       description,
-      admin: [user_id], // Add the creator as admin
-      members: [user_id], // Add the creator as a member
+      admin: [user_id], 
+      members: [user_id], 
       channels: [
         {
           id: uuidv4(),

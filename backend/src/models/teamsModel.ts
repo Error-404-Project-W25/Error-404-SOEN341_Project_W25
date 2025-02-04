@@ -8,8 +8,8 @@ const teamSchema = new Schema(
     team_id: { type: String, unique: true },
     team_name: { type: String, required: true },
     description: { type: String },
-    admin: { type: [String], required: true }, // Change to array of strings
-    members: { type: [String], default: [] }, // Change to array of strings
+    admin: { type: [String], required: true },
+    members: { type: [String], default: [] },
     channels: { type: [channelSchema], required: true },
     created_at: { type: Date, default: Date.now },
   },
