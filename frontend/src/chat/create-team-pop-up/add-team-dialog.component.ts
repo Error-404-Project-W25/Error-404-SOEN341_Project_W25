@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common'; // Import CommonModule
 import { BackendService } from '../../services/backend.service';
 import { UserService } from '../../services/user.service';
 import { IChannel, ITeam, IUser } from '../../../../shared/interfaces';
@@ -15,6 +16,7 @@ import { IChannel, ITeam, IUser } from '../../../../shared/interfaces';
   styleUrls: ['./add-team-dialog.component.css'],
   standalone: true,
   imports: [
+    CommonModule, // Add CommonModule to imports
     MatDialogModule,
     MatInputModule,
     FormsModule,
