@@ -79,11 +79,12 @@ export class BackendService {
 
     return null;
   }
-
-  async searchUsers(user_id: string): Promise<IUser[]> {
+  async searchUsers(query: string): Promise<IUser[]> {
     try {
       const response: IUser[] = await firstValueFrom(
-        this.http.get<IUser[]>(`${this.backendURL}/users/search/${user_id}`)
+        this.http.get<IUser[]>(`${this.backendURL}/users/search`, {
+          params: { q: query }, // Send query parameter
+        })
       );
       return response;
     } catch (error) {
