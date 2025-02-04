@@ -471,14 +471,21 @@ body {
   padding: 0;
 }
 .message-text {
-  width: auto;
-  color: #bbbdc1;
+  width: 90%;
+  background-color: inherit;
+  font: 16px Arial, sans-serif;
+  color: var(--message-text);
   display: flex;
   flex-direction: column;
   margin: 0;
-  padding: 0;
+  padding-left: 7px;
   overflow: hidden;
   gap: 3px;
+  border: none;
+  text-align: left;
+  white-space: nowrap;
+  resize: none;
+  overflow: hidden;
 }
 .input-container {
   width: 100%;
@@ -497,7 +504,6 @@ body {
   gap: 5px;
 }
 
-/* From Uiverse.io by vinodjangid07 */
 .messageBox {
   width: 100%;
   /* width: auto; */
@@ -529,7 +535,6 @@ body {
   justify-content: center;
   font-family: Arial, Helvetica, sans-serif;
 }
-
 #file {
   display: none;
 }
