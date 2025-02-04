@@ -100,7 +100,7 @@ export class BackendService {
     username: string,
     team_name: string,
     description: string,
-    members: string[],
+    members: IUser[],
     role: string
   ): Promise<void> {
     try {
@@ -119,15 +119,16 @@ export class BackendService {
     }
   }
 
-  async getTeamById(team_id: string): Promise<void> {
+
+  async getTeamByName(team_name: string): Promise<void> {
     try {
       await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/teams/getTeamById`, {
-          team_id,
+        this.http.get<void>(`${this.backendURL}/teams/getTeamByName`, {
+          params: { team_name }, // Send query parameter
         })
       );
     } catch (error) {
-      console.error('Error getting team by id:', error);
+      console.error('Error getting team by name:', error);
     }
   }
 
@@ -161,14 +162,14 @@ export class BackendService {
 
   //////////////////////////// CHANNELS ////////////////////////////
 
-  async createChannel(
+async createChannel(
     team_id: string,
     channelName: string,
     channelDescription: string
   ): Promise<void> {
     try {
       await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/channels/create/${team_id}`, {
+        this.http.post<void>(`${this.backendURL}/channels/${team_id}/create`, {
           channelName,
           channelDescription,
         })
@@ -179,14 +180,14 @@ export class BackendService {
   }
 
   async addUserToChannel(
+    team_id: string,
     channel_id: string,
-    user_id: string,
-    team_id: string
+    user_id: string
   ): Promise<void> {
     try {
       await firstValueFrom(
         this.http.post<void>(
-          `${this.backendURL}/channels/addUser/${channel_id}/${team_id}`,
+          `${this.backendURL}/channels/${team_id}/${channel_id}/addUser`,
           {
             user_id,
           }
@@ -194,6 +195,22 @@ export class BackendService {
       );
     } catch (error) {
       console.error('Error adding user to channel:', error);
+    }
+  }
+
+
+  async getChannelWithName(
+    team_id: string,
+    channel_name: string
+  ): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.http.get<void>(
+          `${this.backendURL}/channels/${team_id}/${channel_name}`
+        )
+      );
+    } catch (error) {
+      console.error('Error getting channel by name:', error);
     }
   }
 }

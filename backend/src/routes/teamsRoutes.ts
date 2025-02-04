@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { getAllTeams, getTeamById, createTeams, addMemberToTeam} from '../controllers/teamsController';
+import { getAllTeams, getTeamByName, createTeams, addMemberToTeam} from '../controllers/teamsController';
 
 const router: Router = Router();
 
 router.get('/', getAllTeams);
-router.get('/getTeamById', getTeamById);
+router.get('/getTeamByName', getTeamByName);
 router.post('/create', createTeams);
 router.post('/addMember', addMemberToTeam);
 

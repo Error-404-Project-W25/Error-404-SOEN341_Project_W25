@@ -15,21 +15,17 @@ export const getAllTeams = async (req: Request, res: Response) => {
   }
 };
 
-export const getTeamById = async (req: Request, res: Response) => {
+export const getTeamByName = async (req: Request, res: Response) => {
   try {
-    const { team_id } = req.body;
-    const team = await Team.findOne({ team_id: team_id });
+    const { team_name } = req.body;
+    const team = await Team.findOne({ team_name });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
     }
     res.json(team);
   } catch (error) {
-    const errorMessage = (error as Error).message;
-    res
-      .status(500)
-      .json({ error: 'Failed to get team', details: errorMessage });
-    console.error('Failed to get team:', errorMessage);
+    res.status(500).json({ error: 'Error fetching team' });
   }
 };
 
@@ -168,3 +164,4 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
     console.error('Failed to add member to team:', errorMessage);
   }
 };
+
