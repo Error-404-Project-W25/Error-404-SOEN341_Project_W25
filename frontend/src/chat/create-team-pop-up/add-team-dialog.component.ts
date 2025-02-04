@@ -34,7 +34,7 @@ export class AddTeamDialogComponent {
     private userService: UserService
   ) {}
 
-  teamMembers: IUser[] = [];
+  teamMembers: string[] = [];
 
   search() {
     console.log('searching for:', this.searchQuery);
@@ -52,7 +52,7 @@ export class AddTeamDialogComponent {
             this.found = '';
           }, 2000);
         }
-        this.teamMembers = users;
+        this.teamMembers = users.map(user => user.user_id).filter((user_id): user_id is string => user_id !== undefined);
       })
       .catch((error) => {
         console.error('Error searching users:', error);
@@ -61,12 +61,8 @@ export class AddTeamDialogComponent {
 
   createTeam() {
     const currentUser = this.userService.getUser();
-    if (!currentUser) {
-      console.error('No user found');
-      return;
-    }
-    if (!currentUser.username) {
-      console.error('No username found');
+    if (!currentUser?.username) {
+      console.error('No user or username found');
       return;
     }
     const teamData = {
