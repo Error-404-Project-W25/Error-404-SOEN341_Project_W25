@@ -10,7 +10,7 @@
     <div class="container">
       <div class="side-bar-1">
         <div class="add-team-button-container">
-            <button class="add-team-button" (click)="openTeamDialog()">+</button>
+          <button class="add-team-button" (click)="openTeamDialog()">+</button>
         </div>
         <hr class="separator" />
         <div class="team-list">
@@ -20,7 +20,7 @@
               [ngClass]="{ selected: team.team_id === selectedTeam }"
               (click)="selectTeam(team)"
             >
-              <a href="#">{{ team.team_name}}</a>
+              <a href="#">{{ team.team_name }}</a>
             </li>
           </ul>
         </div>
@@ -36,7 +36,9 @@
             {{ teamSelectedName }}
           </div>
           <div class="add-team-button-container">
-              <button class="add-team-button" (click)="openChannelDialog()">+</button>
+            <button class="add-team-button" (click)="openChannelDialog()">
+              +
+            </button>
           </div>
         </div>
         <div class="search-container">
@@ -49,9 +51,8 @@
               *ngFor="let channel of channels"
               [ngClass]="{ selected: channel.name === selectedChannel }"
               (click)="selectChannel(channel)"
-              href="#"
             >
-              {{ channel }}
+              {{ channel.name }}
             </li>
           </ul>
         </div>

@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { BackendService} from '../../services/backend.service';
+import { BackendService } from '../../services/backend.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../../../shared/interfaces';
 
@@ -28,7 +28,7 @@ export class AddChannelDialogComponent {
   channelId = '';
   channelName = '';
   description = '';
-  members: { username: string, userID: string }[] = []; // stores selected members to be added
+  members: { username: string; userID: string }[] = []; // stores selected members to be added
 
   constructor(
     private http: HttpClient,
@@ -46,8 +46,9 @@ export class AddChannelDialogComponent {
         if (users.length > 0) {
           // filter out users with undefined usernames and map to the expected format
           this.members = users
-            .filter(user => user.username !== undefined)
-            .map(user => ({ // mapping users to members
+            .filter((user) => user.username !== undefined)
+            .map((user) => ({
+              // mapping users to members
               username: user.username as string,
               userID: user.user_id,
             }));
@@ -56,16 +57,19 @@ export class AddChannelDialogComponent {
           console.error('No users found');
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error searching users:', error);
       });
   }
 
   // creating the channel
- async createChannel() {
-
+  async createChannel() {
     try {
-      await this.backendService.createChannel(this.channelId, this.channelName, this.description);
+      await this.backendService.createChannel(
+        this.channelId,
+        this.channelName,
+        this.description
+      );
       console.log('Channel created successfully');
       this.dialogRef.close(); // Close the dialog
     } catch (error) {
@@ -76,11 +80,18 @@ export class AddChannelDialogComponent {
   // add members to the channel
   async addMemberToChannel() {
     try {
-      for (const member of this.members) { // loop through each member
+      for (const member of this.members) {
+        // loop through each member
         if (member) {
           // ddd each member to the channel
-          await this.backendService.addUserToChannel(this.channelId, member.userID, this.channelId);
-          console.log(`Member ${member.username} added to channel successfully`);
+          await this.backendService.addUserToChannel(
+            this.channelId,
+            member.userID,
+            this.channelId
+          );
+          console.log(
+            `Member ${member.username} added to channel successfully`
+          );
         }
       }
       this.dialogRef.close(); // close the dialog after all members are added
@@ -88,5 +99,4 @@ export class AddChannelDialogComponent {
       console.error('Error adding member to channel:', error);
     }
   }
-
 }
