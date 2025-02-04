@@ -16,7 +16,7 @@
         <div class="team-list">
           <ul>
             <li
-              *ngFor="let team of teams"
+              *ngFor="let team of teams$ | async"
               [ngClass]="{ selected: team.team_id === selectedTeam }"
               (click)="selectTeam(team)"
             >
@@ -48,7 +48,7 @@
         <div class="channel-list">
           <ul>
             <li
-              *ngFor="let channel of channels"
+              *ngFor="let channel of channels$ | async"
               [ngClass]="{ selected: channel.name === selectedChannel }"
               (click)="selectChannel(channel)"
             >
