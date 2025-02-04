@@ -28,7 +28,7 @@ export class AddChannelDialogComponent {
   channelId = '';
   channelName = '';
   description = '';
-  members: { username: string }[] = []; // stores selected members to be added
+  members: { username: string, userID: string }[] = []; // stores selected members to be added
 
   constructor(
     private http: HttpClient,
@@ -37,7 +37,31 @@ export class AddChannelDialogComponent {
     private userService: UserService
   ) {}
 
+  // search for members to add to the channel
+  search() {
+    console.log('Searching for:', this.searchQuery);
+    this.backendService
+      .searchUsers(this.searchQuery) // searching for users with the search query
+      .then((users: IUser[]) => {
+        if (users.length > 0) {
+          // filter out users with undefined usernames and map to the expected format
+          this.members = users
+            .filter(user => user.username !== undefined)
+            .map(user => ({ // mapping users to members
+              username: user.username as string,
+              userID: user.user_id,
+            }));
+          console.log('Users found and added to members:', this.members);
+        } else {
+          console.error('No users found');
+        }
+      })
+      .catch(error => {
+        console.error('Error searching users:', error);
+      });
+  }
 
+  // creating the channel
  async createChannel() {
 
     try {
@@ -48,25 +72,21 @@ export class AddChannelDialogComponent {
       console.error('Error creating channel:', error);
     }
   }
-/*
+
+  // add members to the channel
   async addMemberToChannel() {
     try {
-      const memberUsername = this.members[0].username;  // Assuming members array stores only usernames
-      const member = await this.userService.getUser();  // Get the full user data using username
-
-      if (member) {
-        const memberId = member.user_id;  // Extract the user_id
-
-        // Now that you have the user_id, you can add the member to the channel
-        await this.backendService.addUserToChannel(this.channelId, memberId, this.channelId);
-        console.log('Member added to channel successfully');
-        this.dialogRef.close(); // Close the dialog
-      } else {
-        console.error('Member not found');
+      for (const member of this.members) { // loop through each member
+        if (member) {
+          // ddd each member to the channel
+          await this.backendService.addUserToChannel(this.channelId, member.userID, this.channelId);
+          console.log(`Member ${member.username} added to channel successfully`);
+        }
       }
+      this.dialogRef.close(); // close the dialog after all members are added
     } catch (error) {
       console.error('Error adding member to channel:', error);
     }
   }
-*/
+
 }
