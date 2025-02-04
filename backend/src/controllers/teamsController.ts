@@ -36,13 +36,10 @@ export const getTeamById = async (req: Request, res: Response) => {
 // Create a new team
 export const createTeams = async (req: Request, res: Response) => {
   try {
-    const { user_id, username, team_name, description, members, role } =
-      req.body;
+    const { user_id, username, team_name, description, members, role } = req.body;
 
     if (role !== 'admin') {
-      res
-        .status(400)
-        .json({ error: 'Invalid role, not allowed to create a team' });
+      res.status(400).json({ error: 'Invalid role, not allowed to create a team' });
       return;
     }
 
@@ -59,6 +56,7 @@ export const createTeams = async (req: Request, res: Response) => {
     const newTeam = new Team({
       team_id,
       team_name,
+      description,
       admin: [
         {
           user_id,
@@ -69,6 +67,7 @@ export const createTeams = async (req: Request, res: Response) => {
       members: [
         {
           user_id,
+          username,
           role: 'admin', // Add the creator as a member with admin role
         },
       ],
@@ -87,7 +86,6 @@ export const createTeams = async (req: Request, res: Response) => {
           ],
         },
       ],
-      description,
       created_at: new Date(),
     });
 
@@ -101,8 +99,8 @@ export const createTeams = async (req: Request, res: Response) => {
 
     const savedTeam = await newTeam.save();
 
-    //add team to the user given in the request
-    const user = await User.findOne({ user_id: user_id });
+    // Add the newly created team to the user's teams array
+    const user = await User.findOne({ user_id });
     if (user) {
       if (user.teams) {
         user.teams.push(savedTeam);
@@ -113,15 +111,13 @@ export const createTeams = async (req: Request, res: Response) => {
     }
 
     res.status(201).json(savedTeam);
+
   } catch (error) {
     const errorMessage = (error as Error).message;
-    res
-      .status(500)
-      .json({ error: 'Failed to create team', details: errorMessage });
+    res.status(500).json({ error: 'Failed to create team', details: errorMessage });
     console.error('Failed to create team:', errorMessage);
   }
 };
-
 // Add a member to a team
 
 export const addMemberToTeam = async (req: Request, res: Response) => {
@@ -139,6 +135,16 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
+    }
+
+    // Ensure team.members is initialized
+    if (!team.members) {
+      team.members = [];
+    }
+
+    // Ensure team.members is initialized
+    if (!team.members) {
+      team.members = [];
     }
 
     // Check if any of the users are already members of the team
@@ -161,6 +167,10 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
         member.role = 'user'; // Default role
       }
       console.log('member role: ' + member.role);
+      // Ensure team.members is initialized
+      if (!team.members) {
+        team.members = [];
+      }
       team.members.push({
         user_id: member.user_id,
         username: member.username,

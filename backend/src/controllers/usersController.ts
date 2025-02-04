@@ -100,7 +100,7 @@ export const searchUsers = async (req: Request, res: Response) => {
   try {
     const query = typeof req.query.q === 'string' ? req.query.q : '';
     const users = await User.find({
-      username: new RegExp(query, 'i') // Only search by username
+      user_id: new RegExp(query, 'i') // Search by user_id
     });
     res.status(200).json(users);
   } catch (error: any) {
