@@ -27,7 +27,7 @@ export class AddTeamDialogComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   teamName = '';
   description = '';
-  teamMembers: IUser[] = [];
+  teamMembers: string[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<AddTeamDialogComponent>,
@@ -36,9 +36,11 @@ export class AddTeamDialogComponent {
   ) {}
 
   search() {
+    console.log('searching for:', this.searchQuery);
+    this.teamMembers.push(this.searchQuery);
   }
 
-  
+
 
   createTeam() {
     const currentUser = this.userService.getUser();
