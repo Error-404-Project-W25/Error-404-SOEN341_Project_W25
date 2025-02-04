@@ -7,13 +7,13 @@ export interface IChannel {
 }
 
 export interface ITeam {
-  team_id: string;
+  team_id?: string;
   team_name: string;
-  description: string;
+  description?: string;
   admin: IUser[];
   members: IUser[];
   channels: IChannel[];
-  created_at: Date;
+  created_at?: Date;
 }
 
 export interface IUser {

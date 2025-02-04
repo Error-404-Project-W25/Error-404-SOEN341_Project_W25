@@ -8,6 +8,7 @@ const teamSchema = new Schema(
   {
     team_id: { type: String, unique: true },
     team_name: { type: String, required: true },
+    description: { type: String },
     admin: { type: [userSchema], required: true },
     members: { type: [userSchema], default: [] },
     channels: { type: [channelSchema], required: true },
