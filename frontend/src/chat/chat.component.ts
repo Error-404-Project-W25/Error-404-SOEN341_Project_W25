@@ -114,14 +114,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log('Channel:', channel);
   }
 
-  selectSetting(setting: string) {
+  selectSetting() {
     this.backendService.logoutUser();
-    console.log('Login out from:', this.currentUser?.username);
+    console.log('Logging out from:', this.currentUser?.username);
+    window.location.href = '/';
   }
 
-  selectMenu(menu: string) {
+  selectMenu() {
     console.log('You are inside the selectMenu function');
-    console.log('Menu:', menu);
   }
 
   messages: Message[] = [
