@@ -87,7 +87,7 @@ export class BackendService {
     username: string,
     team_name: string,
     description: string,
-    members: string[],
+    members: IUser[],
     role: string
   ): Promise<void> {
     try {
