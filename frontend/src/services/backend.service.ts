@@ -121,7 +121,7 @@ export class BackendService {
   async getTeamById(team_id: string): Promise<void> {
     try {
       await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/getTeamById`, {
+        this.http.post<void>(`${this.backendURL}/teams/getTeamById`, {
           team_id,
         })
       );
