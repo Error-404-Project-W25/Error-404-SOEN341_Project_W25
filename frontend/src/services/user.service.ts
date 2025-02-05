@@ -25,6 +25,7 @@ export class UserService {
 
   setUser(user: IUser) {
     this.userSubject.next(user);
+    this.teamsSubject.next(user.teams || []); // Store teams in observable
     localStorage.setItem('currentUserUID', user.user_id);
     this.updateUserTeams(user.user_id); 
   }
@@ -51,12 +52,17 @@ export class UserService {
     localStorage.removeItem('currentUserUID');
   }
 
-  async refreshUserTeams() {
-    if (this.userSubject.value) {
-      const userId = this.userSubject.value.user_id;
-      const teams = await this.backendService.getAllTeamsForUser(userId);
-      const updatedUser = { ...this.userSubject.value, teams };
-      this.userSubject.next(updatedUser);
+  addTeam(newTeam: ITeam) {
+    const currentTeams = this.teamsSubject.value;
+    this.teamsSubject.next([...currentTeams, newTeam]); // Update observable
+  }
+
+  refreshUserTeams() {
+    const currentUser = this.getUser();
+    if (currentUser) {
+      this.backendService.getAllTeamsForUser(currentUser.user_id).then((teams) => {
+        this.teamsSubject.next(teams);
+      });
     }
   }
   

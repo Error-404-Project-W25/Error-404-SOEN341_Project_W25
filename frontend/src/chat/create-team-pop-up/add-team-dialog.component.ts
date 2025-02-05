@@ -98,12 +98,12 @@ export class AddTeamDialogComponent {
         teamData.team_name,
         teamData.description || '',
         teamData.members,
-        'admin' // or any appropriate role
+        'admin' 
       )
       .then(
         () => {
           console.log('Team created successfully');
-          this.userService.refreshUserTeams(); 
+          this.userService.refreshUserTeams(); // Refresh teams
           this.teamCreated.emit(); // Emit event when team is created
           this.dialogRef.close(); // Close the dialog
         },
@@ -111,10 +111,4 @@ export class AddTeamDialogComponent {
           console.error('Error creating team:', error);
         }
       );
-    if (!currentUser.teams) {
-      currentUser.teams = [];
-    }
-    currentUser.teams = [...currentUser.teams, teamData];
-    console.log('Current User:', currentUser);
   }
-}

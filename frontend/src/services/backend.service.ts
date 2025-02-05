@@ -105,7 +105,21 @@ export class BackendService {
       return [];
     }
   }
+
+  async createTeams(teamData: Partial<ITeam>): Promise<ITeam | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<ITeam>(`${this.backendURL}/teams/create`, teamData)
+      );
+      return response;
+    } catch (error) {
+      console.error('Error creating team:', error);
+      return null;
+    }
+  }
   
+  
+  /*
   async createTeams(
     user_id: string,
     username: string,
@@ -131,6 +145,8 @@ export class BackendService {
       return null;
     }
   }
+
+  */
 
   async getTeamById(team_id: string): Promise<void> {
     try {
@@ -161,14 +177,17 @@ export class BackendService {
       console.error('Error adding member to team:', error);
     }
   }
-
-  async getAllTeams(): Promise<void> {
+  
+  async getAllTeamsForUser(user_id: string): Promise<ITeam[]> {
     try {
-      await firstValueFrom(this.http.get<void>(`${this.backendURL}/teams/`));
+      const teams = await firstValueFrom(
+        this.http.get<ITeam[]>(`${this.backendURL}/users/${user_id}/teams`)
+      );
+      return teams;
     } catch (error) {
-      console.error('Error getting all teams:', error);
+      console.error('Error getting teams for user:', error);
+      return [];
     }
-  }
 
 
   //////////////////////////// CHANNELS ////////////////////////////

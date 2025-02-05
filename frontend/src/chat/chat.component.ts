@@ -37,7 +37,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   channels$ = this.channelsSubject.asObservable();
 
-  teams$: Observable<ITeam[]>;
+  teams$: = this.userService.teams$; // Subscribe to teams from the user service
+  
 
   constructor(
     public dialog: MatDialog,
@@ -45,15 +46,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     private backendService: BackendService
   ) {
     this.currentUser = this.userService.getUser();
-    this.teams$ = this.userService.teams$;
   }
 
 
   ngOnInit() {
-    this.teams$.subscribe(teams => {
-      if (teams.length > 0 && !this.selectedTeam) {
-        this.selectTeam(teams[0]); 
-      }
+    this.userService.user$.subscribe((user) => {
+      this.currentUser = user;
     });
   }
 
@@ -73,24 +71,20 @@ export class ChatComponent implements OnInit, OnDestroy {
   openTeamDialog(): void {
     if (this.currentUser?.role === 'admin') {
       const dialogRef = this.dialog.open(AddTeamDialogComponent);
-      
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          console.log('New team added:', result);
-          this.onTeamCreated();  // Update the teams list
-        }
+      dialogRef.componentInstance.teamCreated.subscribe(() => {
+        this.userService.refreshUserTeams(); // Fetch updated teams
       });
     } else {
       console.error('Permission denied: Only admins can create a team.');
-      alert('You do not have permission to create a team.');
+      alert('You do not have the permission to create a team');
     }
   }
 
-  onTeamCreated() {
-    console.log('Team created, performing necessary actions...');
-    if (this.currentUser) {
-      this.userService.updateUserTeams(this.currentUser.user_id);
-    }
+
+  onTeamCreated(newTeam: ITeam) {
+    console.log('Team created, updating teams observable...');
+    this.userService.addTeam(newTeam);
+    this.selectTeam(newTeam);
   }
 
   onChannelCreated() {
