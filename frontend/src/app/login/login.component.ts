@@ -241,12 +241,12 @@ export class LoginComponent implements OnInit {
     }
 
     try {
-      const response: UserAuthResponse | null =
+      const response: UserAuthResponse | undefined =
         await this.backendService.registerUser(this.signUpForm);
 
       if (response) {
         if (response.uid) {
-          const user: IUser | null = await this.backendService.getUserInfo(
+          const user: IUser | undefined = await this.backendService.getUserInfo(
             response.uid
           );
 
@@ -277,12 +277,12 @@ export class LoginComponent implements OnInit {
 
     try {
       // Send login request to the backend
-      const response: UserAuthResponse | null =
+      const response: UserAuthResponse | undefined =
         await this.backendService.loginUser(this.signInForm);
 
       if (response) {
         if (response.uid) {
-          const user: IUser | null = await this.backendService.getUserInfo(
+          const user: IUser | undefined = await this.backendService.getUserInfo(
             response.uid
           );
 

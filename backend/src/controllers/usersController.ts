@@ -95,15 +95,16 @@ export const getUserInfo = async (req: Request, res: Response) => {
   }
 };
 
-
 export const searchUsers = async (req: Request, res: Response) => {
   try {
     const query = typeof req.query.q === 'string' ? req.query.q : '';
     const users = await User.find({
-      username: new RegExp(query, 'i') // Search by username
+      username: new RegExp(query, 'i'), // Search by username
     });
     res.status(200).json(users);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to search users', details: error.message });
+    res
+      .status(500)
+      .json({ error: 'Failed to search users', details: error.message });
   }
 };

@@ -10,8 +10,8 @@ import { BackendService } from './backend.service';
   providedIn: 'root',
 })
 export class UserService {
-  private userSubject = new BehaviorSubject<IUser | null>(null);
-  user$: Observable<IUser | null> = this.userSubject.asObservable();
+  private userSubject = new BehaviorSubject<IUser | undefined>(undefined);
+  user$: Observable<IUser | undefined> = this.userSubject.asObservable();
 
   constructor(private backendService: BackendService) {
     const storedUid: string | null = localStorage.getItem('currentUserUID');
@@ -25,12 +25,14 @@ export class UserService {
     localStorage.setItem('currentUserUID', user.user_id);
   }
 
-  getUser(): IUser | null {
+  getUser(): IUser | undefined {
     return this.userSubject.value;
   }
 
   async loadUser(userId: string) {
-    const user: IUser | null = await this.backendService.getUserInfo(userId);
+    const user: IUser | undefined = await this.backendService.getUserInfo(
+      userId
+    );
 
     if (user) {
       this.setUser(user);
@@ -38,7 +40,7 @@ export class UserService {
   }
 
   clearUser() {
-    this.userSubject.next(null);
+    this.userSubject.next(undefined);
     localStorage.removeItem('currentUserUID');
   }
 }

@@ -64,7 +64,7 @@ export class ChatComponent implements OnInit, OnDestroy {
    */
   openChannelDialog(): void {
     const dialogRef = this.dialog.open(AddChannelDialogComponent, {
-      data: { selectedTeam: this.selectedTeam }
+      data: { selectedTeam: this.selectedTeam },
     });
     this.channelCreatedSubscription =
       dialogRef.componentInstance.channelCreated.subscribe(() => {
@@ -108,7 +108,7 @@ export class ChatComponent implements OnInit, OnDestroy {
    * Updates the teams list from the current user data.
    */
   refreshTeams() {
-    const currentUser: IUser | null = this.userService.getUser();
+    const currentUser: IUser | undefined = this.userService.getUser();
     if (currentUser) {
       const teams = [...(currentUser.teams || [])];
       this.teamsSubject.next(teams);
@@ -158,7 +158,7 @@ export class ChatComponent implements OnInit, OnDestroy {
    * Logs out the current user and navigates back to the login page.
    */
   async signOut() {
-    const response: UserAuthResponse | null =
+    const response: UserAuthResponse | undefined =
       await this.backendService.logoutUser();
 
     if (response && !response.error) {
