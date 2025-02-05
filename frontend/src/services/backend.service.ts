@@ -162,7 +162,8 @@ export class BackendService {
   async createChannel(
     team_id: string,
     channelName: string,
-    channelDescription: string
+    channelDescription: string,
+    creator_id: string
   ): Promise<string | undefined> {
     try {
       const response = await firstValueFrom(
@@ -175,6 +176,7 @@ export class BackendService {
           team_id,
           channelName,
           channelDescription,
+          creator_id
         })
       );
 
