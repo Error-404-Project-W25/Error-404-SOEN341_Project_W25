@@ -103,6 +103,7 @@ export class AddTeamDialogComponent {
       .then(
         () => {
           console.log('Team created successfully');
+          this.userService.refreshUserTeams(); 
           this.teamCreated.emit(); // Emit event when team is created
           this.dialogRef.close(); // Close the dialog
         },

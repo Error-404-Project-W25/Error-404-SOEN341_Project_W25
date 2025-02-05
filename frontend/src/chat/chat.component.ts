@@ -7,7 +7,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
 import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +16,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
 })
+
 export class ChatComponent implements OnInit, OnDestroy {
   currentUser: IUser | null = null;
   teams: ITeam[] = [];
@@ -28,11 +29,15 @@ export class ChatComponent implements OnInit, OnDestroy {
   private teamCreatedSubscription: Subscription | null = null;
   private channelCreatedSubscription: Subscription | null = null;
 
-  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
+  /*private teamsSubject = new BehaviorSubject<ITeam[]>([]);
   teams$ = this.teamsSubject.asObservable();
+  */
+
 
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   channels$ = this.channelsSubject.asObservable();
+
+  teams$: Observable<ITeam[]>;
 
   constructor(
     public dialog: MatDialog,
@@ -40,10 +45,16 @@ export class ChatComponent implements OnInit, OnDestroy {
     private backendService: BackendService
   ) {
     this.currentUser = this.userService.getUser();
+    this.teams$ = this.userService.teams$;
   }
 
+
   ngOnInit() {
-    this.refreshTeams(); // Initialize teams array
+    this.teams$.subscribe(teams => {
+      if (teams.length > 0 && !this.selectedTeam) {
+        this.selectTeam(teams[0]); 
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -62,19 +73,24 @@ export class ChatComponent implements OnInit, OnDestroy {
   openTeamDialog(): void {
     if (this.currentUser?.role === 'admin') {
       const dialogRef = this.dialog.open(AddTeamDialogComponent);
-      this.teamCreatedSubscription =
-        dialogRef.componentInstance.teamCreated.subscribe(() => {
-          this.onTeamCreated();
-        });
-    }else{
+      
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          console.log('New team added:', result);
+          this.onTeamCreated();  // Update the teams list
+        }
+      });
+    } else {
       console.error('Permission denied: Only admins can create a team.');
-      alert('You do not have the permission to create a team');
+      alert('You do not have permission to create a team.');
     }
   }
 
   onTeamCreated() {
     console.log('Team created, performing necessary actions...');
-    this.refreshTeams(); // Call the function to refresh teams array
+    if (this.currentUser) {
+      this.userService.updateUserTeams(this.currentUser.user_id);
+    }
   }
 
   onChannelCreated() {
@@ -82,26 +98,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.refreshChannels(); // Call the function to refresh channels array
   }
 
-  refreshTeams() {
-    if (this.currentUser) {
-      const teams = [...(this.currentUser.teams || [])]; // Ensure teams array is updated
-      this.teamsSubject.next(teams);
-      console.log('Teams updated:', teams);
-      if (teams.length > 0 && !this.selectedTeam) {
-        this.selectTeam(teams[0]); // Select the first team if none is selected
-      }
-    }
-  }
-
   refreshChannels() {
     if (this.selectedTeam) {
-      const team = this.teamsSubject
-        .getValue()
-        .find((t) => t.team_id === this.selectedTeam);
-      if (team) {
-        this.channelsSubject.next(team.channels);
-        console.log('Channels updated:', team.channels);
-      }
+      this.teams$.subscribe(teams => {
+        const team = teams.find((t) => t.team_id === this.selectedTeam);
+        if (team) {
+          this.channelsSubject.next(team.channels);
+          console.log('Channels updated:', team.channels);
+        }
+      });
     }
   }
 
@@ -110,8 +115,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.teamSelectedName = team.team_name;
     this.channelsSubject.next(team.channels);
     console.log('You are inside the selectTeam function');
-    console.log('Team:', team);
+    console.log('Selected Team:', team);
   }
+  
 
   selectChannel(channel: IChannel) {
     this.selectedChannel = channel.name;
