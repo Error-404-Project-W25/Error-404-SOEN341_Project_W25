@@ -7,7 +7,7 @@ const channelSchema = new Schema(
     id: { type: String, unique: true },
     name: { type: String, required: true },
     description: { type: String },
-    team: { type: String, required: true },
+    team: { type: String },
     members: { type: [String], default: [] }, 
   },
   {
