@@ -30,7 +30,7 @@ export class AddTeamDialogComponent {
   searchQuery = '';
   teamName = '';
   description = '';
-  found = '';
+  found = ' ';
   teamMembers: string[] = [];
 
   constructor(
@@ -48,7 +48,7 @@ export class AddTeamDialogComponent {
         console.log(this.found, users);
 
         setTimeout(() => {
-          this.found = '';
+          this.found = ' ';
         }, 2000);
 
         this.teamMembers = [
