@@ -96,7 +96,12 @@ export class AddChannelDialogComponent {
 
     if (this.selectedTeamId) {
       this.backendService
-        .createChannel(this.selectedTeamId, this.channelName, this.description)
+        .createChannel(
+          this.selectedTeamId,
+          this.channelName,
+          this.description,
+          currentUser.user_id
+        )
         .then(() => {
           console.log('Channel created successfully');
           this.channelCreated.emit(); // Emit event when channel is created
