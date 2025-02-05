@@ -167,7 +167,8 @@ async createChannel(
   ): Promise<void> {
     try {
       await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/channels/${team_id}/create`, {
+        this.http.post<void>(`${this.backendURL}/channels/create`, {
+          team_id,
           channelName,
           channelDescription,
         })
@@ -185,8 +186,10 @@ async createChannel(
     try {
       await firstValueFrom(
         this.http.post<void>(
-          `${this.backendURL}/channels/${team_id}/${channel_id}/addUser`,
+          `${this.backendURL}/channels/addUser`,
           {
+            team_id,
+            channel_id,
             user_id,
           }
         )
@@ -197,19 +200,16 @@ async createChannel(
   }
 
 
-  async getChannelById(
-    team_id: string,
-    channel_id: string
-  ): Promise<void> {
+  async getChannelById(team_id: string, channel_id: string): Promise<void> {
     try {
       await firstValueFrom(
-        this.http.get<void>(
-          `${this.backendURL}/channels/${team_id}/${channel_id}`
-        )
+        this.http.post<void>(`${this.backendURL}/channels/getChannelById`, {
+          team_id,
+          channel_id,
+        })
       );
     } catch (error) {
       console.error('Error getting channel by id:', error);
     }
   }
 }
-

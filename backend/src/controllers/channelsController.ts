@@ -5,8 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Create a new channel 
 export const createChannel = async (req: Request, res: Response): Promise<void> => {
-    const {team_id} = req.params; // get team that user is currently in
-    const { channelName, channelDescription } = req.body; // get channel info
+    const { team_id, channelName, channelDescription } = req.body; // get channel info
 
     try {
         const team = await Team.findOne({team_id}); // returns the team object
@@ -44,8 +43,7 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
 
 // Add users to a channel
 export const addUserToChannel = async (req: Request, res: Response): Promise<void> => {
-    const { team_id, channel_id } = req.params; // get channel id and team id from params
-    const { user_id } = req.body; // get user_id from the request body
+    const {team_id, channel_id, user_id } = req.body; // get user_id from the request body
 
     try {
         const channel = await Channel.findOne({ id: channel_id }); // get the channel by id
@@ -99,7 +97,7 @@ export const addUserToChannel = async (req: Request, res: Response): Promise<voi
 
 // get channel by channel_id
 export const getChannelById = async (req: Request, res: Response): Promise<void> => {
-    const { team_id, channel_id } = req.params; // get channel_id, team_id from params
+    const { team_id, channel_id } = req.body; // get channel_id, team_id from params
     if (!team_id || !channel_id) {
         res.status(400).json({ error: 'Missing required fields' });
         return;
