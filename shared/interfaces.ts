@@ -2,7 +2,7 @@ export interface IChannel {
   id?: string;
   name: string;
   description?: string;
-  team_id?: string;
+  team_id: string;
   members: string[];
 }
 

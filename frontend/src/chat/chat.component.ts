@@ -63,7 +63,9 @@ export class ChatComponent implements OnInit, OnDestroy {
    * Opens a dialog to create a new channel and subscribes to its creation event.
    */
   openChannelDialog(): void {
-    const dialogRef = this.dialog.open(AddChannelDialogComponent);
+    const dialogRef = this.dialog.open(AddChannelDialogComponent, {
+      data: { selectedTeam: this.selectedTeam }
+    });
     this.channelCreatedSubscription =
       dialogRef.componentInstance.channelCreated.subscribe(() => {
         this.onChannelCreated();

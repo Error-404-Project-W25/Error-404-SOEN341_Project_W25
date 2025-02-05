@@ -176,6 +176,8 @@ async createChannel(
     } catch (error) {
       console.error('Error creating channel:', error);
     }
+
+    console.log('team id:', team_id);
   }
 
   async addUserToChannel(
