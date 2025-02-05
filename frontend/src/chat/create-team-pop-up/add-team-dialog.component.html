@@ -13,7 +13,10 @@
           required
           #teamNameInput="ngModel"
         />
-        <div *ngIf="teamNameInput.invalid && teamNameInput.touched" class="error-message">
+        <div
+          *ngIf="teamNameInput.invalid && teamNameInput.touched"
+          class="error-message"
+        >
           Team name is required.
         </div>
       </div>
@@ -30,7 +33,10 @@
           required
           #descriptionInput="ngModel"
         ></textarea>
-        <div *ngIf="descriptionInput.invalid && descriptionInput.touched" class="error-message">
+        <div
+          *ngIf="descriptionInput.invalid && descriptionInput.touched"
+          class="error-message"
+        >
           Description is required.
         </div>
       </div>
@@ -47,15 +53,21 @@
             required
             #searchQueryInput="ngModel"
           />
-          <button class="add-member-btn" type="button" (click)="search()">Add</button>
+          <button class="add-member-btn" type="button" (click)="search()">
+            Add
+          </button>
         </div>
-        <div class="found-message" *ngIf="found">
+        <div class="found-message" *ngIf="found" style="height: 50px">
           {{ found }}
         </div>
       </div>
 
       <!-- Submit Button -->
-      <button type="submit" class="form-submit-btn" [disabled]="teamForm.invalid">
+      <button
+        type="submit"
+        class="form-submit-btn"
+        [disabled]="teamForm.invalid"
+      >
         Submit
       </button>
     </form>
