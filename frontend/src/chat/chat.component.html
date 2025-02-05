@@ -15,7 +15,7 @@
       <div class="side-bar-1">
         <div class="add-team-button-container">
           <button class="add-team-button" (click)="openTeamDialog()">
-            <i class="fa fa-plus" style="font-size: 24px"></i>
+            <i class="fa fa-plus" style="font-size: 24px; transition: transform 0.3s;" onmouseover="this.style.transform='rotate(90deg)'" onmouseout="this.style.transform='rotate(0deg)'"></i>
           </button>
         </div>
         <hr class="separator" />
@@ -36,7 +36,7 @@
             <i class="fa fa-bars" style="font-size: 24px"></i>
           </button>
           <button class="user-menu" (click)="signOut()">
-            <i class="fa fa-gear" style="font-size: 24px"></i>
+            <i class="fa fa-gear" style="font-size: 24px; transition: transform 0.3s;" onmouseover="this.style.transform='rotate(90deg)'" onmouseout="this.style.transform='rotate(0deg)'"></i>
           </button>
         </div>
       </div>
@@ -47,7 +47,7 @@
           </div>
           <div class="add-team-button-container">
             <button class="add-team-button" (click)="openChannelDialog()">
-              <i class="fa fa-plus" style="font-size: 24px"></i>
+              <i class="fa fa-plus" style="font-size: 24px; transition: transform 0.3s;" onmouseover="this.style.transform='rotate(90deg)'" onmouseout="this.style.transform='rotate(0deg)'"></i>
             </button>
           </div>
         </div>
