@@ -130,16 +130,12 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
     }
 
     // Add the new members to the team
-    members.forEach((member: IUser) => {
-      if (member.role !== 'admin' && member.role !== 'user') {
-        console.log('Invalid role:', member.role);
-        member.role = 'user'; // Default role
-      }
-      console.log('member role: ' + member.role);
+    members.forEach((member: string) => {
       
-      team.members.push(member.user_id);
+      team.members.push(member);
+      console.log('member user id: ' + member);
 
-      team.channels[0].members.push(member.user_id);
+      team.channels[0].members.push(member);
     });
 
     const updatedTeam = await team.save();
