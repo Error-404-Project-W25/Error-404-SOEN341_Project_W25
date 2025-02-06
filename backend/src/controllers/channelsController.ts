@@ -32,9 +32,15 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
             name: channelName,
             description: channelDescription,
             team_id: team_id, // associated team
-            members: [creator_id, team.admin.toString()] 
-            // creator of channel and team admin are default members of the channel
+            members: [creator_id] // initalize members with the user that created the channel
         });
+
+        
+        // if creator of channel is not admin of team, add admin to members list
+        if (creator_id != team.admin.toString()) {
+            newChannel.members.push(team.admin.toString());
+        }
+            
 
         const savedChannel = await newChannel.save();
         team.channels.push(savedChannel); // add channel to team
@@ -42,7 +48,8 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
 
 
         res.status(201).json({
-            message: 'The channel has been created successfully'
+            message: 'The channel has been created successfully',
+            channel: savedChannel
         });
 
     } catch (error: unknown) {
