@@ -6,7 +6,7 @@ import {
   UserSignInData,
 } from '../../../shared/user-credentials.types';
 import { UserAuthResponse } from '../types/http-response.types';
-import { IChannel, IUser } from '../../../shared/interfaces';
+import { IChannel, IUser,  ITeam } from '../../../shared/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -102,10 +102,10 @@ export class BackendService {
     description: string,
     members: string[],
     role: string
-  ): Promise<void> {
+  ): Promise<ITeam | null> {
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/teams/create`, {
+      const response: ITeam = await firstValueFrom(
+        this.http.post<ITeam>(`${this.backendURL}/teams/create`, {
           user_id,
           username,
           team_name,
@@ -114,18 +114,24 @@ export class BackendService {
           role,
         })
       );
+      return response;
     } catch (error) {
       console.error('Error creating teams:', error);
+      return null;
     }
   }
 
-  async getTeamById(team_id: string): Promise<void> {
+  async getTeamById(team_id: string): Promise<ITeam | null> {
     try {
-      await firstValueFrom(
-        this.http.get<void>(`${this.backendURL}/teams/getTeamById/${team_id}`)
+      const response: ITeam = await firstValueFrom(
+        this.http.post<ITeam>(`${this.backendURL}/teams/getTeamById`, {
+          team_id,
+        })
       );
+      return response;
     } catch (error) {
       console.error('Error getting team by id:', error);
+      return null;
     }
   }
 
@@ -134,26 +140,32 @@ export class BackendService {
     username: string,
     team_id: string,
     role: string
-  ): Promise<void> {
+  ): Promise<ITeam | null> {
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/teams/addMember`, {
+      const response: ITeam = await firstValueFrom(
+        this.http.post<ITeam>(`${this.backendURL}/teams/addMember`, {
           user_id,
           username,
           team_id,
           role,
         })
       );
+      return response;
     } catch (error) {
       console.error('Error adding member to team:', error);
+      return null;
     }
   }
 
-  async getAllTeams(): Promise<void> {
+  async getAllTeams(): Promise<ITeam[]> {
     try {
-      await firstValueFrom(this.http.get<void>(`${this.backendURL}/teams/`));
+      const response: ITeam[] = await firstValueFrom(
+        this.http.get<ITeam[]>(`${this.backendURL}/teams/`)
+      );
+      return response;
     } catch (error) {
       console.error('Error getting all teams:', error);
+      return [];
     }
   }
 

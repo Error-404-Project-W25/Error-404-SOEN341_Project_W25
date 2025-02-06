@@ -4,7 +4,7 @@ import { getAllTeams, getTeamById, createTeams, addMemberToTeam} from '../contro
 const router: Router = Router();
 
 router.get('/', getAllTeams);
-router.get('/getTeamById/:team_id', getTeamById); 
+router.post('/getTeamById', getTeamById); 
 router.post('/create', createTeams);
 router.post('/addMember', addMemberToTeam);
 
