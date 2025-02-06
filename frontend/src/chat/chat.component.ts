@@ -53,6 +53,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user?.teams) {
         this.refreshTeams();
+        // If there's a selected team, refresh channels
+        if (this.selectedTeam) {
+          this.refreshChannels();
+        }
       }
     });
   }
@@ -132,9 +136,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   async refreshChannels() {
     if (this.selectedTeam) {
       try {
-        const team = await this.backendService.getTeamById(this.selectedTeam) as ITeam;
-        // Check if team exists using type guard
-        if (team === null || team === undefined) {
+        const team = await this.backendService.getTeamById(this.selectedTeam);
+        if (!team) {
           console.log('Team not found');
           return;
         }
@@ -156,15 +159,16 @@ export class ChatComponent implements OnInit, OnDestroy {
         console.error('Error refreshing channels:', error);
       }
     }
-}
+  }
 
   /**
    * Selects a team and updates the available channels for that team.
    */
-  selectTeam(team: ITeam) {
+  async selectTeam(team: ITeam) {
     this.selectedTeam = team.team_id ?? null;
     this.teamSelectedName = team.team_name;
-    this.channelsSubject.next(team.channels);
+    // Wait for channels to be refreshed before updating the subject
+    await this.refreshChannels();
     console.log('You are inside the selectTeam function');
     console.log('Team:', team);
   }
