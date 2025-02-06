@@ -129,30 +129,34 @@ export class ChatComponent implements OnInit, OnDestroy {
   /**
    * Updates the channels list based on the selected team.
    */
-  refreshChannels() {
+  async refreshChannels() {
     if (this.selectedTeam) {
-      if (this.userService.getUser()?.role == 'admin') {
-        const team = this.teamsSubject
-          .getValue()
-          .find((t) => t.team_id === this.selectedTeam);
-        if (team) {
-          this.channelsSubject.next(team.channels);
-          console.log('Channels updated:', team.channels);
+      try {
+        const team = await this.backendService.getTeamById(this.selectedTeam) as ITeam;
+        // Check if team exists using type guard
+        if (team === null || team === undefined) {
+          console.log('Team not found');
+          return;
         }
-      } else {
-        const team = this.teamsSubject
-          .getValue()
-          .find((t) => t.team_id === this.selectedTeam);
-        if (team) {
-          const channels = team.channels.filter((c) =>
-            c.members.includes(this.userService.getUser()?.user_id ?? '')
+
+        const currentUser = this.userService.getUser();
+        if (!currentUser) return;
+
+        if (currentUser.role === 'admin') {
+          this.channelsSubject.next(team.channels);
+          console.log('Channels updated (admin):', team.channels);
+        } else {
+          const channels = team.channels.filter(c => 
+            c.members.includes(currentUser.user_id ?? '')
           );
           this.channelsSubject.next(channels);
-          console.log('Channels updated:', channels);
+          console.log('Channels updated (user):', channels);
         }
+      } catch (error) {
+        console.error('Error refreshing channels:', error);
       }
     }
-  }
+}
 
   /**
    * Selects a team and updates the available channels for that team.
