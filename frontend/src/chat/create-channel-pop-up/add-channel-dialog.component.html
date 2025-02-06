@@ -1,7 +1,7 @@
 <div class="container">
   <div class="form-container">
     <h1>Create Channel</h1>
-    <form class="form" (ngSubmit)="createChannel()">
+    <form class="form" (ngSubmit)="createChannel()" #channelForm="ngForm">
       <div class="form-group">
         <label>Channel Name</label>
         <input
@@ -42,7 +42,7 @@
           {{ found }}
         </div>
       </div>
-      <button type="submit" class="form-submit-btn">Submit</button>
+      <button type="submit" class="form-submit-btn" [disabled]="channelForm.invalid">Submit</button>
     </form>
   </div>
 </div>
