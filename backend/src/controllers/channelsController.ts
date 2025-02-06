@@ -31,7 +31,7 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
             id: channel_id,
             name: channelName,
             description: channelDescription,
-            team_id: team_id, // associated team
+            team: team_id, // associated team
             members: [creator_id] // initalize members with the user that created the channel
         });
 
