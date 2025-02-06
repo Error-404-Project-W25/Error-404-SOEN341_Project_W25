@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
-import { IUser } from '../../../shared/interfaces';
 import { v4 as uuidv4 } from 'uuid';
 
 // Create a new channel 
@@ -33,12 +32,15 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
             name: channelName,
             description: channelDescription,
             team_id: team_id, // associated team
-            members: [creator_id] // creator of channel is default member
+            members: [creator_id, team.admin.toString()] 
+            // creator of channel and team admin are default members of the channel
         });
 
         const savedChannel = await newChannel.save();
         team.channels.push(savedChannel); // add channel to team
         await team.save();
+
+
         res.status(201).json({
             message: 'The channel has been created successfully'
         });
