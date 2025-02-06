@@ -6,7 +6,7 @@ import {
   UserSignInData,
 } from '../../../shared/user-credentials.types';
 import { UserAuthResponse } from '../types/http-response.types';
-import { IChannel, IUser,  ITeam } from '../../../shared/interfaces';
+import { IChannel, IUser } from '../../../shared/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -102,10 +102,10 @@ export class BackendService {
     description: string,
     members: string[],
     role: string
-  ): Promise<ITeam | null> {
+  ): Promise<void> {
     try {
-      const response: ITeam = await firstValueFrom(
-        this.http.post<ITeam>(`${this.backendURL}/teams/create`, {
+      await firstValueFrom(
+        this.http.post<void>(`${this.backendURL}/teams/create`, {
           user_id,
           username,
           team_name,
@@ -114,24 +114,18 @@ export class BackendService {
           role,
         })
       );
-      return response;
     } catch (error) {
       console.error('Error creating teams:', error);
-      return null;
     }
   }
 
-  async getTeamById(team_id: string): Promise<ITeam | null> {
+  async getTeamById(team_id: string): Promise<void> {
     try {
-      const response: ITeam = await firstValueFrom(
-        this.http.post<ITeam>(`${this.backendURL}/teams/getTeamById`, {
-          team_id,
-        })
+      await firstValueFrom(
+        this.http.get<void>(`${this.backendURL}/teams/getTeamById/${team_id}`)
       );
-      return response;
     } catch (error) {
       console.error('Error getting team by id:', error);
-      return null;
     }
   }
 
@@ -140,32 +134,26 @@ export class BackendService {
     username: string,
     team_id: string,
     role: string
-  ): Promise<ITeam | null> {
+  ): Promise<void> {
     try {
-      const response: ITeam = await firstValueFrom(
-        this.http.post<ITeam>(`${this.backendURL}/teams/addMember`, {
+      await firstValueFrom(
+        this.http.post<void>(`${this.backendURL}/teams/addMember`, {
           user_id,
           username,
           team_id,
           role,
         })
       );
-      return response;
     } catch (error) {
       console.error('Error adding member to team:', error);
-      return null;
     }
   }
 
-  async getAllTeams(): Promise<ITeam[]> {
+  async getAllTeams(): Promise<void> {
     try {
-      const response: ITeam[] = await firstValueFrom(
-        this.http.get<ITeam[]>(`${this.backendURL}/teams/`)
-      );
-      return response;
+      await firstValueFrom(this.http.get<void>(`${this.backendURL}/teams/`));
     } catch (error) {
       console.error('Error getting all teams:', error);
-      return [];
     }
   }
 
@@ -177,6 +165,11 @@ export class BackendService {
     channelDescription: string,
     creator_id: string
   ): Promise<string | undefined> {
+
+    console.log('1team_id:', team_id);
+    console.log('1channelName:', channelName);
+    console.log('1channelDescription:', channelDescription);
+
     try {
       const response = await firstValueFrom(
         this.http.post<{
@@ -191,6 +184,10 @@ export class BackendService {
           creator_id
         })
       );
+
+      console.log('2team_id:', team_id);
+      console.log('2channelName:', channelName);
+      console.log('2channelDescription:', channelDescription);
 
       if (response) {
         if (response.error) {

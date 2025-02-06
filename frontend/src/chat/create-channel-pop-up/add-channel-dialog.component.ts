@@ -9,6 +9,7 @@ import { BackendService } from '../../services/backend.service';
 import { UserService } from '../../services/user.service';
 import { IUser, IChannel } from '../../../../shared/interfaces';
 import { ChatComponent } from '../chat.component';
+import {NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-add-channel-dialog',
@@ -21,6 +22,7 @@ import { ChatComponent } from '../chat.component';
     FormsModule,
     MatButtonModule,
     HttpClientModule,
+    NgIf,
   ],
 })
 export class AddChannelDialogComponent {
@@ -94,14 +96,15 @@ export class AddChannelDialogComponent {
       team_id: this.selectedTeamId || '', // Ensure team_id is always a string
     };
 
+    // REMOVE AFTER
+    console.log('team id', channelData.team_id);
+    console.log('channel name', channelData.name);
+    console.log('channel description', channelData.description);
+
+
     if (this.selectedTeamId) {
       this.backendService
-        .createChannel(
-          this.selectedTeamId,
-          this.channelName,
-          this.description,
-          currentUser.user_id
-        )
+        .createChannel(this.selectedTeamId, this.channelName, this.description,this.currentUser?.user_id || '')
         .then(() => {
           console.log('Channel created successfully');
           this.channelCreated.emit(); // Emit event when channel is created
@@ -113,29 +116,6 @@ export class AddChannelDialogComponent {
     } else {
       console.error('Selected team ID is null');
     }
-  }
 
-  /*
-  // add members to the channel
-  async addMemberToChannel() {
-    try {
-      for (const member of this.members) {
-        // loop through each member
-        if (member) {
-          // add each member to the channel
-          await this.backendService.addUserToChannel(
-            this.channelId,
-            member.userID,
-            this.channelId
-          );
-          console.log(
-            member ${member.username} added to channel successfully
-        );
-        }
-      }
-      this.dialogRef.close(); // close the dialog after all members are added
-    } catch (error) {
-      console.error('Error adding member to channel:', error);
-    }
-  } */
+  }
 }

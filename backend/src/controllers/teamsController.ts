@@ -15,14 +15,9 @@ export const getAllTeams = async (req: Request, res: Response) => {
   }
 };
 
-// Get team by ID
 export const getTeamById = async (req: Request, res: Response) => {
   try {
-    const { team_id } = req.body; // Use req.body to get the team_id
-    if (!team_id) {
-      res.status(400).json({ error: 'Missing team_id' });
-      return;
-    }
+    const { team_id } = req.params; // 
     const team = await Team.findOne({ team_id });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
