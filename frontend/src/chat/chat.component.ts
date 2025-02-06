@@ -40,15 +40,20 @@ export class ChatComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private userService: UserService,
     private backendService: BackendService
-  ) {}
+  ) {
+    this.refreshTeams();
+  }
 
   /**
    * Lifecycle hook that is called after component initialization.
    * It initializes the teams array.
    */
   ngOnInit() {
+    console.log('Chat component initialized');
+    console.log('User:', this.userService.getUser());
+    console.log('Teams:', this.teams);
     this.refreshTeams();
-    this.refreshChannels();
+    console.log('Teams refreshed:', this.teams);
   }
 
   /**
