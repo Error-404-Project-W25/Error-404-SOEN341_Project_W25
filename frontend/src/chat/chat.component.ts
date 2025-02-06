@@ -48,6 +48,7 @@ export class ChatComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     this.refreshTeams();
+    this.refreshChannels();
   }
 
   /**
