@@ -165,6 +165,11 @@ export class BackendService {
     channelDescription: string,
     creator_id: string
   ): Promise<string | undefined> {
+
+    console.log('1team_id:', team_id);
+    console.log('1channelName:', channelName);
+    console.log('1channelDescription:', channelDescription);
+
     try {
       const response = await firstValueFrom(
         this.http.post<{
@@ -179,6 +184,10 @@ export class BackendService {
           creator_id
         })
       );
+
+      console.log('2team_id:', team_id);
+      console.log('2channelName:', channelName);
+      console.log('2channelDescription:', channelDescription);
 
       if (response) {
         if (response.error) {
