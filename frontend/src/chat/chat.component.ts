@@ -50,10 +50,11 @@ export class ChatComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     console.log('Chat component initialized');
-    console.log('User:', this.userService.getUser());
-    console.log('Teams:', this.teams);
-    this.refreshTeams();
-    console.log('Teams refreshed:', this.teams);
+    this.userService.user$.subscribe((user: IUser | undefined) => {
+      if (user?.teams) {
+        this.refreshTeams();
+      }
+    });
   }
 
   /**
@@ -129,29 +130,29 @@ export class ChatComponent implements OnInit, OnDestroy {
    * Updates the channels list based on the selected team.
    */
   refreshChannels() {
-  if (this.selectedTeam) {
-    if (this.userService.getUser()?.role == 'admin') {
-      const team = this.teamsSubject
-        .getValue()
-        .find((t) => t.team_id === this.selectedTeam);
-      if (team) {
-        this.channelsSubject.next(team.channels);
-        console.log('Channels updated:', team.channels);
-      }
-    } else {
-      const team = this.teamsSubject
-        .getValue()
-        .find((t) => t.team_id === this.selectedTeam);
-      if (team) {
-        const channels = team.channels.filter((c) =>
-          c.members.includes(this.userService.getUser()?.user_id ?? '')
-        );
-        this.channelsSubject.next(channels);
-        console.log('Channels updated:', channels);
+    if (this.selectedTeam) {
+      if (this.userService.getUser()?.role == 'admin') {
+        const team = this.teamsSubject
+          .getValue()
+          .find((t) => t.team_id === this.selectedTeam);
+        if (team) {
+          this.channelsSubject.next(team.channels);
+          console.log('Channels updated:', team.channels);
+        }
+      } else {
+        const team = this.teamsSubject
+          .getValue()
+          .find((t) => t.team_id === this.selectedTeam);
+        if (team) {
+          const channels = team.channels.filter((c) =>
+            c.members.includes(this.userService.getUser()?.user_id ?? '')
+          );
+          this.channelsSubject.next(channels);
+          console.log('Channels updated:', channels);
+        }
       }
     }
   }
-}
 
   /**
    * Selects a team and updates the available channels for that team.
