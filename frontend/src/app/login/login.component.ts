@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
     username: '',
     email: '',
     password: '',
+    confirmPassword: '',
     role: 'user', // default
   };
 
@@ -199,19 +200,22 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  confirmPasswordMatch(event: any): boolean {
-    const input: string = event.target.value as string;
+  confirmPasswordMatch(): boolean {
     const pw: string = this.signUpForm.password;
+    const confirmingPw: string = this.signUpForm.confirmPassword;
 
-    if (pw.length > 0 && input.length > 0 && pw !== input) {
-      this.validationErrors.passwordsMatch = false;
-      this.validationErrorMessages.passwordMatchError =
-        'Passwords do not match';
-      return false;
-    } else {
+    if (pw === confirmingPw) {
       this.validationErrors.passwordsMatch = true;
+      this.validationErrorMessages.passwordMatchError = '';
       return true;
     }
+
+    // Only show message if fields are populated
+    this.validationErrorMessages.passwordMatchError =
+      pw.length && confirmingPw.length ? 'Passwords do not match' : '';
+
+    this.validationErrors.passwordsMatch = false;
+    return false;
   }
 
   validateAllFields(): boolean {
@@ -220,7 +224,8 @@ export class LoginComponent implements OnInit {
       this.validateLastName() &&
       this.validateUsername() &&
       this.validateEmail() &&
-      this.validatePassword()
+      this.validatePassword() &&
+      this.confirmPasswordMatch()
     );
   }
 
