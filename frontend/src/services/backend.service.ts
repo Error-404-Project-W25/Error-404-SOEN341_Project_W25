@@ -172,7 +172,7 @@ export class BackendService {
           message?: string;
           error?: string;
           details?: string;
-        }>('${this.backendURL}/channels/create,',{
+        }>(`${this.backendURL}/channels/create`,{
           team_id,
           channelName,
           channelDescription,
