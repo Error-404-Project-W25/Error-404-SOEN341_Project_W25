@@ -73,8 +73,75 @@ export class AddChannelDialogComponent {
       });
   }
 
-  // Creating the channel
-  createChannel() {
+  // // Creating the channel
+  // createChannel() {
+  //   const currentUser = this.userService.getUser();
+  //   if (!currentUser?.username) {
+  //     console.error('No user or username found');
+  //     return;
+  //   }
+
+  //   // Add current user to channel members
+  //   this.channelMembers = [
+  //     ...this.channelMembers,
+  //     ...(currentUser.user_id ? [currentUser.user_id] : []),
+  //   ];
+  //   console.log('Channel Members:', this.channelMembers);
+
+  //   // Create channel data
+  //   const channelData: IChannel = {
+  //     name: this.channelName,
+  //     description: this.description,
+  //     members: this.channelMembers,
+  //     team_id: this.selectedTeamId || '', // Ensure team_id is always a string
+  //   };
+
+  //   // REMOVE AFTER
+  //   console.log('team id', channelData.team_id);
+  //   console.log('channel name', channelData.name);
+  //   console.log('channel description', channelData.description);
+
+
+  //   if (this.selectedTeamId) {
+  //     this.backendService
+  //       .createChannel(this.selectedTeamId, this.channelName, this.description,this.currentUser?.user_id || '')
+  //       .then((channel_id) => {
+  //         if (channel_id) {
+  //           const addUserPromises = this.channelMembers.map((memberId) =>
+  //             this.backendService.addUserToChannel(
+  //               this.selectedTeamId!,
+  //               channel_id,
+  //               memberId
+  //             )
+  //           );
+  //           Promise.all(addUserPromises)
+  //             .then(() => {
+  //               console.log('Channel created successfully');
+  //               console.log('Channel ID:', channel_id);
+  //               console.log('Channel Members:', this.channelMembers);
+  //               console.log('Users added to channel successfully');
+  //               this.channelCreated.emit(); // Emit event when channel is created
+  //               this.dialogRef.close(); // Close the dialog
+  //             })
+  //             .catch((error) => {
+  //               console.error('Error adding users to channel:', error);
+  //             });
+  //         } else {
+  //           console.error('Channel ID is undefined');
+  //         }
+  //         console.log('Channel created successfully');
+  //         this.channelCreated.emit(); // Emit event when channel is created
+  //         this.dialogRef.close(); // Close the dialog
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error creating channel:', error);
+  //       });
+  //   } else {
+  //     console.error('Selected team ID is null');
+  //   }
+
+  // }
+  async createChannel() {
     const currentUser = this.userService.getUser();
     if (!currentUser?.username) {
       console.error('No user or username found');
@@ -101,21 +168,42 @@ export class AddChannelDialogComponent {
     console.log('channel name', channelData.name);
     console.log('channel description', channelData.description);
 
-
     if (this.selectedTeamId) {
-      this.backendService
-        .createChannel(this.selectedTeamId, this.channelName, this.description,this.currentUser?.user_id || '')
-        .then(() => {
-          console.log('Channel created successfully');
+      try {
+        const channel_id = await this.backendService.createChannel(
+          this.selectedTeamId,
+          this.channelName,
+          this.description,
+          currentUser.user_id
+        );
+
+        if (channel_id) {
+          console.log('Channel created successfully with ID:', channel_id);
+
+          // Add members to the channel
+          for (const member_id of this.channelMembers) {
+            const success = await this.backendService.addUserToChannel(
+              this.selectedTeamId,
+              channel_id,
+              member_id
+            );
+
+            if (!success) {
+              console.error(`Failed to add member ${member_id} to channel`);
+            }
+          }
+
           this.channelCreated.emit(); // Emit event when channel is created
           this.dialogRef.close(); // Close the dialog
-        })
-        .catch((error) => {
-          console.error('Error creating channel:', error);
-        });
+        } else {
+          console.error('Failed to create channel');
+        }
+      } catch (error) {
+        console.error('Error creating channel:', error);
+      }
     } else {
       console.error('Selected team ID is null');
     }
-
   }
 }
+
