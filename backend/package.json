@@ -11,7 +11,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "latest",
-    "express": "latest",
+    "express": "^4.21.2",
     "firebase": "^11.2.0",
     "mongodb": "latest",
     "mongoose": "latest",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/express": "latest",
+    "@types/express": "^5.0.0",
     "@types/mongoose": "latest",
     "@types/mongoose-sequence": "^3.0.11",
     "@types/node": "latest",

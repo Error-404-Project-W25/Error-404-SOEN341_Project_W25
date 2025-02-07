@@ -29,11 +29,15 @@ export class ChatComponent implements OnInit, OnDestroy {
   private teamCreatedSubscription: Subscription | null = null;
   private channelCreatedSubscription: Subscription | null = null;
 
-  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
+  /*private teamsSubject = new BehaviorSubject<ITeam[]>([]);
   teams$ = this.teamsSubject.asObservable();
+  */
 
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   channels$ = this.channelsSubject.asObservable();
+
+  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
+  teams$ = this.teamsSubject.asObservable();
 
   constructor(
     private router: Router,
@@ -137,9 +141,11 @@ export class ChatComponent implements OnInit, OnDestroy {
    * Updates the channels list based on the selected team.
    */
   async refreshChannels() {
+    /*
     if (this.selectedTeam) {
       try {
         const team = await this.backendService.getTeamById(this.selectedTeam);
+        
         if (!team) {
           console.log('Team not found');
           return;
@@ -162,6 +168,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         console.error('Error refreshing channels:', error);
       }
     }
+      */
   }
 
   /**
@@ -173,7 +180,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     // Wait for channels to be refreshed before updating the subject
     await this.refreshChannels();
     console.log('You are inside the selectTeam function');
-    console.log('Team:', team);
+    console.log('Selected Team:', team);
   }
 
   /**

@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { getAllTeams, getTeamById, createTeams, addMemberToTeam} from '../controllers/teamsController';
+import express, { Request, Response } from 'express';
+import { Team } from '../models/teamsModel';
 
 const router: Router = Router();
 

@@ -42,7 +42,8 @@ export class AddTeamDialogComponent {
   search() {
     console.log('Searching for:', this.searchQuery);
 
-    this.backendService.searchUsers(this.searchQuery)
+    this.backendService
+      .searchUsers(this.searchQuery)
       .then((users: IUser[]) => {
         this.found = users.length > 0 ? 'User found' : 'No user found';
         console.log(this.found, users);
@@ -53,7 +54,9 @@ export class AddTeamDialogComponent {
 
         this.teamMembers = [
           ...this.teamMembers,
-          ...users.map((user) => user.user_id).filter((id): id is string => id !== undefined),
+          ...users
+            .map((user) => user.user_id)
+            .filter((id): id is string => id !== undefined),
         ];
       })
       .catch((error) => {
@@ -69,7 +72,10 @@ export class AddTeamDialogComponent {
       return;
     }
 
-    this.teamMembers = [...this.teamMembers, ...(currentUser.user_id ? [currentUser.user_id] : [])];
+    this.teamMembers = [
+      ...this.teamMembers,
+      ...(currentUser.user_id ? [currentUser.user_id] : []),
+    ];
     console.log('Team Members:', this.teamMembers);
 
     const teamData: ITeam = {
@@ -80,25 +86,25 @@ export class AddTeamDialogComponent {
       channels: [],
     };
 
-    this.backendService.createTeams(
-      currentUser.user_id,
-      currentUser.username,
-      teamData.team_name,
-      teamData.description || '',
-      teamData.members,
-      'admin'
-    ).then(
-      () => {
-        console.log('Team created successfully');
-        this.teamCreated.emit();
-        this.dialogRef.close();
-      },
-      (error) => {
-        console.error('Error creating team:', error);
-      }
-    );
+    // this.backendService.createTeams(
+    //   currentUser.user_id,
+    //   currentUser.username,
+    //   teamData.team_name,
+    //   teamData.description || '',
+    //   teamData.members,
+    //   'admin'
+    // ).then(
+    //   () => {
+    //     console.log('Team created successfully');
+    //     this.teamCreated.emit();
+    //     this.dialogRef.close();
+    //   },
+    //   (error) => {
+    //     console.error('Error creating team:', error);
+    //   }
+    // );
 
-    currentUser.teams = currentUser.teams ? [...currentUser.teams, teamData] : [teamData];
-    console.log('Current User:', currentUser);
+    // currentUser.teams = currentUser.teams ? [...currentUser.teams, teamData] : [teamData];
+    // console.log('Current User:', currentUser);
   }
 }
