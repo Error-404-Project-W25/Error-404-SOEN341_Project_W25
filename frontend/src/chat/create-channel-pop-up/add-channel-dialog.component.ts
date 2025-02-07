@@ -106,23 +106,23 @@ export class AddChannelDialogComponent {
         if (channel_id) {
           console.log('Channel created successfully with ID:', channel_id);
 
-          // Add members to the channel
-          if (this.channelMembers.length > 0) {
-            for (const member_id of this.channelMembers) {
-              const success: boolean =
-                await this.backendService.addUserToChannel(
-                  this.selectedTeamId,
-                  channel_id,
-                  member_id
-                );
+          // // Add members to the channel
+          // if (this.channelMembers.length > 0) {
+          //   for (const member_id of this.channelMembers) {
+          //     const success: boolean =
+          //       await this.backendService.addUserToChannel(
+          //         this.selectedTeamId,
+          //         channel_id,
+          //         member_id
+          //       );
 
-              if (!success) {
-                console.error(`Failed to add member ${member_id} to channel`);
-              }
-            }
-          } else {
-            console.log('No additional members to add to the channel');
-          }
+          //     if (!success) {
+          //       console.error(`Failed to add member ${member_id} to channel`);
+          //     }
+          //   }
+          // } else {
+          //   console.log('No additional members to add to the channel');
+          // }
 
           this.channelCreated.emit(channelData); // Emit event when channel is created
           this.dialogRef.close(); // Close the dialog

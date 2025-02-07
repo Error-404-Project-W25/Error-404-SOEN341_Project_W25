@@ -69,9 +69,9 @@ export const createTeams = async (req: Request, res: Response) => {
 
     // Add additional members if provided
     if (members && Array.isArray(members)) {
-      members.forEach((member: IUser) => {
-        newTeam.members.push(member.user_id);
-        newTeam.channels[0].members.push(member.user_id); 
+      members.forEach((member: string) => {
+        newTeam.members.push(member);
+        newTeam.channels[0].members.push(member); 
       });
     }
 
