@@ -6,6 +6,7 @@ import {
   UserSignInData,
 } from '../../../shared/user-credentials.types';
 import { UserAuthResponse } from '../types/http-response.types';
+import { IChannel, IUser, ITeam } from '../../../shared/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -62,15 +63,33 @@ export class BackendService {
     return undefined;
   }
 
-  async getUserInfo(user_id: string): Promise<void> {
+  // TODO: using POST for now (easier), might be worth changing to GET
+  async getUserInfo(user_id: string): Promise<IUser | undefined> {
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/auth/getUserInfo`, {
+      const response: IUser = await firstValueFrom(
+        this.http.post<IUser>(`${this.backendURL}/auth/getUserInfo`, {
           user_id,
         })
       );
+
+      return response;
     } catch (error) {
       console.error('Error getting user info:', error);
+    }
+
+    return undefined;
+  }
+  async searchUsers(query: string): Promise<IUser[]> {
+    try {
+      const response: IUser[] = await firstValueFrom(
+        this.http.get<IUser[]>(`${this.backendURL}/users/search`, {
+          params: { q: query }, // Send query parameter
+        })
+      );
+      return response;
+    } catch (error) {
+      console.error('Error searching users:', error);
+      return [];
     }
   }
 
@@ -100,15 +119,15 @@ export class BackendService {
     }
   }
 
-  async getTeamById(team_id: string): Promise<void> {
+  async getTeamById(team_id: string): Promise<ITeam | null> {
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/getTeamById`, {
-          team_id,
-        })
+      const response = await firstValueFrom(
+        this.http.get<ITeam>(`${this.backendURL}/teams/getTeamById/${team_id}`)
       );
+      return response;
     } catch (error) {
       console.error('Error getting team by id:', error);
+      return null;
     }
   }
 
@@ -145,36 +164,111 @@ export class BackendService {
   async createChannel(
     team_id: string,
     channelName: string,
-    channelDescription: string
-  ): Promise<void> {
+    channelDescription: string,
+    creator_id: string
+  ): Promise<string | undefined> {
+
+    console.log('1team_id:', team_id);
+    console.log('1channelName:', channelName);
+    console.log('1channelDescription:', channelDescription);
+
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/channels/create/${team_id}`, {
+      const response = await firstValueFrom(
+        this.http.post<{
+          channel_id?: string;
+          message?: string;
+          error?: string;
+          details?: string;
+        }>(`${this.backendURL}/channels/create`, {
+          team_id,
           channelName,
           channelDescription,
+          creator_id
         })
       );
+
+      console.log('2team_id:', team_id);
+      console.log('2channelName:', channelName);
+      console.log('2channelDescription:', channelDescription);
+
+      if (response) {
+        if (response.error) {
+          console.error(response.error);
+          console.error(response.details);
+        } else if (response.channel_id) {
+          console.log(response.message);
+          return response.channel_id;
+        }
+      } else {
+        console.error('No response from backend');
+      }
     } catch (error) {
       console.error('Error creating channel:', error);
     }
+    return undefined;
   }
 
+  // Returns true on success, false on failure
   async addUserToChannel(
+    team_id: string,
     channel_id: string,
-    user_id: string,
-    team_id: string
-  ): Promise<void> {
+    user_id: string
+  ): Promise<boolean> {
     try {
-      await firstValueFrom(
-        this.http.post<void>(
-          `${this.backendURL}/channels/addUser/${channel_id}/${team_id}`,
+      const response = await firstValueFrom(
+        this.http.post<{ message?: string; error?: string }>(
+          `${this.backendURL}/channels/addUser`,
           {
+            team_id,
+            channel_id,
             user_id,
           }
         )
       );
+
+      if (response) {
+        if (response.message) {
+          console.log(response.message);
+          return true;
+        } else {
+          console.error(response.error);
+        }
+      } else {
+        console.error('No response from backend');
+      }
     } catch (error) {
       console.error('Error adding user to channel:', error);
     }
+    return false;
+  }
+
+  async getChannelById(
+    team_id: string,
+    channel_id: string
+  ): Promise<IChannel | undefined> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ error?: string; channel?: IChannel }>(
+          `${this.backendURL}/channels/getChannelById`,
+          {
+            team_id,
+            channel_id,
+          }
+        )
+      );
+
+      if (response) {
+        if (response.channel) {
+          return response.channel;
+        } else {
+          console.error(response.error);
+        }
+      } else {
+        console.error('No response from backend');
+      }
+    } catch (error) {
+      console.error('Error getting channel by id:', error);
+    }
+    return undefined;
   }
 }

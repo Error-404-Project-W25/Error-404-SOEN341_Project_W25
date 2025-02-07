@@ -1,10 +1,14 @@
- import { Router } from 'express';
- import { createChannel, addUserToChannel } from '../controllers/channelsController';
- 
- const router: Router = Router();
- 
- router.post('/:team_id/create', createChannel);
- router.post('/:team_id/:channel_id/addUser', addUserToChannel);
- 
- export default router;
- 
+import { Router } from 'express';
+import {
+  createChannel,
+  addUserToChannel,
+  getChannelById,
+} from '../controllers/channelsController';
+
+const router: Router = Router();
+
+router.post('/create', createChannel);
+router.post('/addUser', addUserToChannel);
+router.post('/getChannel', getChannelById);
+
+export default router;

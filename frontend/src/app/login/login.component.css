@@ -7,7 +7,7 @@
     --secondary-color: #f0483e;
     --secondary-color-dark: #c90c02;
     --text: #000000;
-    --grey: #0f0d0d;
+    --grey: #F53F3Dd0d;
     --max-width: 1400px;
 }
 
@@ -19,6 +19,7 @@
 
 body{
     min-height: 100vh;
+    min-width: 100vw;
     font-family: "Poppins", sans-serif;
     align-items: center;
     justify-content: center;
@@ -27,6 +28,174 @@ body{
     flex-direction: column;
     position: relative;
 }
+
+ .container-back {
+  inset: 0;
+}
+
+.container-back::before {
+  content: "";
+  position: absolute;
+  inset: -145%;
+  rotate: -45deg;
+  background: #ffffff;
+  background-image: radial-gradient(4px 100px at 0px 235px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 235px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 117.5px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 252px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 252px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 126px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 150px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 150px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 75px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 253px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 253px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 126.5px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 204px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 204px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 102px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 134px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 134px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 67px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 179px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 179px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 89.5px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 299px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 299px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 149.5px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 215px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 215px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 107.5px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 281px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 281px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 140.5px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 158px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 158px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 79px, #F53F3D 100%, #0000 150%),
+    radial-gradient(4px 100px at 0px 210px, #F53F3D, #0000),
+    radial-gradient(4px 100px at 300px 210px, #F53F3D, #0000),
+    radial-gradient(1.5px 1.5px at 150px 105px, #F53F3D 100%, #0000 150%);
+  background-size:
+    300px 235px,
+    300px 235px,
+    300px 235px,
+    300px 252px,
+    300px 252px,
+    300px 252px,
+    300px 150px,
+    300px 150px,
+    300px 150px,
+    300px 253px,
+    300px 253px,
+    300px 253px,
+    300px 204px,
+    300px 204px,
+    300px 204px,
+    300px 134px,
+    300px 134px,
+    300px 134px,
+    300px 179px,
+    300px 179px,
+    300px 179px,
+    300px 299px,
+    300px 299px,
+    300px 299px,
+    300px 215px,
+    300px 215px,
+    300px 215px,
+    300px 281px,
+    300px 281px,
+    300px 281px,
+    300px 158px,
+    300px 158px,
+    300px 158px,
+    300px 210px,
+    300px 210px,
+    300px 210px;
+  animation: hi 150s linear infinite;
+}
+
+@keyframes hi {
+  0% {
+    background-position:
+      0px 220px,
+      3px 220px,
+      151.5px 337.5px,
+      25px 24px,
+      28px 24px,
+      176.5px 150px,
+      50px 16px,
+      53px 16px,
+      201.5px 91px,
+      75px 224px,
+      78px 224px,
+      226.5px 350.5px,
+      100px 19px,
+      103px 19px,
+      251.5px 121px,
+      125px 120px,
+      128px 120px,
+      276.5px 187px,
+      150px 31px,
+      153px 31px,
+      301.5px 120.5px,
+      175px 235px,
+      178px 235px,
+      326.5px 384.5px,
+      200px 121px,
+      203px 121px,
+      351.5px 228.5px,
+      225px 224px,
+      228px 224px,
+      376.5px 364.5px,
+      250px 26px,
+      253px 26px,
+      401.5px 105px,
+      275px 75px,
+      278px 75px,
+      426.5px 180px;
+  }
+  to {
+    background-position:
+      0px 6800px,
+      3px 6800px,
+      151.5px 6917.5px,
+      25px 13632px,
+      28px 13632px,
+      176.5px 13758px,
+      50px 5416px,
+      53px 5416px,
+      201.5px 5491px,
+      75px 17175px,
+      78px 17175px,
+      226.5px 17301.5px,
+      100px 5119px,
+      103px 5119px,
+      251.5px 5221px,
+      125px 8428px,
+      128px 8428px,
+      276.5px 8495px,
+      150px 9876px,
+      153px 9876px,
+      301.5px 9965.5px,
+      175px 13391px,
+      178px 13391px,
+      326.5px 13540.5px,
+      200px 14741px,
+      203px 14741px,
+      351.5px 14848.5px,
+      225px 18770px,
+      228px 18770px,
+      376.5px 18910.5px,
+      250px 5082px,
+      253px 5082px,
+      401.5px 5161px,
+      275px 6375px,
+      278px 6375px,
+      426.5px 6480px;
+  }
+}
+
 .ani{
     position: absolute;
     margin: auto;
@@ -127,7 +296,7 @@ input:focus{
     border-color: #f0483e;
   /* box-shadow: 2px 2px 10px #f0483e; */
   outline: none;
-    
+
 }
 
 button{
@@ -156,9 +325,9 @@ button:hover{
     color: var(--secondary-color-dark);
 }
 .container form label {
-    display: inline-block; 
-    vertical-align: middle; 
-    margin: 5px 10px; 
+    display: inline-block;
+    vertical-align: middle;
+    margin: 5px 10px;
 }
 .submit{
     margin: 5px;
@@ -190,12 +359,12 @@ button:hover{
     margin: 0;
     box-sizing: border-box;
   }
-  
+
   .section-container {
     margin: auto;
     padding: 2rem 1rem;
   }
-  
+
   .section-header {
     margin-top: 4rem;
     margin-bottom: 1rem;
@@ -204,14 +373,14 @@ button:hover{
     text-align: center;
     color: var(--grey);
   }
-  
+
   .section-subheader {
     max-width: 600px;
     margin: auto;
     text-align: center;
     color: var(--text);
   }
-  
+
   .btn {
     padding: 1rem 2rem;
     outline: none;
@@ -224,11 +393,11 @@ button:hover{
     cursor: pointer;
     transition: 0.3s;
   }
-  
+
   .btn:hover {
     background-color: var(--secondary-color-dark);
   }
-  
+
   img {
       height: 55px;
       width: auto;
@@ -238,18 +407,18 @@ button:hover{
       overflow-clip-margin: content-box;
       overflow: clip;
   }
-  
+
   a {
     text-decoration: none;
     font-weight: 500;
   }
-  
+
   .bg-blur {
     position: absolute;
     box-shadow: 0 0 1000px 50px var(white);
     z-index: -1;
   }
-  
+
   nav {
     margin: auto;
     padding: 1rem 1rem;
@@ -258,24 +427,24 @@ button:hover{
     justify-content: space-between;
     gap: 2rem;
   }
-  
+
   .nav-logo {
     max-width: 150px;
   }
-  
+
   .nav-links {
     list-style: none;
     display: flex;
     align-items: center;
     gap: 3rem;
   }
-  
+
   .link a {
     position: relative;
     padding-bottom: 0.75rem;
     color: var(--grey);
   }
-  
+
   .link a::after {
     content: "";
     position: absolute;
@@ -286,7 +455,7 @@ button:hover{
     background-color: var(--secondary-color);
     transition: 0.3s;
   }
-  
+
   .link a:hover::after {
     width: 50%;
   }
@@ -297,28 +466,28 @@ button:hover{
     grid-template-columns: 400px repeat(3, 1fr);
     gap: 2rem;
   }
-  
+
   .footer-blur {
     bottom: 0;
     right: 0;
   }
-  
+
   .footer-logo {
     max-width: 150px;
     margin-bottom: 2rem;
   }
-  
+
   .footer-col p {
     margin-bottom: 2rem;
     color: var(--text);
   }
-  
+
   .footer-socials {
     display: flex;
     align-items: center;
     gap: 1rem;
   }
-  
+
   .footer-socials a {
       display: inline-block;
       height: 40px;
@@ -331,12 +500,12 @@ button:hover{
       color:white;
       transition: all 0.5s ease;
   }
-  
+
   .footer-socials a:hover {
     color: var(--grey);
     background-color: var(--primary-color-light)
   }
-  
+
 
   .footer-col h4 {
     margin-bottom: 2rem;
@@ -344,18 +513,18 @@ button:hover{
     font-weight: 600;
     color: var(--grey);
   }
-  
+
   .footer-col > a {
     display: block;
     margin-bottom: 1rem;
     color: var(--text);
     transition: 0.3s;
   }
-  
+
   .footer-col > a:hover {
     color: var(--secondary-color);
   }
-  
+
   .footer-bar {
     max-width: var(--max-width);
     margin: auto;
@@ -364,31 +533,31 @@ button:hover{
     color: var(--grey);
   }
     */
-  
+
   @media (width < 900px) {
     .nav-links {
       display: none;
     }
-  
+
     .header-container {
       grid-template-columns: repeat(1, 1fr);
     }
-  
+
     .header-image {
       grid-area: 1/1/2/2;
     }
-  
+
     .footer-container {
       grid-template-columns: 1fr 200px;
     }
   }
-  
+
   @media (width < 600px) {
-  
+
     .footer-container {
       grid-template-columns: 1fr 150px;
     }
-  
+
     .footer-bar {
       text-align: center;
     }

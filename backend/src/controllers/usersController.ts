@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { signUpUser, signInUser, signOutUser } from '../auth/authenticate';
 import { User } from '../models/userModel';
 import { AuthStatus } from '../../../shared/user-credentials.types';
+import { IUser } from '../../../shared/interfaces';
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -77,16 +78,33 @@ export const logoutUser = async (_: Request, res: Response) => {
   }
 };
 
-
 export const getUserInfo = async (req: Request, res: Response) => {
   try {
-    const user = await User.findOne({ user_id: req.body.user_id });
+    const user: IUser | null = await User.findOne({
+      user_id: req.body.user_id,
+    });
     if (user) {
       res.status(200).json(user);
     } else {
       res.status(404).json({ error: 'User not found' });
     }
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to get user info', details: error.message });
+    res
+      .status(500)
+      .json({ error: 'Failed to get user info', details: error.message });
   }
-}
+};
+
+export const searchUsers = async (req: Request, res: Response) => {
+  try {
+    const query = typeof req.query.q === 'string' ? req.query.q : '';
+    const users = await User.find({
+      username: new RegExp(query, 'i'), // Search by username
+    });
+    res.status(200).json(users);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ error: 'Failed to search users', details: error.message });
+  }
+};

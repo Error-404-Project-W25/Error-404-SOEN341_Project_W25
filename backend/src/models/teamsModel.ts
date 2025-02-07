@@ -1,24 +1,15 @@
 import mongoose, { Schema } from 'mongoose';
-import { IUser, userSchema } from './userModel'; 
-import { IChannel, channelSchema } from './channelsModel'; 
-
-interface ITeam  {
-  team_id: string; 
-  team_name: string;
-  description: string; 
-  admin: IUser[];
-  members: IUser[];
-  channels: IChannel[];
-  created_at: Date;
-}
+import { channelSchema } from './channelsModel';
+import { ITeam } from '../../../shared/interfaces';
 
 // Schema for team
 const teamSchema = new Schema(
   {
     team_id: { type: String, unique: true },
     team_name: { type: String, required: true },
-    admin: { type: [userSchema], required: true },
-    members: { type: [userSchema], default: [] },
+    description: { type: String },
+    admin: { type: [String], required: true },
+    members: { type: [String], default: [] },
     channels: { type: [channelSchema], required: true },
     created_at: { type: Date, default: Date.now },
   },
@@ -32,11 +23,11 @@ const teamSchema = new Schema(
 teamSchema.set('toJSON', {
   transform: (doc, ret) => {
     delete ret.id;
-    delete ret._id;     
-    delete ret.__v;     
+    delete ret._id;
+    delete ret.__v;
     return ret;
   },
 });
 
-export { ITeam, teamSchema };
+export { teamSchema };
 export const Team = mongoose.model<ITeam>('Team', teamSchema);
