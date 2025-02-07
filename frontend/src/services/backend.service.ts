@@ -95,6 +95,17 @@ export class BackendService {
 
   //////////////////////////// TEAMS ////////////////////////////
 
+  async getAllTeamsForUser(user_id: string): Promise<ITeam[]> {
+    try {
+      return await firstValueFrom(
+        this.http.get<ITeam[]>(`${this.backendURL}/teams/user/${user_id}`)
+      );
+    } catch (error) {
+      console.error('Error getting teams for user:', error);
+      return [];
+    }
+  }
+
   async createTeams(
     user_id: string,
     username: string,
@@ -102,10 +113,10 @@ export class BackendService {
     description: string,
     members: string[],
     role: string
-  ): Promise<void> {
+  ): Promise<ITeam | null> {
     try {
-      await firstValueFrom(
-        this.http.post<void>(`${this.backendURL}/teams/create`, {
+      const response = await firstValueFrom(
+        this.http.post<ITeam>(`${this.backendURL}/teams/create`, {
           user_id,
           username,
           team_name,
@@ -114,8 +125,10 @@ export class BackendService {
           role,
         })
       );
+      return response;
     } catch (error) {
       console.error('Error creating teams:', error);
+      return null;
     }
   }
 
@@ -151,27 +164,15 @@ export class BackendService {
     }
   }
 
-  async getAllTeams(): Promise<void> {
-    try {
-      await firstValueFrom(this.http.get<void>(`${this.backendURL}/teams/`));
-    } catch (error) {
-      console.error('Error getting all teams:', error);
-    }
-  }
-
   //////////////////////////// CHANNELS ////////////////////////////
 
   async createChannel(
     team_id: string,
     channelName: string,
     channelDescription: string,
-    creator_id: string
+    creator_id: string,
+    members: string[]
   ): Promise<string | undefined> {
-
-    console.log('1team_id:', team_id);
-    console.log('1channelName:', channelName);
-    console.log('1channelDescription:', channelDescription);
-
     try {
       const response = await firstValueFrom(
         this.http.post<{
@@ -183,13 +184,12 @@ export class BackendService {
           team_id,
           channelName,
           channelDescription,
-          creator_id
+          creator_id,
+          members,
         })
       );
 
-      console.log('2team_id:', team_id);
-      console.log('2channelName:', channelName);
-      console.log('2channelDescription:', channelDescription);
+      console.log(response);
 
       if (response) {
         if (response.error) {
