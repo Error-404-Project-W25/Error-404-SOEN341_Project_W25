@@ -24,12 +24,12 @@ Effective and organized communication is crucial for team collaboration, yet man
 
 ## Technology Stack
 
-- **Frontend**: React.js, HTML, CSS, JavaScript
+- **Frontend**:  HTML, CSS, TypeScript
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Authentication**: Firebase Authentication
 - **Version Control**: GitHub
-- **Deployment**: Vercel / Heroku
+- **Deployment**: 
 
 ## Development Process
 

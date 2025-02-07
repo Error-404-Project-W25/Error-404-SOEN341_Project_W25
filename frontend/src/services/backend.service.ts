@@ -6,7 +6,7 @@ import {
   UserSignInData,
 } from '../../../shared/user-credentials.types';
 import { UserAuthResponse } from '../types/http-response.types';
-import { IChannel, IUser } from '../../../shared/interfaces';
+import { IChannel, IUser, ITeam } from '../../../shared/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -119,13 +119,15 @@ export class BackendService {
     }
   }
 
-  async getTeamById(team_id: string): Promise<void> {
+  async getTeamById(team_id: string): Promise<ITeam | null> {
     try {
-      await firstValueFrom(
-        this.http.get<void>(`${this.backendURL}/teams/getTeamById/${team_id}`)
+      const response = await firstValueFrom(
+        this.http.get<ITeam>(`${this.backendURL}/teams/getTeamById/${team_id}`)
       );
+      return response;
     } catch (error) {
       console.error('Error getting team by id:', error);
+      return null;
     }
   }
 

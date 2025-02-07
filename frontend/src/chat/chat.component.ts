@@ -53,6 +53,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user?.teams) {
         this.refreshTeams();
+        // If there's a selected team, refresh channels
+        if (this.selectedTeam) {
+          this.refreshChannels();
+        }
       }
     });
   }
@@ -129,27 +133,30 @@ export class ChatComponent implements OnInit, OnDestroy {
   /**
    * Updates the channels list based on the selected team.
    */
-  refreshChannels() {
+  async refreshChannels() {
     if (this.selectedTeam) {
-      if (this.userService.getUser()?.role == 'admin') {
-        const team = this.teamsSubject
-          .getValue()
-          .find((t) => t.team_id === this.selectedTeam);
-        if (team) {
-          this.channelsSubject.next(team.channels);
-          console.log('Channels updated:', team.channels);
+      try {
+        const team = await this.backendService.getTeamById(this.selectedTeam);
+        if (!team) {
+          console.log('Team not found');
+          return;
         }
-      } else {
-        const team = this.teamsSubject
-          .getValue()
-          .find((t) => t.team_id === this.selectedTeam);
-        if (team) {
-          const channels = team.channels.filter((c) =>
-            c.members.includes(this.userService.getUser()?.user_id ?? '')
+
+        const currentUser = this.userService.getUser();
+        if (!currentUser) return;
+
+        if (currentUser.role === 'admin') {
+          this.channelsSubject.next(team.channels);
+          console.log('Channels updated (admin):', team.channels);
+        } else {
+          const channels = team.channels.filter(c => 
+            c.members.includes(currentUser.user_id ?? '')
           );
           this.channelsSubject.next(channels);
-          console.log('Channels updated:', channels);
+          console.log('Channels updated (user):', channels);
         }
+      } catch (error) {
+        console.error('Error refreshing channels:', error);
       }
     }
   }
@@ -157,10 +164,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   /**
    * Selects a team and updates the available channels for that team.
    */
-  selectTeam(team: ITeam) {
+  async selectTeam(team: ITeam) {
     this.selectedTeam = team.team_id ?? null;
     this.teamSelectedName = team.team_name;
-    this.channelsSubject.next(team.channels);
+    // Wait for channels to be refreshed before updating the subject
+    await this.refreshChannels();
     console.log('You are inside the selectTeam function');
     console.log('Team:', team);
   }
