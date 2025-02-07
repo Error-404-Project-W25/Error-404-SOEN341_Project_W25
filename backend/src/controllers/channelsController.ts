@@ -47,6 +47,13 @@ export const createChannel = async (
       newChannel.members.push(team.admin.toString());
     }
 
+    if (members && members.length > 0) {
+      members.forEach((member: string) => {
+        // add members to the channel
+          newChannel.members.push(member);
+        });
+      }
+
     const savedChannel: IChannel = await newChannel.save();
     team.channels.push(savedChannel); // add channel to team
     await team.save();
