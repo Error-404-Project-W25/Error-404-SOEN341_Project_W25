@@ -163,7 +163,8 @@ export class BackendService {
     team_id: string,
     channelName: string,
     channelDescription: string,
-    creator_id: string
+    creator_id: string,
+    members: string[]
   ): Promise<string | undefined> {
     try {
       const response = await firstValueFrom(
@@ -172,11 +173,12 @@ export class BackendService {
           message?: string;
           error?: string;
           details?: string;
-        }>(`${this.backendURL}/channels/create`,{
+        }>(`${this.backendURL}/channels/create`, {
           team_id,
           channelName,
           channelDescription,
-          creator_id
+          creator_id,
+          members
         })
       );
 

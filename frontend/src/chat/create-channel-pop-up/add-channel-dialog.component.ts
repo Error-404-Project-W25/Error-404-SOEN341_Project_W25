@@ -141,6 +141,7 @@ export class AddChannelDialogComponent {
   //   }
 
   // }
+  // Creating the channel
   async createChannel() {
     const currentUser = this.userService.getUser();
     if (!currentUser?.username) {
@@ -174,23 +175,28 @@ export class AddChannelDialogComponent {
           this.selectedTeamId,
           this.channelName,
           this.description,
-          currentUser.user_id
+          currentUser.user_id,
+          this.channelMembers
         );
 
         if (channel_id) {
           console.log('Channel created successfully with ID:', channel_id);
 
           // Add members to the channel
-          for (const member_id of this.channelMembers) {
-            const success = await this.backendService.addUserToChannel(
-              this.selectedTeamId,
-              channel_id,
-              member_id
-            );
+          if (this.channelMembers.length > 0) {
+            for (const member_id of this.channelMembers) {
+              const success = await this.backendService.addUserToChannel(
+                this.selectedTeamId,
+                channel_id,
+                member_id
+              );
 
-            if (!success) {
-              console.error(`Failed to add member ${member_id} to channel`);
+              if (!success) {
+                console.error(`Failed to add member ${member_id} to channel`);
+              }
             }
+          } else {
+            console.log('No additional members to add to the channel');
           }
 
           this.channelCreated.emit(); // Emit event when channel is created
@@ -206,4 +212,3 @@ export class AddChannelDialogComponent {
     }
   }
 }
-

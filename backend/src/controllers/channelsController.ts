@@ -6,10 +6,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Create a new channel 
 export const createChannel = async (req: Request, res: Response): Promise<void> => {
-    const { team_id, creator_id, channelName, channelDescription } = req.body; // get channel info
+    const { team_id, creator_id, channelName, channelDescription, members } = req.body; // get channel info
 
     try {
-        const team = await Team.findOne({team_id}); // returns the team object
+        const team = await Team.findOne({ team_id }); // returns the team object
         if (!team) { // if not found
             res.status(404).json({ error: 'Team not found' });
             return;
@@ -24,25 +24,33 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
         console.log('userInTeam: ' + userInTeam);
         if (!userInTeam) {
             res.status(400).json({ error: 'You must be a member of the team to create a channel' });
-        return;
+            return;
         }
         
         const newChannel = new Channel({ // make new channel
             id: channel_id,
             name: channelName,
             description: channelDescription,
-            team_id: team_id, // associated team
-            members: [creator_id, team.admin.toString()] 
-            // creator of channel and team admin are default members of the channel
+            team: team_id, // associated team
+            members: [creator_id, ...team.admin] // creator of channel and team admin are default members of the channel
         });
+
+        // Add additional members if provided
+        if (members && Array.isArray(members)) {
+            members.forEach((member_id: string) => {
+                if (!newChannel.members.includes(member_id)) {
+                    newChannel.members.push(member_id);
+                }
+            });
+        }
 
         const savedChannel = await newChannel.save();
         team.channels.push(savedChannel); // add channel to team
         await team.save();
 
-
         res.status(201).json({
-            message: 'The channel has been created successfully'
+            message: 'The channel has been created successfully',
+            channel_id: savedChannel.id
         });
 
     } catch (error: unknown) {
@@ -51,8 +59,7 @@ export const createChannel = async (req: Request, res: Response): Promise<void> 
         } else {
           res.status(500).json({ error: 'Failed to create channel', details: 'Unknown error' });
         }
-      }
-
+    }
 }
 
 // Add users to a channel
