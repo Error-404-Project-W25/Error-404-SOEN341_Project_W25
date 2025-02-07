@@ -29,7 +29,6 @@ Effective and organized communication is crucial for team collaboration, yet man
 - **Database**: MongoDB
 - **Authentication**: Firebase Authentication
 - **Version Control**: GitHub
-- **Deployment**: 
 
 ## Development Process
 
