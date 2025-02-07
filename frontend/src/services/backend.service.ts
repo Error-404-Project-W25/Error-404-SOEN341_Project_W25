@@ -180,9 +180,11 @@ export class BackendService {
           channelName,
           channelDescription,
           creator_id,
-          members
+          members,
         })
       );
+
+      console.log(response);
 
       if (response) {
         if (response.error) {

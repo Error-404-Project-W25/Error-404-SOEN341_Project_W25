@@ -3,6 +3,7 @@ import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
 import { v4 as uuidv4 } from 'uuid';
+import { IChannel } from '../../../shared/interfaces';
 
 // Create a new channel
 export const createChannel = async (
@@ -20,19 +21,15 @@ export const createChannel = async (
       return;
     }
 
-    console.log('team: ' + team.team_name);
-
     const channel_id = uuidv4(); // unique identifier for channel id
 
     // Check if the creator is part of the team
     const userInTeam = team.members.find((members) => members === creator_id);
-    console.log('userInTeam: ' + userInTeam);
+
     if (!userInTeam) {
-      res
-        .status(400)
-        .json({
-          error: 'You must be a member of the team to create a channel',
-        });
+      res.status(400).json({
+        error: 'You must be a member of the team to create a channel',
+      });
       return;
     }
 
@@ -50,13 +47,13 @@ export const createChannel = async (
       newChannel.members.push(team.admin.toString());
     }
 
-    const savedChannel = await newChannel.save();
+    const savedChannel: IChannel = await newChannel.save();
     team.channels.push(savedChannel); // add channel to team
     await team.save();
 
     res.status(201).json({
       message: 'The channel has been created successfully',
-      channel: savedChannel,
+      channel_id: savedChannel.id,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -125,19 +122,15 @@ export const addUserToChannel = async (
     //add channel to the user given in the request
   } catch (error: unknown) {
     if (error instanceof Error) {
-      res
-        .status(500)
-        .json({
-          error: 'Failed to add user to channel',
-          details: error.message,
-        });
+      res.status(500).json({
+        error: 'Failed to add user to channel',
+        details: error.message,
+      });
     } else {
-      res
-        .status(500)
-        .json({
-          error: 'Failed to add user to channel',
-          details: 'Unknown error',
-        });
+      res.status(500).json({
+        error: 'Failed to add user to channel',
+        details: 'Unknown error',
+      });
     }
   }
 };

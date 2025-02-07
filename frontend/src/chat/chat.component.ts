@@ -78,9 +78,12 @@ export class ChatComponent implements OnInit, OnDestroy {
       data: { selectedTeam: this.selectedTeam },
     });
     this.channelCreatedSubscription =
-      dialogRef.componentInstance.channelCreated.subscribe(() => {
-        this.onChannelCreated();
-      });
+      dialogRef.componentInstance.channelCreated.subscribe(
+        (newChannel: IChannel) => {
+          this.channels.push(newChannel);
+          this.onChannelCreated();
+        }
+      );
   }
 
   /**
@@ -149,7 +152,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.channelsSubject.next(team.channels);
           console.log('Channels updated (admin):', team.channels);
         } else {
-          const channels = team.channels.filter(c => 
+          const channels = team.channels.filter((c) =>
             c.members.includes(currentUser.user_id ?? '')
           );
           this.channelsSubject.next(channels);
