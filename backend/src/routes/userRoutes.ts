@@ -1,10 +1,9 @@
-import express from 'express';
-import { getUserInfo, searchUsers } from '../controllers/usersController';
+import { Router } from 'express';
+import { getUserById, getUserByUsername } from '../controllers/usersController';
 
-const router = express.Router();
+const router: Router = Router();
 
-// Route to get user info by user ID
-router.get('/info/:user_id', getUserInfo);
-router.get('/search', searchUsers);
+router.get('/:user_id', getUserById);
+router.get('/search/:username', getUserByUsername);
 
 export default router;

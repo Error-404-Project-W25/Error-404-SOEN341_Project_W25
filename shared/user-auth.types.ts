@@ -6,7 +6,6 @@ export type RegistrationData = {
   username: string;
   email: string;
   password: string;
-  confirmPassword: string;
   role: Role;
 };
 
@@ -15,8 +14,9 @@ export type UserSignInData = {
   password: string;
 };
 
-export type AuthStatus = {
-  isSignedIn: boolean;
+export type UserAuthResponse = {
+  message?: string;
   uid?: string;
-  errorMessage?: string;
+  error?: string;
+  details?: string;
 };

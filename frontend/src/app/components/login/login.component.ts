@@ -13,8 +13,8 @@ import { IUser } from '@shared/interfaces';
 import {
   RegistrationData,
   UserSignInData,
-} from '@shared/user-credentials.types';
-import { UserAuthResponse } from '../../../types/http-response.types';
+  UserAuthResponse,
+} from '@shared/user-auth.types';
 
 @Component({
   selector: 'app-login',
@@ -37,7 +37,6 @@ export class LoginComponent implements OnInit {
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
     role: 'user', // default
   };
 
@@ -88,6 +87,9 @@ export class LoginComponent implements OnInit {
   }
 
   ///////////////////// VALIDATION /////////////////////
+
+  // Variable to store the value of the confirm password field
+  confirmPassword: string = '';
 
   validateName(val: string): string {
     const validNameRegex: RegExp = /^[A-Za-z-]*[A-Za-z]{2,}[A-Za-z-]*$/;
@@ -203,7 +205,7 @@ export class LoginComponent implements OnInit {
 
   confirmPasswordMatch(): boolean {
     const pw: string = this.signUpForm.password;
-    const confirmingPw: string = this.signUpForm.confirmPassword;
+    const confirmingPw: string = this.confirmPassword;
 
     if (!(pw && confirmingPw)) {
       this.validationErrors.passwordsMatch = false;

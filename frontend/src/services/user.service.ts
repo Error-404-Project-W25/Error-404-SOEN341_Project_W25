@@ -14,7 +14,7 @@ export class UserService {
   user$: Observable<IUser | undefined> = this.userSubject.asObservable();
 
   private teamsSubject = new BehaviorSubject<ITeam[]>([]);
-  teams$ = this.teamsSubject.asObservable(); 
+  teams$ = this.teamsSubject.asObservable();
 
   constructor(private backendService: BackendService) {
     const storedUid: string | null = localStorage.getItem('currentUserUID');
@@ -27,12 +27,12 @@ export class UserService {
     this.userSubject.next(user);
     this.teamsSubject.next(user.teams || []); // Store teams in observable
     localStorage.setItem('currentUserUID', user.user_id);
-    this.updateUserTeams(user.user_id); 
+    this.updateUserTeams(user.user_id);
   }
 
   async updateUserTeams(user_id: string) {
-    const teams = await this.backendService.getAllTeamsForUser(user_id);
-    this.teamsSubject.next(teams);  // Update observable teams list
+    const teams = await this.backendService.getUserTeams(user_id);
+    this.teamsSubject.next(teams); // Update observable teams list
   }
 
   getUser(): IUser | undefined {
@@ -62,10 +62,9 @@ export class UserService {
   refreshUserTeams() {
     const currentUser = this.getUser();
     if (currentUser) {
-      this.backendService.getAllTeamsForUser(currentUser.user_id).then((teams) => {
+      this.backendService.getUserTeams(currentUser.user_id).then((teams) => {
         this.teamsSubject.next(teams);
       });
     }
   }
-  
 }
