@@ -1,59 +1,93 @@
+/* @import "./colors.css"; */
 :root {
-  /*Side bar #1*/
-  --side-bar-1-separator: #35363c;
+  /* Sidebar #1 */
+  --side-bar-1-separator: #35363c; /* Separator color */
+  --side-bar-1-background: #1e1f22; /* Sidebar background */
+  --side-bar-1-text: #dbdee1; /* Sidebar text color */
 
-  /*Side bar #1 (Add team Button)*/
-  --add-team-button-background: #ffffff;
-  --add-team-button-hover: #ff6b6b;
-  --add-team-button-text: #2c2f33;
+  /* Add team button */
+  --add-team-button-background: #2f3136; /* Button background */
+  --add-team-button-hover: #f53f3d; /* Button hover background */
+  --add-team-button-text: #dbdee1; /* Button text color */
 
-  /*Side bar #1 (Add team Button)*/
-  --add-team-button-background: #2f3136;
-  --add-team-button-hover: #f53f3d;
-  --add-team-button-text: #dbdee1;
+  /* Team list */
+  --team-letter-color: #dbdee1; /* Team letter color */
+  --team-button-background: #2f3136; /* Team button background */
+  --team-button-hover: #f53f3d; /* Team button hover background */
+  --team-background: #1e1f22; /* Team background */
 
-  /*Sidebar #1 (team List) */
-  --team-letter-color: #dbdee1;
-  --team-button-background: #2f3136;
-  --team-button-hover: #f53f3d;
-  --team-background: #1e1f22;
+  /* User menu */
+  --user-button-background: #313338; /* User button background */
+  --user-button-background-hover: #f53f3d; /* User button hover background */
+  --user-button-text: #f53f3d; /* User button text color */
+  --user-button-text-hover: #ffffff; /* User button hover text color */
 
-  /*Sidebar #1 (User Menu)*/
-  --user-button-background: #313338;
-  --user-button-background-hover: #f53f3d;
-  --user-button-text: #f53f3d;
-  --user-button-text-hover: #ffffff;
+  /* Sidebar #2 */
+  --side-bar-2-background: #2b2d31; /* Sidebar background */
+  --side-bar-2-text: #dbdee1; /* Sidebar text color */
+  --side-bar-2-title-background: #2b2d31; /* Title background */
+  --side-bar-2-title-text: #d1d4d8; /* Title text color */
 
-  /*Sidebar #2 (Team title + add channel button)*/
-  --title-box-background: #2b2d31;
-  --title-box-text: #d1d4d8;
-  --add-channel-button-background: #b5bac1;
-  --add-channel-button-text: #2f3136;
-  --add-channel-button-background-hover: #ff6b6b;
-  --add-channel-button-text-hover: #2f3136;
+  /* Add channel button */
+  --add-channel-button-background: #b5bac1; /* Button background */
+  --add-channel-button-text: #2f3136; /* Button text color */
+  --add-channel-button-background-hover: #ff6b6b; /* Button hover background */
+  --add-channel-button-text-hover: #2f3136; /* Button hover text color */
 
-  /* Sidebar #2 (Search box)*/
-  --search-bar-background: #1e1f22;
-  --search-bar-text: #dbdee1;
+  /* Search box */
+  --search-bar-background: #1e1f22; /* Search bar background */
+  --search-bar-text: #dbdee1; /* Search bar text color */
+  --search-bar-border: #555555; /* Search bar border color */
+  --search-bar-hover: #bbbbbb; /* Search bar hover text color */
 
-  /* Sidebar #2 (channel List) */
-  --channel-list-background: #2b2d31;
-  --channel-list-backround-hover: #404249;
-  --channel-list-text: #949ba4;
-  --channel-list-text-hover: #f3fcff;
+  /* Channel list */
+  --channel-list-background: #2b2d31; /* Channel list background */
+  --channel-list-backround-hover: #404249; /* Channel list hover background */
+  --channel-list-text: #949ba4; /* Channel list text color */
+  --channel-list-text-hover: #f3fcff; /* Channel list hover text color */
 
-  /* channel Log */
-  --message-background: #313338;
-  --message-background-hover: #2e3035;
-  --message-text: #bbbdc1;
-  --message-username: #f2f3f5;
-  --message-date: #797f87;
-  --message-box: #383a40;
-  --message-box-hover: #4f5360;
-  --message-box-text: #6c6e78;
-  --send-button-background: #b5bac1;
-  --send-button-text: black;
+  /* Chat log */
+  --chat-box-background: #313338; /* Chat box background */
+  --chat-box-text: #bbbdc1; /* Chat box text color */
+  --message-background: #313338; /* Message background */
+  --message-background-hover: #2e3035; /* Message hover background */
+  --message-text: #bbbdc1; /* Message text color */
+  --message-username: #f2f3f5; /* Message username color */
+  --message-date: #797f87; /* Message date color */
+
+  /* Message box */
+  --message-box: #383a40; /* Message box background */
+  --message-box-hover: #4f5360; /* Message box hover background */
+  --message-box-text: #6c6e78; /* Message box text color */
+  --message-box-background: #2d2d2d; /* Message box background */
+  --message-box-border: #3f3f3f; /* Message box border color */
+  --message-box-focus-border: #6e6e6e; /* Message box focus border color */
+
+  /* Send button */
+  --send-button-background: #b5bac1; /* Send button background */
+  --send-button-text: #000000; /* Send button text color */
+  --send-button-hover-fill: #3c3c3c; /* Send button hover fill color */
+  --send-button-hover-stroke: #ffffff; /* Send button hover stroke color */
+  --send-button-path: #3c3c3c; /* Send button path color */
+  --send-button-stroke: #ffffff; /* Send button stroke color */
+
+  /* File upload */
+  --file-upload-hover-path: #ffffff; /* File upload hover path color */
+  --file-upload-hover-circle: #ffffff; /* File upload hover circle color */
+  --file-upload-hover-fill: #3c3c3c; /* File upload hover fill color */
+
+  /* Tooltip */
+  --tooltip-background: #000000; /* Tooltip background */
+  --tooltip-border: #3c3c3c; /* Tooltip border color */
+  --tooltip-shadow: #262626; /* Tooltip shadow color */
+
+  /* Message input */
+  --message-input-text: #ffffff; /* Message input text color */
+
+  /* Separator */
+  --separator-color: #35363c; /* Separator color */
 }
+
 body {
   height: 100%;
   width: 100%;
@@ -67,8 +101,8 @@ body {
   width: 100vw;
   height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #1e1f22;
-  color: #dbdee1;
+  background-color: #1e1f22; /* var(--side-bar-1-background) */
+  color: #dbdee1; /* var(--side-bar-1-text) */
   margin: 0;
   padding: 0;
   display: flex;
@@ -77,12 +111,12 @@ body {
 .separator {
   margin: 0;
   padding: 0;
-  background-color: #35363c;
-  border-top: #35363c;
-  border-bottom: #35363c;
-  border-right: #35363c;
-  border-left: #35363c;
-  color: #35363c;
+  background-color: #35363c; /* var(--separator-color) */
+  border-top: #35363c; /* var(--separator-color) */
+  border-bottom: #35363c; /* var(--separator-color) */
+  border-right: #35363c; /* var(--separator-color) */
+  border-left: #35363c; /* var(--separator-color) */
+  color: #35363c; /* var(--separator-color) */
   width: 80%;
   height: 2px;
   align-self: center;
@@ -91,8 +125,8 @@ body {
 /*Sidebar #1*/
 .side-bar-1 {
   margin: 0;
-  background-color: #1e1f22;
-  color: #dbdee1;
+  background-color: #1e1f22; /* var(--side-bar-1-background) */
+  color: #dbdee1; /* var(--side-bar-1-text) */
   max-width: 80px;
   min-width: 80px;
   height: 100%;
@@ -112,8 +146,8 @@ body {
   padding: 0;
 }
 .add-team-button {
-  background-color: #2f3136;
-  color: #dbdee1;
+  background-color: #2f3136; /* var(--add-team-button-background) */
+  color: #dbdee1; /* var(--add-team-button-text) */
   border: none;
   max-width: 48px;
   min-width: 48px;
@@ -127,7 +161,7 @@ body {
   cursor: pointer;
 }
 .add-team-button:hover {
-  background-color: #f53f3d;
+  background-color: #f53f3d; /* var(--add-team-button-hover) */
   border-radius: 30%;
 }
 .team-list {
@@ -151,8 +185,8 @@ body {
   -ms-overflow-style: none;
 }
 .team-list li {
-  background-color: #2f3136;
-  color: #dbdee1;
+  background-color: #2f3136; /* var(--team-button-background) */
+  color: #dbdee1; /* var(--team-letter-color) */
   border: none;
   min-width: 48px;
   max-width: 48px;
@@ -169,8 +203,8 @@ body {
   display: flex;
 }
 .team-list li a {
-  background-color: #2f3136;
-  color: #dbdee1;
+  background-color: #2f3136; /* var(--team-button-background) */
+  color: #dbdee1; /* var(--team-letter-color) */
   border: none;
   min-width: 48px;
   max-width: 48px;
@@ -190,7 +224,7 @@ body {
   margin: 0;
 }
 .team-list li a:hover {
-  background-color: #f53f3d;
+  background-color: #f53f3d; /* var(--team-button-hover) */
   border-radius: 30%;
 }
 .user-menu-container {
@@ -204,8 +238,8 @@ body {
   flex-shrink: 0;
 }
 .user-menu {
-  background-color: #313338;
-  color: #f53f3d;
+  background-color: #313338; /* var(--user-button-background) */
+  color: #f53f3d; /* var(--user-button-text) */
   border: none;
   max-width: 48px;
   min-width: 48px;
@@ -224,14 +258,14 @@ body {
   min-width: 48px;
   max-width: 48px;
   min-height: 48px;
-  background-color: #f53f3d;
-  color: #ffffff;
+  background-color: #f53f3d; /* var(--user-button-background-hover) */
+  color: #ffffff; /* var(--user-button-text-hover) */
   border-radius: 30%;
 }
 
 /*Sidebar #2*/
 .side-bar-2 {
-  background-color: green;
+  background-color: #2b2d31; /* var(--side-bar-2-background) */
   margin: 0;
   padding-top: 7px;
   padding-bottom: 10px;
@@ -239,8 +273,7 @@ body {
   flex-direction: column;
   align-items: horizontal;
   justify-content: horizontal;
-  background-color: #2b2d31;
-  color: #dbdee1;
+  color: #dbdee1; /* var(--side-bar-2-text) */
   width: 400px;
   max-width: 400px;
   height: 100%;
@@ -255,9 +288,9 @@ body {
   justify-content: center;
   position: relative;
   width: 100%;
-  background-color: #2b2d31;
+  background-color: #2b2d31; /* var(--side-bar-2-title-background) */
   height: 5.5%;
-  border-bottom: 2px solid #35363c;
+  border-bottom: 2px solid #35363c; /* var(--separator-color) */
 }
 .side-bar-2-title {
   display: flex;
@@ -268,8 +301,8 @@ body {
   padding: 0;
   width: 80%;
   height: 90%;
-  background-color: #2b2d31;
-  color: #d1d4d8;
+  background-color: #2b2d31; /* var(--side-bar-2-title-background) */
+  color: #d1d4d8; /* var(--side-bar-2-title-text) */
   font-size: 20px;
   font-weight: bold;
   overflow: hidden;
@@ -293,12 +326,12 @@ body {
   border-radius: 50%;
   width: 35px;
   height: 35px;
-  background-color: #b5bac1;
-  color: #2f3136;
+  background-color: #b5bac1; /* var(--add-channel-button-background) */
+  color: #2f3136; /* var(--add-channel-button-text) */
 }
 .add-channel-button:hover {
-  background-color: #ff6b6b;
-  color: #2f3136;
+  background-color: #ff6b6b; /* var(--add-channel-button-background-hover) */
+  color: #2f3136; /* var(--add-channel-button-text-hover) */
   border-radius: 30%;
   width: 35px;
   height: 35px;
@@ -312,7 +345,7 @@ body {
   justify-content: center;
   position: relative;
   width: 100%;
-  background-color: #2b2d31;
+  background-color: #2b2d31; /* var(--side-bar-2-background) */
   height: 5%;
 }
 .search-bar {
@@ -321,17 +354,17 @@ body {
   height: 15px;
   padding: 10px;
   border-radius: 10px;
-  border: 2px solid #555;
-  background-color: #1e1f22;
-  color: #dbdee1;
+  border: 2px solid #555555; /* var(--search-bar-border) */
+  background-color: #1e1f22; /* var(--search-bar-background) */
+  color: #dbdee1; /* var(--search-bar-text) */
   outline: none;
   font-size: 16px;
 }
-.search-bar :hover {
-  color: #bbb;
+.search-bar:hover {
+  color: #bbbbbb; /* var(--search-bar-hover) */
 }
 .channel-list {
-  background-color: #2b2d31;
+  background-color: #2b2d31; /* var(--channel-list-background) */
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -356,8 +389,8 @@ body {
 }
 .channel-list li {
   display: flex;
-  background-color: #2b2d31;
-  color: #949ba4;
+  background-color: #2b2d31; /* var(--channel-list-background) */
+  color: #949ba4; /* var(--channel-list-text) */
   border: none;
   min-width: 95%;
   max-width: 95%;
@@ -375,8 +408,8 @@ body {
   overflow: hidden;
 }
 .channel-list li:hover {
-  background-color: #404249;
-  color: #f3fcff;
+  background-color: #404249; /* var(--channel-list-backround-hover) */
+  color: #f3fcff; /* var(--channel-list-text-hover) */
 }
 
 /*Chat Log*/
@@ -385,12 +418,28 @@ body {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  background-color: #313338;
-  color: #bbbdc1;
+  background-color: #313338; /* var(--chat-box-background) */
+  color: #bbbdc1; /* var(--chat-box-text) */
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+.channel-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  margin: 0;
+  padding: 5px;
+  width: 100%;
+  height: 5%;
+  background-color: #2b2d31; /* var(--side-bar-2-title-background) */
+  color: #d1d4d8; /* var(--side-bar-2-title-text) */
+  font-size: 20px;
+  font-weight: bold;
+  overflow: hidden;
+}
+
 .chat-log {
   display: flex;
   flex-direction: column;
@@ -405,8 +454,8 @@ body {
 .message {
   display: flex;
   flex-direction: row;
-  background-color: #313338;
-  color: #bbbdc1;
+  background-color: #313338; /* var(--message-background) */
+  color: #bbbdc1; /* var(--message-text) */
   border: none;
   width: 100%;
   min-height: 50px;
@@ -422,12 +471,12 @@ body {
   gap: 5px;
 }
 .message:hover {
-  background-color: #2e3035;
+  background-color: #2e3035; /* var(--message-hover-background) */
 }
 .message-profile-picture {
   display: flex;
-  color: green;
-  background-color: green;
+  color: #313338; /* var(--message-profile-picture) */
+  background-color: #313338; /* var(--message-profile-picture) */
   max-height: 35px;
   min-height: 35px;
   max-width: 35px;
@@ -459,7 +508,7 @@ body {
   padding: 0;
 }
 .message-author {
-  color: #f2f3f5;
+  color: #f2f3f5; /* var(--message-username) */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -468,7 +517,7 @@ body {
   padding: 0;
 }
 .message-date {
-  color: #797f87;
+  color: #797f87; /* var(--message-date) */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -480,7 +529,7 @@ body {
   width: 90%;
   background-color: inherit;
   font: 16px Arial, sans-serif;
-  color: var(--message-text);
+  color: #bbbdc1; /* var(--message-text) */
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -525,13 +574,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #2d2d2d;
+  background-color: #383a40; /* var(--message-box) */
   padding: 0 15px;
   border-radius: 10px;
-  border: 1px solid rgb(63, 63, 63);
+  border: 1px solid #3f3f3f; /* var(--message-box-border) */
 }
 .messageBox:focus-within {
-  border: 1px solid rgb(110, 110, 110);
+  border: 1px solid #4f5360; /* var(--message-box-hover) */
 }
 .fileUploadWrapper {
   width: fit-content;
@@ -563,11 +612,11 @@ body {
   transition: all 0.3s;
 }
 .fileUploadWrapper label:hover svg path {
-  stroke: #fff;
+  stroke: #ffffff; /* var(--file-upload-hover-path) */
 }
 .fileUploadWrapper label:hover svg circle {
-  stroke: #fff;
-  fill: #3c3c3c;
+  stroke: #ffffff; /* var(--file-upload-hover-circle) */
+  fill: #3c3c3c; /* var(--file-upload-hover-fill) */
 }
 .fileUploadWrapper label:hover .tooltip {
   display: block;
@@ -581,11 +630,11 @@ body {
   color: white;
   font-size: 10px;
   text-wrap: nowrap;
-  background-color: #000;
+  background-color: #000000; /* var(--tooltip-background) */
   padding: 6px 10px;
-  border: 1px solid #3c3c3c;
+  border: 1px solid #3c3c3c; /* var(--tooltip-border) */
   border-radius: 5px;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.596);
+  box-shadow: 0px 5px 10px #262626; /* var(--tooltip-shadow) */
   transition: all 0.3s;
 }
 #messageInput {
@@ -595,12 +644,12 @@ body {
   outline: none;
   border: none;
   padding-left: 10px;
-  color: white;
+  color: #ffffff; /* var(--message-input-text) */
 }
 #messageInput:focus ~ #sendButton svg path,
 #messageInput:valid ~ #sendButton svg path {
-  fill: #3c3c3c;
-  stroke: white;
+  fill: #3c3c3c; /* var(--send-button-path) */
+  stroke: #ffffff; /* var(--send-button-stroke) */
 }
 
 #sendButton {
@@ -623,9 +672,11 @@ body {
   transition: all 0.3s;
 }
 #sendButton:hover svg path {
-  fill: #3c3c3c;
-  stroke: white;
+  fill: #3c3c3c; /* var(--send-button-hover-fill) */
+  stroke: #ffffff; /* var(--send-button-hover-stroke) */
 }
+
+/* Channel SideBar*/
 
 /* .input-container input {
   width: 100%;
