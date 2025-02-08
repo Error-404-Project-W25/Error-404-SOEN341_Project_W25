@@ -21,6 +21,11 @@ import { UserAuthResponse } from '../types/http-response.types';
 export class ChatComponent implements OnInit, OnDestroy {
   teams: ITeam[] = [];
   channels: IChannel[] = [];
+  channelMemberList: string[] = [
+    'Member 1', 'Member 2', 'Member 3', 'Member 4', 'Member 5', 'Member 6', 'Member 7', 'Member 8', 'Member 9', 'Member 10',
+    'Member 11', 'Member 12', 'Member 13', 'Member 14', 'Member 15', 'Member 16', 'Member 17', 'Member 18', 'Member 19', 'Member 20',
+    'Member 21', 'Member 22', 'Member 23', 'Member 24', 'Member 25', 'Member 26', 'Member 27', 'Member 28', 'Member 29', 'Member 30'
+  ];
   selectedTeam: string | null = null;
   selectedChannel: string | null = null;
   teamSelectedName = '';

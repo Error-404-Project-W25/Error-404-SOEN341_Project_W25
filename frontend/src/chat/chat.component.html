@@ -10,13 +10,22 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <div class="container">
       <div class="side-bar-1">
         <div class="add-team-button-container">
           <button class="add-team-button" (click)="openTeamDialog()">
-            <i class="fa fa-plus" style="font-size: 24px; transition: transform 0.3s;" onmouseover="this.style.transform='rotate(90deg)'" onmouseout="this.style.transform='rotate(0deg)'"></i>
+            <i
+              class="fa fa-plus"
+              style="font-size: 24px; transition: transform 0.3s"
+              onmouseover="this.style.transform='rotate(90deg)'"
+              onmouseout="this.style.transform='rotate(0deg)'"
+            ></i>
           </button>
         </div>
         <hr class="separator" />
@@ -34,7 +43,12 @@
         <hr class="separator" />
         <div class="user-menu-container">
           <button class="user-menu" (click)="selectSetting()">
-            <i class="fa fa-gear" style="font-size: 24px; transition: transform 0.3s;" onmouseover="this.style.transform='rotate(90deg)'" onmouseout="this.style.transform='rotate(0deg)'"></i>
+            <i
+              class="fa fa-gear"
+              style="font-size: 24px; transition: transform 0.3s"
+              onmouseover="this.style.transform='rotate(90deg)'"
+              onmouseout="this.style.transform='rotate(0deg)'"
+            ></i>
           </button>
           <button class="user-menu" (click)="signOut()">
             <i class="fa fa-sign-out" style="font-size: 24px"></i>
@@ -46,9 +60,14 @@
           <div class="side-bar-2-title">
             {{ teamSelectedName }}
           </div>
-          <div class="add-team-button-container">
-            <button class="add-team-button" (click)="openChannelDialog()">
-              <i class="fa fa-plus" style="font-size: 24px; transition: transform 0.3s;" onmouseover="this.style.transform='rotate(90deg)'" onmouseout="this.style.transform='rotate(0deg)'"></i>
+          <div class="add-channel-button-container">
+            <button class="add-channel-button" (click)="openChannelDialog()">
+              <i
+                class="fa fa-plus"
+                style="font-size: 24px; transition: transform 0.3s"
+                onmouseover="this.style.transform='rotate(90deg)'"
+                onmouseout="this.style.transform='rotate(0deg)'"
+              ></i>
             </button>
           </div>
         </div>
@@ -64,13 +83,14 @@
               (click)="selectChannel(channel)"
             >
               {{ channel.name }}
-
             </li>
           </ul>
         </div>
       </div>
       <div class="chat-box">
-        <div class="channel-title">{{channelTitle}}</div>
+        <div class="channel-title-container">
+          <div class="channel-title">{{ channelTitle }}</div>
+        </div>
         <div class="chat-log">
           <div class="message" *ngFor="let message of messages">
             <div class="message-profile-picture"></div>
@@ -79,71 +99,57 @@
                 <span class="message-author">{{ message.author }}</span>
                 <span class="message-date">{{ message.date }}</span>
               </div>
-              <textarea class="message-text" readonly>{{
-                message.text
-              }}</textarea>
+              <article class="message-text" readonly>
+                {{ message.text }}
+              </article>
             </div>
           </div>
         </div>
         <div class="input-container">
-          <div class="messageBox">
-            <div class="fileUploadWrapper">
-              <label for="file">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 337 337"
-                >
-                  <circle
-                    stroke-width="20"
-                    stroke="#6c6c6c"
-                    fill="none"
-                    r="158.5"
-                    cy="168.5"
-                    cx="168.5"
-                  ></circle>
-                  <path
-                    stroke-linecap="round"
-                    stroke-width="25"
-                    stroke="#6c6c6c"
-                    d="M167.759 79V259"
-                  ></path>
-                  <path
-                    stroke-linecap="round"
-                    stroke-width="25"
-                    stroke="#6c6c6c"
-                    d="M79 167.138H259"
-                  ></path>
-                </svg>
-                <span class="tooltip">Add an image</span>
-              </label>
-              <input type="file" id="file" name="file" />
-            </div>
-            <input
-              required=""
-              placeholder="Message..."
-              type="text"
-              id="messageInput"
-            />
-            <button id="sendButton">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 664 663"
-              >
-                <path
-                  fill="none"
-                  d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                ></path>
-                <path
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="33.67"
-                  stroke="#6c6c6c"
-                  d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
-                ></path>
-              </svg>
+          <input class="input-container" />
+          <button class="input-container">
+            <i class="material-icons" style="font-size: 24px">send</i>
+          </button>
+        </div>
+      </div>
+      <div class="channel-setting-sidebar">
+        <div class="channel-setting">
+          <div class="channel-setting-button-container">
+            <button class="channel-setting-button">
+              <i class="fa fa-gear" style="font-size: 24px"></i> Setting
             </button>
+          </div>
+          <div class="channel-setting-button-container">
+            <button class="channel-setting-button">
+              <i class="fa fa-plus" style="font-size: 24px"></i> Add Members
+            </button>
+          </div>
+        </div>
+        <!-- From Uiverse.io by ilkhoeri -->
+        <div class="channel-member-list-container">
+          <div class="member-dropdown">
+            <input
+              hidden=""
+              class="sr-only"
+              name="state-member-dropdown"
+              id="state-member-dropdown"
+              type="checkbox"
+            />
+            <label
+              aria-label="dropdown scrollbar"
+              for="state-member-dropdown"
+              class="member-trigger"
+            ></label>
+
+            <ul class="member-list webkit-scrollbar" role="list" dir="auto">
+              <li
+                class="member-listitem"
+                role="listitem"
+                *ngFor="let member of channelMemberList"
+              >
+                <article class="member-article">{{ member }}</article>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
