@@ -6,9 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { BackendService } from '../../services/backend.service';
-import { UserService } from '../../services/user.service';
-import { IChannel, ITeam, IUser } from '../../../../shared/interfaces';
+import { BackendService } from '../../../services/backend.service';
+import { UserService } from '../../../services/user.service';
+import { IChannel, ITeam, IUser } from '../../../../../shared/interfaces';
 
 @Component({
   selector: 'app-add-team-dialog',

@@ -4,9 +4,9 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { BackendService } from '../../services/backend.service';
-import { UserService } from '../../services/user.service';
-import { IUser, IChannel } from '../../../../shared/interfaces';
+import { BackendService } from '../../../services/backend.service';
+import { UserService } from '../../../services/user.service';
+import { IUser, IChannel } from '../../../../../shared/interfaces';
 import { NgIf } from '@angular/common';
 
 @Component({

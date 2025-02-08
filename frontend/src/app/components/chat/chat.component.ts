@@ -1,15 +1,15 @@
-import { UserService } from './../services/user.service';
-import { BackendService } from './../services/backend.service';
+import { UserService } from '../../../services/user.service';
+import { BackendService } from '../../../services/backend.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
-import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
-import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
+import { AddChannelDialogComponent } from '../create-channel-pop-up/add-channel-dialog.component';
+import { AddTeamDialogComponent } from '../create-team-pop-up/add-team-dialog.component';
+import { IChannel, ITeam, IUser } from '../../../../../shared/interfaces';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { UserAuthResponse } from '../types/http-response.types';
+import { UserAuthResponse } from '../../../types/http-response.types';
 
 @Component({
   selector: 'app-root',

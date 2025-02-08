@@ -10,12 +10,12 @@ import { ActivatedRoute } from '@angular/router';
 import {
   RegistrationData,
   UserSignInData,
-} from '../../../../shared/user-credentials.types';
-import { BackendService } from '../../services/backend.service';
+} from '../../../../../shared/user-credentials.types';
+import { BackendService } from '../../../services/backend.service';
 import { Router } from '@angular/router';
-import { UserAuthResponse } from '../../types/http-response.types';
-import { IUser } from '../../../../shared/interfaces';
-import { UserService } from '../../services/user.service';
+import { UserAuthResponse } from '../../../types/http-response.types';
+import { IUser } from '../../../../../shared/interfaces';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-login',
