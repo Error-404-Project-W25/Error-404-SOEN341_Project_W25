@@ -1,21 +1,20 @@
-import {
-  Component,
-  ViewEncapsulation,
-  ChangeDetectorRef,
-  OnInit,
-} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BackendService } from '@services/backend.service';
+import { UserService } from '@services/user.service';
+import { IUser } from '@shared/interfaces';
 import {
   RegistrationData,
   UserSignInData,
-} from '../../../../../shared/user-credentials.types';
-import { BackendService } from '../../../services/backend.service';
-import { Router } from '@angular/router';
+} from '@shared/user-credentials.types';
 import { UserAuthResponse } from '../../../types/http-response.types';
-import { IUser } from '../../../../../shared/interfaces';
-import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-login',

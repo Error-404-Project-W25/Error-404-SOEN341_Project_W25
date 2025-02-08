@@ -1,13 +1,16 @@
-import { Component, EventEmitter, Output, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
+import { NgIf } from '@angular/common';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { BackendService } from '../../../services/backend.service';
-import { UserService } from '../../../services/user.service';
-import { IUser, IChannel } from '../../../../../shared/interfaces';
-import { NgIf } from '@angular/common';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { BackendService } from '@services/backend.service';
+import { UserService } from '@services/user.service';
+import { IChannel, IUser } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-channel-dialog',

@@ -1,14 +1,13 @@
-/* Create team Pop Up */
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { Component, EventEmitter, Output } from '@angular/core';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
-import { BackendService } from '../../../services/backend.service';
-import { UserService } from '../../../services/user.service';
-import { IChannel, ITeam, IUser } from '../../../../../shared/interfaces';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { BackendService } from '@services/backend.service';
+import { UserService } from '@services/user.service';
+import { ITeam, IUser } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-team-dialog',
