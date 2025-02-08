@@ -30,7 +30,7 @@
           <input type="checkbox" />
         </label>
         <div class="submit">
-          <button type="submit" (click)="goToChat()">SIGN In</button>
+          <button type="submit">Sign In</button>
         </div>
       </form>
       <p>Having trouble signing in?</p>
@@ -119,6 +119,7 @@
           <input
             type="password"
             placeholder="Confirm Password"
+            [(ngModel)]="signUpForm.confirmPassword"
             name="confirmPassword"
             required
             autocomplete="new-password"
@@ -153,7 +154,7 @@
         </div>
 
         <div class="submit">
-          <button type="submit" (click)="goToChat()">SIGN Up</button>
+          <button type="submit">Sign Up</button>
         </div>
       </form>
 
