@@ -161,28 +161,103 @@ body {
   width: 100%;
   border-top: 2px solid #35363c;
 }
-.user-menu {
-  align-items: center;
-  background-color: #313338;
-  border: none;
-  border-radius: 50%;
-  color: #f53f3d;
+.menu-toggle-button {
   cursor: pointer;
+  position: absolute;
+  z-index: 10; /* Adjust z-index for button */
+  background-color: #f53f3d; /* Changed to new color */
+  border: 2px solid #1e1e1e;
+  color: #1e1e1e;
+  font-size: 30px;
+  font-weight: 700;
+  width: 3rem; /* Changed size */
+  height: 3rem; /* Changed size */
+  border-radius: 50%;
+  display: flex;
   justify-content: center;
-  margin: 5px;
-  max-width: 3rem;
-  min-height: 3rem;
-  min-width: 3rem;
-  padding: 10px;
+  align-items: center;
+  text-align: center;
+  -webkit-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  -moz-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
 }
-.user-menu:hover {
-  background-color: #f53f3d;
-  border-radius: 30%;
-  color: #ffffff;
-  max-width: 3rem;
-  min-height: 3rem;
-  min-width: 3rem;
+
+.menu-toggle-checkbox {
+  width: 3rem; /* Changed size */
+  height: 3rem; /* Changed size */
+  opacity: 0;
+  z-index: 20; /* Increase z-index of the checkbox */
+  cursor: pointer;
 }
+
+.menu-option {
+  position: absolute;
+  background-color: #1e1e1e;
+  border: 2px solid #f53f3d; /* Changed to new color */
+  color: #f53f3d; /* Changed to new color */
+  z-index: 5; /* Default z-index for options */
+  width: 3rem; /* Changed size */
+  height: 3rem; /* Changed size */
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s;
+  -webkit-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  -moz-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
+}
+
+/* When the menu is toggled, move the options and bring them to the top */
+.menu-toggle-checkbox:checked ~ .menu-option {
+  z-index: 15; /* Bring options above button when checked */
+}
+
+.menu-toggle-checkbox:hover ~ .menu-toggle-button,
+.menu-toggle-checkbox:checked ~ .menu-toggle-button {
+  background-color: #e53b3b; /* Darker shade on hover */
+  scale: 0.98;
+  box-shadow: none;
+  border-radius: 30%; /* Change border radius on hover */
+}
+
+.menu-toggle-checkbox:not(:checked) ~ .menu-toggle-button::before {
+  margin: 0;
+}
+
+.menu-toggle-checkbox:checked ~ .menu-toggle-button::after {
+  scale: 0.98;
+  box-shadow: none;
+  border-radius: 30%; /* Change border radius on selection */
+}
+
+.menu-toggle-checkbox:not(:checked) ~ .menu-option {
+  box-shadow: none;
+}
+
+.menu-option:hover,
+.menu-option:active,
+.menu-option:focus {
+  box-shadow: none;
+  scale: 0.98;
+  border-radius: 30%; /* Change border radius on hover */
+}
+
+/* Positioning of menu options when menu is opened */
+.menu-toggle-checkbox:checked ~ .menu-option-1 {
+  transition-delay: 0.1s;
+  transform: translateY(-90px);
+}
+
+.menu-toggle-checkbox:checked ~ .menu-option-2 {
+  transition-delay: 0.2s;
+  transform: translateY(-65px) translateX(65px);
+}
+
+.menu-toggle-checkbox:checked ~ .menu-option-3 {
+  transition-delay: 0.3s;
+  transform: translateX(90px);
+}
+
 
 /*Side bar #2*/
 
@@ -447,6 +522,7 @@ body {
   background-color: #f53f3d;
   border-radius: 30%;
 }
+
 
 
 /*Chat Box*/
@@ -749,88 +825,3 @@ body {
   border-radius: 30%;
 }
 
-/* TESTING */
-.button-menu {
-  cursor: pointer;
-  position: absolute;
-  z-index: 10; /* Adjust z-index for button */
-  background-color: #f53f3d; /* Changed to new color */
-  border: 2px solid #1e1e1e;
-  color: #1e1e1e;
-  font-size: 30px;
-  font-weight: 700;
-  width: 3rem; /* Changed size */
-  height: 3rem; /* Changed size */
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  -webkit-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
-  -moz-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
-  box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
-}
-.checkbox {
-  width: 3rem; /* Changed size */
-  height: 3rem; /* Changed size */
-  opacity: 0;
-  z-index: 20; /* Increase z-index of the checkbox */
-  cursor: pointer;
-}
-.option {
-  position: absolute;
-  background-color: #1e1e1e;
-  border: 2px solid #f53f3d; /* Changed to new color */
-  color: #f53f3d; /* Changed to new color */
-  z-index: 5; /* Default z-index for options */
-  width: 3rem; /* Changed size */
-  height: 3rem; /* Changed size */
-  border-radius: 50%;
-  cursor: pointer;
-  font-weight: 700;
-  transition: all 0.3s;
-  -webkit-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
-  -moz-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
-  box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
-}
-/* When the checkbox is checked, move the options and bring them to the top */
-.checkbox:checked ~ .option {
-  z-index: 15; /* Bring options above button when checked */
-}
-.checkbox:hover ~ .button-menu,
-.checkbox:checked ~ .button-menu {
-  background-color: #e53b3b; /* Darker shade on hover */
-  scale: 0.98;
-  box-shadow: none;
-  border-radius: 30%; /* Change border radius on hover */
-}
-.checkbox:not(:checked) ~ .button-menu::before {
-  margin: 0;
-}
-.checkbox:checked ~ .button-menu::after {
-  scale: 0.98;
-  box-shadow: none;
-  border-radius: 30%; /* Change border radius on selection */
-}
-.checkbox:not(:checked) ~ .option {
-  box-shadow: none;
-}
-.option:hover,
-.option:active,
-.option:focus {
-  box-shadow: none;
-  scale: 0.98;
-  border-radius: 30%; /* Change border radius on hover */
-}
-.checkbox:checked ~ .option-a {
-  transition-delay: 0.1s;
-  transform: translateY(-90px);
-}
-.checkbox:checked ~ .option-b {
-  transition-delay: 0.2s;
-  transform: translateY(-65px) translateX(65px);
-}
-.checkbox:checked ~ .option-c {
-  transition-delay: 0.3s;
-  transform: translateX(90px);
-}

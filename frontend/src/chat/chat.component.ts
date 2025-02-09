@@ -16,7 +16,7 @@ import { UserAuthResponse } from '../types/http-response.types';
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatDialogModule],
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css'],
+  styleUrls: ['./chat.component.css','./colors.css'],
 })
 export class ChatComponent implements OnInit, OnDestroy {
   /*Test*/
