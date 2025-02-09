@@ -118,12 +118,14 @@
             </section>
           </label>
         </div>
-
         <hr class="separator" />
         <div class="channel-list">
           <ul>
-            <li *ngFor="let channel of channelNameList">
-              {{ channel }}
+            <li *ngFor="let channel of channelNameList" class="channel-container">
+              <span class="channel-name">{{ channel }}</span>
+              <button class="channel-button">
+              <i class="material-icons" style="font-size: 24px">more_vert</i>
+              </button>
             </li>
             <!-- <li
               *ngFor="let channel of channels$ | async"
