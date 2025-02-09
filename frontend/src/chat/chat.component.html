@@ -28,7 +28,6 @@
             ></i>
           </button>
         </div>
-        <hr class="separator" />
         <div class="team-list">
           <ul>
             <li *ngFor="let team of teamList">
@@ -43,7 +42,6 @@
             </li> -->
           </ul>
         </div>
-        <hr class="separator" />
         <div class="user-menu-container">
           <button class="user-menu" (click)="selectSetting()">
             <i
@@ -60,10 +58,49 @@
       </div>
       <div class="side-bar-2">
         <div class="side-bar-2-title-container">
-          <div class="side-bar-2-title">
+          <!-- <div class="side-bar-2-title">
             {{ TeamTitle }}
-            <!-- {{ teamSelectedName }} -->
-          </div>
+            {{ teamSelectedName }}
+          </div> -->
+          <label class="main">
+            {{ TeamTitle }}
+            <input class="inp" checked="" type="checkbox" />
+            <div class="bar">
+              <span class="top bar-list"></span>
+              <span class="middle bar-list"></span>
+              <span class="bottom bar-list"></span>
+            </div>
+            <section class="dropdown-team-setting-container">
+              <div class="dropdown-team-setting-list">
+                <i
+                  class="fa fa-gear"
+                  style="font-size: 24px; margin-right: 8px"
+                ></i
+                >Setting
+              </div>
+              <div class="dropdown-team-setting-list">
+                <i
+                  class="fa fa-plus"
+                  style="font-size: 24px; margin-right: 8px"
+                ></i
+                >Create Channel
+              </div>
+              <div class="dropdown-team-setting-list" (click)="openChannelDialog()">
+                <i
+                  class="fa fa-user-plus"
+                  style="font-size: 24px; margin-right: 8px"
+                ></i
+                >Add Member
+              </div>
+              <div class="dropdown-team-setting-list">
+                <i
+                  class="fa fa-user-times"
+                  style="font-size: 24px; margin-right: 8px"
+                ></i
+                >Remove Member
+              </div>
+            </section>
+          </label>
           <!-- <div class="add-channel-button-container">
             <button class="add-channel-button" (click)="openChannelDialog()">
               <i
@@ -121,19 +158,6 @@
       </div>
       <div class="channel-setting-sidebar">
         <!-- Dropdown -->
-        <!-- <div class="channel-setting">
-          <details class="dropdown">
-            <summary role="button">
-              <button class="button">Setting</button>
-            </summary>
-            <ul>
-              <li><a href="#">Add Member</a></li>
-              <li><a href="#">Remove Member</a></li>
-              <li><a href="#">Delete Channel</a></li>
-            </ul>
-          </details>
-        </div> -->
-
 
         <!-- Member List -->
         <div class="member-list-title-container">
