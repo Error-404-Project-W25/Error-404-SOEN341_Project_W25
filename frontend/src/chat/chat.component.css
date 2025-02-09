@@ -82,9 +82,7 @@ body {
 .team-list {
   display: flex;
   flex-direction: column;
-  height: calc(
-    100% - 4rem - 7rem
-  ); /* 100% of sidebar1 minus the two containers */
+  height: calc(100% - 8rem);
   margin-top: 4rem;
   margin-bottom: 7rem;
   max-height: fit-content;
@@ -156,7 +154,7 @@ body {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  height: 7rem;
+  height: 4rem;
   justify-content: center;
   margin: 0;
   padding: 0;
@@ -204,6 +202,7 @@ body {
   padding-top: 7px;
   width: auto;
 }
+/*Teams Setting Dropdown*/
 .side-bar-2-title-container {
   position: absolute;
   align-items: center;
@@ -217,7 +216,6 @@ body {
   position: relative;
   width: 100%;
 }
-
 .main > .inp {
   display: none;
 }
@@ -333,7 +331,6 @@ body {
     opacity 0.4s calc(var(--delay) + (var(--trdelay) * 3));
 }
 .bar-inp {
-  -webkit-appearance: none;
   display: none;
   visibility: hidden;
 }
@@ -366,38 +363,7 @@ body {
   transform-origin: bottom right;
   transform: translateY(calc(var(--transform) * -1)) rotate(45deg);
 }
-
-
-
-.add-channel-button-container {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-}
-.add-channel-button {
-  align-items: center;
-  background-color: #b5bac1;
-  border-radius: 50%;
-  color: #2f3136;
-  display: flex;
-  height: 35px;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  width: 35px;
-}
-.add-channel-button:hover {
-  background-color: #ff6b6b;
-  border-color: none;
-  border-radius: 30%;
-  color: #2f3136;
-  height: 35px;
-  width: 35px;
-}
+/*Channel List*/
 .channel-list {
   align-items: center;
   background-color: #2b2d31;
@@ -455,7 +421,7 @@ body {
   flex-direction: column;
   height: 100%;
   width: auto;
-  overflow-y: auto;
+  overflow-y: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -499,6 +465,7 @@ body {
   -ms-overflow-style: none;
 }
 .message {
+  width: 95%;
   margin: 5px auto;
   padding: 5px;
   display: flex;
@@ -612,8 +579,9 @@ body {
   width: 5%;
 }
 
-/*Channel Setting Side bar*/
-.channel-setting-sidebar {
+/*Team member Side bar*/
+
+.team-setting-sidebar {
   background-color: #2b2d31;
   color: #ffffff;
   display: flex;
@@ -630,36 +598,8 @@ body {
   /* position: absolute; */
   right: 0;
 }
-.channel-setting {
-  align-items: center;
-  background-color: #2b2d31;
-  border-bottom: 2px solid #35363c;
-  display: flex;
-  flex-shrink: 0;
-  height: 3rem;
-  justify-content: center;
-  padding: 0;
-  position: relative;
-  width: 100%;
-}
-.channel-button-setting {
-  /* Frame */
-  display: inline-block;
-  padding: 1rem;
-  height: 100%;
-  width: inherit;
-  border-radius: 5px;
-  box-sizing: border-box;
 
-  /* Style */
-  border: none;
-  background: #2b2d31;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-/*Member list*/
+/*Team member list*/
 .member-list-title-container {
   align-items: center;
   background-color: #2b2d31;
@@ -733,5 +673,129 @@ body {
   background-color: #404249;
   color: #f3fcff;
 }
+.member-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+.member-user-name {
+  color: #f2f3f5;
+  font-size: 16px;
+  font-weight: bold;
+  flex-grow: 1;
+  text-align: left;
+}
+.member-button {
+  margin-left: 50px;
+  background-color: #2f3136;
+  border: none;
+  border-radius: 50%;
+  color: #dbdee1;
+  cursor: pointer;
+  font-size: 16px;
+  height: 2rem;
+  outline: none;
+  padding: 5px;
+  width: 2rem;
+  transition: background-color 0.3s, border-radius 0.3s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.member-button:hover {
+  background-color: #f53f3d;
+  border-radius: 30%;
+}
 
 /* TESTING */
+.button-menu {
+  cursor: pointer;
+  position: absolute;
+  z-index: 10; /* Adjust z-index for button */
+  background-color: #f53f3d; /* Changed to new color */
+  border: 2px solid #1e1e1e;
+  color: #1e1e1e;
+  font-size: 30px;
+  font-weight: 700;
+  width: 3rem; /* Changed size */
+  height: 3rem; /* Changed size */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  -webkit-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  -moz-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
+}
+.checkbox {
+  width: 3rem; /* Changed size */
+  height: 3rem; /* Changed size */
+  opacity: 0;
+  z-index: 20; /* Increase z-index of the checkbox */
+  cursor: pointer;
+}
+.option {
+  position: absolute;
+  background-color: #1e1e1e;
+  border: 2px solid #f53f3d; /* Changed to new color */
+  color: #f53f3d; /* Changed to new color */
+  z-index: 5; /* Default z-index for options */
+  width: 3rem; /* Changed size */
+  height: 3rem; /* Changed size */
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s;
+  -webkit-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  -moz-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
+}
+/* When the checkbox is checked, move the options and bring them to the top */
+.checkbox:checked ~ .option {
+  z-index: 15; /* Bring options above button when checked */
+}
+.checkbox:hover ~ .button-menu,
+.checkbox:checked ~ .button-menu {
+  background-color: #e53b3b; /* Darker shade on hover */
+  scale: 0.98;
+  box-shadow: none;
+  border-radius: 30%; /* Change border radius on hover */
+}
+.checkbox:not(:checked) ~ .button-menu::before {
+  content: "+";
+}
+.checkbox:checked ~ .button-menu::after {
+  content: "-";
+  scale: 0.98;
+  box-shadow: none;
+  border-radius: 30%; /* Change border radius on selection */
+}
+.checkbox:not(:checked) ~ .option {
+  box-shadow: none;
+}
+.option:hover,
+.option:active,
+.option:focus {
+  box-shadow: none;
+  scale: 0.98;
+  border-radius: 30%; /* Change border radius on hover */
+}
+.checkbox:checked ~ .option-a {
+  transition-delay: 0.1s;
+  transform: translateY(-90px);
+}
+.checkbox:checked ~ .option-b {
+  transition-delay: 0.2s;
+  transform: translateY(-65px) translateX(65px);
+}
+.checkbox:checked ~ .option-c {
+  transition-delay: 0.3s;
+  transform: translateX(90px);
+}
+
+

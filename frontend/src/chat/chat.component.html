@@ -43,7 +43,12 @@
           </ul>
         </div>
         <div class="user-menu-container">
-          <button class="user-menu" (click)="selectSetting()">
+          <input class="checkbox" type="checkbox" />
+          <span class="button-menu"></span>
+          <button class="option-a option">A</button>
+          <button class="option-b option">B</button>
+          <button class="option-c option">C</button>
+          <!-- <button class="user-menu" (click)="selectSetting()">
             <i
               class="fa fa-gear"
               style="font-size: 24px; transition: transform 0.3s"
@@ -53,17 +58,14 @@
           </button>
           <button class="user-menu" (click)="signOut()">
             <i class="fa fa-sign-out" style="font-size: 24px"></i>
-          </button>
+          </button> -->
         </div>
       </div>
       <div class="side-bar-2">
         <div class="side-bar-2-title-container">
-          <!-- <div class="side-bar-2-title">
-            {{ TeamTitle }}
-            {{ teamSelectedName }}
-          </div> -->
           <label class="main">
             {{ TeamTitle }}
+            <!-- {{ teamSelectedName }} -->
             <input class="inp" checked="" type="checkbox" />
             <div class="bar">
               <span class="top bar-list"></span>
@@ -85,7 +87,10 @@
                 ></i
                 >Create Channel
               </div>
-              <div class="dropdown-team-setting-list" (click)="openChannelDialog()">
+              <div
+                class="dropdown-team-setting-list"
+                (click)="openChannelDialog()"
+              >
                 <i
                   class="fa fa-user-plus"
                   style="font-size: 24px; margin-right: 8px"
@@ -101,20 +106,8 @@
               </div>
             </section>
           </label>
-          <!-- <div class="add-channel-button-container">
-            <button class="add-channel-button" (click)="openChannelDialog()">
-              <i
-                class="fa fa-plus"
-                style="font-size: 24px; transition: transform 0.3s"
-                onmouseover="this.style.transform='rotate(90deg)'"
-                onmouseout="this.style.transform='rotate(0deg)'"
-              ></i>
-            </button>
-          </div> -->
         </div>
-        <!-- <div class="search-container">
-          <input type="text" class="search-bar" placeholder="Search..." />
-        </div> -->
+
         <hr class="separator" />
         <div class="channel-list">
           <ul>
@@ -156,17 +149,17 @@
           </button>
         </div>
       </div>
-      <div class="channel-setting-sidebar">
-        <!-- Dropdown -->
-
-        <!-- Member List -->
+      <div class="team-setting-sidebar">
         <div class="member-list-title-container">
-          <div class="member-list-title">Members</div>
+          <div class="member-list-title">Team Members</div>
         </div>
         <div class="member-list">
           <ul>
-            <li *ngFor="let member of memberList">
-              {{ member }}
+            <li *ngFor="let member of memberList" class="member-container">
+              <span class="member-name">{{ member }}</span>
+              <button class="member-button">
+                <i class="material-icons" style="font-size: 24px">more_vert</i>
+              </button>
             </li>
           </ul>
         </div>
