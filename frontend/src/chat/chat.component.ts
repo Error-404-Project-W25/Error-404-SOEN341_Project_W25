@@ -152,6 +152,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     'T29',
     'T30',
   ];
+  memberList: string[] = Array.from({ length: 30 }, (_, i) => `Member ${i + 1}`);
   /*End Test*/
   teams: ITeam[] = [];
   channels: IChannel[] = [];
