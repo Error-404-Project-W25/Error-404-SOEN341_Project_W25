@@ -767,10 +767,9 @@ body {
   border-radius: 30%; /* Change border radius on hover */
 }
 .checkbox:not(:checked) ~ .button-menu::before {
-  content: "+";
+  margin: 0;
 }
 .checkbox:checked ~ .button-menu::after {
-  content: "-";
   scale: 0.98;
   box-shadow: none;
   border-radius: 30%; /* Change border radius on selection */
@@ -797,5 +796,3 @@ body {
   transition-delay: 0.3s;
   transform: translateX(90px);
 }
-
-

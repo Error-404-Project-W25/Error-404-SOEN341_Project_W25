@@ -44,10 +44,21 @@
         </div>
         <div class="user-menu-container">
           <input class="checkbox" type="checkbox" />
-          <span class="button-menu"></span>
-          <button class="option-a option">A</button>
-          <button class="option-b option">B</button>
-          <button class="option-c option">C</button>
+            <span class="button-menu">
+            <i class="fa fa-user-circle" style="font-size: 24px"></i>
+            </span>
+          <!-- <button class="option-a option"></button> -->
+            <button class="option-b option" (click)="selectSetting()">
+            <i
+              class="fa fa-gear"
+              style="font-size: 24px; transition: transform 0.3s"
+              onmouseover="this.style.transform='rotate(90deg)'"
+              onmouseout="this.style.transform='rotate(0deg)'"
+            ></i>
+            </button>
+            <button class="option-c option" (click)="signOut()">
+            <i class="fa fa-sign-out" style="font-size: 24px"></i>
+            </button>
           <!-- <button class="user-menu" (click)="selectSetting()">
             <i
               class="fa fa-gear"
