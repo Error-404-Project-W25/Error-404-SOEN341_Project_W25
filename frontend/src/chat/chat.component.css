@@ -35,6 +35,7 @@ body {
 /*Side bar #1*/
 
 .side-bar-1 {
+  position: relative;
   background-color: #1e1f22;
   color: #dbdee1;
   display: block;
@@ -46,7 +47,9 @@ body {
   min-width: 5rem;
   padding: 0;
 }
-.add-team-button-container {
+.add-team-button-container{
+  background-color: #1e1f22;
+  position: absolute;
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -55,6 +58,7 @@ body {
   justify-content: center;
   margin: 0;
   padding: 0;
+  width: 100%;
 }
 .add-team-button {
   align-items: center;
@@ -79,7 +83,7 @@ body {
   flex-direction: column;
   height: 100%;
   margin: 0;
-  max-height: 79%;
+  max-height: fit-content;
   padding-top: 0;
   width: 100%;
 }
@@ -136,13 +140,19 @@ body {
   background-color: #f53f3d;
   border-radius: 30%;
 }
+.team-list li:hover {
+  background-color: #f53f3d;
+  border-radius: 30%;
+}
 .user-menu-container {
+  background-color: #1e1f22;
+  position: absolute;
   align-items: center;
-  bottom: auto;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  height: 8rem;
+  height: 7rem;
   justify-content: center;
   margin: 0;
   padding: 0;
@@ -408,7 +418,7 @@ body {
 .message-text {
   padding: 5px;
   text-align: justify;
-  width: 95%;
+  width: 100%;
 }
 .input-container {
   background-color: #383a40;
@@ -479,12 +489,12 @@ body {
   width: 100%;
 }
 /* dropdown */
-a.button {
+.button {
   /* Frame */
   display: inline-block;
   padding: 1rem;
   height: 100%;
-  width: 100%;
+  width: inherit;
   border-radius: 5px;
   box-sizing: border-box;
 
@@ -495,14 +505,15 @@ a.button {
   font-size: 24px;
   cursor: pointer;
 }
-a.button:active {
+/* a.button:active {
   filter: brightness(75%);
-}
+} */
 /* Dropdown styles */
 .dropdown {
   position: relative;
   padding: 0;
-  /* margin-right: 1em; */
+  margin-right: 1em;
+  /* background-color: red; */
 
   border: none;
 }
@@ -517,7 +528,8 @@ a.button:active {
   outline: none;
 }
 .dropdown summary:focus a.button {
-  border: 2px solid white;
+  /* border: 2px solid white; */
+  border: none;
 }
 .dropdown summary:focus {
   outline: none;
@@ -556,7 +568,6 @@ a.button:active {
 }
 
 /*Member list*/
-
 .member-list-title-container {
   align-items: center;
   background-color: #2b2d31;
@@ -630,3 +641,5 @@ a.button:active {
   background-color: #404249;
   color: #f3fcff;
 }
+
+/* TESTING */
