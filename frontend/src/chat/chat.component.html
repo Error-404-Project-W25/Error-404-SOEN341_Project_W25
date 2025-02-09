@@ -31,13 +31,15 @@
         <hr class="separator" />
         <div class="team-list">
           <ul>
-            <li
+            <li *ngFor="let team of teamList">
+              {{ team }}</li>
+            <!-- <li
               *ngFor="let team of teams$ | async"
               [ngClass]="{ selected: team.team_id === selectedTeam }"
               (click)="selectTeam(team)"
             >
               <a href="#">{{ team.team_name }}</a>
-            </li>
+            </li> -->
           </ul>
         </div>
         <hr class="separator" />
@@ -57,7 +59,8 @@
       </div>
       <div class="side-bar-2">
         <div class="side-bar-2-title-container">
-          <div class="side-bar-2-title"> Team Title
+          <div class="side-bar-2-title">
+            {{TeamTitle}}
             <!-- {{ teamSelectedName }} -->
           </div>
           <!-- <div class="add-channel-button-container">
@@ -77,13 +80,16 @@
         <hr class="separator" />
         <div class="channel-list">
           <ul>
-            <li
+            <li *ngFor="let channel of channelNameList">
+              {{ channel }}
+            </li>
+            <!-- <li
               *ngFor="let channel of channels$ | async"
               [ngClass]="{ selected: channel.name === selectedChannel }"
               (click)="selectChannel(channel)"
             >
               {{ channel.name }}
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
@@ -125,33 +131,15 @@
             </button>
           </div>
         </div>
-        <!-- From Uiverse.io by ilkhoeri -->
-        <div class="channel-member-list-container">
-          <div class="member-dropdown">
-            <input
-              hidden=""
-              class="sr-only"
-              name="state-member-dropdown"
-              id="state-member-dropdown"
-              type="checkbox"
-            />
-            <label
-              aria-label="dropdown scrollbar"
-              for="state-member-dropdown"
-              class="member-trigger"
-            ></label>
-
-            <ul class="member-list webkit-scrollbar" role="list" dir="auto">
-              <li
-                class="member-listitem"
-                role="listitem"
-                *ngFor="let member of channelMemberList"
-              >
-                <article class="member-article">{{ member }}</article>
-              </li>
-            </ul>
+        <div class="dropdown">
+          <button onclick="myFunction()" class="dropbtn">Dropdown</button>
+          <div id="myDropdown" class="dropdown-content">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
           </div>
         </div>
+
       </div>
     </div>
   </body>
