@@ -47,7 +47,7 @@ body {
   min-width: 5rem;
   padding: 0;
 }
-.add-team-button-container{
+.add-team-button-container {
   background-color: #1e1f22;
   position: absolute;
   align-items: center;
@@ -59,6 +59,7 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
+  border-bottom: 2px solid #35363c;
 }
 .add-team-button {
   align-items: center;
@@ -81,8 +82,9 @@ body {
 .team-list {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  margin: 0;
+  height: calc(100% - 4rem - 7rem); /* 100% of sidebar1 minus the two containers */
+  margin-top: 4rem;
+  margin-bottom: 7rem;
   max-height: fit-content;
   padding-top: 0;
   width: 100%;
@@ -157,6 +159,7 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
+  border-top: 2px solid #35363c;
 }
 .user-menu {
   align-items: center;
