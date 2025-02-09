@@ -82,7 +82,9 @@ body {
 .team-list {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 4rem - 7rem); /* 100% of sidebar1 minus the two containers */
+  height: calc(
+    100% - 4rem - 7rem
+  ); /* 100% of sidebar1 minus the two containers */
   margin-top: 4rem;
   margin-bottom: 7rem;
   max-height: fit-content;
@@ -187,6 +189,7 @@ body {
 /*Side bar #2*/
 
 .side-bar-2 {
+  position: relative;
   align-items: horizontal;
   background-color: #2b2d31;
   color: #dbdee1;
@@ -202,6 +205,7 @@ body {
   width: auto;
 }
 .side-bar-2-title-container {
+  position: absolute;
   align-items: center;
   background-color: #2b2d31;
   border-bottom: 2px solid #35363c;
@@ -271,7 +275,7 @@ body {
   align-items: center;
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: calc(100% - 3rem);
   margin: 0;
   overflow-y: auto;
   padding: 0;
@@ -307,6 +311,7 @@ body {
 /*Chat Box*/
 
 .chat-box {
+  position: relative;
   background-color: #313338;
   color: #bbbdc1;
   display: flex;
@@ -318,6 +323,7 @@ body {
   -ms-overflow-style: none;
 }
 .channel-title-container {
+  position: absolute;
   align-items: center;
   background-color: #2b2d31;
   border-bottom: 2px solid #35363c;
@@ -424,28 +430,36 @@ body {
   width: 100%;
 }
 .input-container {
+  /* position: absolute; */
+  /* align-items: center; */
+  /* justify-content: center; */
+  bottom: 0;
   background-color: #383a40;
   box-sizing: border-box;
   color: #dbdee1;
   display: flex;
   flex-direction: row;
   gap: 5px;
-  height: 7%;
+  height: 3rem;
   padding: 10px;
   width: 100%;
 }
 .input-container input {
+  /* position: absolute; */
+  right: 0;
   background-color: black;
   border: none;
   border-radius: 10px;
   color: #dbdee1;
   font-size: 16px;
-  height: 100%;
+  height: 2rem;
   outline: none;
   padding: 5px;
   width: 95%;
 }
 .input-container button {
+  /* position: absolute; */
+  right: 0;
   align-items: center;
   background-color: black;
   border: none;
@@ -454,7 +468,7 @@ body {
   cursor: pointer;
   display: flex;
   font-size: 16px;
-  height: 100%;
+  height: 2rem;
   justify-content: center;
   outline: none;
   padding: 5px;
