@@ -27,7 +27,6 @@ import { IChannel, ITeam, IUser } from '../../../../shared/interfaces';
 export class AddTeamDialogComponent {
   @Output() teamCreated = new EventEmitter<void>();
 
-  searchQuery = '';
   teamName = '';
   description = '';
   found = ' ';
@@ -53,22 +52,24 @@ export class AddTeamDialogComponent {
     //   channels: [],
     // };
 
-    this.backendService.createTeams(
-      currentUser.user_id,
-      currentUser.username,
-      this.teamName,
-      this.description,
-      [],
-      'admin'
-    ).then(
-      () => {
-        console.log('Team created successfully');
-        this.teamCreated.emit();
-        this.dialogRef.close();
-      },
-      (error) => {
-        console.error('Error creating team:', error);
-      }
-    );
+    this.backendService
+      .createTeams(
+        currentUser.user_id,
+        currentUser.username,
+        this.teamName,
+        this.description,
+        [],
+        'admin'
+      )
+      .then(
+        () => {
+          console.log('Team created successfully');
+          this.teamCreated.emit();
+          this.dialogRef.close();
+        },
+        (error) => {
+          console.error('Error creating team:', error);
+        }
+      );
   }
 }

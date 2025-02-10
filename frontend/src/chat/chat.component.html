@@ -23,7 +23,6 @@
           display: none;
         }
       }
-
       @media (max-width: 430px) {
         .chat-box {
           display: none;
@@ -55,16 +54,13 @@
         </div>
         <div class="team-list">
           <ul>
-            <li *ngFor="let team of teamList">
-              {{ team }}
-            </li>
-            <!-- <li
+            <li
               *ngFor="let team of teams$ | async"
               [ngClass]="{ selected: team.team_id === selectedTeam }"
               (click)="selectTeam(team)"
             >
               <a href="#">{{ team.team_name }}</a>
-            </li> -->
+            </li>
           </ul>
         </div>
         <div class="user-menu-container">
@@ -73,7 +69,6 @@
           <span class="menu-toggle-button">
             <i class="fa fa-user-circle" style="font-size: 24px"></i>
           </span>
-
           <button class="menu-option-2 menu-option" (click)="selectSetting()">
             <i
               class="fa fa-gear"
@@ -82,7 +77,6 @@
               onmouseout="this.style.transform='rotate(0deg)'"
             ></i>
           </button>
-
           <button class="menu-option-3 menu-option" (click)="signOut()">
             <i class="fa fa-sign-out" style="font-size: 24px"></i>
           </button>
@@ -91,15 +85,17 @@
       <div class="side-bar-2">
         <div class="side-bar-2-title-container">
           <label class="main">
-            {{ TeamTitle }}
-            <!-- {{ teamSelectedName }} -->
+            {{ teamSelectedName }}
             <input class="inp" checked="" type="checkbox" />
             <div class="bar">
               <span class="top bar-list"></span>
               <span class="middle bar-list"></span>
               <span class="bottom bar-list"></span>
             </div>
-            <section class="dropdown-team-setting-container">
+            <section
+              class="dropdown-team-setting-container"
+              *ngIf="selectedTeam !== null"
+            >
               <div class="dropdown-team-setting-list">
                 <i
                   class="fa fa-gear"
@@ -141,21 +137,16 @@
         <div class="channel-list">
           <ul>
             <li
-              *ngFor="let channel of channelNameList"
+              *ngFor="let channel of channels$ | async"
+              [ngClass]="{ selected: channel.name === selectedChannel }"
+              (click)="selectChannel(channel)"
               class="channel-container"
             >
-              <span class="channel-name">{{ channel }}</span>
+              <span class="channel-name">{{ channel.name }}</span>
               <button class="channel-button">
                 <i class="material-icons" style="font-size: 24px">more_vert</i>
               </button>
             </li>
-            <!-- <li
-              *ngFor="let channel of channels$ | async"
-              [ngClass]="{ selected: channel.name === selectedChannel }"
-              (click)="selectChannel(channel)"
-            >
-              {{ channel.name }}
-            </li> -->
           </ul>
         </div>
       </div>
