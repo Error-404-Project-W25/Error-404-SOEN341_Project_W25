@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChatHaven</title>
     <link rel="stylesheet" href="chat.component.css" />
-    <link rel="stylesheet" href="colors.css" />
+    <link rel="stylesheet" href="sideBarOne.css" />
+    <link rel="stylesheet" href="sideBarTwo.css" />
+    <link rel="stylesheet" href="chatLog.css" />
+    <link rel="stylesheet" href="teamList.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -49,6 +52,7 @@
           <span class="menu-toggle-button">
             <i class="fa fa-user-circle" style="font-size: 24px"></i>
           </span>
+
           <button class="menu-option-2 menu-option" (click)="selectSetting()">
             <i
               class="fa fa-gear"
@@ -121,6 +125,13 @@
                 <i class="material-icons" style="font-size: 24px">more_vert</i>
               </button>
             </li>
+            <!-- <li
+              *ngFor="let channel of channels$ | async"
+              [ngClass]="{ selected: channel.name === selectedChannel }"
+              (click)="selectChannel(channel)"
+            >
+              {{ channel.name }}
+            </li> -->
           </ul>
         </div>
       </div>

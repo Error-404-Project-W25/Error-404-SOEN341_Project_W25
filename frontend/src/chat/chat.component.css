@@ -1,3 +1,90 @@
+:host {
+  /* Sidebar #1 */
+  --side-bar-1-separator: #35363c; /* Separator color */
+  --side-bar-1-background: #1e1f22; /* Sidebar background */
+  --side-bar-1-text: #dbdee1; /* Sidebar text color */
+
+  /* Add team button */
+  --add-team-button-background: #2f3136; /* Button background */
+  --add-team-button-hover: #f53f3d; /* Button hover background */
+  --add-team-button-text: #dbdee1; /* Button text color */
+
+  /* Team list */
+  --team-letter-color: #dbdee1; /* Team letter color */
+  --team-button-background: #2f3136; /* Team button background */
+  --team-button-hover: #f53f3d; /* Team button hover background */
+  --team-background: #1e1f22; /* Team background */
+
+  /* User menu */
+  --user-button-background: #313338; /* User button background */
+  --user-button-background-hover: #f53f3d; /* User button hover background */
+  --user-button-text: #f53f3d; /* User button text color */
+  --user-button-text-hover: #ffffff; /* User button hover text color */
+
+  /* Sidebar #2 */
+  --side-bar-2-background: #2b2d31; /* Sidebar background */
+  --side-bar-2-text: #dbdee1; /* Sidebar text color */
+  --side-bar-2-title-background: #2b2d31; /* Title background */
+  --side-bar-2-title-text: #d1d4d8; /* Title text color */
+
+  /* Team Title*/
+  --team-title-background: #2b2d31; /* Team title background */
+  --team-title-text: #d1d4d8; /* Team title text color */
+
+  /* Team setting list */
+  --team-setting-list-background: #111214; /* Team setting list background */
+  --team-setting-list-text: #a9aeb5; /* Team setting list text color */
+  --team-setting-list-element-background-hover: #f53f3d; /* Team setting list hover background */
+  --team-setting-list-text-hover: #edeffe; /* Team setting list hover text color */
+
+  /* Channel list */
+  --channel-list-background: #2b2d31; /* Channel list background */
+  --channel-list-backround-hover: #404249; /* Channel list hover background */
+  --channel-list-text: #949ba4; /* Channel list text color */
+  --channel-list-text-hover: #f3fcff; /* Channel list hover text color */
+
+  /* Chat log */
+  --chat-box-background: #313338; /* Chat box background */
+  --chat-box-text: #bbbdc1; /* Chat box text color */
+  --message-background: #313338; /* Message background */
+  --message-background-hover: #2e3035; /* Message hover background */
+  --message-text: #bbbdc1; /* Message text color */
+  --message-username: #f2f3f5; /* Message username color */
+  --message-date: #797f87; /* Message date color */
+
+  /* Message box */
+  --message-box: #383a40; /* Message box background */
+  --message-box-hover: #4f5360; /* Message box hover background */
+  --message-box-text: #6c6e78; /* Message box text color */
+  --message-box-background: #2d2d2d; /* Message box background */
+  --message-box-border: #3f3f3f; /* Message box border color */
+  --message-box-focus-border: #6e6e6e; /* Message box focus border color */
+
+  /* Send button */
+  --send-button-background: #b5bac1; /* Send button background */
+  --send-button-text: #000000; /* Send button text color */
+  --send-button-hover-fill: #3c3c3c; /* Send button hover fill color */
+  --send-button-hover-stroke: #ffffff; /* Send button hover stroke color */
+  --send-button-path: #3c3c3c; /* Send button path color */
+  --send-button-stroke: #ffffff; /* Send button stroke color */
+
+  /* File upload */
+  --file-upload-hover-path: #ffffff; /* File upload hover path color */
+  --file-upload-hover-circle: #ffffff; /* File upload hover circle color */
+  --file-upload-hover-fill: #3c3c3c; /* File upload hover fill color */
+
+  /* Tooltip */
+  --tooltip-background: #000000; /* Tooltip background */
+  --tooltip-border: #3c3c3c; /* Tooltip border color */
+  --tooltip-shadow: #262626; /* Tooltip shadow color */
+
+  /* Message input */
+  --message-input-text: #ffffff; /* Message input text color */
+
+  /* Separator */
+  --separator-color: #35363c; /* Separator color */
+}
+
 body {
   background-color: black;
   color: white;
@@ -7,6 +94,7 @@ body {
   padding: 0;
   width: 100%;
 }
+
 .container {
   background-color: var(--side-bar-1-background);
   color: var(--side-bar-1-text);
@@ -18,6 +106,7 @@ body {
   padding: 0;
   width: 100%;
 }
+
 .separator {
   align-self: center;
   background-color: var(--separator-color);
@@ -30,788 +119,6 @@ body {
   margin: 0 auto;
   padding: 0;
   width: 80%;
-}
-
-.side-bar-1 {
-  position: relative;
-  background-color: var(--side-bar-1-background);
-  color: var(--side-bar-1-text);
-  display: block;
-  flex-direction: column;
-  height: 100%;
-  justify-content: center;
-  margin: 0;
-  max-width: 5rem;
-  min-width: 5rem;
-  padding: 0;
-}
-.add-team-button-container {
-  background-color: var(--side-bar-1-background);
-  position: absolute;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  height: 4rem;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  border-bottom: 2px solid var(--side-bar-1-separator);
-}
-.add-team-button {
-  align-items: center;
-  background-color: var(--add-team-button-background);
-  border: none;
-  border-radius: 50%;
-  color: var(--add-team-button-text);
-  cursor: pointer;
-  justify-content: center;
-  margin: 5px;
-  max-width: 3rem;
-  min-height: 3rem;
-  min-width: 3rem;
-  padding: 10px;
-}
-.add-team-button:hover {
-  background-color: var(--add-team-button-hover);
-  border-radius: 30%;
-}
-.team-list {
-  display: flex;
-  flex-direction: column;
-  height: calc(100% - 8rem);
-  margin-top: 4rem;
-  margin-bottom: 7rem;
-  max-height: fit-content;
-  padding-top: 0;
-  width: 100%;
-}
-.team-list ul {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  height: auto;
-  margin: 0;
-  overflow-y: auto;
-  padding: 0;
-  scrollbar-width: none;
-  width: 100%;
-  -ms-overflow-style: none;
-}
-.team-list li {
-  align-items: center;
-  background-color: var(--team-button-background);
-  border: none;
-  border-radius: 50%;
-  color: var(--team-letter-color);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  margin: 5px 0;
-  max-height: 3rem;
-  max-width: 3rem;
-  min-height: 3rem;
-  min-width: 3rem;
-  padding: 0;
-  text-align: center;
-  white-space: nowrap;
-}
-.team-list li a {
-  align-items: center;
-  background-color: var(--team-button-background);
-  border: none;
-  border-radius: 50%;
-  color: var(--team-letter-color);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  margin: 5px 0;
-  max-height: 3rem;
-  max-width: 3rem;
-  min-height: 3rem;
-  min-width: 3rem;
-  padding: 0;
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.team-list li a:hover {
-  background-color: var(--team-button-hover);
-  border-radius: 30%;
-}
-.team-list li:hover {
-  background-color: var(--team-button-hover);
-  border-radius: 30%;
-}
-.user-menu-container {
-  background-color: var(--side-bar-1-background);
-  position: absolute;
-  align-items: center;
-  bottom: 0;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  height: 4rem;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  border-top: 2px solid var(--side-bar-1-separator);
-}
-.menu-toggle-button {
-  cursor: pointer;
-  position: absolute;
-  z-index: 10; /* Adjust z-index for button */
-  background-color: var(
-    --user-button-background-hover
-  ); /* Changed to new color */
-  border: 2px solid #1e1e1e;
-  color: #1e1e1e;
-  font-size: 30px;
-  font-weight: 700;
-  width: 3rem; /* Changed size */
-  height: 3rem; /* Changed size */
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  -webkit-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
-  -moz-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
-  box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
-}
-.menu-toggle-checkbox {
-  width: 3rem; /* Changed size */
-  height: 3rem; /* Changed size */
-  opacity: 0;
-  z-index: 20; /* Increase z-index of the checkbox */
-  cursor: pointer;
-}
-.menu-option {
-  position: absolute;
-  background-color: #1e1e1e;
-  border: 2px solid var(--user-button-background-hover); /* Changed to new color */
-  color: var(--user-button-background-hover); /* Changed to new color */
-  z-index: 5; /* Default z-index for options */
-  width: 3rem; /* Changed size */
-  height: 3rem; /* Changed size */
-  border-radius: 50%;
-  cursor: pointer;
-  font-weight: 700;
-  transition: all 0.3s;
-  -webkit-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
-  -moz-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
-  box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
-}
-.menu-toggle-checkbox:checked ~ .menu-option {
-  z-index: 15; /* Bring options above button when checked */
-}
-.menu-toggle-checkbox:hover ~ .menu-toggle-button,
-.menu-toggle-checkbox:checked ~ .menu-toggle-button {
-  background-color: #e53b3b; /* Darker shade on hover */
-  scale: 0.98;
-  box-shadow: none;
-  border-radius: 30%; /* Change border radius on hover */
-}
-.menu-toggle-checkbox:not(:checked) ~ .menu-toggle-button::before {
-  margin: 0;
-}
-.menu-toggle-checkbox:checked ~ .menu-toggle-button::after {
-  scale: 0.98;
-  box-shadow: none;
-  border-radius: 30%; /* Change border radius on selection */
-}
-.menu-toggle-checkbox:not(:checked) ~ .menu-option {
-  box-shadow: none;
-}
-.menu-option:hover,
-.menu-option:active,
-.menu-option:focus {
-  box-shadow: none;
-  scale: 0.98;
-  border-radius: 30%; /* Change border radius on hover */
-}
-.menu-toggle-checkbox:checked ~ .menu-option-1 {
-  transition-delay: 0.1s;
-  transform: translateY(-90px);
-}
-.menu-toggle-checkbox:checked ~ .menu-option-2 {
-  transition-delay: 0.2s;
-  transform: translateY(-65px) translateX(65px);
-}
-.menu-toggle-checkbox:checked ~ .menu-option-3 {
-  transition-delay: 0.3s;
-  transform: translateX(90px);
-}
-
-.side-bar-2 {
-  position: relative;
-  align-items: horizontal;
-  background-color: var(--side-bar-2-background);
-  color: var(--side-bar-2-text);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  justify-content: horizontal;
-  margin: 0;
-  max-width: 15rem;
-  min-width: 15rem;
-  padding-bottom: 10px;
-  padding-top: 7px;
-  width: auto;
-}
-.side-bar-2-title-container {
-  position: absolute;
-  align-items: center;
-  background-color: var(--side-bar-2-title-background);
-  border-bottom: 2px solid var(--side-bar-1-separator);
-  display: flex;
-  flex-shrink: 0;
-  height: 3rem;
-  justify-content: center;
-  padding: 0;
-  position: relative;
-  width: 100%;
-}
-.main > .inp {
-  display: none;
-}
-.main {
-  font-weight: 800;
-  color: white;
-  background-color: var(--side-bar-2-title-background);
-  padding: 3px 15px;
-  border-radius: 10px;
-
-  display: flex;
-  align-items: center;
-  height: 2.5rem;
-  width: 100%;
-  position: relative;
-  cursor: pointer;
-  justify-content: space-between;
-}
-.arrow {
-  height: 34%;
-  aspect-ratio: 1;
-  margin-block: auto;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  transition: all 0.3s;
-}
-.arrow::after,
-.arrow::before {
-  content: "";
-  position: absolute;
-  background-color: white;
-  height: 100%;
-  width: 2.5px;
-  border-radius: 500px;
-  transform-origin: bottom;
-}
-.arrow::after {
-  transform: rotate(35deg) translateX(-0.5px);
-}
-.arrow::before {
-  transform: rotate(-35deg) translateX(0.5px);
-}
-.main > .inp:checked + .arrow {
-  transform: rotateX(180deg);
-}
-.dropdown-team-setting-container {
-  background-color: var(--side-bar-2-title-background);
-  color: white;
-  border-radius: 10px;
-  position: absolute;
-  width: 100%;
-  left: 0;
-  top: 130%;
-  overflow: hidden;
-  clip-path: inset(0% 0% 0% 0% round 10px);
-  transition: all 0.4s;
-  border: 1px solid var(--channel-list-backround-hover); /* Added border */
-}
-.dropdown-team-setting-list {
-  --delay: 0.4s;
-  --trdelay: 0.15s;
-  padding: 8px 10px;
-  border-radius: inherit;
-  transition: background-color 0.2s 0s;
-  position: relative;
-  transform: translateY(30px);
-  opacity: 0;
-}
-.dropdown-team-setting-list::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.3);
-  width: 95%;
-}
-.dropdown-team-setting-list:hover {
-  background-color: var(--channel-list-backround-hover);
-}
-.inp:checked ~ .dropdown-team-setting-container {
-  clip-path: inset(10% 50% 90% 50% round 10px);
-}
-.inp:not(:checked)
-  ~ .dropdown-team-setting-container
-  .dropdown-team-setting-list {
-  transform: translateY(0);
-  opacity: 1;
-}
-.inp:not(:checked)
-  ~ .dropdown-team-setting-container
-  .dropdown-team-setting-list:nth-child(1) {
-  transition: transform 0.4s var(--delay), opacity 0.4s var(--delay);
-}
-.inp:not(:checked)
-  ~ .dropdown-team-setting-container
-  .dropdown-team-setting-list:nth-child(2) {
-  transition: transform 0.4s calc(var(--delay) + (var(--trdelay) * 1)),
-    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 1));
-}
-.inp:not(:checked)
-  ~ .dropdown-team-setting-container
-  .dropdown-team-setting-list:nth-child(3) {
-  transition: transform 0.4s calc(var(--delay) + (var(--trdelay) * 2)),
-    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 2));
-}
-.inp:not(:checked)
-  ~ .dropdown-team-setting-container
-  .dropdown-team-setting-list:nth-child(4) {
-  transition: transform 0.4s calc(var(--delay) + (var(--trdelay) * 3)),
-    opacity 0.4s calc(var(--delay) + (var(--trdelay) * 3));
-}
-.bar-inp {
-  display: none;
-  visibility: hidden;
-}
-.bar {
-  display: flex;
-  height: 50%;
-  width: 20px;
-  flex-direction: column;
-  gap: 3px;
-}
-.bar-list {
-  --transform: -25%;
-  display: block;
-  width: 100%;
-  height: 3px;
-  border-radius: 50px;
-  background-color: white;
-  transition: all 0.4s;
-  position: relative;
-}
-.inp:not(:checked) ~ .bar > .top {
-  transform-origin: top right;
-  transform: translateY(var(--transform)) rotate(-45deg);
-}
-.inp:not(:checked) ~ .bar > .middle {
-  transform: translateX(-50%);
-  opacity: 0;
-}
-.inp:not(:checked) ~ .bar > .bottom {
-  transform-origin: bottom right;
-  transform: translateY(calc(var(--transform) * -1)) rotate(45deg);
-}
-
-.channel-list {
-  align-items: center;
-  background-color: var(--channel-list-background);
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  max-height: 100%;
-  padding-top: 0;
-  width: 100%;
-}
-.channel-list ul {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  height: calc(100% - 3rem);
-  margin: 0;
-  overflow-y: auto;
-  padding: 0;
-  scrollbar-width: none;
-  width: 100%;
-  -ms-overflow-style: none;
-}
-.channel-list li {
-  align-items: center;
-  background-color: var(--channel-list-background);
-  border: none;
-  border-radius: 10px;
-  color: var(--channel-list-text);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  margin: 1px 0;
-  max-height: 3rem;
-  max-width: 95%;
-  min-height: 3rem;
-  min-width: 95%;
-  overflow: hidden;
-  padding: 5px;
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.channel-list li:hover {
-  background-color: var(--channel-list-backround-hover);
-  color: var(--channel-list-text-hover);
-}
-.channel-container {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-}
-.channel-button-container {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-}
-.channel-name-container {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-}
-.channel-name {
-  color: var(--message-username);
-  font-size: 16px;
-  /* width: 70%; */
-  font-weight: bold;
-  flex-grow: 1;
-  text-align: left;
-}
-.channel-button {
-  margin-left: 50px;
-  background-color: var(--add-team-button-background);
-  border: none;
-  border-radius: 50%;
-  color: var(--add-team-button-text);
-  cursor: pointer;
-  font-size: 16px;
-  height: 2rem;
-  outline: none;
-  padding: 5px;
-  width: 2rem;
-  transition: background-color 0.3s, border-radius 0.3s;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.channel-button:hover {
-  background-color: var(--add-team-button-hover);
-  border-radius: 30%;
-}
-
-.chat-box {
-  position: relative;
-  background-color: var(--chat-box-background);
-  color: var(--chat-box-text);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: auto;
-  overflow-y: none;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.channel-title-container {
-  position: absolute;
-  align-items: center;
-  background-color: var(--side-bar-2-background);
-  border-bottom: 2px solid var(--separator-color);
-  display: flex;
-  flex-shrink: 0;
-  height: 3rem;
-  justify-content: center;
-  padding: 0;
-  position: relative;
-  width: 100%;
-}
-.channel-title {
-  align-items: center;
-  background-color: var(--side-bar-2-background);
-  color: var(--side-bar-2-title-text);
-  display: flex;
-  flex-direction: row;
-  font-size: 20px;
-  font-weight: bold;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  padding: 5px;
-  text-align: left;
-  width: 100%;
-}
-.chat-log {
-  display: flex;
-  flex-direction: column;
-  height: 93%;
-  margin: 0;
-  overflow-y: auto;
-  padding: 10px;
-  scrollbar-width: none;
-  width: 100%;
-  -ms-overflow-style: none;
-}
-.message {
-  width: 95%;
-  margin: 5px auto;
-  padding: 5px;
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-  padding: 0;
-  margin: 0;
-}
-.message:hover {
-  background-color: var(--message-background-hover);
-}
-.message-profile-picture {
-  align-items: center;
-  background-color: green;
-  border-radius: 50%;
-  color: var(--chat-box-background);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 5px;
-  max-height: 2.25rem;
-  max-width: 2.25rem;
-  min-height: 2.25rem;
-  min-width: 2.25rem;
-  padding: 5px;
-}
-.message-content {
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-  width: auto;
-}
-.message-header {
-  align-items: flex-start;
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  margin: 5px;
-  padding: 0;
-}
-.message-author {
-  align-items: flex-start;
-  color: var(--message-username);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-}
-.message-date {
-  align-items: flex-start;
-  color: var(--message-date);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
-}
-.message-text {
-  padding: 5px;
-  text-align: justify;
-  width: 100%;
-}
-.input-container {
-  bottom: 0;
-  background-color: var(--message-box);
-  box-sizing: border-box;
-  color: var(--chat-box-text);
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-  height: 3rem;
-  padding: 10px;
-  width: 100%;
-}
-.input-container input {
-  right: 0;
-  background-color: black;
-  border: none;
-  border-radius: 10px;
-  color: var(--chat-box-text);
-  font-size: 16px;
-  height: 2rem;
-  outline: none;
-  padding: 5px;
-  width: calc(100% - 3rem);
-}
-.input-container button {
-  right: 0;
-  align-items: center;
-  background-color: black;
-  border: none;
-  border-radius: 10px;
-  color: var(--chat-box-text);
-  cursor: pointer;
-  display: flex;
-  font-size: 16px;
-  height: 2rem;
-  justify-content: center;
-  outline: none;
-  padding: 5px;
-  width: 3rem;
-}
-
-.team-setting-sidebar {
-  background-color: var(--side-bar-2-background);
-  color: var(--message-input-text);
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  margin: 0;
-  max-width: 15rem;
-  min-width: 15rem;
-  right: 0;
-  width: auto;
-  display: flex;
-  /* justify-content: center; */
-  align-items: center;
-  /* position: absolute; */
-  right: 0;
-}
-
-.member-list-title-container {
-  align-items: center;
-  background-color: var(--side-bar-2-background);
-  border-bottom: 2px solid var(--separator-color);
-  display: flex;
-  flex-shrink: 0;
-  height: 3rem;
-  justify-content: center;
-  padding: 0;
-  position: relative;
-  width: 100%;
-}
-.member-list-title {
-  align-items: center;
-  background-color: var(--side-bar-2-background);
-  color: var(--side-bar-2-title-text);
-  display: flex;
-  flex-direction: row;
-  font-size: 20px;
-  font-weight: bold;
-  height: 90%;
-  margin: 5px;
-  overflow: hidden;
-  padding: 0;
-  text-align: left;
-  width: 90%;
-}
-.member-list {
-  align-items: center;
-  background-color: var(--side-bar-2-background);
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  max-height: 100%;
-  padding-top: 0;
-  width: 100%;
-}
-.member-list ul {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  height: calc(100% - 3rem);
-  margin: 0;
-  overflow-y: auto;
-  padding: 0;
-  scrollbar-width: none;
-  width: 100%;
-  -ms-overflow-style: none;
-}
-.member-list li {
-  align-items: center;
-  background-color: var(--side-bar-2-background);
-  border: none;
-  border-radius: 10px;
-  color: var(--channel-list-text);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  margin: 1px 0;
-  max-height: 3rem;
-  max-width: 95%;
-  min-height: 3rem;
-  min-width: 95%;
-  overflow: hidden;
-  padding: 5px;
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.member-list li:hover {
-  background-color: var(--channel-list-backround-hover);
-  color: var(--channel-list-text-hover);
-}
-
-.member-container {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-}
-.member-user-name {
-  color: var(--message-username);
-  font-size: 16px;
-  font-weight: bold;
-  flex-grow: 1;
-  text-align: left;
-}
-.member-button {
-  margin-left: 50px;
-  background-color: var(--add-team-button-background);
-  border: none;
-  border-radius: 50%;
-  color: var(--add-team-button-text);
-  cursor: pointer;
-  font-size: 16px;
-  height: 2rem;
-  outline: none;
-  padding: 5px;
-  width: 2rem;
-  transition: background-color 0.3s, border-radius 0.3s;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.member-button:hover {
-  background-color: var(--add-team-button-hover);
-  border-radius: 30%;
 }
 
 @media (max-width: 1025px) {
