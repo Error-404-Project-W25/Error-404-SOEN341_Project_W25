@@ -8,8 +8,8 @@ body {
   width: 100%;
 }
 .container {
-  background-color: #1e1f22;
-  color: #dbdee1;
+  background-color: var(--side-bar-1-background);
+  color: var(--side-bar-1-text);
   display: flex;
   flex-direction: row;
   font-family: Arial, Helvetica, sans-serif;
@@ -20,24 +20,22 @@ body {
 }
 .separator {
   align-self: center;
-  background-color: #35363c;
-  border-bottom: #35363c;
-  border-left: #35363c;
-  border-right: #35363c;
-  border-top: #35363c;
-  color: #35363c;
+  background-color: var(--separator-color);
+  border-bottom: var(--separator-color);
+  border-left: var(--separator-color);
+  border-right: var(--separator-color);
+  border-top: var(--separator-color);
+  color: var(--separator-color);
   height: 2px;
   margin: 0 auto;
   padding: 0;
   width: 80%;
 }
 
-/*Side bar #1*/
-
 .side-bar-1 {
   position: relative;
-  background-color: #1e1f22;
-  color: #dbdee1;
+  background-color: var(--side-bar-1-background);
+  color: var(--side-bar-1-text);
   display: block;
   flex-direction: column;
   height: 100%;
@@ -48,7 +46,7 @@ body {
   padding: 0;
 }
 .add-team-button-container {
-  background-color: #1e1f22;
+  background-color: var(--side-bar-1-background);
   position: absolute;
   align-items: center;
   display: flex;
@@ -59,14 +57,14 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  border-bottom: 2px solid #35363c;
+  border-bottom: 2px solid var(--side-bar-1-separator);
 }
 .add-team-button {
   align-items: center;
-  background-color: #2f3136;
+  background-color: var(--add-team-button-background);
   border: none;
   border-radius: 50%;
-  color: #dbdee1;
+  color: var(--add-team-button-text);
   cursor: pointer;
   justify-content: center;
   margin: 5px;
@@ -76,7 +74,7 @@ body {
   padding: 10px;
 }
 .add-team-button:hover {
-  background-color: #f53f3d;
+  background-color: var(--add-team-button-hover);
   border-radius: 30%;
 }
 .team-list {
@@ -103,10 +101,10 @@ body {
 }
 .team-list li {
   align-items: center;
-  background-color: #2f3136;
+  background-color: var(--team-button-background);
   border: none;
   border-radius: 50%;
-  color: #dbdee1;
+  color: var(--team-letter-color);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -121,10 +119,10 @@ body {
 }
 .team-list li a {
   align-items: center;
-  background-color: #2f3136;
+  background-color: var(--team-button-background);
   border: none;
   border-radius: 50%;
-  color: #dbdee1;
+  color: var(--team-letter-color);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -139,15 +137,15 @@ body {
   white-space: nowrap;
 }
 .team-list li a:hover {
-  background-color: #f53f3d;
+  background-color: var(--team-button-hover);
   border-radius: 30%;
 }
 .team-list li:hover {
-  background-color: #f53f3d;
+  background-color: var(--team-button-hover);
   border-radius: 30%;
 }
 .user-menu-container {
-  background-color: #1e1f22;
+  background-color: var(--side-bar-1-background);
   position: absolute;
   align-items: center;
   bottom: 0;
@@ -159,13 +157,15 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  border-top: 2px solid #35363c;
+  border-top: 2px solid var(--side-bar-1-separator);
 }
 .menu-toggle-button {
   cursor: pointer;
   position: absolute;
   z-index: 10; /* Adjust z-index for button */
-  background-color: #f53f3d; /* Changed to new color */
+  background-color: var(
+    --user-button-background-hover
+  ); /* Changed to new color */
   border: 2px solid #1e1e1e;
   color: #1e1e1e;
   font-size: 30px;
@@ -181,7 +181,6 @@ body {
   -moz-box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
   box-shadow: 0px 3px 10px 0px rgba(16, 16, 16, 0.5);
 }
-
 .menu-toggle-checkbox {
   width: 3rem; /* Changed size */
   height: 3rem; /* Changed size */
@@ -189,12 +188,11 @@ body {
   z-index: 20; /* Increase z-index of the checkbox */
   cursor: pointer;
 }
-
 .menu-option {
   position: absolute;
   background-color: #1e1e1e;
-  border: 2px solid #f53f3d; /* Changed to new color */
-  color: #f53f3d; /* Changed to new color */
+  border: 2px solid var(--user-button-background-hover); /* Changed to new color */
+  color: var(--user-button-background-hover); /* Changed to new color */
   z-index: 5; /* Default z-index for options */
   width: 3rem; /* Changed size */
   height: 3rem; /* Changed size */
@@ -206,12 +204,9 @@ body {
   -moz-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
   box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
 }
-
-/* When the menu is toggled, move the options and bring them to the top */
 .menu-toggle-checkbox:checked ~ .menu-option {
   z-index: 15; /* Bring options above button when checked */
 }
-
 .menu-toggle-checkbox:hover ~ .menu-toggle-button,
 .menu-toggle-checkbox:checked ~ .menu-toggle-button {
   background-color: #e53b3b; /* Darker shade on hover */
@@ -219,21 +214,17 @@ body {
   box-shadow: none;
   border-radius: 30%; /* Change border radius on hover */
 }
-
 .menu-toggle-checkbox:not(:checked) ~ .menu-toggle-button::before {
   margin: 0;
 }
-
 .menu-toggle-checkbox:checked ~ .menu-toggle-button::after {
   scale: 0.98;
   box-shadow: none;
   border-radius: 30%; /* Change border radius on selection */
 }
-
 .menu-toggle-checkbox:not(:checked) ~ .menu-option {
   box-shadow: none;
 }
-
 .menu-option:hover,
 .menu-option:active,
 .menu-option:focus {
@@ -241,31 +232,24 @@ body {
   scale: 0.98;
   border-radius: 30%; /* Change border radius on hover */
 }
-
-/* Positioning of menu options when menu is opened */
 .menu-toggle-checkbox:checked ~ .menu-option-1 {
   transition-delay: 0.1s;
   transform: translateY(-90px);
 }
-
 .menu-toggle-checkbox:checked ~ .menu-option-2 {
   transition-delay: 0.2s;
   transform: translateY(-65px) translateX(65px);
 }
-
 .menu-toggle-checkbox:checked ~ .menu-option-3 {
   transition-delay: 0.3s;
   transform: translateX(90px);
 }
 
-
-/*Side bar #2*/
-
 .side-bar-2 {
   position: relative;
   align-items: horizontal;
-  background-color: #2b2d31;
-  color: #dbdee1;
+  background-color: var(--side-bar-2-background);
+  color: var(--side-bar-2-text);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -277,12 +261,11 @@ body {
   padding-top: 7px;
   width: auto;
 }
-/*Teams Setting Dropdown*/
 .side-bar-2-title-container {
   position: absolute;
   align-items: center;
-  background-color: #2b2d31;
-  border-bottom: 2px solid #35363c;
+  background-color: var(--side-bar-2-title-background);
+  border-bottom: 2px solid var(--side-bar-1-separator);
   display: flex;
   flex-shrink: 0;
   height: 3rem;
@@ -297,7 +280,7 @@ body {
 .main {
   font-weight: 800;
   color: white;
-  background-color: #2b2d31;
+  background-color: var(--side-bar-2-title-background);
   padding: 3px 15px;
   border-radius: 10px;
 
@@ -338,7 +321,7 @@ body {
   transform: rotateX(180deg);
 }
 .dropdown-team-setting-container {
-  background-color: #2b2d31;
+  background-color: var(--side-bar-2-title-background);
   color: white;
   border-radius: 10px;
   position: absolute;
@@ -348,7 +331,7 @@ body {
   overflow: hidden;
   clip-path: inset(0% 0% 0% 0% round 10px);
   transition: all 0.4s;
-  border: 1px solid #404249; /* Added border */
+  border: 1px solid var(--channel-list-backround-hover); /* Added border */
 }
 .dropdown-team-setting-list {
   --delay: 0.4s;
@@ -371,7 +354,7 @@ body {
   width: 95%;
 }
 .dropdown-team-setting-list:hover {
-  background-color: #404249;
+  background-color: var(--channel-list-backround-hover);
 }
 .inp:checked ~ .dropdown-team-setting-container {
   clip-path: inset(10% 50% 90% 50% round 10px);
@@ -438,10 +421,10 @@ body {
   transform-origin: bottom right;
   transform: translateY(calc(var(--transform) * -1)) rotate(45deg);
 }
-/*Channel List*/
+
 .channel-list {
   align-items: center;
-  background-color: #2b2d31;
+  background-color: var(--channel-list-background);
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -463,10 +446,10 @@ body {
 }
 .channel-list li {
   align-items: center;
-  background-color: #2b2d31;
+  background-color: var(--channel-list-background);
   border: none;
   border-radius: 10px;
-  color: #949ba4;
+  color: var(--channel-list-text);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -482,8 +465,8 @@ body {
   white-space: nowrap;
 }
 .channel-list li:hover {
-  background-color: #404249;
-  color: #f3fcff;
+  background-color: var(--channel-list-backround-hover);
+  color: var(--channel-list-text-hover);
 }
 .channel-container {
   display: flex;
@@ -494,7 +477,7 @@ body {
   padding: 5px;
 }
 .channel-user-name {
-  color: #f2f3f5;
+  color: var(--message-username);
   font-size: 16px;
   font-weight: bold;
   flex-grow: 1;
@@ -502,10 +485,10 @@ body {
 }
 .channel-button {
   margin-left: 50px;
-  background-color: #2f3136;
+  background-color: var(--add-team-button-background);
   border: none;
   border-radius: 50%;
-  color: #dbdee1;
+  color: var(--add-team-button-text);
   cursor: pointer;
   font-size: 16px;
   height: 2rem;
@@ -519,18 +502,14 @@ body {
   justify-content: center;
 }
 .channel-button:hover {
-  background-color: #f53f3d;
+  background-color: var(--add-team-button-hover);
   border-radius: 30%;
 }
 
-
-
-/*Chat Box*/
-
 .chat-box {
   position: relative;
-  background-color: #313338;
-  color: #bbbdc1;
+  background-color: var(--chat-box-background);
+  color: var(--chat-box-text);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -542,8 +521,8 @@ body {
 .channel-title-container {
   position: absolute;
   align-items: center;
-  background-color: #2b2d31;
-  border-bottom: 2px solid #35363c;
+  background-color: var(--side-bar-2-background);
+  border-bottom: 2px solid var(--separator-color);
   display: flex;
   flex-shrink: 0;
   height: 3rem;
@@ -554,8 +533,8 @@ body {
 }
 .channel-title {
   align-items: center;
-  background-color: #2b2d31;
-  color: #d1d4d8;
+  background-color: var(--side-bar-2-background);
+  color: var(--side-bar-2-title-text);
   display: flex;
   flex-direction: row;
   font-size: 20px;
@@ -589,13 +568,13 @@ body {
   margin: 0;
 }
 .message:hover {
-  background-color: #2e3035;
+  background-color: var(--message-background-hover);
 }
 .message-profile-picture {
   align-items: center;
   background-color: green;
   border-radius: 50%;
-  color: #313338;
+  color: var(--chat-box-background);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -626,7 +605,7 @@ body {
 }
 .message-author {
   align-items: flex-start;
-  color: #f2f3f5;
+  color: var(--message-username);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -635,7 +614,7 @@ body {
 }
 .message-date {
   align-items: flex-start;
-  color: #797f87;
+  color: var(--message-date);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -648,13 +627,10 @@ body {
   width: 100%;
 }
 .input-container {
-  /* position: absolute; */
-  /* align-items: center; */
-  /* justify-content: center; */
   bottom: 0;
-  background-color: #383a40;
+  background-color: var(--message-box);
   box-sizing: border-box;
-  color: #dbdee1;
+  color: var(--chat-box-text);
   display: flex;
   flex-direction: row;
   gap: 5px;
@@ -663,12 +639,11 @@ body {
   width: 100%;
 }
 .input-container input {
-  /* position: absolute; */
   right: 0;
   background-color: black;
   border: none;
   border-radius: 10px;
-  color: #dbdee1;
+  color: var(--chat-box-text);
   font-size: 16px;
   height: 2rem;
   outline: none;
@@ -676,13 +651,12 @@ body {
   width: 95%;
 }
 .input-container button {
-  /* position: absolute; */
   right: 0;
   align-items: center;
   background-color: black;
   border: none;
   border-radius: 10px;
-  color: #dbdee1;
+  color: var(--chat-box-text);
   cursor: pointer;
   display: flex;
   font-size: 16px;
@@ -693,11 +667,9 @@ body {
   width: 5%;
 }
 
-/*Team member Side bar*/
-
 .team-setting-sidebar {
-  background-color: #2b2d31;
-  color: #ffffff;
+  background-color: var(--side-bar-2-background);
+  color: var(--message-input-text);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -713,11 +685,10 @@ body {
   right: 0;
 }
 
-/*Team member list*/
 .member-list-title-container {
   align-items: center;
-  background-color: #2b2d31;
-  border-bottom: 2px solid #35363c;
+  background-color: var(--side-bar-2-background);
+  border-bottom: 2px solid var(--separator-color);
   display: flex;
   flex-shrink: 0;
   height: 3rem;
@@ -728,8 +699,8 @@ body {
 }
 .member-list-title {
   align-items: center;
-  background-color: #2b2d31;
-  color: #d1d4d8;
+  background-color: var(--side-bar-2-background);
+  color: var(--side-bar-2-title-text);
   display: flex;
   flex-direction: row;
   font-size: 20px;
@@ -743,7 +714,7 @@ body {
 }
 .member-list {
   align-items: center;
-  background-color: #2b2d31;
+  background-color: var(--side-bar-2-background);
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -765,10 +736,10 @@ body {
 }
 .member-list li {
   align-items: center;
-  background-color: #2b2d31;
+  background-color: var(--side-bar-2-background);
   border: none;
   border-radius: 10px;
-  color: #949ba4;
+  color: var(--channel-list-text);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -784,9 +755,10 @@ body {
   white-space: nowrap;
 }
 .member-list li:hover {
-  background-color: #404249;
-  color: #f3fcff;
+  background-color: var(--channel-list-backround-hover);
+  color: var(--channel-list-text-hover);
 }
+
 .member-container {
   display: flex;
   flex-direction: row;
@@ -796,7 +768,7 @@ body {
   padding: 5px;
 }
 .member-user-name {
-  color: #f2f3f5;
+  color: var(--message-username);
   font-size: 16px;
   font-weight: bold;
   flex-grow: 1;
@@ -804,10 +776,10 @@ body {
 }
 .member-button {
   margin-left: 50px;
-  background-color: #2f3136;
+  background-color: var(--add-team-button-background);
   border: none;
   border-radius: 50%;
-  color: #dbdee1;
+  color: var(--add-team-button-text);
   cursor: pointer;
   font-size: 16px;
   height: 2rem;
@@ -821,7 +793,6 @@ body {
   justify-content: center;
 }
 .member-button:hover {
-  background-color: #f53f3d;
+  background-color: var(--add-team-button-hover);
   border-radius: 30%;
 }
-

@@ -1,4 +1,4 @@
-:root {
+:host {
   /* Sidebar #1 */
   --side-bar-1-separator: #35363c; /* Separator color */
   --side-bar-1-background: #1e1f22; /* Sidebar background */
@@ -27,17 +27,15 @@
   --side-bar-2-title-background: #2b2d31; /* Title background */
   --side-bar-2-title-text: #d1d4d8; /* Title text color */
 
-  /* Add channel button */
-  --add-channel-button-background: #b5bac1; /* Button background */
-  --add-channel-button-text: #2f3136; /* Button text color */
-  --add-channel-button-background-hover: #ff6b6b; /* Button hover background */
-  --add-channel-button-text-hover: #2f3136; /* Button hover text color */
+  /* Team Title*/
+  --team-title-background: #2b2d31; /* Team title background */
+  --team-title-text: #d1d4d8; /* Team title text color */
 
-  /* Search box */
-  --search-bar-background: #1e1f22; /* Search bar background */
-  --search-bar-text: #dbdee1; /* Search bar text color */
-  --search-bar-border: #555555; /* Search bar border color */
-  --search-bar-hover: #bbbbbb; /* Search bar hover text color */
+  /* Team setting list */
+  --team-setting-list-background: #111214; /* Team setting list background */
+  --team-setting-list-text: #A9AEB5; /* Team setting list text color */
+  --team-setting-list-element-background-hover: #f53f3d; /* Team setting list hover background */
+  --team-setting-list-text-hover: #EDEFFE; /* Team setting list hover text color */
 
   /* Channel list */
   --channel-list-background: #2b2d31; /* Channel list background */
