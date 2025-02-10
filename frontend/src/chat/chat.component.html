@@ -42,7 +42,7 @@
         <div class="add-team-button-container">
           <button class="add-team-button" (click)="openTeamDialog()">
             <span class="tooltip-text" id="right">
-              <i class="fa fa-plus" style="margin-right: 5px;"></i>Create Team
+              <i class="fa fa-plus" style="margin-right: 5px"></i>Create Team
             </span>
             <i
               class="fa fa-plus"
@@ -107,7 +107,10 @@
                 ></i
                 >Setting
               </div>
-              <div class="dropdown-team-setting-list">
+              <div
+                class="dropdown-team-setting-list"
+                (click)="openChannelDialog()"
+              >
                 <i
                   class="fa fa-plus"
                   style="font-size: 24px; margin-right: 8px"
@@ -116,7 +119,7 @@
               </div>
               <div
                 class="dropdown-team-setting-list"
-                (click)="openChannelDialog()"
+                (click)="openAddMemberTeamDialog()"
               >
                 <i
                   class="fa fa-user-plus"

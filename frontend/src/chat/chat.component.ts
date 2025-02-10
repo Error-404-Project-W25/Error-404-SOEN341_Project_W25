@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
+import { AddMemberTeamPopUpComponent } from './add-member-team-pop-up/add-member-team-pop-up.component';
 import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -16,7 +17,13 @@ import { UserAuthResponse } from '../types/http-response.types';
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatDialogModule],
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css','./sideBarOne.css','./sideBarTwo.css','chatLog.css','teamList.css'],
+  styleUrls: [
+    './chat.component.css',
+    './sideBarOne.css',
+    './sideBarTwo.css',
+    'chatLog.css',
+    'teamList.css',
+  ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
   /*Test*/
@@ -152,10 +159,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     'T29',
     'T30',
   ];
-  memberList: string[] = Array.from({ length: 30 }, (_, i) => `Member ${i + 1}`);
+  memberList: string[] = Array.from(
+    { length: 30 },
+    (_, i) => `Member ${i + 1}`
+  );
 
   /*End Test*/
-
 
   teams: ITeam[] = [];
   channels: IChannel[] = [];
@@ -230,19 +239,33 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Opens a dialog to add a member to the team.
+   */
+  openAddMemberTeamDialog(): void {
+    const dialogRef = this.dialog.open(AddMemberTeamPopUpComponent, {
+      data: { selectedTeam: this.selectedTeam },
+    });
+    // Handle any actions after the dialog is closed, if needed
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('The dialog was closed');
+      // Perform any additional actions if needed
+    });
+  }
+
+  /**
    * Opens a dialog to create a new team only if the user has admin privileges.
    */
   openTeamDialog(): void {
-    if (this.userService.getUser()?.role === 'admin') {
-      const dialogRef = this.dialog.open(AddTeamDialogComponent);
-      this.teamCreatedSubscription =
-        dialogRef.componentInstance.teamCreated.subscribe(() => {
-          this.onTeamCreated();
-        });
-    } else {
-      console.error('Permission denied: Only admins can create a team.');
-      alert('You do not have the permission to create a team');
-    }
+    // if (this.userService.getUser()?.role === 'admin') {
+    const dialogRef = this.dialog.open(AddTeamDialogComponent);
+    this.teamCreatedSubscription =
+      dialogRef.componentInstance.teamCreated.subscribe(() => {
+        this.onTeamCreated();
+      });
+    // } else {
+    //   console.error('Permission denied: Only admins can create a team.');
+    //   alert('You do not have the permission to create a team');
+    // }
   }
 
   /**
