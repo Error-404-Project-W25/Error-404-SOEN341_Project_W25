@@ -68,11 +68,6 @@
   --send-button-path: #3c3c3c; /* Send button path color */
   --send-button-stroke: #ffffff; /* Send button stroke color */
 
-  /* File upload */
-  --file-upload-hover-path: #ffffff; /* File upload hover path color */
-  --file-upload-hover-circle: #ffffff; /* File upload hover circle color */
-  --file-upload-hover-fill: #3c3c3c; /* File upload hover fill color */
-
   /* Tooltip */
   --tooltip-background: #000000; /* Tooltip background */
   --tooltip-border: #3c3c3c; /* Tooltip border color */
@@ -121,19 +116,4 @@ body {
   width: 80%;
 }
 
-@media (max-width: 1025px) {
-  .team-setting-sidebar {
-    display: none;
-  }
-}
 
-@media (max-width: 430px) {
-  .chat-box {
-    display: none;
-  }
-  .side-bar-2 {
-    width: 100%;
-    max-width: 100%;
-    min-width: none;
-  }
-}

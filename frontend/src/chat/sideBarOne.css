@@ -40,11 +40,43 @@
   min-height: 3rem;
   min-width: 3rem;
   padding: 10px;
+  position: relative;
 }
 
 .add-team-button:hover {
   background-color: var(--add-team-button-hover);
   border-radius: 30%;
+  visibility: visible;
+}
+
+.tooltip-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.2rem; /* Increase font size */
+  visibility: hidden;
+  width: 150px; /* Increase width */
+  background-color: var(--tooltip-background);
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px 0; /* Increase padding */
+  position: absolute;
+  z-index: 1;
+  top: -8px;
+  left: 120%;
+  transform: translateX(0%);
+  transform: translateY(25%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.add-team-button:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+#right {
+  top: -8px;
+  left: 120%;
 }
 
 .team-list {

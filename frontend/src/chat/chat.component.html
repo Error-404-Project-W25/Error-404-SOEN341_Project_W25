@@ -17,18 +17,40 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
+    <style>
+      @media (max-width: 1025px) {
+        .team-setting-sidebar {
+          display: none;
+        }
+      }
+
+      @media (max-width: 430px) {
+        .chat-box {
+          display: none;
+        }
+        .side-bar-2 {
+          width: 100%;
+          max-width: 100%;
+          min-width: none;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="container">
       <div class="side-bar-1">
         <div class="add-team-button-container">
           <button class="add-team-button" (click)="openTeamDialog()">
+            <span class="tooltip-text" id="right">
+              <i class="fa fa-plus" style="margin-right: 5px;"></i>Create Team
+            </span>
             <i
               class="fa fa-plus"
               style="font-size: 24px; transition: transform 0.3s"
               onmouseover="this.style.transform='rotate(90deg)'"
               onmouseout="this.style.transform='rotate(0deg)'"
-            ></i>
+            >
+            </i>
           </button>
         </div>
         <div class="team-list">
@@ -45,7 +67,6 @@
             </li> -->
           </ul>
         </div>
-
         <div class="user-menu-container">
           <input class="menu-toggle-checkbox" type="checkbox" />
 
