@@ -83,7 +83,7 @@
         </div>
       </div>
       <div class="side-bar-2">
-        <div class="side-bar-2-title-container">
+        <div class="side-bar-2-title-container" *ngIf="selectedTeam !== null">
           <label class="main">
             {{ teamSelectedName }}
             <input class="inp" checked="" type="checkbox" />
@@ -133,7 +133,6 @@
             </section>
           </label>
         </div>
-        <hr class="separator" />
         <div class="channel-list">
           <ul>
             <li
@@ -144,7 +143,7 @@
             >
               <span class="channel-name">{{ channel.name }}</span>
               <button class="channel-button">
-                <i class="material-icons" style="font-size: 24px">more_vert</i>
+                <i class="fa fa-gear" style="font-size: 24px">more_vert</i>
               </button>
             </li>
           </ul>
