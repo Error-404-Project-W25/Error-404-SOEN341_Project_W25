@@ -49,7 +49,6 @@
           <span class="menu-toggle-button">
             <i class="fa fa-user-circle" style="font-size: 24px"></i>
           </span>
-          
           <button class="menu-option-2 menu-option" (click)="selectSetting()">
             <i
               class="fa fa-gear"
@@ -63,8 +62,6 @@
             <i class="fa fa-sign-out" style="font-size: 24px"></i>
           </button>
         </div>
-
-
       </div>
       <div class="side-bar-2">
         <div class="side-bar-2-title-container">
@@ -115,19 +112,15 @@
         <hr class="separator" />
         <div class="channel-list">
           <ul>
-            <li *ngFor="let channel of channelNameList" class="channel-container">
+            <li
+              *ngFor="let channel of channelNameList"
+              class="channel-container"
+            >
               <span class="channel-name">{{ channel }}</span>
               <button class="channel-button">
-              <i class="material-icons" style="font-size: 24px">more_vert</i>
+                <i class="material-icons" style="font-size: 24px">more_vert</i>
               </button>
             </li>
-            <!-- <li
-              *ngFor="let channel of channels$ | async"
-              [ngClass]="{ selected: channel.name === selectedChannel }"
-              (click)="selectChannel(channel)"
-            >
-              {{ channel.name }}
-            </li> -->
           </ul>
         </div>
       </div>

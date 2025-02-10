@@ -287,7 +287,7 @@ body {
   display: flex;
   align-items: center;
   height: 2.5rem;
-  width: 12rem;
+  width: 100%;
   position: relative;
   cursor: pointer;
   justify-content: space-between;
@@ -476,9 +476,26 @@ body {
   justify-content: center;
   padding: 5px;
 }
-.channel-user-name {
+.channel-button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+.channel-name-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+.channel-name {
   color: var(--message-username);
   font-size: 16px;
+  /* width: 70%; */
   font-weight: bold;
   flex-grow: 1;
   text-align: left;
@@ -648,7 +665,7 @@ body {
   height: 2rem;
   outline: none;
   padding: 5px;
-  width: 95%;
+  width: calc(100% - 3rem);
 }
 .input-container button {
   right: 0;
@@ -664,7 +681,7 @@ body {
   justify-content: center;
   outline: none;
   padding: 5px;
-  width: 5%;
+  width: 3rem;
 }
 
 .team-setting-sidebar {
@@ -795,4 +812,21 @@ body {
 .member-button:hover {
   background-color: var(--add-team-button-hover);
   border-radius: 30%;
+}
+
+@media (max-width: 1025px) {
+  .team-setting-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .chat-box {
+    display: none;
+  }
+  .side-bar-2 {
+    width: 100%;
+    max-width: 100%;
+    min-width: none;
+  }
 }
