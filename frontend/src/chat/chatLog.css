@@ -131,10 +131,13 @@
 }
 
 .input-container {
+  border-radius: 10px;
+  border: 1
+  px solid var(--input-container-border);
   bottom: 0;
-  background-color: var(--message-box);
+  background-color: var(--input-container-background);
   box-sizing: border-box;
-  color: var(--chat-box-text);
+  color: var(--input-container-text);
   display: flex;
   flex-direction: row;
   gap: 5px;
@@ -145,13 +148,11 @@
 
 .input-container input {
   right: 0;
-  background-color: black;
+  background-color: var(--input-container-background);
   border: none;
-  border-radius: 10px;
-  color: var(--chat-box-text);
+  color: var(--input-container-text);
   font-size: 16px;
   height: 2rem;
-  outline: none;
   padding: 5px;
   width: calc(100% - 3rem);
 }
@@ -159,10 +160,10 @@
 .input-container button {
   right: 0;
   align-items: center;
-  background-color: black;
+  background-color: var(--input-container-background);
   border: none;
   border-radius: 10px;
-  color: var(--chat-box-text);
+  color: var(--input-container-text);
   cursor: pointer;
   display: flex;
   font-size: 16px;
@@ -171,4 +172,9 @@
   outline: none;
   padding: 5px;
   width: 3rem;
+}
+
+.input-container button:hover {
+  background-color: var(--send-button-hover-fill);
+  color: var(--send-button-hover-stroke);
 }

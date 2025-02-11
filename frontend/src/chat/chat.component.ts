@@ -96,8 +96,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private backendService: BackendService
   ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {}
 
@@ -125,6 +124,20 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.dialog.open(RemoveMemberTeamPopUpComponent, {
       data: { selectedTeam: this.selectedTeam },
     });
+  }
+
+  async signOut() {
+    const response: UserAuthResponse | undefined =
+      await this.backendService.logoutUser();
+    if (response && !response.error) {
+      console.log('Logging out from:', this.userService.getUser()?.username);
+      this.userService.clearUser();
+      this.router.navigate(['/']);
+    } else if (response) {
+      console.error(response.error);
+    } else {
+      console.error('No response from backend');
+    }
   }
 }
 

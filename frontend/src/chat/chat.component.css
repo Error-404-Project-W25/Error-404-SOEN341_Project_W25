@@ -52,13 +52,13 @@
   --message-username: #f2f3f5; /* Message username color */
   --message-date: #797f87; /* Message date color */
 
-  /* Message box */
-  --message-box: #383a40; /* Message box background */
-  --message-box-hover: #4f5360; /* Message box hover background */
-  --message-box-text: #6c6e78; /* Message box text color */
-  --message-box-background: #2d2d2d; /* Message box background */
-  --message-box-border: #3f3f3f; /* Message box border color */
-  --message-box-focus-border: #6e6e6e; /* Message box focus border color */
+  /* Input Container */
+  --input-container-background: #383a40; /* Input container background */
+  --input-container-hover: #4f5360; /* Input container hover background */
+  --input-container-text: #6c6e78; /* Input container text color */
+  --input-container-border: #3f3f3f; /* Input container border color */
+  --input-container-focus-border: #6e6e6e; /* Input container focus border color */
+  --input-container-border-color: #5a5a5a; /* Input container border color */
 
   /* Send button */
   --send-button-background: #b5bac1; /* Send button background */
