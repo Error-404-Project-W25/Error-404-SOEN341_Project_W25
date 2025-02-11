@@ -40,7 +40,7 @@
       <div class="side-bar-1">
         <div class="add-team-button-container">
           <!-- (click) create team  -->
-          <button class="add-team-button">
+          <button class="add-team-button" (click)="openCreateTeamDialog()">
             <span class="tooltip-text" id="right">
               <i class="fa fa-plus" style="margin-right: 5px"></i>Create Team
             </span>
@@ -101,7 +101,7 @@
                 >Setting
               </div>
               <!-- (click) create channel -->
-              <div class="dropdown-team-setting-list">
+              <div class="dropdown-team-setting-list" (click)="openCreateChannelDialog()">
                 <i
                   class="fa fa-plus"
                   style="font-size: 24px; margin-right: 8px"
@@ -109,7 +109,10 @@
                 >Create Channel
               </div>
               <!-- (click) add member to team -->
-              <div class="dropdown-team-setting-list">
+              <div
+                class="dropdown-team-setting-list"
+                (click)="openAddMemberTeamDialog()"
+              >
                 <i
                   class="fa fa-user-plus"
                   style="font-size: 24px; margin-right: 8px"
@@ -139,7 +142,10 @@
               </div>
               <!-- (click) channel setting-->
               <button class="channel-button">
-                <i class="fa fa-gear" style="font-size: 1rem; display: block; margin: 0 auto;"></i>
+                <i
+                  class="fa fa-gear"
+                  style="font-size: 1rem; display: block; margin: 0 auto"
+                ></i>
               </button>
             </li>
           </ul>

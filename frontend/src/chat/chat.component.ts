@@ -1,12 +1,16 @@
 import { UserService } from './../services/user.service';
 import { BackendService } from './../services/backend.service';
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
+
 import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
+import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddMemberTeamPopUpComponent } from './add-member-team-pop-up/add-member-team-pop-up.component';
+
 import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -26,23 +30,17 @@ import { UserAuthResponse } from '../types/http-response.types';
   ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  /*Test*/
   channelTitle: string = 'Channel Name';
-
   TeamTitle: string = 'Team Name';
-
   teamMemberList: string[] = Array.from(
     { length: 30 },
     (_, i) => `Member ${i + 1}`
   );
-
   channelNameList: string[] = Array.from(
     { length: 30 },
     (_, i) => `Channel ${i + 1}`
   );
-
   teamList: string[] = Array.from({ length: 30 }, (_, i) => `T${i + 1}`);
-
   messages: Message[] = [
     new Message(
       'User3',
@@ -77,27 +75,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     new Message('User2', '10:43 AM', 'Thanks! Let’s catch up next week.'),
     new Message('User1', '10:44 AM', 'Sounds good! Have a great weekend.'),
   ];
-
-  /*End Test*/
-
-  /*variable*/
   teams: ITeam[] = [];
   channels: IChannel[] = [];
   selectedTeam: string | null = null;
   selectedChannel: string | null = null;
   title = 'chatHaven';
 
-  /*Subscription */
   private teamCreatedSubscription: Subscription | null = null;
   private channelCreatedSubscription: Subscription | null = null;
-
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   channels$ = this.channelsSubject.asObservable();
-
   private teamsSubject = new BehaviorSubject<ITeam[]>([]);
   teams$ = this.teamsSubject.asObservable();
 
-  /*Constructor */
   constructor(
     private router: Router,
     public dialog: MatDialog,
@@ -105,22 +95,31 @@ export class ChatComponent implements OnInit, OnDestroy {
     private backendService: BackendService
   ) {}
 
-  /**
-   * Lifecycle hook that is called after component initialization.
-   * It initializes the teams array.
-   */
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
-  /**
-   * Lifecycle hook that is called when the component is destroyed.
-   * It unsubscribes from any active subscriptions to avoid memory leaks.
-   */
   ngOnDestroy() {}
+
+  openCreateTeamDialog(): void {
+    console.log('Inside function create team');
+    this.dialog.open(AddTeamDialogComponent);
+  }
+
+  openCreateChannelDialog(): void {
+    console.log('Inside function create channel');
+    this.dialog.open(AddChannelDialogComponent, {
+      data: { selectedTeam: this.selectedTeam },
+    });
+  }
+
+  openAddMemberTeamDialog(): void {
+    console.log('Inside function add team member');
+    this.dialog.open(AddMemberTeamPopUpComponent, {
+      data: { selectedTeam: this.selectedTeam },
+    });
+  }
 }
 
-/**
- * Represents a chat message with an author, timestamp, and message text.
- */
 class Message {
   constructor(
     public author: string,

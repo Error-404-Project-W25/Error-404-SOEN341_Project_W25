@@ -37,39 +37,5 @@ export class AddTeamDialogComponent {
     private userService: UserService
   ) {}
 
-  createTeam() {
-    const currentUser = this.userService.getUser();
-
-    if (!currentUser?.username) {
-      console.error('No user or username found');
-      return;
-    }
-
-    // const teamData: ITeam = {
-    //   team_name: this.teamName,
-    //   description: this.description,
-    //   admin: [currentUser],
-    //   channels: [],
-    // };
-
-    this.backendService
-      .createTeams(
-        currentUser.user_id,
-        currentUser.username,
-        this.teamName,
-        this.description,
-        [],
-        'admin'
-      )
-      .then(
-        () => {
-          console.log('Team created successfully');
-          this.teamCreated.emit();
-          this.dialogRef.close();
-        },
-        (error) => {
-          console.error('Error creating team:', error);
-        }
-      );
-  }
+  createTeam() {}
 }
