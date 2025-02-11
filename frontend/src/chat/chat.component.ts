@@ -1,28 +1,24 @@
 import { UserService } from './../services/user.service';
 import { BackendService } from './../services/backend.service';
-
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { FormsModule } from '@angular/forms'; // Add this import
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-
 import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
 import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddMemberTeamPopUpComponent } from './add-member-team-pop-up/add-member-team-pop-up.component';
 import { RemoveMemberTeamPopUpComponent } from './remove-member-team-pop-up/remove-member-team-pop-up.component';
-
 import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserAuthResponse } from '../types/http-response.types';
-
 import { ThemeService } from './../services/theme.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule],
+  imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule], // Add FormsModule here
   templateUrl: './chat.component.html',
   styleUrls: [
     './chat.component.css',
@@ -85,6 +81,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   selectedChannel: string | null = null;
   title = 'chatHaven';
 
+  newMessage: string = '';
+
   private teamCreatedSubscription: Subscription | null = null;
   private channelCreatedSubscription: Subscription | null = null;
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
@@ -137,6 +135,20 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.dialog.open(RemoveMemberTeamPopUpComponent, {
       data: { selectedTeam: this.selectedTeam },
     });
+  }
+
+  sendMessage() {
+    // if (this.newMessage.trim()) {
+    //   // Add the new message to the messages array or send it to the server
+    //   this.messages.push({
+    //     author: 'You', // Replace with the actual author
+    //     date: new Date().toLocaleString(),
+    //     text: this.newMessage,
+    //   });
+    //   this.newMessage = ''; // Clear the input field
+    // }
+    console.log('Sending message:', this.newMessage);
+    this.newMessage = '';
   }
 
   async signOut() {

@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html> -->
+<!DOCTYPE html>
 <!-- <link id="theme-link" rel="stylesheet" href="./../assets/lightTheme.css" /> -->
 
 <html lang="en">
@@ -184,9 +184,12 @@
           </div>
         </div>
         <div class="input-container">
-          <input class="input-container" />
-          <button class="input-container">
-            <!-- (click) create message -->
+          <input
+            class="input-container"
+            [(ngModel)]="newMessage"
+            (keyup.enter)="sendMessage()"
+            placeholder="Type your message here..." /> 
+          <button class="input-container" (click)="sendMessage()">
             <i class="material-icons" style="font-size: 24px">send</i>
           </button>
         </div>
@@ -209,4 +212,4 @@
       </div>
     </div>
   </body>
-<!-- </html> -->
+</html>
