@@ -137,16 +137,16 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
+  selectTeam(team: string): void {
+    console.log('Selected team:', team);
+    this.selectedTeam = team;
+  }
+  selectChannel(channel: string): void {
+    console.log('Selected channel:', channel);
+    this.selectedTeam = channel;
+  }
+
   sendMessage() {
-    // if (this.newMessage.trim()) {
-    //   // Add the new message to the messages array or send it to the server
-    //   this.messages.push({
-    //     author: 'You', // Replace with the actual author
-    //     date: new Date().toLocaleString(),
-    //     text: this.newMessage,
-    //   });
-    //   this.newMessage = ''; // Clear the input field
-    // }
     console.log('Sending message:', this.newMessage);
     this.newMessage = '';
   }
