@@ -201,9 +201,9 @@
 
 .menu-option {
   position: absolute;
-  background-color: #1e1e1e;
-  border: 2px solid var(--user-button-background-hover); /* Changed to new color */
-  color: var(--user-button-background-hover); /* Changed to new color */
+  background-color: var(--menu-option-background);
+  border: 2px solid var(--menu-option-border); /* Changed to new color */
+  color: var(--menu-option-text); /* Changed to new color */
   z-index: 5; /* Default z-index for options */
   width: 3rem; /* Changed size */
   height: 3rem; /* Changed size */
@@ -222,7 +222,9 @@
 
 .menu-toggle-checkbox:hover ~ .menu-toggle-button,
 .menu-toggle-checkbox:checked ~ .menu-toggle-button {
-  background-color: #e53b3b; /* Darker shade on hover */
+  background-color: var(
+    --menu-option-hover-background
+  ); /* Darker shade on hover */
   scale: 0.98;
   box-shadow: none;
   border-radius: 30%; /* Change border radius on hover */

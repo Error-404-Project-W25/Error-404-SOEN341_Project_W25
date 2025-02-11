@@ -17,6 +17,8 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { UserAuthResponse } from '../types/http-response.types';
 
+import { ThemeService } from './../services/theme.service';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -26,11 +28,12 @@ import { UserAuthResponse } from '../types/http-response.types';
     './chat.component.css',
     './sideBarOne.css',
     './sideBarTwo.css',
-    'chatLog.css',
-    'teamList.css',
+    './chatLog.css',
+    './teamList.css',
   ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
+  currentTheme: string = '';
   channelTitle: string = 'Channel Name';
   TeamTitle: string = 'Team Name';
   teamMemberList: string[] = Array.from(
@@ -93,12 +96,22 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private themeService: ThemeService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.currentTheme = 'light';
+    console.log('Chat component initialized');
+    console.log('Theme:', this.currentTheme);
+  }
 
   ngOnDestroy() {}
+
+  changeTheme(): void {
+    this.themeService.toggleTheme();
+    console.log('Changing theme', this.currentTheme);
+  }
 
   openCreateTeamDialog(): void {
     console.log('Inside function create team');
