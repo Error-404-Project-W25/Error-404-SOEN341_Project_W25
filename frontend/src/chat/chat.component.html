@@ -83,9 +83,10 @@
         </div>
       </div>
       <div class="side-bar-2">
-        <div class="side-bar-2-title-container" *ngIf="selectedTeam !== null">
+        <div class="side-bar-2-title-container" *ngIf="TeamTitle !== ''">
           <label class="main">
-            {{ teamSelectedName }}
+            {{ TeamTitle }}
+            <!-- {{ teamSelectedName }} -->
             <input class="inp" checked="" type="checkbox" />
             <div class="bar">
               <span class="top bar-list"></span>
@@ -94,8 +95,8 @@
             </div>
             <section
               class="dropdown-team-setting-container"
-              *ngIf="selectedTeam !== null"
             >
+              <!-- Team Setting -->
               <div class="dropdown-team-setting-list">
                 <i
                   class="fa fa-gear"
@@ -123,6 +124,7 @@
                 ></i
                 >Add Member
               </div>
+              <!-- Removing Member Dialogue-->
               <div class="dropdown-team-setting-list">
                 <i
                   class="fa fa-user-times"
@@ -135,15 +137,24 @@
         </div>
         <div class="channel-list">
           <ul>
-            <li
+            <!-- <li
               *ngFor="let channel of channels$ | async"
               [ngClass]="{ selected: channel.name === selectedChannel }"
               (click)="selectChannel(channel)"
               class="channel-container"
-            >
-              <span class="channel-name">{{ channel.name }}</span>
+            > <span class="channel-name">{{ channel.name }}</span>
               <button class="channel-button">
                 <i class="fa fa-gear" style="font-size: 24px">more_vert</i>
+              </button>
+            </li>-->
+            <li
+              *ngFor="let channel of channelNameList"
+              [ngClass]="{ selected: channel === selectedChannel }"
+              class="channel-container"
+            >
+              <span class="channel-name">{{ channel }}</span>
+              <button class="channel-button">
+                <i class="fa fa-gear" style="font-size: 24px"></i>
               </button>
             </li>
           </ul>

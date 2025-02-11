@@ -1,4 +1,5 @@
 .side-bar-2 {
+  font-family: Arial, Helvetica, sans-serif;
   position: relative;
   align-items: horizontal;
   background-color: var(--side-bar-2-background);
@@ -16,6 +17,7 @@
 }
 
 .side-bar-2-title-container {
+  font-family: Arial, Helvetica, sans-serif;
   position: absolute;
   align-items: center;
   background-color: var(--side-bar-2-title-background);
@@ -38,12 +40,11 @@
   font-weight: 800;
   color: white;
   background-color: var(--side-bar-2-title-background);
-  padding: 3px 15px;
-  border-radius: 10px;
-
+  padding: 0 15px;
+  /* border-radius: 10%; */
   display: flex;
   align-items: center;
-  height: 2.5rem;
+  height: 2rem;
   width: 100%;
   position: relative;
   cursor: pointer;
@@ -67,7 +68,7 @@
   background-color: white;
   height: 100%;
   width: 2.5px;
-  border-radius: 500px;
+  /* border-radius: 10%; */
   transform-origin: bottom;
 }
 
@@ -84,9 +85,9 @@
 }
 
 .dropdown-team-setting-container {
-  background-color: var(--side-bar-2-title-background);
-  color: white;
-  border-radius: 10px;
+  background-color: var(--team-setting-list-background);
+  color: var(--team-setting-list-text);
+  /* border-radius: 10%; */
   position: absolute;
   width: 100%;
   left: 0;
@@ -94,33 +95,27 @@
   overflow: hidden;
   clip-path: inset(0% 0% 0% 0% round 10px);
   transition: all 0.4s;
-  border: 1px solid var(--channel-list-backround-hover); /* Added border */
+  border: 1px solid var(--channel-list-backround-hover);
+  z-index: 2;
 }
 
 .dropdown-team-setting-list {
   --delay: 0.4s;
   --trdelay: 0.15s;
   padding: 8px 10px;
-  border-radius: inherit;
+  /* border-radius: inherit; */
   transition: background-color 0.2s 0s;
   position: relative;
   transform: translateY(30px);
   opacity: 0;
-}
-
-.dropdown-team-setting-list::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.3);
-  width: 95%;
+  background-color: var(--team-setting-list-background);
+  color: var(--team-setting-list-text);
+  margin: 0;
 }
 
 .dropdown-team-setting-list:hover {
-  background-color: var(--channel-list-backround-hover);
+  background-color: var(--team-setting-list-element-background-hover);
+  color: var(--team-setting-list-text-hover);
 }
 
 .inp:checked ~ .dropdown-team-setting-container {
@@ -272,20 +267,17 @@
 }
 .channel-name {
   color: var(--message-username);
-  font-size: 16px;
-  /* width: 70%; */
-  font-weight: bold;
   flex-grow: 1;
   text-align: left;
 }
 .channel-button {
+  position: relative;
   margin-left: 50px;
   background-color: var(--add-team-button-background);
   border: none;
   border-radius: 50%;
   color: var(--add-team-button-text);
   cursor: pointer;
-  font-size: 16px;
   height: 2rem;
   outline: none;
   padding: 5px;
