@@ -10,6 +10,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
 import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
 import { AddMemberTeamPopUpComponent } from './add-member-team-pop-up/add-member-team-pop-up.component';
+import { RemoveMemberTeamPopUpComponent } from './remove-member-team-pop-up/remove-member-team-pop-up.component';
 
 import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -115,6 +116,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   openAddMemberTeamDialog(): void {
     console.log('Inside function add team member');
     this.dialog.open(AddMemberTeamPopUpComponent, {
+      data: { selectedTeam: this.selectedTeam },
+    });
+  }
+
+  openRemoveMemberTeamDialog(): void {
+    console.log('Inside function add team member');
+    this.dialog.open(RemoveMemberTeamPopUpComponent, {
       data: { selectedTeam: this.selectedTeam },
     });
   }
