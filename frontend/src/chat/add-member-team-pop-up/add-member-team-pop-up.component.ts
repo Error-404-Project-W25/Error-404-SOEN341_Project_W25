@@ -15,7 +15,10 @@ import { IUser, IChannel } from '../../../../shared/interfaces';
 @Component({
   selector: 'app-add-member-team-pop-up',
   templateUrl: './add-member-team-pop-up.component.html',
-  styleUrls: ['./add-member-team-pop-up.component.css'],
+  styleUrls: [
+    './../chat.component.css',
+    './add-member-team-pop-up.component.css',
+  ],
   standalone: true,
   imports: [
     MatDialogModule,

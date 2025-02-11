@@ -5,7 +5,7 @@
   align-items: center;
   height: auto;
   width: 100%;
-  background-color: #212121;
+  background-color: var(--pop-up-background-color);
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -15,7 +15,7 @@
 .h1 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 24px;
-  color: #fff;
+  color: var(--pop-up-text-color);
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -23,13 +23,23 @@
   font-family: Arial, Helvetica, sans-serif;
   height: auto;
   width: 400px;
-  background: linear-gradient(#212121, #212121) padding-box,
-    linear-gradient(145deg, transparent 35%, #ff6b6b, #ff6b6b) border-box;
+  background: linear-gradient(
+        var(--pop-up-background-color),
+        var(--pop-up-background-color)
+      )
+      padding-box,
+    linear-gradient(
+        145deg,
+        transparent 35%,
+        var(--pop-up-highlight-color),
+        var(--pop-up-highlight-color)
+      )
+      border-box;
   border: 2px solid transparent;
   padding: 32px 24px;
   font-size: 14px;
   font-family: inherit;
-  color: white;
+  color: var(--pop-up-text-color);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -73,7 +83,7 @@
   font-family: Arial, Helvetica, sans-serif;
   display: block;
   margin-bottom: 5px;
-  color: #717171;
+  color: var(--pop-up-secondary-text-color);
   font-weight: 600;
   font-size: 12px;
 }
@@ -85,7 +95,7 @@
   color: #fff;
   font-family: inherit;
   background-color: transparent;
-  border: 1px solid #414141;
+  border: 1px solid var(--pop-up-border-color);
 }
 
 .form-container .form-group textarea {
@@ -95,7 +105,7 @@
   resize: none;
   color: #fff;
   height: 96px;
-  border: 1px solid #414141;
+  border: 1px solid var(--pop-up-border-color);
   background-color: transparent;
   font-family: inherit;
 }
@@ -106,12 +116,12 @@
 
 .form-container .form-group input:focus {
   outline: none;
-  border-color: #ff6b6b;
+  border-color: var(--pop-up-highlight-color);
 }
 
 .form-container .form-group textarea:focus {
   outline: none;
-  border-color: #ff6b6b;
+  border-color: var(--pop-up-highlight-color);
 }
 
 .form-container .form-submit-btn {
@@ -120,11 +130,11 @@
   justify-content: center;
   align-self: flex-start;
   font-family: inherit;
-  color: #717171;
+  color: var(--pop-up-secondary-text-color);
   font-weight: 600;
   width: 40%;
-  background: #313131;
-  border: 1px solid #414141;
+  background: var(--pop-up-button-background);
+  border: 1px solid var(--pop-up-border-color);
   padding: 12px 16px;
   font-size: inherit;
   gap: 8px;
@@ -152,11 +162,11 @@
   justify-content: center;
   align-self: flex-start;
   font-family: inherit;
-  color: #717171;
+  color: var(--pop-up-secondary-text-color);
   font-weight: 600;
   width: 40%;
-  background: #313131;
-  border: 1px solid #414141;
+  background: var(--pop-up-button-background);
+  border: 1px solid var(--pop-up-border-color);
   padding: 12px 16px;
   font-size: inherit;
   gap: 8px;

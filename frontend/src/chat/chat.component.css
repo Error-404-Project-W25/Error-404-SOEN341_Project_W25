@@ -78,6 +78,14 @@
 
   /* Separator */
   --separator-color: #35363c; /* Separator color */
+
+  /* Pop-up */
+  --pop-up-background-color: #212121;
+  --pop-up-text-color: #fff;
+  --pop-up-secondary-text-color: #717171;
+  --pop-up-border-color: #414141;
+  --pop-up-highlight-color: #ff6b6b;
+  --pop-up-button-background: #313131;
 }
 
 body {
@@ -115,5 +123,3 @@ body {
   padding: 0;
   width: 80%;
 }
-
-

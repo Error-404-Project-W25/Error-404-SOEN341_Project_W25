@@ -4,8 +4,9 @@ import { Component } from '@angular/core';
   selector: 'app-remove-member-team-pop-up',
   imports: [],
   templateUrl: './remove-member-team-pop-up.component.html',
-  styleUrl: './remove-member-team-pop-up.component.css'
+  styleUrls: [
+    './../chat.component.css',
+    './remove-member-team-pop-up.component.css',
+  ],
 })
-export class RemoveMemberTeamPopUpComponent {
-
-}
+export class RemoveMemberTeamPopUpComponent {}

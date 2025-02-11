@@ -13,7 +13,7 @@ import { IChannel, ITeam, IUser } from '../../../../shared/interfaces';
 @Component({
   selector: 'app-add-team-dialog',
   templateUrl: './add-team-dialog.component.html',
-  styleUrls: ['./add-team-dialog.component.css'],
+  styleUrls: ['./../chat.component.css', './add-team-dialog.component.css'],
   standalone: true,
   imports: [
     CommonModule,

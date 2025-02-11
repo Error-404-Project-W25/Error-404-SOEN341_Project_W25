@@ -12,7 +12,7 @@ import { NgIf } from '@angular/common';
 @Component({
   selector: 'app-add-channel-dialog',
   templateUrl: './add-channel-dialog.component.html',
-  styleUrls: ['./add-channel-dialog.component.css'],
+  styleUrls: ['./../chat.component.css', './add-channel-dialog.component.css'],
   standalone: true,
   imports: [
     MatDialogModule,
