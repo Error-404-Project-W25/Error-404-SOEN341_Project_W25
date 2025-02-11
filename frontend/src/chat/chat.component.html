@@ -88,14 +88,12 @@
             {{ TeamTitle }}
             <!-- {{ teamSelectedName }} -->
             <input class="inp" checked="" type="checkbox" />
-            <div class="bar">
-              <span class="top bar-list"></span>
-              <span class="middle bar-list"></span>
-              <span class="bottom bar-list"></span>
+            <div class="team-setting-bar">
+              <span class="top team-setting-bar-list"></span>
+              <span class="middle team-setting-bar-list"></span>
+              <span class="bottom team-setting-bar-list"></span>
             </div>
-            <section
-              class="dropdown-team-setting-container"
-            >
+            <section class="dropdown-team-setting-container">
               <!-- Team Setting -->
               <div class="dropdown-team-setting-list">
                 <i
@@ -152,7 +150,9 @@
               [ngClass]="{ selected: channel === selectedChannel }"
               class="channel-container"
             >
-              <span class="channel-name">{{ channel }}</span>
+              <div class="channel-name-container">
+                <span class="channel-name">{{ channel }}</span>
+              </div>
               <button class="channel-button">
                 <i class="fa fa-gear" style="font-size: 24px"></i>
               </button>
