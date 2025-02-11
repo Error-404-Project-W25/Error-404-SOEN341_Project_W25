@@ -250,6 +250,7 @@
   padding: 5px;
 }
 .channel-button-container {
+  background-color: inherit;
   display: flex;
   flex-direction: row;
   gap: 2rem;
@@ -272,18 +273,17 @@
   text-align: left;
 }
 .channel-button {
+  background-color: inherit;
   position: relative;
   margin-left: 50px;
-  background-color: var(--add-team-button-background);
   border: none;
   border-radius: 50%;
   color: var(--add-team-button-text);
   cursor: pointer;
-  height: 2rem;
+  height: 1.5rem;
   outline: none;
   padding: 5px;
-  width: 2rem;
-  transition: background-color 0.3s, border-radius 0.3s;
+  width: 1.5rem;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -291,6 +291,5 @@
 }
 
 .channel-button:hover {
-  background-color: var(--add-team-button-hover);
-  border-radius: 30%;
+  color: var(--add-team-button-hover);
 }
