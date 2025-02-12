@@ -145,26 +145,47 @@
           </label>
         </div>
         <div class="channel-list">
-          <ul>
-            <!-- (click) select channel -->
-            <li
-              *ngFor="let channel of channelNameList"
-              [ngClass]="{ selected: channel === selectedChannel }"
-              class="channel-container"
-              (click)="selectChannel(channel)"
-            >
-              <div class="channel-name-container">
-                <span class="channel-name">{{ channel }}</span>
+          <div class="dropdown">
+            <button (click)="myConvoFunction()" class="channelList-dropbtn">
+              Conversation
+              <span style="flex-grow: 1"></span>
+              <i class="fa fa-caret-down" style="margin-left: 5px"></i>
+            </button>
+            <div id="myDropdownConvo" class="channelList-dropdown-content">
+              <div
+                class="channelList-dropdown-content-container"
+                *ngFor="let conversation of conversationList"
+                (click)="selectConversation(conversation)"
+              >
+                <div class="channel-name-container">{{ conversation }}</div>
+                <!-- (click) open channel setting -->
+                <button class="channel-button">
+                  <i class="fa fa-gear" style="font-size: 16px"></i>
+                </button>
               </div>
-              <!-- (click) channel setting-->
-              <button class="channel-button">
-                <i
-                  class="fa fa-gear"
-                  style="font-size: 1rem; display: block; margin: 0 auto"
-                ></i>
-              </button>
-            </li>
-          </ul>
+            </div>
+          </div>
+
+          <div class="dropdown">
+            <button (click)="myChannelFunction()" class="channelList-dropbtn">
+              Channel
+              <span style="flex-grow: 1"></span>
+              <i class="fa fa-caret-down" style="margin-left: 5px"></i>
+            </button>
+            <div id="myDropdownChannel" class="channelList-dropdown-content">
+              <div
+                class="channelList-dropdown-content-container"
+                *ngFor="let channel of channelNameList"
+                (click)="selectChannel(channel)"
+              >
+                <div class="channel-name-container">{{ channel }}</div>
+                <!-- (click) open channel setting -->
+                <button class="channel-button">
+                  <i class="fa fa-gear" style="font-size: 16px"></i>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="chat-box">

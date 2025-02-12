@@ -40,6 +40,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     { length: 30 },
     (_, i) => `Channel ${i + 1}`
   );
+  conversationList: string[] = Array.from(
+    { length: 30 },
+    (_, i) => `Conversation ${i + 1}`
+  );
   teamList: string[] = Array.from({ length: 30 }, (_, i) => `T${i + 1}`);
   messages: Message[] = [
     new Message(
@@ -145,6 +149,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log('Selected channel:', channel);
     this.selectedTeam = channel;
   }
+  selectConversation(conversation: string): void {
+    console.log('Selected conversation:', conversation);
+    this.selectedTeam = conversation;
+  }
 
   sendMessage() {
     console.log('Sending message:', this.newMessage);
@@ -164,6 +172,21 @@ export class ChatComponent implements OnInit, OnDestroy {
       console.error('No response from backend');
     }
   }
+
+
+  myChannelFunction() {
+    const dropdown = document.getElementById('myDropdownChannel');
+    if (dropdown) {
+      dropdown.classList.toggle('channelList-show');
+    }
+  }
+  myConvoFunction() {
+    const dropdown = document.getElementById('myDropdownConvo');
+    if (dropdown) {
+      dropdown.classList.toggle('channelList-show');
+    }
+  }
+
 }
 
 class Message {
