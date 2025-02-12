@@ -12,7 +12,7 @@ import { RemoveMemberTeamPopUpComponent } from './remove-member-team-pop-up/remo
 import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { UserAuthResponse } from '../types/http-response.types';
+import { UserAuthResponse } from '../../types/http-response.types';
 import { ThemeService } from './../services/theme.service';
 
 @Component({
