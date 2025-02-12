@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,17 +19,13 @@ import { ITeam, IUser } from '@shared/interfaces';
     MatInputModule,
     FormsModule,
     MatButtonModule,
-    HttpClientModule,
   ],
 })
 export class AddTeamDialogComponent {
   @Output() teamCreated = new EventEmitter<void>();
 
-  searchQuery = '';
   teamName = '';
   description = '';
-  found = ' ';
-  teamMembers: string[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<AddTeamDialogComponent>,
@@ -38,72 +33,39 @@ export class AddTeamDialogComponent {
     private userService: UserService
   ) {}
 
-  search() {
-    console.log('Searching for:', this.searchQuery);
-
-    this.backendService
-      .searchUsers(this.searchQuery)
-      .then((users: IUser[]) => {
-        this.found = users.length > 0 ? 'User found' : 'No user found';
-        console.log(this.found, users);
-
-        setTimeout(() => {
-          this.found = ' ';
-        }, 2000);
-
-        this.teamMembers = [
-          ...this.teamMembers,
-          ...users
-            .map((user) => user.user_id)
-            .filter((id): id is string => id !== undefined),
-        ];
-      })
-      .catch((error) => {
-        console.error('Error searching users:', error);
-      });
-  }
-
   createTeam() {
-    const currentUser = this.userService.getUser();
+    const currentUser: IUser | undefined = this.userService.getUser();
 
-    if (!currentUser?.username) {
-      console.error('No user or username found');
+    if (!currentUser) {
+      console.error('No signed in user');
       return;
     }
 
-    this.teamMembers = [
-      ...this.teamMembers,
-      ...(currentUser.user_id ? [currentUser.user_id] : []),
-    ];
-    console.log('Team Members:', this.teamMembers);
+    this.backendService
+      .createTeam(currentUser.user_id, this.teamName, this.description)
+      .then((teamId: string | undefined) => {
+        if (!teamId) {
+          console.error('Error creating team');
+          return;
+        }
 
-    const teamData: ITeam = {
-      team_name: this.teamName,
-      description: this.description,
-      members: this.teamMembers,
-      admin: [currentUser],
-      channels: [],
-    };
+        const newTeam: ITeam = {
+          team_id: teamId,
+          team_name: this.teamName,
+          description: this.description,
+          admin: [currentUser.user_id],
+          members: [currentUser.user_id],
+          channels: [],
+        };
 
-    // this.backendService.createTeams(
-    //   currentUser.user_id,
-    //   currentUser.username,
-    //   teamData.team_name,
-    //   teamData.description || '',
-    //   teamData.members,
-    //   'admin'
-    // ).then(
-    //   () => {
-    //     console.log('Team created successfully');
-    //     this.teamCreated.emit();
-    //     this.dialogRef.close();
-    //   },
-    //   (error) => {
-    //     console.error('Error creating team:', error);
-    //   }
-    // );
+        currentUser.teams = currentUser.teams
+          ? [...currentUser.teams, newTeam]
+          : [newTeam];
 
-    // currentUser.teams = currentUser.teams ? [...currentUser.teams, teamData] : [teamData];
-    // console.log('Current User:', currentUser);
+        this.teamCreated.emit();
+        this.dialogRef.close();
+      });
+
+    console.log('Team created successfully');
   }
 }

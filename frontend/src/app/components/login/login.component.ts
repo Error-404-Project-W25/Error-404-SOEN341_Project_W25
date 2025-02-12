@@ -247,7 +247,7 @@ export class LoginComponent implements OnInit {
 
       if (response) {
         if (response.uid) {
-          const user: IUser | undefined = await this.backendService.getUserInfo(
+          const user: IUser | undefined = await this.backendService.getUserById(
             response.uid
           );
 
@@ -282,7 +282,7 @@ export class LoginComponent implements OnInit {
 
       if (response) {
         if (response.uid) {
-          const user: IUser | undefined = await this.backendService.getUserInfo(
+          const user: IUser | undefined = await this.backendService.getUserById(
             response.uid
           );
 

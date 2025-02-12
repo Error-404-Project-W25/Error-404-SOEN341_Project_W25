@@ -43,11 +43,11 @@ export const getTeamById = async (req: Request, res: Response) => {
 /**
  * Create a new team
  * @param req user_id, team_name, description, members
- * @param res returns the new ITeam object
+ * @param res returns the new ITeam's id
  */
 export const createTeam = async (req: Request, res: Response) => {
   try {
-    const { user_id, team_name, description, members } = req.body;
+    const { user_id, team_name, description } = req.body;
 
     // Generate a UUID for the team_id
     const team_id: string = uuidv4();
@@ -58,14 +58,14 @@ export const createTeam = async (req: Request, res: Response) => {
       team_name,
       description,
       admin: [user_id],
-      members: [...members, user_id],
+      members: [user_id],
       channels: [
         {
           id: uuidv4(),
           name: 'General',
           description: 'This is the default channel',
           team: team_id,
-          members: [...members, user_id], // Add the creator to the default channel members
+          members: [user_id], // Add the creator to the default channel members
         },
       ],
     }).save();
@@ -81,7 +81,7 @@ export const createTeam = async (req: Request, res: Response) => {
       await user.save();
     }
 
-    res.status(201).json({ newTeam });
+    res.status(201).json({ team_id });
   } catch (error) {
     const errorMessage: string = (error as Error).message;
     res

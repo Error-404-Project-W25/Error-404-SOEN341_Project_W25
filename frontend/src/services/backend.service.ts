@@ -148,27 +148,25 @@ export class BackendService {
     return undefined;
   }
 
-  async createTeams(
+  async createTeam(
     user_id: string,
     team_name: string,
-    description: string,
-    members: string[]
-  ): Promise<ITeam | undefined> {
+    description: string
+  ): Promise<string | undefined> {
     try {
       const response = await firstValueFrom(
-        this.http.post<{ newTeam?: ITeam; error?: string; details?: string }>(
+        this.http.post<{ team_id: string; error?: string; details?: string }>(
           `${this.backendURL}/teams/create`,
           {
             user_id,
             team_name,
             description,
-            members,
           }
         )
       );
 
-      if (response && response.newTeam) {
-        return response.newTeam;
+      if (response && response.team_id) {
+        return response.team_id;
       } else {
         console.error(response.error);
         console.error(response.details);
