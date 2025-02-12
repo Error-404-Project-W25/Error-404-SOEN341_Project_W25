@@ -6,11 +6,9 @@ import { Router } from '@angular/router';
   standalone: true,
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
-
 export class HomeComponent {
-
   constructor(private router: Router) {}
 
   // Navigate to the login page and open sign-up form (detect query parameters()

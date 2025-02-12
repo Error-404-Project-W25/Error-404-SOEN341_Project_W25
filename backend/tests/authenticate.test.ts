@@ -1,14 +1,14 @@
 import {
-  UserSignUpData,
+  RegistrationData,
   UserSignInData,
   AuthStatus,
-} from '../../shared/user-credentials.types';
-import { signUpUser, signInUser, signOutUser } from '../src/auth/authenticate';
+} from '../../shared/user-auth.types';
+import { signUpUser, signInUser, signOutUser } from '../src/utils/authenticate';
 
 const runAuthTests = async (): Promise<void> => {
   const randomSeed: number = Math.random();
 
-  const testUser: UserSignUpData = {
+  const testUser: RegistrationData = {
     firstName: `Test${randomSeed}`,
     lastName: `Testman${randomSeed}`,
     username: `test${randomSeed}`,

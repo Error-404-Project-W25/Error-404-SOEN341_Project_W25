@@ -1,17 +1,14 @@
+import { RegistrationData, UserSignInData } from '@shared/user-auth.types';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
   Auth,
   UserCredential,
-  signOut,
+  createUserWithEmailAndPassword,
+  getAuth,
   signInWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
-import {
-  AuthStatus,
-  UserSignInData,
-  RegistrationData,
-} from '../../../shared/user-credentials.types';
+import { AuthStatus } from '../../types/authentication.types';
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -25,6 +22,11 @@ const firebaseConfig: FirebaseOptions = {
 const app: FirebaseApp = initializeApp(firebaseConfig);
 const auth: Auth = getAuth(app);
 
+/**
+ * Sign up a new user
+ * @param registrationData the user's registration data using the RegistrationData type
+ * @returns an AuthStatus object with the user's sign in status
+ */
 const signUpUser = async (
   registrationData: RegistrationData
 ): Promise<AuthStatus> => {
@@ -34,13 +36,17 @@ const signUpUser = async (
       registrationData.email,
       registrationData.password
     );
-    // User also gets signed in automatically
     return { isSignedIn: true, uid: userCredential.user.uid };
   } catch (error: any) {
     return { isSignedIn: false, errorMessage: error.message };
   }
 };
 
+/**
+ * Sign in an existing user
+ * @param userSignInData the user's sign in data using the UserSignInData type
+ * @returns an AuthStatus object with the user's sign in status
+ */
 const signInUser = async (
   userSignInData: UserSignInData
 ): Promise<AuthStatus> => {
@@ -56,6 +62,10 @@ const signInUser = async (
   }
 };
 
+/**
+ * Sign out the current user
+ * @returns an AuthStatus object with the user's sign out status
+ */
 const signOutUser = async (): Promise<AuthStatus> => {
   try {
     await signOut(auth);
@@ -69,4 +79,4 @@ const signOutUser = async (): Promise<AuthStatus> => {
   }
 };
 
-export { signUpUser, signInUser, signOutUser };
+export { signInUser, signOutUser, signUpUser };

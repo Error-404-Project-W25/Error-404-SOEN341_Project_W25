@@ -1,21 +1,20 @@
-import {
-  Component,
-  ViewEncapsulation,
-  ChangeDetectorRef,
-  OnInit,
-} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BackendService } from '@services/backend.service';
+import { UserService } from '@services/user.service';
+import { IUser } from '@shared/interfaces';
 import {
   RegistrationData,
   UserSignInData,
-} from '../../../../shared/user-credentials.types';
-import { BackendService } from '../../services/backend.service';
-import { Router } from '@angular/router';
-import { UserAuthResponse } from '../../types/http-response.types';
-import { IUser } from '../../../../shared/interfaces';
-import { UserService } from '../../services/user.service';
+  UserAuthResponse,
+} from '@shared/user-auth.types';
 
 @Component({
   selector: 'app-login',
@@ -38,7 +37,6 @@ export class LoginComponent implements OnInit {
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
     role: 'user', // default
   };
 
@@ -89,6 +87,9 @@ export class LoginComponent implements OnInit {
   }
 
   ///////////////////// VALIDATION /////////////////////
+
+  // Variable to store the value of the confirm password field
+  confirmPassword: string = '';
 
   validateName(val: string): string {
     const validNameRegex: RegExp = /^[A-Za-z-]*[A-Za-z]{2,}[A-Za-z-]*$/;
@@ -162,7 +163,7 @@ export class LoginComponent implements OnInit {
     const validEmailRegex: RegExp =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    if (email.length > 0 && !validEmailRegex.test(email)) {
+    if (!validEmailRegex.test(email)) {
       this.validationErrors.emailValid = false;
       this.validationErrorMessages.emailError = 'Invalid email';
       return false;
@@ -204,23 +205,25 @@ export class LoginComponent implements OnInit {
 
   confirmPasswordMatch(): boolean {
     const pw: string = this.signUpForm.password;
-    const confirmingPw: string = this.signUpForm.confirmPassword;
+    const confirmingPw: string = this.confirmPassword;
 
-    if (pw === confirmingPw) {
+    if (!(pw && confirmingPw)) {
+      this.validationErrors.passwordsMatch = false;
+      this.validationErrorMessages.passwordMatchError =
+        'Both password fields are required';
+    } else if (pw !== confirmingPw) {
+      this.validationErrorMessages.passwordMatchError =
+        'Passwords do not match';
+      this.validationErrors.passwordsMatch = false;
+    } else {
       this.validationErrors.passwordsMatch = true;
       this.validationErrorMessages.passwordMatchError = '';
       return true;
     }
-
-    // Only show message if fields are populated
-    this.validationErrorMessages.passwordMatchError =
-      pw.length && confirmingPw.length ? 'Passwords do not match' : '';
-
-    this.validationErrors.passwordsMatch = false;
     return false;
   }
 
-  validateAllFields(): boolean {
+  validateSignUpForm(): boolean {
     return (
       this.validateFirstName() &&
       this.validateLastName() &&
@@ -234,14 +237,7 @@ export class LoginComponent implements OnInit {
   /////////////////// REGISTER ///////////////////
 
   async register() {
-    for (let field in this.signUpForm) {
-      if (!field) {
-        alert('Please fill in all required fields');
-        return;
-      }
-    }
-
-    if (!this.validateAllFields()) {
+    if (!this.validateSignUpForm()) {
       return;
     }
 
@@ -251,7 +247,7 @@ export class LoginComponent implements OnInit {
 
       if (response) {
         if (response.uid) {
-          const user: IUser | undefined = await this.backendService.getUserInfo(
+          const user: IUser | undefined = await this.backendService.getUserById(
             response.uid
           );
 
@@ -260,7 +256,7 @@ export class LoginComponent implements OnInit {
             this.goToChat();
           }
         } else if (response.error) {
-          // should write in a div eventually
+          // TODO: make error div
           console.log('Error:', response.error);
           console.log('Details:', response.details);
         }
@@ -281,13 +277,12 @@ export class LoginComponent implements OnInit {
     }
 
     try {
-      // Send login request to the backend
       const response: UserAuthResponse | undefined =
         await this.backendService.loginUser(this.signInForm);
 
       if (response) {
         if (response.uid) {
-          const user: IUser | undefined = await this.backendService.getUserInfo(
+          const user: IUser | undefined = await this.backendService.getUserById(
             response.uid
           );
 
@@ -296,7 +291,7 @@ export class LoginComponent implements OnInit {
             this.goToChat();
           }
         } else if (response.error) {
-          // should write in a div eventually
+          // TODO: make error div
           console.log('Error:', response.error);
           console.log('Details:', response.details);
         }

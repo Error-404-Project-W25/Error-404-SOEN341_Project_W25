@@ -1,19 +1,18 @@
-import { UserService } from './../services/user.service';
-import { BackendService } from './../services/backend.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Add this import
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { AddTeamDialogComponent } from './create-team-pop-up/add-team-dialog.component';
-import { AddChannelDialogComponent } from './create-channel-pop-up/add-channel-dialog.component';
-import { AddMemberTeamPopUpComponent } from './add-member-team-pop-up/add-member-team-pop-up.component';
-import { RemoveMemberTeamPopUpComponent } from './remove-member-team-pop-up/remove-member-team-pop-up.component';
-import { IChannel, ITeam, IUser } from '../../../shared/interfaces';
-import { BehaviorSubject, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { UserAuthResponse } from '../../types/http-response.types';
-import { ThemeService } from './../services/theme.service';
+import { BackendService } from '@services/backend.service';
+import { UserService } from '@services/user.service';
+import { IChannel, ITeam, IUser } from '@shared/interfaces';
+import { UserAuthResponse } from '@shared/user-auth.types';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { AddChannelDialogComponent } from '../create-channel-pop-up/add-channel-dialog.component';
+import { AddMemberTeamPopUpComponent } from '../add-member-team-pop-up/add-member-team-pop-up.component';
+import { AddTeamDialogComponent } from '../create-team-pop-up/add-team-dialog.component';
+import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/remove-member-team-pop-up.component';
 
 @Component({
   selector: 'app-root',
@@ -99,7 +98,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private userService: UserService,
     private backendService: BackendService,
-    private themeService: ThemeService
+    // private themeService: ThemeService
   ) {}
 
   ngOnInit() {
@@ -110,10 +109,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {}
 
-  changeTheme(): void {
-    this.themeService.toggleTheme();
-    console.log('Changing theme', this.currentTheme);
-  }
+  // changeTheme(): void {
+  //   this.themeService.toggleTheme();
+  //   console.log('Changing theme', this.currentTheme);
+  // }
 
   openCreateTeamDialog(): void {
     console.log('Inside function create team');
