@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="form-container">
+    <h1>Add Member To Team</h1>
+    <form class="form" (ngSubmit)="search()" #addMemberForm="ngForm">
+      <!-- Add Member -->
+      <div class="form-group">
+        <label for="searchQuery">Add Member</label>
+        <div class="container-add-member">
+          <input
+            type="text"
+            id="searchQuery"
+            [(ngModel)]="searchQuery"
+            name="searchQuery"
+            required
+            #searchQueryInput="ngModel"
+          />
+          <button class="add-member-btn" type="button" (click)="search()">
+            Add
+          </button>
+        </div>
+        <div class="found-message" *ngIf="found" style="height: 10px">
+          {{ found }}
+        </div>
+      </div>
+      <button type="submit" class="form-submit-btn">Submit</button>
+    </form>
+  </div>
+</div>
