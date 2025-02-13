@@ -27,7 +27,7 @@ import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/rem
     './teamList.css',
   ],
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit {
   currentTheme: string = '';
   channelTitle: string = 'Channel Name';
   TeamTitle: string = 'Team Name';
@@ -35,15 +35,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     { length: 30 },
     (_, i) => `Member ${i + 1}`
   );
-  channelNameList: string[] = Array.from(
-    { length: 30 },
-    (_, i) => `Channel ${i + 1}`
-  );
+  channelNameList: IChannel[] = [];
   conversationList: string[] = Array.from(
     { length: 30 },
     (_, i) => `Conversation ${i + 1}`
   );
-  teamList: string[] = Array.from({ length: 30 }, (_, i) => `T${i + 1}`);
+  teamList: ITeam[] = []; 
   messages: Message[] = [
     new Message(
       'User3',
@@ -80,18 +77,14 @@ export class ChatComponent implements OnInit, OnDestroy {
   ];
   teams: ITeam[] = [];
   channels: IChannel[] = [];
-  selectedTeam: string | null = null;
+  selectedTeamId: string | null = null;
   selectedChannel: string | null = null;
   title = 'chatHaven';
 
   newMessage: string = '';
 
-  private teamCreatedSubscription: Subscription | null = null;
-  private channelCreatedSubscription: Subscription | null = null;
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   channels$ = this.channelsSubject.asObservable();
-  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
-  teams$ = this.teamsSubject.asObservable();
 
   constructor(
     private router: Router,
@@ -104,10 +97,15 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.currentTheme = 'light';
     console.log('Chat component initialized');
-    console.log('Theme:', this.currentTheme);
+    // console.log('Theme:', this.currentTheme);
+    
+    this.userService.user$.subscribe((user: IUser | undefined) => {
+      if (user) {
+        this.teamList = user.teams;
+        console.log(user.teams)
+      }
+    });
   }
-
-  ngOnDestroy() {}
 
   // changeTheme(): void {
   //   this.themeService.toggleTheme();
@@ -115,42 +113,44 @@ export class ChatComponent implements OnInit, OnDestroy {
   // }
 
   openCreateTeamDialog(): void {
-    console.log('Inside function create team');
     this.dialog.open(AddTeamDialogComponent);
   }
 
   openCreateChannelDialog(): void {
     console.log('Inside function create channel');
     this.dialog.open(AddChannelDialogComponent, {
-      data: { selectedTeam: this.selectedTeam },
+      data: { selectedTeam: this.selectedTeamId },
     });
   }
 
   openAddMemberTeamDialog(): void {
     console.log('Inside function add team member');
     this.dialog.open(AddMemberTeamPopUpComponent, {
-      data: { selectedTeam: this.selectedTeam },
+      data: { selectedTeam: this.selectedTeamId },
     });
   }
 
   openRemoveMemberTeamDialog(): void {
     console.log('Inside function add team member');
     this.dialog.open(RemoveMemberTeamPopUpComponent, {
-      data: { selectedTeam: this.selectedTeam },
+      data: { selectedTeam: this.selectedTeamId },
     });
   }
 
   selectTeam(team: string): void {
-    console.log('Selected team:', team);
-    this.selectedTeam = team;
+    console.log("selected team:", this.teamList.find((t) => t.team_id === team) || "not found");
+    this.selectedTeamId = team;
+    this.channelNameList = this.teamList.find((t) => t.team_id === team)?.channels || [];
   }
+
   selectChannel(channel: string): void {
     console.log('Selected channel:', channel);
-    this.selectedTeam = channel;
+    this.selectedChannel = channel;
   }
+
   selectConversation(conversation: string): void {
     console.log('Selected conversation:', conversation);
-    this.selectedTeam = conversation;
+    // this.selectedTeam = conversation;
   }
 
   sendMessage() {

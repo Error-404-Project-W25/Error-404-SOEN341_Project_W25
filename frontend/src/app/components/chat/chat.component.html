@@ -53,8 +53,8 @@
         <div class="team-list">
           <ul>
             <!-- (click) select team -->
-            <li *ngFor="let team of teamList" (click)="selectTeam(team)">
-              <a href="#">{{ team }}</a>
+            <li *ngFor="let team of teamList" (click)="selectTeam(team.team_id)">
+              <a href="#">{{ team.team_name.slice(0, 6) }}</a>
             </li>
           </ul>
         </div>
@@ -176,9 +176,9 @@
               <div
                 class="channelList-dropdown-content-container"
                 *ngFor="let channel of channelNameList"
-                (click)="selectChannel(channel)"
+                (click)="selectChannel(channel.channel_id)"
               >
-                <div class="channel-name-container">{{ channel }}</div>
+                <div class="channel-name-container">{{ channel.name }}</div>
                 <!-- (click) open channel setting -->
                 <button class="channel-button">
                   <i class="fa fa-gear" style="font-size: 16px"></i>

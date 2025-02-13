@@ -9,6 +9,6 @@ const router: Router = Router();
 
 router.post('/create', createChannel);
 router.post('/addUser', addUserToChannel);
-router.post('/getChannel', getChannelById);
+router.post('/getChannelById', getChannelById);
 
 export default router;

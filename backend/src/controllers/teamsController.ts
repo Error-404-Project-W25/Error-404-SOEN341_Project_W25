@@ -34,7 +34,7 @@ export const getTeamById = async (req: Request, res: Response) => {
       res.status(404).json({ error: 'Team not found' });
       return;
     }
-    res.json(team);
+    res.status(200).json({ team });
   } catch (error) {
     res.status(500).json({ error: 'Error fetching team' });
   }
@@ -61,10 +61,10 @@ export const createTeam = async (req: Request, res: Response) => {
       members: [user_id],
       channels: [
         {
-          id: uuidv4(),
+          channel_id: uuidv4(),
           name: 'General',
           description: 'This is the default channel',
-          team: team_id,
+          team_id: team_id,
           members: [user_id], // Add the creator to the default channel members
         },
       ],

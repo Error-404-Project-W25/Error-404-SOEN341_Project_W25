@@ -21,9 +21,7 @@ import { ITeam, IUser } from '@shared/interfaces';
     MatButtonModule,
   ],
 })
-export class AddTeamDialogComponent {
-  @Output() teamCreated = new EventEmitter<void>();
-
+export class AddTeamDialogComponent {  
   teamName = '';
   description = '';
   found = ' ';
@@ -34,7 +32,7 @@ export class AddTeamDialogComponent {
     private userService: UserService
   ) {}
 
-  createTeam() {
+  async createTeam() {
     const currentUser: IUser | undefined = this.userService.getUser();
 
     if (!currentUser) {
@@ -42,31 +40,28 @@ export class AddTeamDialogComponent {
       return;
     }
 
-    this.backendService
-      .createTeam(currentUser.user_id, this.teamName, this.description)
-      .then((teamId: string | undefined) => {
-        if (!teamId) {
-          console.error('Error creating team');
-          return;
-        }
+    try {
+      const teamId: string | undefined = await this.backendService.createTeam(currentUser.user_id, this.teamName, this.description);
 
-        const newTeam: ITeam = {
-          team_id: teamId,
-          team_name: this.teamName,
-          description: this.description,
-          admin: [currentUser.user_id],
-          members: [currentUser.user_id],
-          channels: [],
-        };
+      if (!teamId) {
+        console.error('Error creating team');
+        return;
+      }
 
-        currentUser.teams = currentUser.teams
-          ? [...currentUser.teams, newTeam]
-          : [newTeam];
+      const newTeam: ITeam | undefined = await this.backendService.getTeamById(teamId);
 
-        this.teamCreated.emit();
-        this.dialogRef.close();
-      });
+      if (!newTeam) {
+        console.error('Error getting team');
+        return;
+      }
 
-    console.log('Team created successfully');
+      // Add the new team to the user's list of teams
+      this.userService.getUser()?.teams.push(newTeam);
+
+      this.dialogRef.close();
+      console.log('Team created successfully');
+    } catch (error) {
+      console.error('Error creating team:', error);
+    }
   }
 }
