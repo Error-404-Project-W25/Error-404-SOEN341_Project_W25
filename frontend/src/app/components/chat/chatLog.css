@@ -54,6 +54,7 @@
 }
 
 .message {
+  border-radius: 10px;
   width: 95%;
   margin: 5px auto;
   padding: 5px;
@@ -127,7 +128,7 @@
 .message-text {
   padding: 5px;
   text-align: justify;
-  width: 100%;
+  width: 99%;
 }
 
 .input-container {
