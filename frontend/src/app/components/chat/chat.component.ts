@@ -106,9 +106,38 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('Chat component initialized');
+
+    // Fetch user from the service
+    this.loginUser = this.userService.getUser() || null;
+    console.log('Logged-in user (initial):', this.loginUser);
+
+    // If user is not already set, subscribe to userService updates
+    if (!this.loginUser) {
+      this.userService.user$.subscribe((user) => {
+        this.loginUser = user || null;
+        console.log('Logged-in user (from subscription):', this.loginUser);
+        this.refreshTeamList();
+      });
+    }
   }
 
   ngOnDestroy() {}
+
+  refreshTeamList() {
+    this.loginUser = this.userService.getUser() || null;
+    this.teamList = this.loginUser?.teams || [];
+    if (this.teamList.length > 0 && !this.selectedTeam) {
+      this.selectedTeam = this.teamList[0].team_id;
+      this.refreshChannelList();
+    }
+  }
+
+  refreshChannelList() {
+    this.loginUser = this.userService.getUser() || null;
+    this.channelNameList = this.teamList.find(
+      (t) => t.team_id === this.selectedTeam
+    )?.channels || [];
+  }
 
   /*Toggle Theme */
   toggleTheme() {
