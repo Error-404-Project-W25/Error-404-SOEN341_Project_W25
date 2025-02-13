@@ -17,6 +17,8 @@ const userSchema: Schema = new Schema(
       required: true,
     },
     teams: { type: [teamSchema], default: [] },
+    direct_messages: { type: [String], default: [] },
+    conversations: { type: [String], default: [] },
   },
   {
     collection: 'Users',
