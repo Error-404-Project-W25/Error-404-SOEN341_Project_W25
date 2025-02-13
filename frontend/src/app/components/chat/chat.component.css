@@ -1,4 +1,4 @@
-:host {
+.dark-theme {
   /* Sidebar #1 */
   --side-bar-1-separator: #35363c; /* Separator color */
   --side-bar-1-background: #1e1f22; /* Sidebar background */
@@ -90,6 +90,100 @@
   --pop-up-border-color: #414141;
   --pop-up-highlight-color: #ff6b6b;
   --pop-up-button-background: #313131;
+}
+
+.light-theme {
+  /* Sidebar #1 */
+  --side-bar-1-separator: #e0e0e0; /* Separator color */
+  --side-bar-1-background: #ffffff; /* Sidebar background */
+  --side-bar-1-text: #000000; /* Sidebar text color */
+
+  /* Add team button */
+  --add-team-button-background: #f0f0f0; /* Button background */
+  --add-team-button-hover: #ff6b6b; /* Button hover background */
+  --add-team-button-text: #000000; /* Button text color */
+
+  /* Team list */
+  --team-letter-color: #000000; /* Team letter color */
+  --team-button-background: #f0f0f0; /* Team button background */
+  --team-button-hover: #ff6b6b; /* Team button hover background */
+  --team-background: #ffffff; /* Team background */
+
+  /* User menu */
+  --user-button-background: #ff6b6b; /* User button background */
+  --user-button-text: #ffffff; /* User button text color */
+  --user-button-border: #ffffff; /* User button border color */
+
+  --user-options-background: #ffffff; /* User options background */
+  --user-options-text: #ff6b6b; /* User options text color */
+  --user-options-border: #ff6b6b; /* User options border color */
+
+  /* Sidebar #2 */
+  --side-bar-2-background: #f5f5f5; /* Sidebar background */
+  --side-bar-2-text: #000000; /* Sidebar text color */
+  --side-bar-2-title-background: #f5f5f5; /* Title background */
+  --side-bar-2-title-text: #000000; /* Title text color */
+
+  /* Team Title */
+  --team-title-background: #f5f5f5; /* Team title background */
+  --team-title-text: #000000; /* Team title text color */
+
+  /* Team setting list */
+  --team-setting-list-background: #ffffff; /* Team setting list background */
+  --team-setting-list-text: #000000; /* Team setting list text color */
+  --team-setting-list-element-background-hover: #ff6b6b; /* Team setting list hover background */
+  --team-setting-list-text-hover: #ffffff; /* Team setting list hover text color */
+
+  /* Channel list */
+  --channel-list-background: #f5f5f5; /* Channel list background */
+  --channel-list-backround-hover: #e0e0e0; /* Channel list hover background */
+  --channel-list-text: #000000; /* Channel list text color */
+  --channel-list-text-hover: #ff6b6b; /* Channel list hover text color */
+
+  /* Chat log */
+  --chat-box-background: #ffffff; /* Chat box background */
+  --chat-box-text: #000000; /* Chat box text color */
+  --message-background: #ffffff; /* Message background */
+  --message-background-hover: #e0e0e0; /* Message hover background */
+  --message-text: #000000; /* Message text color */
+  --message-username: #000000; /* Message username color */
+  --message-date: #757575; /* Message date color */
+  --profile-picture-background: #ff6b6b; /* Profile picture background */
+
+  /* Input Container */
+  --input-container-background: #f0f0f0; /* Input container background */
+  --input-container-hover: #d0d0d0; /* Input container hover background */
+  --input-container-text: #000000; /* Input container text color */
+  --input-container-border: #c0c0c0; /* Input container border color */
+  --input-container-focus-border: #a0a0a0; /* Input container focus border color */
+  --input-container-border-color: #b0b0b0; /* Input container border color */
+
+  /* Send button */
+  --send-button-background: #000000; /* Send button background */
+  --send-button-text: #ffffff; /* Send button text color */
+  --send-button-hover-fill: #e0e0e0; /* Send button hover fill color */
+  --send-button-hover-stroke: #000000; /* Send button hover stroke color */
+  --send-button-path: #e0e0e0; /* Send button path color */
+  --send-button-stroke: #000000; /* Send button stroke color */
+
+  /* Tooltip */
+  --tooltip-background: #ffffff; /* Tooltip background */
+  --tooltip-border: #c0c0c0; /* Tooltip border color */
+  --tooltip-shadow: #a0a0a0; /* Tooltip shadow color */
+
+  /* Message input */
+  --message-input-text: #000000; /* Message input text color */
+
+  /* Separator */
+  --separator-color: #e0e0e0; /* Separator color */
+
+  /* Pop-up */
+  --pop-up-background-color: #ffffff;
+  --pop-up-text-color: #000000;
+  --pop-up-secondary-text-color: #757575;
+  --pop-up-border-color: #c0c0c0;
+  --pop-up-highlight-color: #ff6b6b;
+  --pop-up-button-background: #f0f0f0;
 }
 
 body {

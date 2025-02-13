@@ -1,4 +1,4 @@
-:host() {
+:host-context(.light-theme) {
   /* Sidebar #1 */
   --side-bar-1-separator: #e0e0e0; /* Separator color */
   --side-bar-1-background: #ffffff; /* Sidebar background */

@@ -28,7 +28,7 @@ import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/rem
   ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  currentTheme: string = '';
+  isDarkTheme = false; // Set to false for light theme
   channelTitle: string = 'Channel Name';
   TeamTitle: string = 'Team Name';
   teamMemberList: string[] = Array.from(
@@ -97,46 +97,45 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService,
-    // private themeService: ThemeService
+    private backendService: BackendService // private themeService: ThemeService
   ) {}
 
   ngOnInit() {
-    this.currentTheme = 'light';
     console.log('Chat component initialized');
-    console.log('Theme:', this.currentTheme);
   }
 
   ngOnDestroy() {}
 
-  // changeTheme(): void {
-  //   this.themeService.toggleTheme();
-  //   console.log('Changing theme', this.currentTheme);
-  // }
+  toggleTheme() {
+    this.isDarkTheme = !this.isDarkTheme;
+    console.log('Theme:', this.isDarkTheme ? 'dark' : 'light');
+  }
 
   openCreateTeamDialog(): void {
     console.log('Inside function create team');
-    this.dialog.open(AddTeamDialogComponent);
+    this.dialog.open(AddTeamDialogComponent, {
+      data: { theme: this.isDarkTheme },
+    });
   }
 
   openCreateChannelDialog(): void {
     console.log('Inside function create channel');
     this.dialog.open(AddChannelDialogComponent, {
-      data: { selectedTeam: this.selectedTeam },
+      data: { selectedTeam: this.selectedTeam, theme: this.isDarkTheme },
     });
   }
 
   openAddMemberTeamDialog(): void {
     console.log('Inside function add team member');
     this.dialog.open(AddMemberTeamPopUpComponent, {
-      data: { selectedTeam: this.selectedTeam },
+      data: { selectedTeam: this.selectedTeam, theme: this.isDarkTheme },
     });
   }
 
   openRemoveMemberTeamDialog(): void {
     console.log('Inside function add team member');
     this.dialog.open(RemoveMemberTeamPopUpComponent, {
-      data: { selectedTeam: this.selectedTeam },
+      data: { selectedTeam: this.selectedTeam, theme: this.isDarkTheme },
     });
   }
 
@@ -172,7 +171,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
-
   myChannelFunction() {
     const dropdown = document.getElementById('myDropdownChannel');
     if (dropdown) {
@@ -185,7 +183,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       dropdown.classList.toggle('channelList-show');
     }
   }
-
 }
 
 class Message {

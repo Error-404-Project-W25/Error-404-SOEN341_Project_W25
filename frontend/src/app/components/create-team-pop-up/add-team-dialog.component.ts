@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
@@ -11,7 +11,10 @@ import { ITeam, IUser } from '@shared/interfaces';
 @Component({
   selector: 'app-add-team-dialog',
   templateUrl: './add-team-dialog.component.html',
-  styleUrls: ['./../../components/chat/chat.component.css', './add-team-dialog.component.css'],
+  styleUrls: [
+    './../../components/chat/chat.component.css',
+    './add-team-dialog.component.css',
+  ],
   standalone: true,
   imports: [
     CommonModule,
@@ -23,7 +26,7 @@ import { ITeam, IUser } from '@shared/interfaces';
 })
 export class AddTeamDialogComponent {
   @Output() teamCreated = new EventEmitter<void>();
-
+  isDarkTheme: boolean = false;
   teamName = '';
   description = '';
   found = ' ';
@@ -31,8 +34,11 @@ export class AddTeamDialogComponent {
   constructor(
     private dialogRef: MatDialogRef<AddTeamDialogComponent>,
     private backendService: BackendService,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string | null, theme: boolean }
+  ) {
+    this.isDarkTheme = data.theme;
+  }
 
   createTeam() {
     const currentUser: IUser | undefined = this.userService.getUser();

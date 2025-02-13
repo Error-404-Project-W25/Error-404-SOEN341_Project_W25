@@ -1,4 +1,4 @@
-:host() {
+:host {
   /* Sidebar #1 */
   --side-bar-1-separator: #35363c; /* Separator color */
   --side-bar-1-background: #1e1f22; /* Sidebar background */
@@ -13,13 +13,16 @@
   --team-letter-color: #dbdee1; /* Team letter color */
   --team-button-background: #2f3136; /* Team button background */
   --team-button-hover: #f53f3d; /* Team button hover background */
+  --team-background: #1e1f22; /* Team background */
 
   /* User menu */
-  --user-button-background-hover: #f53f3d;
-  --menu-option-background: #1e1e1e;
-  --menu-option-border: #f53f3d;
-  --menu-option-text: #f53f3d;
-  --menu-option-hover-background: #e53b3b;
+  --user-button-background: #f53f3d; /* User button background */
+  --user-button-text: #313338; /* User button text color */
+  --user-button-border: #313338; /* User button text color */
+
+  --user-options-background: #1e1f22; /* User options background */
+  --user-options-text: #f53f3d; /* User options text color */
+  --user-options-border: #f53f3d; /* User options border color */
 
   /* Sidebar #2 */
   --side-bar-2-background: #2b2d31; /* Sidebar background */
@@ -27,7 +30,7 @@
   --side-bar-2-title-background: #2b2d31; /* Title background */
   --side-bar-2-title-text: #d1d4d8; /* Title text color */
 
-  /* Team Title */
+  /* Team Title*/
   --team-title-background: #2b2d31; /* Team title background */
   --team-title-text: #d1d4d8; /* Team title text color */
 
@@ -51,11 +54,12 @@
   --message-text: #bbbdc1; /* Message text color */
   --message-username: #f2f3f5; /* Message username color */
   --message-date: #797f87; /* Message date color */
+  --profile-picture-background: #f53f3d; /* Profile picture background */
 
   /* Input Container */
   --input-container-background: #383a40; /* Input container background */
   --input-container-hover: #4f5360; /* Input container hover background */
-  --input-container-text: #6c6e78; /* Input container text color */
+  --input-container-text: #dadde0; /* Input container text color */
   --input-container-border: #3f3f3f; /* Input container border color */
   --input-container-focus-border: #6e6e6e; /* Input container focus border color */
   --input-container-border-color: #5a5a5a; /* Input container border color */

@@ -36,6 +36,7 @@ import { IChannel, ITeam, IUser } from '@shared/interfaces';
   ],
 })
 export class AddChannelDialogComponent {
+  isDarkTheme: boolean = false;
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   channelName = '';
   description = '';
@@ -50,10 +51,11 @@ export class AddChannelDialogComponent {
     private dialogRef: MatDialogRef<AddChannelDialogComponent>,
     private backendService: BackendService,
     private userService: UserService,
-    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string | null }
+    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string | null, theme: boolean }
   ) {
     this.currentUser = this.userService.getUser();
     this.selectedTeamId = data.selectedTeam;
+    this.isDarkTheme = data.theme;
   }
 
   // Creating the channel
