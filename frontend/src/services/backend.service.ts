@@ -66,7 +66,7 @@ export class BackendService {
     try {
       const response = await firstValueFrom(
         this.http.get<{ user?: IUser; error?: string }>(
-          `${this.backendURL}/users/:${user_id}`
+          `${this.backendURL}/users/${user_id}`
         )
       );
 

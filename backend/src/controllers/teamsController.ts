@@ -11,7 +11,7 @@ import { User } from '../models/userModel';
  */
 export const getUserTeams = async (req: Request, res: Response) => {
   try {
-    const userIdQuery: string = req.body.user_id;
+    const userIdQuery: string = req.params.user_id;
     const teams: ITeam[] | null = await Team.find({
       members: userIdQuery,
     });
@@ -28,7 +28,7 @@ export const getUserTeams = async (req: Request, res: Response) => {
  */
 export const getTeamById = async (req: Request, res: Response) => {
   try {
-    const team_id: string = req.body.team_id;
+    const team_id: string = req.params.team_id;
     const team: ITeam | null = await Team.findOne({ team_id });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
