@@ -113,8 +113,16 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   openCreateTeamDialog(): void {
     console.log('Inside function create team');
-    this.dialog.open(AddTeamDialogComponent, {
+    const dialogRef = this.dialog.open(AddTeamDialogComponent, {
       data: { theme: this.isDarkTheme },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+      this.dialog.open(AddMemberTeamPopUpComponent, {
+        data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
+      });
+      }
     });
   }
 
@@ -123,6 +131,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.dialog.open(AddChannelDialogComponent, {
       data: { selectedTeam: this.selectedTeam, theme: this.isDarkTheme },
     });
+    
   }
 
   openAddMemberTeamDialog(): void {
