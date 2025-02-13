@@ -51,6 +51,8 @@
   scrollbar-width: none;
   width: 100%;
   -ms-overflow-style: none;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .message {
