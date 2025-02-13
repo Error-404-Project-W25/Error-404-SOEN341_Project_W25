@@ -70,7 +70,7 @@
 
 .message-profile-picture {
   align-items: center;
-  background-color: green;
+  background-color: var(--profile-picture-background);
   border-radius: 50%;
   color: var(--chat-box-background);
   display: flex;

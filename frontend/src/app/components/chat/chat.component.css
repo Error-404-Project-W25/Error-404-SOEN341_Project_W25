@@ -16,10 +16,13 @@
   --team-background: #1e1f22; /* Team background */
 
   /* User menu */
-  --user-button-background: #313338; /* User button background */
-  --user-button-background-hover: #f53f3d; /* User button hover background */
-  --user-button-text: #f53f3d; /* User button text color */
-  --user-button-text-hover: #ffffff; /* User button hover text color */
+  --user-button-background: #f53f3d; /* User button background */
+  --user-button-text: #313338; /* User button text color */
+  --user-button-border: #313338; /* User button text color */
+
+  --user-options-background: #1e1f22; /* User options background */
+  --user-options-text: #f53f3d; /* User options text color */
+  --user-options-border: #f53f3d; /* User options border color */
 
   /* Sidebar #2 */
   --side-bar-2-background: #2b2d31; /* Sidebar background */
@@ -51,6 +54,7 @@
   --message-text: #bbbdc1; /* Message text color */
   --message-username: #f2f3f5; /* Message username color */
   --message-date: #797f87; /* Message date color */
+  --profile-picture-background: #f53f3d; /* Profile picture background */
 
   /* Input Container */
   --input-container-background: #383a40; /* Input container background */

@@ -168,19 +168,18 @@
   border-top: 2px solid var(--side-bar-1-separator);
 }
 
+
 .menu-toggle-button {
   cursor: pointer;
   position: absolute;
-  z-index: 10; /* Adjust z-index for button */
-  background-color: var(
-    --user-button-background-hover
-  ); /* Changed to new color */
-  border: 2px solid #1e1e1e;
-  color: #1e1e1e;
+  z-index: 10;
+  background-color: var(--user-button-background);
+  border: 2px solid var(--user-button-border);
+  color: var(--user-button-text);
   font-size: 30px;
   font-weight: 700;
-  width: 3rem; /* Changed size */
-  height: 3rem; /* Changed size */
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -192,21 +191,21 @@
 }
 
 .menu-toggle-checkbox {
-  width: 3rem; /* Changed size */
-  height: 3rem; /* Changed size */
+  width: 3rem;
+  height: 3rem;
   opacity: 0;
-  z-index: 20; /* Increase z-index of the checkbox */
+  z-index: 20;
   cursor: pointer;
 }
 
 .menu-option {
   position: absolute;
-  background-color: var(--menu-option-background);
-  border: 2px solid var(--menu-option-border); /* Changed to new color */
-  color: var(--menu-option-text); /* Changed to new color */
-  z-index: 5; /* Default z-index for options */
-  width: 3rem; /* Changed size */
-  height: 3rem; /* Changed size */
+  background-color: var(--user-options-background);
+  border: 2px solid var(--user-options-border);
+  color: var(--user-options-text);
+  z-index: 5;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   cursor: pointer;
   font-weight: 700;
@@ -219,37 +218,36 @@
 .menu-toggle-checkbox:checked ~ .menu-option {
   z-index: 15; /* Bring options above button when checked */
 }
-
 .menu-toggle-checkbox:hover ~ .menu-toggle-button,
 .menu-toggle-checkbox:checked ~ .menu-toggle-button {
-  background-color: var(
-    --menu-option-hover-background
-  ); /* Darker shade on hover */
   scale: 0.98;
   box-shadow: none;
-  border-radius: 30%; /* Change border radius on hover */
+  border-radius: 30%;
 }
 
 .menu-toggle-checkbox:not(:checked) ~ .menu-toggle-button::before {
-  margin: 0;
+  display: flex;
 }
 
 .menu-toggle-checkbox:checked ~ .menu-toggle-button::after {
   scale: 0.98;
   box-shadow: none;
-  border-radius: 30%; /* Change border radius on selection */
+  border-radius: 30%;
 }
 
 .menu-toggle-checkbox:not(:checked) ~ .menu-option {
   box-shadow: none;
 }
+
 .menu-option:hover,
 .menu-option:active,
 .menu-option:focus {
   box-shadow: none;
   scale: 0.98;
-  border-radius: 30%; /* Change border radius on hover */
+  border-radius: 30%;
 }
+
+
 
 .menu-toggle-checkbox:checked ~ .menu-option-1 {
   transition-delay: 0.1s;
