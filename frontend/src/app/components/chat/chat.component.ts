@@ -1,3 +1,4 @@
+import { loginUser } from './../../../../../backend/src/controllers/usersController';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,9 +29,19 @@ import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/rem
   ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  isDarkTheme = false; // Set to false for light theme
-  channelTitle: string = 'Channel Name';
-  TeamTitle: string = 'Team Name';
+  title = 'chatHaven';
+  loginUser: IUser | null = null; // current user
+
+  isDarkTheme = false; // initial theme is light
+  newMessage: string = ''; // message input
+
+  channelTitle: string = 'channel name'; // channel title
+  teamTitle: string = 'team name'; // team title
+
+  selectedTeam: string | null = null; // selected team
+  selectedChannel: string | null = null; // selected channel
+
+  /*Test START*/
   teamMemberList: string[] = Array.from(
     { length: 30 },
     (_, i) => `Member ${i + 1}`
@@ -78,26 +89,22 @@ export class ChatComponent implements OnInit, OnDestroy {
     new Message('User2', '10:43 AM', 'Thanks! Let’s catch up next week.'),
     new Message('User1', '10:44 AM', 'Sounds good! Have a great weekend.'),
   ];
-  teams: ITeam[] = [];
-  channels: IChannel[] = [];
-  selectedTeam: string | null = null;
-  selectedChannel: string | null = null;
-  title = 'chatHaven';
+  /*Test END*/
 
-  newMessage: string = '';
+  private teamCreatedSubscription: Subscription | null = null; // subscription to team creation
+  private channelCreatedSubscription: Subscription | null = null; // subscription to channel creation
 
-  private teamCreatedSubscription: Subscription | null = null;
-  private channelCreatedSubscription: Subscription | null = null;
-  private channelsSubject = new BehaviorSubject<IChannel[]>([]);
-  channels$ = this.channelsSubject.asObservable();
-  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
-  teams$ = this.teamsSubject.asObservable();
+  private channelsSubject = new BehaviorSubject<IChannel[]>([]); // channels subject
+  private teamsSubject = new BehaviorSubject<ITeam[]>([]); // teams subject
+
+  teams$ = this.teamsSubject.asObservable(); // teams observable
+  channels$ = this.channelsSubject.asObservable(); // channels observable
 
   constructor(
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService // private themeService: ThemeService
+    private backendService: BackendService
   ) {}
 
   ngOnInit() {
@@ -106,23 +113,17 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {}
 
+  /*Toggle Theme */
   toggleTheme() {
     this.isDarkTheme = !this.isDarkTheme;
     console.log('Theme:', this.isDarkTheme ? 'dark' : 'light');
   }
 
+  /*Open Different Dialogue */
   openCreateTeamDialog(): void {
     console.log('Inside function create team');
-    const dialogRef = this.dialog.open(AddTeamDialogComponent, {
+    this.dialog.open(AddTeamDialogComponent, {
       data: { theme: this.isDarkTheme },
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-      this.dialog.open(AddMemberTeamPopUpComponent, {
-        data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
-      });
-      }
     });
   }
 
@@ -131,7 +132,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.dialog.open(AddChannelDialogComponent, {
       data: { selectedTeam: this.selectedTeam, theme: this.isDarkTheme },
     });
-    
   }
 
   openAddMemberTeamDialog(): void {
@@ -148,6 +148,38 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
+  /*Creating a Team */
+  createTeam(teamName: string): void {
+    // 1. Open Create Team Dialogue
+    const dialogRef = this.dialog.open(AddTeamDialogComponent, {
+      data: { theme: this.isDarkTheme },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.team_id) {
+        const team_id = result.team_id;
+
+        // 2. Get team_id
+        console.log('Created team with ID:', team_id);
+
+        // 3. Open Add Member to Team Dialogue (with team_id)
+        const addMemberDialogRef = this.dialog.open(
+          AddMemberTeamPopUpComponent,
+          {
+            data: { selectedTeam: team_id, theme: this.isDarkTheme },
+          }
+        );
+
+        addMemberDialogRef.afterClosed().subscribe(() => {
+          // 4. Update teamList
+          this.teamList.push(`T${this.teamList.length + 1}`);
+          console.log('Updated team list:', this.teamList);
+        });
+      }
+    });
+  }
+
+  /*Select Different Team, Channel, Conversation */
   selectTeam(team: string): void {
     console.log('Selected team:', team);
     this.selectedTeam = team;
@@ -161,11 +193,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.selectedTeam = conversation;
   }
 
+  /*Send Message */
   sendMessage() {
     console.log('Sending message:', this.newMessage);
     this.newMessage = '';
   }
 
+  /*Logout */
   async signOut() {
     const response: UserAuthResponse | undefined =
       await this.backendService.logoutUser();
@@ -180,6 +214,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  /*Dropdown */
   myChannelFunction() {
     const dropdown = document.getElementById('myDropdownChannel');
     if (dropdown) {
