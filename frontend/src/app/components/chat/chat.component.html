@@ -180,7 +180,7 @@
               >
                 <div class="channel-name-container">{{ channel.name }}</div>
                 <!-- (click) open channel setting -->
-                <button class="channel-button">
+                <button class="channel-button" (click)="openEditChannelDialog(channel)">
                   <i class="fa fa-gear" style="font-size: 16px"></i>
                 </button>
               </div>

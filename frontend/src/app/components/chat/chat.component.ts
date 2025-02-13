@@ -13,6 +13,7 @@ import { AddChannelDialogComponent } from '../create-channel-pop-up/add-channel-
 import { AddMemberTeamPopUpComponent } from '../add-member-team-pop-up/add-member-team-pop-up.component';
 import { AddTeamDialogComponent } from '../create-team-pop-up/add-team-dialog.component';
 import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/remove-member-team-pop-up.component';
+import { EditChannelPopUpComponent } from '../edit-channel-pop-up/edit-channel-pop-up.component';
 
 @Component({
   selector: 'app-root',
@@ -185,7 +186,37 @@ export class ChatComponent implements OnInit {
       dropdown.classList.toggle('channelList-show');
     }
   }
-
+  
+  openEditChannelDialog(channel: IChannel): void {
+    console.log('Opening edit channel dialog for:', channel.name);
+    const dialogRef = this.dialog.open(EditChannelPopUpComponent, {
+      width: '500px',
+      data: {
+        name: channel.name,
+        description: channel.description,
+        channel_id: channel.channel_id,
+        team_id: this.selectedTeamId
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Update the channel in the list
+        const teamIndex = this.teamList.findIndex(t => t.team_id === this.selectedTeamId);
+        if (teamIndex > -1) {
+          const channelIndex = this.teamList[teamIndex].channels.findIndex(
+            c => c.channel_id === channel.channel_id
+          );
+          if (channelIndex > -1) {
+            this.teamList[teamIndex].channels[channelIndex] = {
+              ...this.teamList[teamIndex].channels[channelIndex],
+              ...result
+            };
+          }
+        }
+      }
+    });
+  }
 }
 
 class Message {
