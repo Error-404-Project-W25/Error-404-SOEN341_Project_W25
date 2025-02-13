@@ -7,7 +7,7 @@
     <!-- Sign In Form -->
     <div class="signinForm form-transition" *ngIf="showSignInForm">
       <h1>Sign In</h1>
-      <form (ngSubmit)="login()">
+      <form>
         <input
           type="text"
           placeholder="Email"
@@ -30,7 +30,7 @@
           <input type="checkbox" />
         </label>
         <div class="submit">
-          <button type="submit">Sign In</button>
+          <button type="submit" (click)="login()">Sign In</button>
         </div>
       </form>
       <p>Having trouble signing in?</p>
@@ -43,7 +43,7 @@
     <!-- Sign Up Form -->
     <div class="signupForm form-transition" *ngIf="!showSignInForm">
       <h1>Sign Up</h1>
-      <form (ngSubmit)="register()">
+      <form>
         <div class="input-container">
           <input
             type="text"
@@ -154,7 +154,7 @@
         </div>
 
         <div class="submit">
-          <button type="submit">Sign Up</button>
+          <button type="submit" (click)="register()">Sign Up</button>
         </div>
       </form>
 

@@ -46,15 +46,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     { length: 30 },
     (_, i) => `Member ${i + 1}`
   );
-  channelNameList: string[] = Array.from(
-    { length: 30 },
-    (_, i) => `Channel ${i + 1}`
-  );
+  channelNameList: IChannel[] = [];
   conversationList: string[] = Array.from(
     { length: 30 },
     (_, i) => `Conversation ${i + 1}`
   );
-  teamList: string[] = Array.from({ length: 30 }, (_, i) => `T${i + 1}`);
+  teamList: ITeam[] = [];
   messages: Message[] = [
     new Message('User1', '10:44 AM', 'Sounds good! Have a great weekend.'),
     new Message('User2', '10:43 AM', 'Thanks! Let’s catch up next week.'),
@@ -148,49 +145,21 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  /*Creating a Team */
-  createTeam(teamName: string): void {
-    // 1. Open Create Team Dialogue
-    const dialogRef = this.dialog.open(AddTeamDialogComponent, {
-      data: { theme: this.isDarkTheme },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result && result.team_id) {
-        const team_id = result.team_id;
-
-        // 2. Get team_id
-        console.log('Created team with ID:', team_id);
-
-        // 3. Open Add Member to Team Dialogue (with team_id)
-        const addMemberDialogRef = this.dialog.open(
-          AddMemberTeamPopUpComponent,
-          {
-            data: { selectedTeam: team_id, theme: this.isDarkTheme },
-          }
-        );
-
-        addMemberDialogRef.afterClosed().subscribe(() => {
-          // 4. Update teamList
-          this.teamList.push(`T${this.teamList.length + 1}`);
-          console.log('Updated team list:', this.teamList);
-        });
-      }
-    });
-  }
-
   /*Select Different Team, Channel, Conversation */
   selectTeam(team: string): void {
-    console.log('Selected team:', team);
+    console.log("selected team:", this.teamList.find((t) => t.team_id === team) || "not found");
     this.selectedTeam = team;
+    this.channelNameList = this.teamList.find((t) => t.team_id === team)?.channels || [];
   }
+
   selectChannel(channel: string): void {
     console.log('Selected channel:', channel);
-    this.selectedTeam = channel;
+    this.selectedChannel = channel;
   }
+
   selectConversation(conversation: string): void {
     console.log('Selected conversation:', conversation);
-    this.selectedTeam = conversation;
+    // this.selectedTeam = conversation;
   }
 
   /*Send Message */

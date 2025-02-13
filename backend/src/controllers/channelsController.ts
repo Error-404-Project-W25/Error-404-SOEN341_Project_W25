@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
+import { User } from '../models/userModel';
 
 /**
  * Create a channel
@@ -32,10 +33,10 @@ export const createChannel = async (req: Request, res: Response) => {
     }
 
     const newChannel = new Channel({
-      id: channel_id,
+      channel_id: channel_id,
       name: channelName,
       description: channelDescription,
-      team: team_id, // associated team
+      team_id: team_id, // associated team
       members: [creator_id], // creator of the channel
     });
 
@@ -49,6 +50,23 @@ export const createChannel = async (req: Request, res: Response) => {
     // Add the channel to the team
     team.channels.push(savedChannel);
     await team.save();
+
+    const user = await User.findOne({ user_id: creator_id });
+    if (user && user.teams){
+      // Find the team by team_id
+      const teamIndex: number = user.teams.findIndex((team) => team.team_id === team_id);
+
+      if (teamIndex === -1) {
+        res.status(404).json({ error: 'Team not found' });
+        return;
+      }
+      
+      // Find the channel by channel_id
+      user.teams[teamIndex].channels.push(savedChannel);
+
+      await user.save();
+    }
+    
 
     res.status(201).json({
       message: 'The channel has been created successfully',
@@ -79,7 +97,7 @@ export const addUserToChannel = async (
   const { team_id, channel_id, user_id } = req.body;
 
   try {
-    const channel = await Channel.findOne({ id: channel_id }); // get the channel by id
+    const channel = await Channel.findOne({ channel_id }); // get the channel by id
     if (!channel) {
       res.status(404).json({ error: 'Channel not found' });
       return;

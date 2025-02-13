@@ -66,7 +66,7 @@ export class BackendService {
     try {
       const response = await firstValueFrom(
         this.http.get<{ user?: IUser; error?: string }>(
-          `${this.backendURL}/users/:${user_id}`
+          `${this.backendURL}/users/${user_id}`
         )
       );
 
@@ -108,7 +108,7 @@ export class BackendService {
   //////////////////////////// TEAMS ////////////////////////////
 
   // Get all teams of which the user is a member
-  async getUserTeams(user_id: string): Promise<ITeam | undefined> {
+  async getUserTeams(user_id: string): Promise<ITeam[] | undefined> {
     try {
       const response = await firstValueFrom(
         this.http.get<{ teams?: ITeam[]; error?: string }>(
@@ -117,7 +117,7 @@ export class BackendService {
       );
 
       if (response && response.teams && response.teams.length > 0) {
-        return response.teams[0];
+        return response.teams;
       } else if (response.error) {
         console.error(response.error);
       } else {
@@ -137,11 +137,11 @@ export class BackendService {
         )
       );
 
-      if (response && response.team) {
+      if (!response.error) {
         return response.team;
-      } else {
-        console.error(response.error);
       }
+      console.error(response.error);
+
     } catch (error) {
       console.error('Error getting team by id:', error);
     }
@@ -155,7 +155,7 @@ export class BackendService {
   ): Promise<string | undefined> {
     try {
       const response = await firstValueFrom(
-        this.http.post<{ team_id: string; error?: string; details?: string }>(
+        this.http.post<{ team_id?: string; error?: string; details?: string }>(
           `${this.backendURL}/teams/create`,
           {
             user_id,

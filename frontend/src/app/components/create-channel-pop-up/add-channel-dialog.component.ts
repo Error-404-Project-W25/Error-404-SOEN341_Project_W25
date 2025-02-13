@@ -1,13 +1,3 @@
-/**
- *  SAME IDEA AS THE CREATE TEAM POP UP
- *
-  GET MEMBERS ELSEWHERE, JUST CREATE THE CHANNEL WITH NAME AND DESCRIPTION
- *
-
-  SEPARATE BUTTON / COMPONENT TO ADD MEMBERS TO THE CHANNEL (same idea for teams)
- *
- */
-
 import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -41,11 +31,7 @@ export class AddChannelDialogComponent {
   channelName = '';
   description = '';
   found = '';
-  channelMembers: string[] = []; // stores selected members to be added
   selectedTeamId: string | null = null; // stores the selected team ID
-  currentUser: IUser | undefined = undefined; // stores the current user
-
-  @Output() channelCreated = new EventEmitter<IChannel>();
 
   constructor(
     private dialogRef: MatDialogRef<AddChannelDialogComponent>,
@@ -53,13 +39,13 @@ export class AddChannelDialogComponent {
     private userService: UserService,
     @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string | null, theme: boolean }
   ) {
-    this.currentUser = this.userService.getUser();
     this.selectedTeamId = data.selectedTeam;
     this.isDarkTheme = data.theme;
   }
 
   // Creating the channel
-  createChannel() {
+  // TODO: refactor in style of add-team-dialog.component.ts
+  async createChannel() {
     const currentUser: IUser | undefined = this.userService.getUser();
 
     if (!currentUser) {
@@ -72,41 +58,36 @@ export class AddChannelDialogComponent {
       return;
     }
 
-    this.backendService
-      .createChannel(
+    try {
+      const channelId: string | undefined = await this.backendService.createChannel(
         currentUser.user_id,
         this.selectedTeamId,
         this.channelName,
         this.description
-      )
-      .then((channel_id: string | undefined) => {
-        if (!channel_id) {
-          console.error('Error creating channel');
-          return;
+      );
+
+      if (!channelId) {
+        console.error('Error creating channel');
+        return;
+      }
+
+      const newChannel: IChannel | undefined = await this.backendService.getChannelById(this.selectedTeamId, channelId);
+
+      if (!newChannel) {
+        console.error('Error getting channel');
+        return;
+      }
+
+      // Add the new channel to the current user's teams
+      currentUser.teams.forEach((team) => {
+        if (team.team_id === this.selectedTeamId) {
+          team.channels.push(newChannel);
         }
-
-        const newChannel: IChannel = {
-          channel_id: channel_id,
-          name: this.channelName,
-          description: this.description,
-          team_id: this.selectedTeamId!,
-          members: [currentUser.user_id],
-        };
-
-        // Update current user's teams
-        const currTeam: ITeam | undefined = currentUser.teams.find(
-          (team) => team.team_id === this.selectedTeamId
-        );
-
-        // User should be in the team
-        currTeam!.channels = currTeam!.channels
-          ? [...currTeam!.channels, newChannel]
-          : [newChannel];
-
-        this.channelCreated.emit(newChannel);
-        this.dialogRef.close();
       });
 
-    console.log('Channel created successfully');
+      this.dialogRef.close();
+    } catch (error) {
+      console.error('Error creating channel', error);
+    }
   }
 }
