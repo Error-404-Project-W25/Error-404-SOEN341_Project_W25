@@ -8,7 +8,7 @@ const channelSchema = new Schema(
     name: { type: String, required: true },
     description: { type: String },
     team: { type: String },
-    members: { type: [String], default: [] }, 
+    members: { type: [String], default: [] },
   },
   {
     timestamps: false,
@@ -19,9 +19,9 @@ const channelSchema = new Schema(
 // Remove _id and __v before sending response to the client
 channelSchema.set('toJSON', {
   transform: (doc, ret) => {
-    delete ret.id;
-    delete ret._id;
-    delete ret.__v;
+    delete ret['id'];
+    delete ret['_id'];
+    delete ret['__v'];
     return ret;
   },
 });
