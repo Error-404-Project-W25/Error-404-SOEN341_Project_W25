@@ -9,8 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { BackendService } from '@services/backend.service';
-import { UserService } from '@services/user.service';
-import { IUser, IChannel } from '@shared/interfaces';
+import { IUser, IChannel, ITeam } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-member-channel-pop-up',
@@ -31,64 +30,61 @@ import { IUser, IChannel } from '@shared/interfaces';
 export class AddMemberChannelPopUpComponent {
   searchQuery = '';
   found = '';
-  channelMembers: string[] = [];
-  teamMembers: string[] = []; // To store current team members
+  memberIdsToAdd: string[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<AddMemberChannelPopUpComponent>,
     private backendService: BackendService,
-    private userService: UserService,
-    @Inject(MAT_DIALOG_DATA) public data: { 
-      channel_id: string,
-      team_id: string 
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      channel_id: string;
+      team_id: string;
     }
-  ) {
-
-    this.loadTeamMembers();
-
-  }
-
-  private async loadTeamMembers() {
-    try {
-      const team = await this.backendService.getTeamById(this.data.team_id);
-      if (team) {
-        this.teamMembers = team.members;
-      }
-    } catch (error) {
-      console.error('Error loading team members:', error);
-    }
-  }
+  ) {}
 
   async search() {
     console.log('Searching for:', this.searchQuery);
 
     try {
-      const user = await this.backendService.getUserByUsername(this.searchQuery);
-      
-      if (user) {
-        // Check if user is a member of the team
-        if (!this.teamMembers.includes(user.user_id)) {
-          this.found = 'User must be a member of the team first';
-          return;
-        }
+      const user: IUser | undefined =
+        await this.backendService.getUserByUsername(this.searchQuery);
 
-        // Check if user is already in the channel
-        const isInChannel = await this.backendService.isUserInChannel(
+      if (!user) {
+        this.found = 'No user found';
+        return;
+      }
+
+      const currTeam: ITeam | undefined = await this.backendService.getTeamById(
+        this.data.team_id
+      );
+
+      if (!currTeam?.members.includes(user?.user_id)) {
+        this.found = 'User must be a member of the team first';
+        return;
+      }
+
+      const targetChannel: IChannel | undefined =
+        await this.backendService.getChannelById(
           this.data.team_id,
-          this.data.channel_id,
-          user.user_id
+          this.data.channel_id
         );
 
-        if (isInChannel) {
-          this.found = 'User is already in this channel';
-          return;
-        }
-
-        this.found = 'User found';
-        this.channelMembers = [...this.channelMembers, user.user_id];
-      } else {
-        this.found = 'No user found';
+      if (!targetChannel) {
+        console.error('Channel not found');
+        return;
       }
+
+      const isUserInChannel: boolean = targetChannel.members.includes(
+        user.user_id
+      );
+
+      if (isUserInChannel) {
+        this.found = 'User is already in this channel';
+        return;
+      }
+
+      this.found = 'User found';
+      this.memberIdsToAdd.push(user.user_id);
     } catch (error) {
       console.error('Error searching user:', error);
       this.found = 'Error searching for user';
@@ -100,23 +96,22 @@ export class AddMemberChannelPopUpComponent {
   }
 
   async addMembersToChannel() {
-    try {
-      for (const userId of this.channelMembers) {
-        const success = await this.backendService.addUserToChannel(
+    for (const memberId of this.memberIdsToAdd) {
+      try {
+        const response: boolean = await this.backendService.addUserToChannel(
           this.data.team_id,
           this.data.channel_id,
-          userId
+          memberId
         );
-  
-        if (!success) {
-          console.error(`Failed to add user ${userId} to channel`);
-          return;
+        if (response) {
+          console.log('Added member:', memberId);
+        } else {
+          console.error('Failed to add member:', memberId);
         }
+      } catch (error) {
+        console.error('Error adding member:', error);
       }
-  
-      this.dialogRef.close({ added: true, members: this.channelMembers });
-    } catch (error) {
-      console.error('Error adding members to channel:', error);
     }
+    this.dialogRef.close();
   }
 }

@@ -93,9 +93,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-
-  }
+  ngOnDestroy() {}
 
   /*Refresh Team and Channel List */
   refreshTeamList() {
@@ -186,7 +184,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       .then((channelData) => {
         this.channelTitle = channelData?.name || '';
       });
-
   }
 
   selectConversation(conversation: string): void {
@@ -241,22 +238,24 @@ export class ChatComponent implements OnInit, OnDestroy {
         name: channel.name,
         description: channel.description,
         channel_id: channel.channel_id,
-        team_id: this.selectedTeamId
-      }
+        team_id: this.selectedTeamId,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Update the channel in the list
-        const teamIndex = this.teamList.findIndex(t => t.team_id === this.selectedTeamId);
+        const teamIndex = this.teamList.findIndex(
+          (t) => t.team_id === this.selectedTeamId
+        );
         if (teamIndex > -1) {
           const channelIndex = this.teamList[teamIndex].channels.findIndex(
-            c => c.channel_id === channel.channel_id
+            (c) => c.channel_id === channel.channel_id
           );
           if (channelIndex > -1) {
             this.teamList[teamIndex].channels[channelIndex] = {
               ...this.teamList[teamIndex].channels[channelIndex],
-              ...result
+              ...result,
             };
           }
         }
@@ -290,15 +289,14 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   openAddMemberChannelDialog(channel: IChannel): void {
-    console.log('Inside function add channel member');
     const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
       data: {
         channel_id: channel.channel_id,
-        team_id: this.selectedTeamId
-      }
+        team_id: this.selectedTeamId,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result?.added) {
         console.log('Members added:', result.members);
       }
@@ -316,4 +314,3 @@ class Message {
     public id: string = Math.random().toString(36).substr(2, 9) // Generate a random ID
   ) {}
 }
-

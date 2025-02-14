@@ -52,21 +52,22 @@ export const createChannel = async (req: Request, res: Response) => {
     await team.save();
 
     const user = await User.findOne({ user_id: creator_id });
-    if (user && user.teams){
+    if (user && user.teams) {
       // Find the team by team_id
-      const teamIndex: number = user.teams.findIndex((team) => team.team_id === team_id);
+      const teamIndex: number = user.teams.findIndex(
+        (team) => team.team_id === team_id
+      );
 
       if (teamIndex === -1) {
         res.status(404).json({ error: 'Team not found' });
         return;
       }
-      
+
       // Find the channel by channel_id
       user.teams[teamIndex].channels.push(savedChannel);
 
       await user.save();
     }
-    
 
     res.status(201).json({
       message: 'The channel has been created successfully',
@@ -120,7 +121,7 @@ export const addUserToChannel = async (
 
     // Check if the user is part of the channel
     const isUserInChannel: boolean = channel.members.includes(user_id);
-    if (!isUserInChannel) {
+    if (isUserInChannel) {
       res
         .status(400)
         .json({ error: 'The user entered is already part of the channel' });

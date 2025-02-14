@@ -9,7 +9,6 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { BackendService } from '@services/backend.service';
-import { UserService } from '@services/user.service';
 import { IUser, IChannel } from '@shared/interfaces';
 
 @Component({
@@ -33,23 +32,15 @@ export class AddMemberTeamPopUpComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   description = '';
   found = '';
-  channelMembers: string[] = []; // stores selected members to be added
-  selectedTeamId: string | null = null; // stores the selected team ID
-  currentUser: IUser | undefined = undefined; // stores the current user
+  memberIdsToAdd: string[] = [];
 
   @Output() channelCreated = new EventEmitter<IChannel>();
 
   constructor(
     private dialogRef: MatDialogRef<AddMemberTeamPopUpComponent>,
     private backendService: BackendService,
-    private userService: UserService,
-    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string | null, theme: boolean }
-  ) {
-    this.currentUser = this.userService.getUser();
-    this.selectedTeamId = data.selectedTeam;
-    this.isDarkTheme = data.theme;
-  }
-  memberIdsToAdd: string[] = [];
+    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string }
+  ) {}
 
   // Search for members to add to the channel
   async search() {
@@ -82,7 +73,7 @@ export class AddMemberTeamPopUpComponent {
       try {
         const response: boolean = await this.backendService.addMemberToTeam(
           memberId,
-          this.selectedTeamId!
+          this.data.selectedTeam
         );
         if (response) {
           console.log('Added member:', memberId);
@@ -93,7 +84,6 @@ export class AddMemberTeamPopUpComponent {
         console.error('Error adding member:', error);
       }
     }
-
     this.dialogRef.close();
   }
 }

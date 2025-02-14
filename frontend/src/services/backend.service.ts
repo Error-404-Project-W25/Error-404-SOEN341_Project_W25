@@ -296,40 +296,4 @@ export class BackendService {
     }
     return undefined;
   }
-
-  async updateChannel(
-    team_id: string,
-    channel_id: string,
-    name: string,
-    description: string
-  ): Promise<boolean> {
-    try {
-      const response = await firstValueFrom(
-        this.http.put<{ success: boolean; error?: string }>(
-          `${this.backendURL}/channels/update`,
-          {
-            team_id,
-            channel_id,
-            name,
-            description
-          }
-        )
-      );
-  
-      return response.success;
-    } catch (error) {
-      console.error('Error updating channel:', error);
-      return false;
-    }
-  }
-
-  async isUserInChannel(teamId: string, channelId: string, userId: string): Promise<boolean> {
-    try {
-      const response = await this.http.get<boolean>(`${this.backendURL}/teams/${teamId}/channels/${channelId}/members/${userId}`).toPromise();
-      return response ?? false;
-    } catch (error) {
-      console.error('Error checking if user is in channel:', error);
-      return false;
-    }
-  }
 }
