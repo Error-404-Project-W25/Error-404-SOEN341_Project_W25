@@ -172,6 +172,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   selectChannel(channel: string): void {
+    this.messages = [];
     console.log('Selected channel:', channel);
     this.selectedChannel = channel;
     this.backendService
@@ -180,27 +181,6 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.channelTitle = channelData?.name || '';
       });
 
-    /*Faking message */
-    const channelId = this.selectedChannel;
-    if (!channelId) return;
-
-    const fileName = `XML/${channelId}.xml`;
-    fetch(fileName)
-      .then((response) => response.text())
-      .then((xmlString) => {
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
-      const messages = Array.from(xmlDoc.getElementsByTagName('message')).map(
-        (msg) => new Message(
-        msg.getElementsByTagName('author')[0].textContent || '',
-        msg.getElementsByTagName('date')[0].textContent || '',
-        msg.getElementsByTagName('text')[0].textContent || '',
-        msg.getElementsByTagName('id')[0].textContent || ''
-        )
-      );
-      this.messages = messages;
-      })
-      .catch((error) => console.error('Error fetching messages:', error));
   }
 
   selectConversation(conversation: string): void {
@@ -216,31 +196,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     );
     console.log('Sending message:', this.newMessage);
     this.newMessage = '';
-    // Faking Message
-    const channelId = this.selectedChannel;
-    if (!channelId) return;
-
-    const messagesXml = this.messages
-      .map(
-      (msg) => `
-      <message>
-        <id>${msg.id}</id>
-        <author>${msg.author}</author>
-        <date>${msg.date}</date>
-        <text>${msg.text}</text>
-      </message>`
-      )
-      .join('');
-
-    const xmlContent = `<channel id="${channelId}">${messagesXml}</channel>`;
-
-    const blob = new Blob([xmlContent], { type: 'application/xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `XML/${channelId}.xml`;
-    a.click();
-    URL.revokeObjectURL(url);
   }
 
   /*Logout */
