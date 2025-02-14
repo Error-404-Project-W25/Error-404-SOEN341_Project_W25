@@ -42,51 +42,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   selectedTeam: string | null = null; // selected team
   selectedChannel: string | null = null; // selected channel
 
-  /*Test START*/
-  teamMemberList: string[] = Array.from(
-    { length: 30 },
-    (_, i) => `Member ${i + 1}`
-  );
-  channelNameList: IChannel[] = [];
-  conversationList: string[] = Array.from(
-    { length: 30 },
-    (_, i) => `Conversation ${i + 1}`
-  );
-  teamList: ITeam[] = [];
-  messages: Message[] = [
-    new Message('User1', '10:44 AM', 'Sounds good! Have a great weekend.'),
-    new Message('User2', '10:43 AM', 'Thanks! Let’s catch up next week.'),
-    new Message('User1', '10:42 AM', 'Understandable. Hope you enjoy it!'),
-    new Message('User2', '10:41 AM', 'Yeah, I could use one after this week.'),
-    new Message('User1', '10:40 AM', 'Nice, that sounds like a good break.'),
-    new Message(
-      'User2',
-      '10:39 AM',
-      'That sounds fun! I might just relax at home.'
-    ),
-    new Message(
-      'User1',
-      '10:38 AM',
-      'Not yet, but thinking of going hiking. You?'
-    ),
-    new Message('User2', '10:37 AM', 'Any plans for the weekend?'),
-    new Message(
-      'User1',
-      '10:36 AM',
-      'Yeah, it’s been a hectic week for me too.'
-    ),
-    new Message('User2', '10:35 AM', 'Same here, been really busy with work.'),
-    new Message('User1', '10:34 AM', 'Just working on some projects. You?'),
-    new Message('User2', '10:33 AM', 'What have you been up to lately?'),
-    new Message('User1', '10:32 AM', 'Doing great, thanks for asking!'),
-    new Message('User2', '10:31 AM', "I'm good, thanks! How about you?"),
-    new Message('User1', '10:30 AM', 'Hello, how are you?'),
-    new Message(
-      'User3',
-      '10:29 AM',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit,'
-    ),
-  ];
+  teamList: ITeam[] = []; // team list
+  channelList: IChannel[] = []; // channel list
+  conversationList: IChannel[] = []; // conversation list
+  teamMemberList: IUser[] = []; // team member list
+  messages: Message[] = []; // message list
 
   selectedMessageId: string | null = null; // Track selected message for delete button
 
@@ -131,8 +91,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
 
+  }
+
+  /*Refresh Team and Channel List */
   refreshTeamList() {
     this.loginUser = this.userService.getUser() || null;
     this.teamList = this.loginUser?.teams || [];
@@ -144,7 +107,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   refreshChannelList() {
     this.loginUser = this.userService.getUser() || null;
-    this.channelNameList =
+    this.channelList =
       this.teamList.find((t) => t.team_id === this.selectedTeam)?.channels ||
       [];
   }
@@ -190,19 +153,54 @@ export class ChatComponent implements OnInit, OnDestroy {
       'selected team:',
       this.teamList.find((t) => t.team_id === team) || 'not found'
     );
+    let teamMemberListID: string[] = [];
     this.selectedTeam = team;
     this.backendService.getTeamById(team).then((teamData) => {
-      this.channelNameList = teamData?.channels || [];
+      this.channelList = teamData?.channels || [];
       this.teamTitle = teamData?.team_name || '';
+      teamMemberListID = teamData?.members || [];
+    });
+    // Fetch each user by their ID and populate the teamMemberList
+    this.teamMemberList = [];
+    teamMemberListID.forEach((userId) => {
+      this.backendService.getUserById(userId).then((userData) => {
+        if (userData) {
+          this.teamMemberList.push(userData);
+        }
+      });
     });
   }
 
   selectChannel(channel: string): void {
     console.log('Selected channel:', channel);
     this.selectedChannel = channel;
-    this.backendService.getChannelById(this.selectedTeam!, channel).then((channelData) => {
-      this.channelTitle = channelData?.name || '';
-    });
+    this.backendService
+      .getChannelById(this.selectedTeam!, channel)
+      .then((channelData) => {
+        this.channelTitle = channelData?.name || '';
+      });
+
+    /*Faking message */
+    const channelId = this.selectedChannel;
+    if (!channelId) return;
+
+    const fileName = `XML/${channelId}.xml`;
+    fetch(fileName)
+      .then((response) => response.text())
+      .then((xmlString) => {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlString, 'application/xml');
+      const messages = Array.from(xmlDoc.getElementsByTagName('message')).map(
+        (msg) => new Message(
+        msg.getElementsByTagName('author')[0].textContent || '',
+        msg.getElementsByTagName('date')[0].textContent || '',
+        msg.getElementsByTagName('text')[0].textContent || '',
+        msg.getElementsByTagName('id')[0].textContent || ''
+        )
+      );
+      this.messages = messages;
+      })
+      .catch((error) => console.error('Error fetching messages:', error));
   }
 
   selectConversation(conversation: string): void {
@@ -218,6 +216,31 @@ export class ChatComponent implements OnInit, OnDestroy {
     );
     console.log('Sending message:', this.newMessage);
     this.newMessage = '';
+    // Faking Message
+    const channelId = this.selectedChannel;
+    if (!channelId) return;
+
+    const messagesXml = this.messages
+      .map(
+      (msg) => `
+      <message>
+        <id>${msg.id}</id>
+        <author>${msg.author}</author>
+        <date>${msg.date}</date>
+        <text>${msg.text}</text>
+      </message>`
+      )
+      .join('');
+
+    const xmlContent = `<channel id="${channelId}">${messagesXml}</channel>`;
+
+    const blob = new Blob([xmlContent], { type: 'application/xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `XML/${channelId}.xml`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   /*Logout */
@@ -284,5 +307,29 @@ class Message {
 
     //TO BE CHANGED ONCE BACKEND CREATES UNIQUE ID MESSAGES
     public id: string = Math.random().toString(36).substr(2, 9) // Generate a random ID
+  ) {}
+}
+class Channel {
+  constructor(
+    public id: string,
+    public name: string,
+    public teamId: string,
+    public messages: Message[] = []
+  ) {}
+}
+class Team {
+  constructor(
+    public team_id: string,
+    public team_name: string,
+    public channels: Channel[] = [],
+    public conversation: Channel[] = []
+  ) {}
+}
+class User {
+  constructor(
+    public id: string,
+    public username: string,
+    public email: string,
+    public teams: Team[] = []
   ) {}
 }

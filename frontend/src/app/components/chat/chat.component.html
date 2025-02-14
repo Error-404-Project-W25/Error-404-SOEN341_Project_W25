@@ -51,7 +51,10 @@
         <div class="team-list">
           <ul>
             <!-- (click) select team -->
-            <li *ngFor="let team of teamList" (click)="selectTeam(team.team_id)">
+            <li
+              *ngFor="let team of teamList"
+              (click)="selectTeam(team.team_id)"
+            >
               <a href="#">{{ team.team_name.slice(0, 6) }}</a>
             </li>
           </ul>
@@ -86,8 +89,8 @@
           </button>
         </div>
       </div>
-      <div class="side-bar-2">
-        <div class="side-bar-2-title-container" *ngIf="teamTitle !== ''">
+      <div class="side-bar-2" *ngIf="teamTitle !== ''">
+        <div class="side-bar-2-title-container">
           <label class="main">
             {{ teamTitle }}
             <input class="inp" checked="" type="checkbox" />
@@ -152,7 +155,7 @@
               <div
                 class="channelList-dropdown-content-container"
                 *ngFor="let conversation of conversationList"
-                (click)="selectConversation(conversation)"
+                (click)="selectConversation(conversation.channel_id)"
               >
                 <div class="channel-name-container">{{ conversation }}</div>
                 <!-- (click) open channel setting -->
@@ -172,7 +175,7 @@
             <div id="myDropdownChannel" class="channelList-dropdown-content">
               <div
                 class="channelList-dropdown-content-container"
-                *ngFor="let channel of channelNameList"
+                *ngFor="let channel of channelList"
                 (click)="selectChannel(channel.channel_id)"
               >
                 <div class="channel-name-container">{{ channel.name }}</div>
@@ -185,7 +188,7 @@
           </div>
         </div>
       </div>
-      <div class="chat-box">
+      <div class="chat-box" *ngIf="channelTitle !== ''">
         <div class="channel-title-container">
           <div class="channel-title">{{ channelTitle }}</div>
         </div>
@@ -199,18 +202,23 @@
                 <span class="message-author">{{ message.author }}</span>
                 <span class="message-date">{{ message.date }}</span>
               </div>
-              <article class="message-text" (click)="toggleDeleteButton(message.id)">
+              <article
+                class="message-text"
+                (click)="toggleDeleteButton(message.id)"
+              >
                 {{ message.text }}
               </article>
 
-
               <!-- Delete button appears when a message is clicked /////////////////////////////////////////////////////////////////////////////////////-->
-              <button *ngIf="selectedMessageId === message.id" mat-button color="warn" (click)="openDeleteDialog(message.id, message.text)">
+              <button
+                *ngIf="selectedMessageId === message.id"
+                mat-button
+                color="warn"
+                (click)="openDeleteDialog(message.id, message.text)"
+              >
                 Delete Message
               </button>
               <!-- TO BE REVISED ONCE BACKEND SERVICES FOR DELETE MESSAGES IS UP/////////////////////////////////////////////////////////////////////// -->
-
-
             </div>
           </div>
         </div>
@@ -226,14 +234,26 @@
           </button>
         </div>
       </div>
-      <div class="team-setting-sidebar">
+      <div
+        class="card-container"
+        *ngIf="channelTitle === '' || teamTitle === ''"
+      >
+        <div class="card">
+          <h2 *ngIf="teamTitle === ''">Please choose a team to continue</h2>
+          <h2 *ngIf="channelTitle === '' && teamTitle !== ''">
+            Please choose a channel to continue
+          </h2>
+        </div>
+      </div>
+
+      <div class="team-setting-sidebar" *ngIf="teamTitle !== ''">
         <div class="member-list-title-container">
           <div class="member-list-title">Team Members</div>
         </div>
         <div class="member-list">
           <ul>
             <li *ngFor="let member of teamMemberList" class="member-container">
-              <span class="member-name">{{ member }}</span>
+              <span class="member-name">{{ member.username }}</span>
               <!-- (click) create conversation or menu ??-->
               <button class="member-button">
                 <i class="fas fa-comment-alt" style="font-size: 1rem"></i>

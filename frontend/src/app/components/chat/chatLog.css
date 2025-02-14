@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: auto;
+  width: 100%;
   overflow-y: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
