@@ -14,7 +14,7 @@ import { AddChannelDialogComponent } from '../create-channel-pop-up/add-channel-
 import { AddMemberTeamPopUpComponent } from '../add-member-team-pop-up/add-member-team-pop-up.component';
 import { AddTeamDialogComponent } from '../create-team-pop-up/add-team-dialog.component';
 import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/remove-member-team-pop-up.component';
-import { DeleteMessageComponent} from '../moderate-channel-messages/delete-message/delete-message.component';
+import { DeleteMessageComponent } from '../moderate-channel-messages/delete-message/delete-message.component';
 
 @Component({
   selector: 'app-root',
@@ -126,7 +126,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user) {
         this.teamList = user.teams;
-        console.log(user.teams)
+        console.log(user.teams);
       }
     });
   }
@@ -144,9 +144,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   refreshChannelList() {
     this.loginUser = this.userService.getUser() || null;
-    this.channelNameList = this.teamList.find(
-      (t) => t.team_id === this.selectedTeam
-    )?.channels || [];
+    this.channelNameList =
+      this.teamList.find((t) => t.team_id === this.selectedTeam)?.channels ||
+      [];
   }
 
   /*Toggle Theme */
@@ -186,9 +186,15 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   /*Select Different Team, Channel, Conversation */
   selectTeam(team: string): void {
-    console.log("selected team:", this.teamList.find((t) => t.team_id === team) || "not found");
+    console.log(
+      'selected team:',
+      this.teamList.find((t) => t.team_id === team) || 'not found'
+    );
     this.selectedTeam = team;
-    this.channelNameList = this.teamList.find((t) => t.team_id === team)?.channels || [];
+    this.backendService.getTeamById(team).then((teamData) => {
+      this.channelNameList = teamData?.channels || [];
+      this.teamTitle = teamData?.team_name || '';
+    });
   }
 
   selectChannel(channel: string): void {
@@ -204,7 +210,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   /*Send Message */
   sendMessage() {
     if (!this.newMessage) return;
-    this.messages.unshift(new Message('User1', new Date().toLocaleTimeString(), this.newMessage));
+    this.messages.unshift(
+      new Message('User1', new Date().toLocaleTimeString(), this.newMessage)
+    );
     console.log('Sending message:', this.newMessage);
     this.newMessage = '';
   }
@@ -243,26 +251,26 @@ export class ChatComponent implements OnInit, OnDestroy {
   // Open the DeleteMessageComponent with the selected message ID: passes msg ID and text to the dialog
   openDeleteDialog(messageId: string, messageText: string): void {
     const dialogRef = this.dialog.open(DeleteMessageComponent, {
-      data: { messageId, messageText, theme: this.isDarkTheme }, 
+      data: { messageId, messageText, theme: this.isDarkTheme },
     });
 
     // Handle the result after dialog is closed
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Temporarily remove the message with the returned ID (msg reappears when refreshed),
         // WILL BE MODIFIED ONCE BACKEND IS IMPLEMENTED
-        this.messages = this.messages.filter(msg => msg.id !== result);
+        this.messages = this.messages.filter((msg) => msg.id !== result);
       }
     });
   }
 
   // Toggle the delete button visibility (Optional)
   toggleDeleteButton(messageId: string): void {
-    this.selectedMessageId = this.selectedMessageId === messageId ? null : messageId;
+    this.selectedMessageId =
+      this.selectedMessageId === messageId ? null : messageId;
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 }
 
 class Message {
