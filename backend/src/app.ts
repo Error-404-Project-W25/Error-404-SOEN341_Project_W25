@@ -3,14 +3,14 @@ import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-import express, { Application } from 'express';
 import cors from 'cors';
+import express, { Application } from 'express';
 import mongoose from 'mongoose';
-import teamsRoutes from './routes/teamsRoutes';
 import authRoutes from './routes/authRoutes';
 import channelsRoutes from './routes/channelsRoutes';
+import teamsRoutes from './routes/teamsRoutes';
 import userRoutes from './routes/userRoutes';
-import { runAuthTests } from '../tests/authenticate.test';
+// import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
 
@@ -45,8 +45,9 @@ const startServer = async () => {
 
     const PORT: number = Number(process.env.PORT) || 3000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-    // Tests (uncomment to run)
-    //runAuthTests();
+
+    // Uncomment the line below to run the authentication tests
+    // runAuthTests();
   } catch (error) {
     console.error('Failed to connect to the database', error);
     process.exit(1); // Exit the process with failure
