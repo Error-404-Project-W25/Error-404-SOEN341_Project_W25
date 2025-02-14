@@ -14,6 +14,7 @@ import { AddChannelDialogComponent } from '../create-channel-pop-up/add-channel-
 import { AddMemberTeamPopUpComponent } from '../add-member-team-pop-up/add-member-team-pop-up.component';
 import { AddTeamDialogComponent } from '../create-team-pop-up/add-team-dialog.component';
 import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/remove-member-team-pop-up.component';
+import { DeleteMessageComponent} from '../moderate-channel-messages/delete-message/delete-message.component';
 
 @Component({
   selector: 'app-root',
@@ -86,7 +87,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit,'
     ),
   ];
-  /*Test END*/
+
+  selectedMessageId: string | null = null; // Track selected message for delete button
 
   private teamCreatedSubscription: Subscription | null = null; // subscription to team creation
   private channelCreatedSubscription: Subscription | null = null; // subscription to channel creation
@@ -119,6 +121,14 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.refreshTeamList();
       });
     }
+    // console.log('Theme:', this.currentTheme);
+
+    this.userService.user$.subscribe((user: IUser | undefined) => {
+      if (user) {
+        this.teamList = user.teams;
+        console.log(user.teams)
+      }
+    });
   }
 
   ngOnDestroy() {}
@@ -227,12 +237,41 @@ export class ChatComponent implements OnInit, OnDestroy {
       dropdown.classList.toggle('channelList-show');
     }
   }
+
+  //IMPLEMENT DELETE MESSAGE FUNCTIONALITY/////////////////////////////////////////////////////////////////////////////////////////////
+
+  // Open the DeleteMessageComponent with the selected message ID: passes msg ID and text to the dialog
+  openDeleteDialog(messageId: string, messageText: string): void {
+    const dialogRef = this.dialog.open(DeleteMessageComponent, {
+      data: { messageId, messageText }
+    });
+
+    // Handle the result after dialog is closed
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Temporarily remove the message with the returned ID (msg reappears when refreshed),
+        // WILL BE MODIFIED ONCE BACKEND IS IMPLEMENTED
+        this.messages = this.messages.filter(msg => msg.id !== result);
+      }
+    });
+  }
+
+  // Toggle the delete button visibility (Optional)
+  toggleDeleteButton(messageId: string): void {
+    this.selectedMessageId = this.selectedMessageId === messageId ? null : messageId;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 }
 
 class Message {
   constructor(
     public author: string,
     public date: string,
-    public text: string
+    public text: string,
+
+    //TO BE CHANGED ONCE BACKEND CREATES UNIQUE ID MESSAGES
+    public id: string = Math.random().toString(36).substr(2, 9) // Generate a random ID
   ) {}
 }

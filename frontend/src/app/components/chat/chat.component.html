@@ -200,9 +200,18 @@
                 <span class="message-author">{{ message.author }}</span>
                 <span class="message-date">{{ message.date }}</span>
               </div>
-              <article class="message-text" readonly>
+              <article class="message-text" (click)="toggleDeleteButton(message.id)">
                 {{ message.text }}
               </article>
+
+
+              <!-- Delete button appears when a message is clicked /////////////////////////////////////////////////////////////////////////////////////-->
+              <button *ngIf="selectedMessageId === message.id" mat-button color="warn" (click)="openDeleteDialog(message.id, message.text)">
+                Delete Message
+              </button>
+              <!-- TO BE REVISED ONCE BACKEND SERVICES FOR DELETE MESSAGES IS UP/////////////////////////////////////////////////////////////////////// -->
+
+
             </div>
           </div>
         </div>
