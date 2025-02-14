@@ -36,8 +36,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   isDarkTheme = false; // initial theme is light
   newMessage: string = ''; // message input
 
-  channelTitle: string = 'channel name'; // channel title
-  teamTitle: string = 'team name'; // team title
+  channelTitle: string = ''; // channel title
+  teamTitle: string = ''; // team title
 
   selectedTeam: string | null = null; // selected team
   selectedChannel: string | null = null; // selected channel
@@ -200,6 +200,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   selectChannel(channel: string): void {
     console.log('Selected channel:', channel);
     this.selectedChannel = channel;
+    this.backendService.getChannelById(this.selectedTeam!, channel).then((channelData) => {
+      this.channelTitle = channelData?.name || '';
+    });
   }
 
   selectConversation(conversation: string): void {
