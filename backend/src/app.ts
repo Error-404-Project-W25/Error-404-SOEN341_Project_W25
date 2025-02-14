@@ -12,7 +12,7 @@ import teamsRoutes from './routes/teamsRoutes';
 import userRoutes from './routes/userRoutes';
 // import { runAuthTests } from '../tests/authenticate.test';
 
-const app: Application = express();
+export const app: Application = express();
 
 // Connect to database
 const DB_CONN_STRING = process.env.DB_CONN_STRING || '';
