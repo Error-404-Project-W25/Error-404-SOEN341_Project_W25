@@ -32,22 +32,15 @@ export class AddMemberTeamPopUpComponent {
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   description = '';
   found = '';
-  channelMembers: string[] = []; // stores selected members to be added
-  selectedTeamId: string | null = null; // stores the selected team ID
-  currentUser: IUser | undefined = undefined; // stores the current user
+  memberIdsToAdd: string[] = [];
 
   @Output() channelCreated = new EventEmitter<IChannel>();
 
   constructor(
     private dialogRef: MatDialogRef<AddMemberTeamPopUpComponent>,
     private backendService: BackendService,
-    private userService: UserService,
     @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string }
-  ) {
-    this.currentUser = this.userService.getUser();
-    this.selectedTeamId = data.selectedTeam;
-  }
-  memberIdsToAdd: string[] = [];
+  ) {}
 
   // Search for members to add to the channel
   async search() {
@@ -80,7 +73,7 @@ export class AddMemberTeamPopUpComponent {
       try {
         const response: boolean = await this.backendService.addMemberToTeam(
           memberId,
-          this.selectedTeamId!
+          this.data.selectedTeam
         );
         if (response) {
           console.log('Added member:', memberId);
@@ -91,7 +84,6 @@ export class AddMemberTeamPopUpComponent {
         console.error('Error adding member:', error);
       }
     }
-
     this.dialogRef.close();
   }
 }

@@ -227,7 +227,6 @@ export class ChatComponent implements OnInit {
   }
 
   openAddMemberChannelDialog(channel: IChannel): void {
-    console.log('Inside function add channel member');
     const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
       data: {
         channel_id: channel.channel_id,
