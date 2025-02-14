@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IChannel, ITeam, IUser } from '@shared/interfaces';
+import { IChannel, ITeam, IUser, IMessage, IConversation } from '@shared/interfaces';
 import {
   RegistrationData,
   UserAuthResponse,
@@ -298,4 +298,117 @@ export class BackendService {
     }
     return undefined;
   }
+
+
+//////////////////////////// MESSAGES ////////////////////////////
+
+async sendMessage(
+  content : string,
+  conversationId: string,
+  sender : IUser
+): Promise<boolean> {
+  try {
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean; error?: string }>(
+        `${this.backendURL}/messages/send`,
+        {
+          content,
+          sender,
+          conversationId,
+        }
+      )
+    );
+
+    if (response.success) {
+      return true;
+    } else {
+      console.error(response.error);
+    }
+  } catch (error) {
+    console.error('Error sending message:', error);
+  }
+  return false;
+}
+
+
+async deleteMessage(
+  conversationId: string,
+  messageId: string
+): Promise<boolean> {
+  try {
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean; error?: string }>(
+        `${this.backendURL}/messages/delete`,
+        {
+          conversationId,
+          messageId,
+        }
+      )
+    );
+
+    if (response.success) {
+      return true;
+    } else {
+      console.error(response.error);
+    }
+  } catch (error) {
+    console.error('Error deleting message:', error);
+  }
+  return false;
+
+}
+
+
+
+
+///////////// CONVERSATIONS ///
+
+async createConversation(
+  conversationName: string
+): Promise<string | undefined> {
+  try {
+    const response = await firstValueFrom(
+      this.http.post<{ conversationId?: string; error?: string }>(
+        `${this.backendURL}/conversations/create`,
+        {
+          conversationName,
+        }
+      )
+    );
+
+    if (response.conversationId) {
+      return response.conversationId;
+    } else {
+      console.error(response.error);
+    }
+  } catch (error) {
+    console.error('Error creating conversation:', error);
+  }
+  return undefined;
+
+
+}
+
+
+async getConversationById(
+  conversationId: string
+): Promise<IConversation | undefined> {
+  try {
+    const response = await firstValueFrom(
+      this.http.get<{ conversation?: IConversation; error?: string }>(
+        `${this.backendURL}/conversations/${conversationId}`
+      )
+    );
+
+    if (response.conversation) {
+      return response.conversation;
+    } else {
+      console.error(response.error);
+    }
+  } catch (error) {
+    console.error('Error getting conversation by id:', error);
+  }
+  return undefined;
+}
+
 }
