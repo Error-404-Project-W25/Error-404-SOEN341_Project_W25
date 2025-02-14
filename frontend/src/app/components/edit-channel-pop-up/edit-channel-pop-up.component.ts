@@ -8,7 +8,6 @@ import {
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 
-
 @Component({
   selector: 'app-edit-channel-pop-up',
   templateUrl: './edit-channel-pop-up.component.html',
@@ -43,7 +42,4 @@ export class EditChannelPopUpComponent {
     }
   }
 
-  onCancel(): void {
-    this.dialogRef.close();
-  }
 }

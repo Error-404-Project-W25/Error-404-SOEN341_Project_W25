@@ -126,7 +126,7 @@
     border-color: var(--pop-up-highlight-color);
   }
   
-  .form-container .form-submit-btn .cancel-btn {
+  .form-container .form-submit-btn {
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -145,11 +145,50 @@
     border-radius: 6px;
   }
   
-  .form-container .form-submit-btn:hover .cancel-btn {
+  .form-container .form-submit-btn:hover{
     background-color: #fff;
     border-color: #fff;
   }
-
+  .member-management-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--pop-up-border-color);
+  }
   
-
+  .member-management-section h2 {
+    color: var(--pop-up-text-color);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
   
+  .member-buttons {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .member-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    color: var(--pop-up-secondary-text-color);
+    font-weight: 600;
+    width: auto;
+    background: var(--pop-up-button-background);
+    border: 1px solid var(--pop-up-border-color);
+    padding: 12px 16px;
+    font-size: inherit;
+    gap: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  
+  .member-btn:hover {
+    background-color: #fff;
+    border-color: #fff;
+    color: var(--pop-up-background-color);
+  }
+  
+  .member-btn i {
+    font-size: 16px;
+  }
