@@ -30,16 +30,6 @@ jobs:
       #     echo "DB_CONN_STRING=${{ secrets.DB_CONN_STRING }}" >> .env
       #     echo "DB_NAME=chatHavenDB" >> .env
       #     echo "PORT=3000" >> .env
-
-      # Prevents installing dependencies if package-lock.json hasn't changed
-      - name: Cache Node.js dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node- 
       
       # Install backend dependencies
       - name: Install backend dependencies
