@@ -17,7 +17,7 @@ export const getUserTeams = async (req: Request, res: Response) => {
     });
     res.json({ teams });
   } catch (error) {
-    console.error('Error fetching teams:', error); 
+    console.error('Error fetching teams:', error);
     res.status(500).json({ error: 'Error fetching teams' });
   }
 };
@@ -94,7 +94,7 @@ export const createTeam = async (req: Request, res: Response) => {
 };
 
 /**
- * Add a member to a team
+ * Add a member to a team given the member_id and team_id
  * @param req member_id, team_id
  * @param res returns success or error message
  */
@@ -109,17 +109,18 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
       return;
     }
 
-    const memberToAdd = await User.findOne({ member_id });
-
     if (team.members.includes(member_id)) {
       res.status(400).json({
         error: `User with user_id ${member_id} is already a member of the team`,
       });
       return;
+    } else {
+      team.members.push(member_id);
     }
 
     const updatedTeam: ITeam = await team.save();
 
+    const memberToAdd = await User.findOne({ user_id: member_id });
     if (!memberToAdd) {
       res.status(404).json({ error: 'User not found' });
       return;

@@ -1,7 +1,7 @@
 <div class="container">
   <div class="form-container">
     <h1>Add Member To Team</h1>
-    <form class="form" (ngSubmit)="search()" #addMemberForm="ngForm">
+    <form class="form" (ngSubmit)="addMembers()" #addMemberForm="ngForm">
       <!-- Add Member -->
       <div class="form-group">
         <label for="searchQuery">Add Member</label>
@@ -22,7 +22,7 @@
           {{ found }}
         </div>
       </div>
-      <button type="submit" class="form-submit-btn">Submit</button>
+      <button type="submit" class="form-submit-btn">Done</button>
     </form>
   </div>
 </div>

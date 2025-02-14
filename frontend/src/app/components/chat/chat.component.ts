@@ -40,7 +40,7 @@ export class ChatComponent implements OnInit {
     { length: 30 },
     (_, i) => `Conversation ${i + 1}`
   );
-  teamList: ITeam[] = []; 
+  teamList: ITeam[] = [];
   messages: Message[] = [
     new Message(
       'User3',
@@ -90,19 +90,18 @@ export class ChatComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService,
-    // private themeService: ThemeService
+    private backendService: BackendService // private themeService: ThemeService
   ) {}
 
   ngOnInit() {
     this.currentTheme = 'light';
     console.log('Chat component initialized');
     // console.log('Theme:', this.currentTheme);
-    
+
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user) {
         this.teamList = user.teams;
-        console.log(user.teams)
+        console.log(user.teams);
       }
     });
   }
@@ -124,23 +123,30 @@ export class ChatComponent implements OnInit {
   }
 
   openAddMemberTeamDialog(): void {
-    console.log('Inside function add team member');
+    if (!this.selectedTeamId) {
+      alert('No team selected');
+      return;
+    }
     this.dialog.open(AddMemberTeamPopUpComponent, {
       data: { selectedTeam: this.selectedTeamId },
     });
   }
 
   openRemoveMemberTeamDialog(): void {
-    console.log('Inside function add team member');
+    console.log('Inside function remove team member');
     this.dialog.open(RemoveMemberTeamPopUpComponent, {
       data: { selectedTeam: this.selectedTeamId },
     });
   }
 
   selectTeam(team: string): void {
-    console.log("selected team:", this.teamList.find((t) => t.team_id === team) || "not found");
+    console.log(
+      'selected team:',
+      this.teamList.find((t) => t.team_id === team) || 'not found'
+    );
     this.selectedTeamId = team;
-    this.channelNameList = this.teamList.find((t) => t.team_id === team)?.channels || [];
+    this.channelNameList =
+      this.teamList.find((t) => t.team_id === team)?.channels || [];
   }
 
   selectChannel(channel: string): void {
@@ -172,7 +178,6 @@ export class ChatComponent implements OnInit {
     }
   }
 
-
   myChannelFunction() {
     const dropdown = document.getElementById('myDropdownChannel');
     if (dropdown) {
@@ -185,7 +190,6 @@ export class ChatComponent implements OnInit {
       dropdown.classList.toggle('channelList-show');
     }
   }
-
 }
 
 class Message {
