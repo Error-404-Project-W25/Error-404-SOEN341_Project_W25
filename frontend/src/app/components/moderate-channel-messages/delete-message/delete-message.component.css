@@ -1,13 +1,4 @@
-:host {
-  --pop-up-background-color: #2c2c2c; /* Dark grey */
-  --pop-up-text-color: #ffffff;
-  --pop-up-secondary-text-color: #ffffff;
-  --pop-up-border-color: #444;
-  --pop-up-highlight-color: rgb(255, 107, 107); /* Bright accent color */
-  --pop-up-button-background: #555;
-  --pop-up-delete-button: #d32f2f; /* Red delete button */
-  --pop-up-delete-hover: #b71c1c;
-}
+
 
 .container {
   font-family: Arial, Helvetica, sans-serif;
@@ -96,7 +87,7 @@
 /* Delete Button */
 .dialog-container .delete-btn {
   background: var(--pop-up-delete-button);
-  color: white;
+  color: var(--delete-button-text);
 }
 
 .dialog-container .delete-btn:hover {
