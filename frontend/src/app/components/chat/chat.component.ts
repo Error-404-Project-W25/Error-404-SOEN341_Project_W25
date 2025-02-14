@@ -14,6 +14,7 @@ import { AddMemberTeamPopUpComponent } from '../add-member-team-pop-up/add-membe
 import { AddTeamDialogComponent } from '../create-team-pop-up/add-team-dialog.component';
 import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/remove-member-team-pop-up.component';
 import { EditChannelPopUpComponent } from '../edit-channel-pop-up/edit-channel-pop-up.component';
+import { AddMemberChannelPopUpComponent } from '../add-member-channel-pop-up/add-member-channel-pop-up.component';
 
 @Component({
   selector: 'app-root',
@@ -214,6 +215,22 @@ export class ChatComponent implements OnInit {
             };
           }
         }
+      }
+    });
+  }
+
+  openAddMemberChannelDialog(channel: IChannel): void {
+    console.log('Inside function add channel member');
+    const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
+      data: {
+        channel_id: channel.channel_id,
+        team_id: this.selectedTeamId
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.added) {
+        console.log('Members added:', result.members);
       }
     });
   }

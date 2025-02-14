@@ -11,7 +11,9 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
   selector: 'app-edit-channel-pop-up',
   templateUrl: './edit-channel-pop-up.component.html',
- styleUrls: ['./../../components/chat/chat.component.css','./edit-channel-pop-up.component.css'],
+ styleUrls: [
+  './../../components/chat/chat.component.css',
+  './edit-channel-pop-up.component.css'],
   standalone: true,
   imports: [
     MatDialogModule,

@@ -241,7 +241,6 @@ export class BackendService {
     return undefined;
   }
 
-  // Returns true on success, false on failure
   async addUserToChannel(
     team_id: string,
     channel_id: string,
@@ -297,5 +296,15 @@ export class BackendService {
       console.error('Error getting channel by id:', error);
     }
     return undefined;
+  }
+
+  async isUserInChannel(teamId: string, channelId: string, userId: string): Promise<boolean> {
+    try {
+      const response = await this.http.get<boolean>(`${this.backendURL}/teams/${teamId}/channels/${channelId}/members/${userId}`).toPromise();
+      return response ?? false;
+    } catch (error) {
+      console.error('Error checking if user is in channel:', error);
+      return false;
+    }
   }
 }
