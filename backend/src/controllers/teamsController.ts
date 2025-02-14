@@ -17,6 +17,7 @@ export const getUserTeams = async (req: Request, res: Response) => {
     });
     res.json({ teams });
   } catch (error) {
+    console.error('Error fetching teams:', error); 
     res.status(500).json({ error: 'Error fetching teams' });
   }
 };
@@ -36,6 +37,7 @@ export const getTeamById = async (req: Request, res: Response) => {
     }
     res.status(200).json({ team });
   } catch (error) {
+    console.error('Error fetching team:', error);
     res.status(500).json({ error: 'Error fetching team' });
   }
 };

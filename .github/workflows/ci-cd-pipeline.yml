@@ -1,0 +1,62 @@
+on:
+  # Elements that trigger the workflow
+  push:
+    branches: 
+      - '*' # Runs on all branches
+  pull_request: 
+    branches: 
+      - '*' # Runs on all branches
+
+jobs:
+  # Define a job "build"
+  build:
+    runs-on: ubuntu-latest
+    
+          
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # set up express server
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 'latest'
+
+      # # Inject environment variables (MongoDB Atlas connection) - are we missing firebase?
+      # - name: Create .env file
+      #   run: |
+      #     echo "DB_CONN_STRING=${{ secrets.DB_CONN_STRING }}" >> .env
+      #     echo "DB_NAME=chatHavenDB" >> .env
+      #     echo "PORT=3000" >> .env
+      
+      # Install backend dependencies
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm install
+
+      # Install frontend dependencies
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+      
+      # Prevents installing dependencies if package-lock.json hasn't changed
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.npm
+            ./node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-  
+
+      # # Run backend tests
+
+      
+      # Lint: check for errors/stylistic inconsistencies in code
+      - name : Lint backend code 
+        working-directory: ./backend 
+        run: npm run lint
+
