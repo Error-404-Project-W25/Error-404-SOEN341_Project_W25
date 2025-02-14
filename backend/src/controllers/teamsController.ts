@@ -114,6 +114,8 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
         error: `User with user_id ${member_id} is already a member of the team`,
       });
       return;
+    } else {
+      team.members.push(member_id);
     }
 
     const updatedTeam: ITeam = await team.save();
