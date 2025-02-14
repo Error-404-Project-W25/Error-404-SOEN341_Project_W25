@@ -42,7 +42,7 @@ export class ChatComponent implements OnInit {
     { length: 30 },
     (_, i) => `Conversation ${i + 1}`
   );
-  teamList: ITeam[] = []; 
+  teamList: ITeam[] = [];
   messages: Message[] = [
     new Message(
       'User3',
@@ -92,19 +92,18 @@ export class ChatComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService,
-    // private themeService: ThemeService
+    private backendService: BackendService // private themeService: ThemeService
   ) {}
 
   ngOnInit() {
     this.currentTheme = 'light';
     console.log('Chat component initialized');
     // console.log('Theme:', this.currentTheme);
-    
+
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user) {
         this.teamList = user.teams;
-        console.log(user.teams)
+        console.log(user.teams);
       }
     });
   }
@@ -126,23 +125,30 @@ export class ChatComponent implements OnInit {
   }
 
   openAddMemberTeamDialog(): void {
-    console.log('Inside function add team member');
+    if (!this.selectedTeamId) {
+      alert('No team selected');
+      return;
+    }
     this.dialog.open(AddMemberTeamPopUpComponent, {
       data: { selectedTeam: this.selectedTeamId },
     });
   }
 
   openRemoveMemberTeamDialog(): void {
-    console.log('Inside function add team member');
+    console.log('Inside function remove team member');
     this.dialog.open(RemoveMemberTeamPopUpComponent, {
       data: { selectedTeam: this.selectedTeamId },
     });
   }
 
   selectTeam(team: string): void {
-    console.log("selected team:", this.teamList.find((t) => t.team_id === team) || "not found");
+    console.log(
+      'selected team:',
+      this.teamList.find((t) => t.team_id === team) || 'not found'
+    );
     this.selectedTeamId = team;
-    this.channelNameList = this.teamList.find((t) => t.team_id === team)?.channels || [];
+    this.channelNameList =
+      this.teamList.find((t) => t.team_id === team)?.channels || [];
   }
 
   selectChannel(channel: string): void {
@@ -174,7 +180,6 @@ export class ChatComponent implements OnInit {
     }
   }
 
-
   myChannelFunction() {
     const dropdown = document.getElementById('myDropdownChannel');
     if (dropdown) {
@@ -187,7 +192,7 @@ export class ChatComponent implements OnInit {
       dropdown.classList.toggle('channelList-show');
     }
   }
-  
+
   openEditChannelDialog(channel: IChannel): void {
     console.log('Opening edit channel dialog for:', channel.name);
     const dialogRef = this.dialog.open(EditChannelPopUpComponent, {
@@ -196,22 +201,24 @@ export class ChatComponent implements OnInit {
         name: channel.name,
         description: channel.description,
         channel_id: channel.channel_id,
-        team_id: this.selectedTeamId
-      }
+        team_id: this.selectedTeamId,
+      },
     });
-  
-    dialogRef.afterClosed().subscribe(result => {
+
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Update the channel in the list
-        const teamIndex = this.teamList.findIndex(t => t.team_id === this.selectedTeamId);
+        const teamIndex = this.teamList.findIndex(
+          (t) => t.team_id === this.selectedTeamId
+        );
         if (teamIndex > -1) {
           const channelIndex = this.teamList[teamIndex].channels.findIndex(
-            c => c.channel_id === channel.channel_id
+            (c) => c.channel_id === channel.channel_id
           );
           if (channelIndex > -1) {
             this.teamList[teamIndex].channels[channelIndex] = {
               ...this.teamList[teamIndex].channels[channelIndex],
-              ...result
+              ...result,
             };
           }
         }
@@ -224,11 +231,11 @@ export class ChatComponent implements OnInit {
     const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
       data: {
         channel_id: channel.channel_id,
-        team_id: this.selectedTeamId
-      }
+        team_id: this.selectedTeamId,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result?.added) {
         console.log('Members added:', result.members);
       }

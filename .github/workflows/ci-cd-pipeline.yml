@@ -1,0 +1,52 @@
+on:
+  # Elements that trigger the workflow
+  push:
+    branches: 
+      - '*' # Runs on all branches
+  pull_request: 
+    branches: 
+      - '*' # Runs on all branches
+
+jobs:
+  # Define a job "build"
+  build:
+    runs-on: ubuntu-latest
+    
+          
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # set up express server
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      # # Inject environment variables (MongoDB Atlas connection) - are we missing firebase?
+      # - name: Create .env file
+      #   run: |
+      #     echo "DB_CONN_STRING=${{ secrets.DB_CONN_STRING }}" >> .env
+      #     echo "DB_NAME=chatHavenDB" >> .env
+      #     echo "PORT=3000" >> .env
+      
+      # Install backend dependencies
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      # Install frontend dependencies
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci
+       
+
+      # # Run backend tests
+
+      
+      # Lint: check for errors/stylistic inconsistencies in code
+      - name : Lint backend code 
+        working-directory: ./backend 
+        run: npm run lint
+

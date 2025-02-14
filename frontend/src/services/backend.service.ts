@@ -141,7 +141,6 @@ export class BackendService {
         return response.team;
       }
       console.error(response.error);
-
     } catch (error) {
       console.error('Error getting team by id:', error);
     }
