@@ -171,6 +171,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         }
       });
     });
+    this.channelTitle = '';
   }
 
   selectChannel(channel: string): void {
@@ -312,27 +313,4 @@ class Message {
     public id: string = Math.random().toString(36).substr(2, 9) // Generate a random ID
   ) {}
 }
-class Channel {
-  constructor(
-    public id: string,
-    public name: string,
-    public teamId: string,
-    public messages: Message[] = []
-  ) {}
-}
-class Team {
-  constructor(
-    public team_id: string,
-    public team_name: string,
-    public channels: Channel[] = [],
-    public conversation: Channel[] = []
-  ) {}
-}
-class User {
-  constructor(
-    public id: string,
-    public username: string,
-    public email: string,
-    public teams: Team[] = []
-  ) {}
-}
+
