@@ -31,7 +31,6 @@ import { IUser, IChannel } from '@shared/interfaces';
 export class AddMemberTeamPopUpComponent {
   isDarkTheme: boolean = false;
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
-  channelName = '';
   description = '';
   found = '';
   channelMembers: string[] = []; // stores selected members to be added
@@ -50,34 +49,51 @@ export class AddMemberTeamPopUpComponent {
     this.selectedTeamId = data.selectedTeam;
     this.isDarkTheme = data.theme;
   }
-  teamMembers: string[] = [];
+  memberIdsToAdd: string[] = [];
 
   // Search for members to add to the channel
-  search() {
+  async search() {
     console.log('Searching for:', this.searchQuery);
 
-    this.backendService
-      .getUserByUsername(this.searchQuery)
-      .then((user: IUser | undefined) => {
-        if (user) {
-          this.found = 'User found';
-          console.log(this.found, user);
+    try {
+      const user: IUser | undefined =
+        await this.backendService.getUserByUsername(this.searchQuery);
+      if (user) {
+        console.log('User found:', user); // Debugging
+        this.found = 'User found';
+        this.memberIdsToAdd.push(user.user_id);
+      } else {
+        this.found = 'No user found';
+      }
 
-          this.teamMembers = [
-            ...this.teamMembers,
-            user.user_id,
-          ].filter((id): id is string => id !== undefined);
+      setTimeout(() => {
+        this.found = '';
+      }, 2000);
+    } catch (error) {
+      console.error('Error searching users:', error);
+    }
+  }
+
+  // Add members to the team
+  async addMembers() {
+    console.log('Adding members:', this.memberIdsToAdd);
+
+    for (const memberId of this.memberIdsToAdd) {
+      try {
+        const response: boolean = await this.backendService.addMemberToTeam(
+          memberId,
+          this.selectedTeamId!
+        );
+        if (response) {
+          console.log('Added member:', memberId);
         } else {
-          this.found = 'No user found';
-          console.log(this.found);
+          console.error('Failed to add member:', memberId);
         }
+      } catch (error) {
+        console.error('Error adding member:', error);
+      }
+    }
 
-        setTimeout(() => {
-          this.found = ' ';
-        }, 2000);
-      })
-      .catch((error) => {
-        console.error('Error searching users:', error);
-      });
+    this.dialogRef.close();
   }
 }

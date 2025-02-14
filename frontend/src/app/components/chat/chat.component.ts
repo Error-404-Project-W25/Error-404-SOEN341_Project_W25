@@ -41,7 +41,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   channelTitle: string = ''; // channel title
   teamTitle: string = ''; // team title
 
-  selectedTeam: string | null = null; // selected team
+  selectedTeamId: string | null = null; // selected team
   selectedChannel: string | null = null; // selected channel
 
   teamList: ITeam[] = []; // team list
@@ -101,8 +101,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   refreshTeamList() {
     this.loginUser = this.userService.getUser() || null;
     this.teamList = this.loginUser?.teams || [];
-    if (this.teamList.length > 0 && !this.selectedTeam) {
-      this.selectedTeam = this.teamList[0].team_id;
+    if (this.teamList.length > 0 && !this.selectedTeamId) {
+      this.selectedTeamId = this.teamList[0].team_id;
       this.refreshChannelList();
     }
   }
@@ -110,7 +110,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   refreshChannelList() {
     this.loginUser = this.userService.getUser() || null;
     this.channelList =
-      this.teamList.find((t) => t.team_id === this.selectedTeam)?.channels ||
+      this.teamList.find((t) => t.team_id === this.selectedTeamId)?.channels ||
       [];
   }
 
@@ -131,21 +131,24 @@ export class ChatComponent implements OnInit, OnDestroy {
   openCreateChannelDialog(): void {
     console.log('Inside function create channel');
     this.dialog.open(AddChannelDialogComponent, {
-      data: { selectedTeam: this.selectedTeam, theme: this.isDarkTheme },
+      data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
   }
 
   openAddMemberTeamDialog(): void {
-    console.log('Inside function add team member');
+    if (!this.selectedTeamId) {
+      alert('No team selected');
+      return;
+    }
     this.dialog.open(AddMemberTeamPopUpComponent, {
-      data: { selectedTeam: this.selectedTeam, theme: this.isDarkTheme },
+      data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
   }
 
   openRemoveMemberTeamDialog(): void {
-    console.log('Inside function add team member');
+    console.log('Inside function remove team member');
     this.dialog.open(RemoveMemberTeamPopUpComponent, {
-      data: { selectedTeam: this.selectedTeam, theme: this.isDarkTheme },
+      data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
   }
 
@@ -156,7 +159,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.teamList.find((t) => t.team_id === team) || 'not found'
     );
     let teamMemberListID: string[] = [];
-    this.selectedTeam = team;
+    this.selectedTeamId = team;
     this.backendService.getTeamById(team).then((teamData) => {
       this.channelList = teamData?.channels || [];
       this.teamTitle = teamData?.team_name || '';
@@ -171,6 +174,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         }
       });
     });
+    this.channelTitle = '';
   }
 
   selectChannel(channel: string): void {
@@ -178,7 +182,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log('Selected channel:', channel);
     this.selectedChannel = channel;
     this.backendService
-      .getChannelById(this.selectedTeam!, channel)
+      .getChannelById(this.selectedTeamId!, channel)
       .then((channelData) => {
         this.channelTitle = channelData?.name || '';
       });
@@ -237,14 +241,14 @@ export class ChatComponent implements OnInit, OnDestroy {
         name: channel.name,
         description: channel.description,
         channel_id: channel.channel_id,
-        team_id: this.selectedTeam
+        team_id: this.selectedTeamId
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         // Update the channel in the list
-        const teamIndex = this.teamList.findIndex(t => t.team_id === this.selectedTeam);
+        const teamIndex = this.teamList.findIndex(t => t.team_id === this.selectedTeamId);
         if (teamIndex > -1) {
           const channelIndex = this.teamList[teamIndex].channels.findIndex(
             c => c.channel_id === channel.channel_id
@@ -290,7 +294,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
       data: {
         channel_id: channel.channel_id,
-        team_id: this.selectedTeam
+        team_id: this.selectedTeamId
       }
     });
 
@@ -312,27 +316,4 @@ class Message {
     public id: string = Math.random().toString(36).substr(2, 9) // Generate a random ID
   ) {}
 }
-class Channel {
-  constructor(
-    public id: string,
-    public name: string,
-    public teamId: string,
-    public messages: Message[] = []
-  ) {}
-}
-class Team {
-  constructor(
-    public team_id: string,
-    public team_name: string,
-    public channels: Channel[] = [],
-    public conversation: Channel[] = []
-  ) {}
-}
-class User {
-  constructor(
-    public id: string,
-    public username: string,
-    public email: string,
-    public teams: Team[] = []
-  ) {}
-}
+

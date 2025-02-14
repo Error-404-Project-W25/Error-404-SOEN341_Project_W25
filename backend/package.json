@@ -4,7 +4,8 @@
   "description": "backend of chat-haven application",
   "main": "src/app.js",
   "scripts": {
-    "start": "nodemon --exec ts-node src/app.ts"
+    "start": "nodemon --exec ts-node src/app.ts",
+    "lint": "eslint . --config eslint.config.mjs"
   },
   "author": "",
   "license": "ISC",
@@ -21,11 +22,15 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
+    "@eslint/js": "^9.20.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/mongoose": "latest",
     "@types/mongoose-sequence": "^3.0.11",
     "@types/node": "latest",
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^10.0.0",
+    "eslint": "^9.20.1",
+    "globals": "^15.15.0",
+    "typescript-eslint": "^8.24.0"
   }
 }
