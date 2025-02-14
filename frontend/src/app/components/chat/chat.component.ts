@@ -13,6 +13,7 @@ import { AddChannelDialogComponent } from '../create-channel-pop-up/add-channel-
 import { AddMemberTeamPopUpComponent } from '../add-member-team-pop-up/add-member-team-pop-up.component';
 import { AddTeamDialogComponent } from '../create-team-pop-up/add-team-dialog.component';
 import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/remove-member-team-pop-up.component';
+import { DeleteMessageComponent} from '../moderate-channel-messages/delete-message/delete-message.component';
 
 @Component({
   selector: 'app-root',
@@ -40,7 +41,7 @@ export class ChatComponent implements OnInit {
     { length: 30 },
     (_, i) => `Conversation ${i + 1}`
   );
-  teamList: ITeam[] = []; 
+  teamList: ITeam[] = [];
   messages: Message[] = [
     new Message(
       'User3',
@@ -79,6 +80,7 @@ export class ChatComponent implements OnInit {
   channels: IChannel[] = [];
   selectedTeamId: string | null = null;
   selectedChannel: string | null = null;
+  selectedMessageId: string | null = null; // Track selected message for delete button
   title = 'chatHaven';
 
   newMessage: string = '';
@@ -98,7 +100,7 @@ export class ChatComponent implements OnInit {
     this.currentTheme = 'light';
     console.log('Chat component initialized');
     // console.log('Theme:', this.currentTheme);
-    
+
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user) {
         this.teamList = user.teams;
@@ -186,12 +188,40 @@ export class ChatComponent implements OnInit {
     }
   }
 
+  //IMPLEMENT DELETE MESSAGE FUNCTIONALITY/////////////////////////////////////////////////////////////////////////////////////////////
+
+  // Open the DeleteMessageComponent with the selected message ID: passes msg ID and text to the dialog
+  openDeleteDialog(messageId: string, messageText: string): void {
+    const dialogRef = this.dialog.open(DeleteMessageComponent, {
+      data: { messageId, messageText }
+    });
+
+    // Handle the result after dialog is closed
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Temporarily remove the message with the returned ID (msg reappears when refreshed),
+        // WILL BE MODIFIED ONCE BACKEND IS IMPLEMENTED
+        this.messages = this.messages.filter(msg => msg.id !== result);
+      }
+    });
+  }
+
+  // Toggle the delete button visibility (Optional)
+  toggleDeleteButton(messageId: string): void {
+    this.selectedMessageId = this.selectedMessageId === messageId ? null : messageId;
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 }
 
 class Message {
   constructor(
     public author: string,
     public date: string,
-    public text: string
+    public text: string,
+
+    //TO BE CHANGED ONCE BACKEND CREATES UNIQUE ID MESSAGES
+    public id: string = Math.random().toString(36).substr(2, 9) // Generate a random ID
   ) {}
 }
