@@ -15,6 +15,8 @@ import { AddMemberTeamPopUpComponent } from '../add-member-team-pop-up/add-membe
 import { AddTeamDialogComponent } from '../create-team-pop-up/add-team-dialog.component';
 import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/remove-member-team-pop-up.component';
 import { DeleteMessageComponent } from '../moderate-channel-messages/delete-message/delete-message.component';
+import { EditChannelPopUpComponent } from '../edit-channel-pop-up/edit-channel-pop-up.component';
+import { AddMemberChannelPopUpComponent } from '../add-member-channel-pop-up/add-member-channel-pop-up.component';
 
 @Component({
   selector: 'app-root',
@@ -227,6 +229,37 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  openEditChannelDialog(channel: IChannel): void {
+    console.log('Opening edit channel dialog for:', channel.name);
+    const dialogRef = this.dialog.open(EditChannelPopUpComponent, {
+      width: '500px',
+      data: {
+        name: channel.name,
+        description: channel.description,
+        channel_id: channel.channel_id,
+        team_id: this.selectedTeam
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Update the channel in the list
+        const teamIndex = this.teamList.findIndex(t => t.team_id === this.selectedTeam);
+        if (teamIndex > -1) {
+          const channelIndex = this.teamList[teamIndex].channels.findIndex(
+            c => c.channel_id === channel.channel_id
+          );
+          if (channelIndex > -1) {
+            this.teamList[teamIndex].channels[channelIndex] = {
+              ...this.teamList[teamIndex].channels[channelIndex],
+              ...result
+            };
+          }
+        }
+      }
+    });
+  }
+
   //IMPLEMENT DELETE MESSAGE FUNCTIONALITY/////////////////////////////////////////////////////////////////////////////////////////////
 
   // Open the DeleteMessageComponent with the selected message ID: passes msg ID and text to the dialog
@@ -252,6 +285,21 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  openAddMemberChannelDialog(channel: IChannel): void {
+    console.log('Inside function add channel member');
+    const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
+      data: {
+        channel_id: channel.channel_id,
+        team_id: this.selectedTeam
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.added) {
+        console.log('Members added:', result.members);
+      }
+    });
+  }
 }
 
 class Message {
