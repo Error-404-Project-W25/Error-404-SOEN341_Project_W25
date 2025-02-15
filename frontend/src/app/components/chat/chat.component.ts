@@ -35,7 +35,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   title = 'chatHaven';
   loginUser: IUser | null = null; // current user
 
-  isDarkTheme = false; // initial theme is light
+  isDarkTheme = true;// initial theme is light
   newMessage: string = ''; // message input
 
   channelTitle: string = ''; // channel title
@@ -121,6 +121,10 @@ export class ChatComponent implements OnInit, OnDestroy {
   /*Open Different Dialogue */
   openCreateTeamDialog(): void {
     console.log('Inside function create team');
+    if (this.loginUser?.role !== 'admin') {
+      alert('You do not have the necessary permissions to create a team.');
+      return;
+    }
     this.dialog.open(AddTeamDialogComponent, {
       data: { theme: this.isDarkTheme },
     });
@@ -193,10 +197,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   /*Send Message */
   sendMessage() {
-    let currentUser = this.userService.getUser()?.username || 'Unknown User';
     if (!this.newMessage) return;
     this.messages.unshift(
-      new Message(currentUser, new Date().toLocaleTimeString(), this.newMessage)
+      new Message(this.loginUser?.username || 'Unknown', new Date().toLocaleTimeString(), this.newMessage)
     );
     console.log('Sending message:', this.newMessage);
     this.newMessage = '';
