@@ -68,6 +68,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    window.addEventListener('resize', this.handleResize.bind(this));
+    this.handleResize(); // Initial check
+
     console.log('Chat component initialized');
 
     // Fetch user from the service
@@ -92,7 +95,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    window.removeEventListener('resize', this.handleResize.bind(this));
+  }
 
   /*Refresh Team and Channel List */
   refreshTeamList() {
@@ -187,6 +192,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       });
     });
     this.channelTitle = '';
+    this.handleResize();
   }
 
   selectChannel(channel: string): void {
@@ -198,6 +204,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       .then((channelData) => {
         this.channelTitle = channelData?.name || '';
       });
+    this.handleResize();
   }
 
   selectConversation(conversation: string): void {
@@ -319,6 +326,52 @@ export class ChatComponent implements OnInit, OnDestroy {
         console.log('Members added:', result.members);
       }
     });
+  }
+  // Handle window resize events
+  handleResize() {
+    console.log('handleResize called');
+    const width = window.innerWidth;
+    console.log('Window width:', width);
+
+    const sideBarOne = document.getElementById('side-bar-1');
+    const sideBarTwo = document.getElementById('side-bar-2');
+    const chatLog = document.getElementById('chat-box');
+    const cardContainer = document.getElementById('card-container');
+    const teamListSettingBar = document.getElementById('team-setting-bar');
+
+    const displayStyle = (element: HTMLElement | null, style: string) => {
+      if (element) element.style.display = style;
+    };
+
+    if (width <= 450) {
+      displayStyle(cardContainer, 'none');
+      console.log('card-container hidden');
+      if (this.selectedChannel) {
+        displayStyle(sideBarOne, 'none');
+        displayStyle(sideBarTwo, 'none');
+        displayStyle(chatLog, 'flex');
+        console.log('chatLog shown');
+      } else {
+        displayStyle(sideBarOne, 'flex');
+        displayStyle(sideBarTwo, 'flex');
+        displayStyle(chatLog, 'none');
+        console.log('chatLog hidden');
+      }
+    } else {
+      displayStyle(cardContainer, 'flex');
+      displayStyle(sideBarOne, 'flex');
+      displayStyle(sideBarTwo, 'flex');
+      displayStyle(chatLog, 'flex');
+      console.log('chatLog shown');
+    }
+
+    if (width <= 1025) {
+      displayStyle(teamListSettingBar, 'none');
+      console.log('teamListSettingBar hidden');
+    } else {
+      displayStyle(teamListSettingBar, 'flex');
+      console.log('teamListSettingBar shown');
+    }
   }
 }
 
