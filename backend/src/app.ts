@@ -12,7 +12,7 @@ import teamsRoutes from './routes/teamsRoutes';
 import userRoutes from './routes/userRoutes';
 // import { runAuthTests } from '../tests/authenticate.test';
 
-export const app: Application = express();
+const app: Application = express();
 
 // Connect to database
 const DB_CONN_STRING = process.env.DB_CONN_STRING || '';
@@ -44,7 +44,10 @@ const startServer = async () => {
     app.use('/users', userRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+    if (process.env.NODE_ENV !== 'test'){
+      app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    }
 
     // Uncomment the line below to run the authentication tests
     // runAuthTests();
@@ -55,3 +58,4 @@ const startServer = async () => {
 };
 
 startServer();
+export { app, connectDB, startServer };
