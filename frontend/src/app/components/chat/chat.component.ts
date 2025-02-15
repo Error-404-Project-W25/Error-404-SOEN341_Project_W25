@@ -34,7 +34,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   title = 'chatHaven';
   loginUser: IUser | null = null; // current user
 
-  isDarkTheme = true;// initial theme is light
+  isDarkTheme = true; // initial theme is light
   newMessage: string = ''; // message input
 
   channelTitle: string = ''; // channel title
@@ -124,8 +124,19 @@ export class ChatComponent implements OnInit, OnDestroy {
       alert('You do not have the necessary permissions to create a team.');
       return;
     }
-    this.dialog.open(AddTeamDialogComponent, {
+    const dialogRef = this.dialog.open(AddTeamDialogComponent, {
       data: { theme: this.isDarkTheme },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.team_id) {
+        this.dialog.open(AddMemberTeamPopUpComponent, {
+          data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
+        });
+        this.refreshTeamList();
+        this.selectTeam(result.team_id);
+      } else {
+        console.log('No team created or team ID not returned.');
+      }
     });
   }
 
@@ -198,7 +209,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   sendMessage() {
     if (!this.newMessage) return;
     this.messages.unshift(
-      new Message(this.loginUser?.username || 'Unknown', new Date().toLocaleTimeString(), this.newMessage)
+      new Message(
+        this.loginUser?.username || 'Unknown',
+        new Date().toLocaleTimeString(),
+        this.newMessage
+      )
     );
     console.log('Sending message:', this.newMessage);
     this.newMessage = '';
