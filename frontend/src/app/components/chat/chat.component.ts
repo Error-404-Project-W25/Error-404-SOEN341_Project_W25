@@ -96,7 +96,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    window.removeEventListener('resize', this.handleResize.bind(this));
+    // window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
   /*Refresh Team and Channel List */
@@ -337,7 +337,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     const sideBarTwo = document.getElementById('side-bar-2');
     const chatLog = document.getElementById('chat-box');
     const cardContainer = document.getElementById('card-container');
-    const teamListSettingBar = document.getElementById('team-setting-bar');
+    const teamListSettingBar = document.getElementById('team-setting-sidebar');
 
     const displayStyle = (element: HTMLElement | null, style: string) => {
       if (element) element.style.display = style;

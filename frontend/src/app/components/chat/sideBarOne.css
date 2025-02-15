@@ -15,6 +15,8 @@
 .add-team-button-container {
   background-color: var(--side-bar-1-background);
   position: absolute;
+  top: 0;
+  left: 0;
   align-items: center;
   display: flex;
   flex-direction: column;
