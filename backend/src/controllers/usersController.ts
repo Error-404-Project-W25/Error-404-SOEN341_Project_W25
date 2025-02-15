@@ -105,7 +105,7 @@ export const logoutUser = async (_: Request, res: Response) => {
 export const getUserById = async (req: Request, res: Response) => {
   try {
     const user: IUser | null = await User.findOne({
-      user_id: req.params['user_id'],
+      user_id: req.params.user_id,
     });
     if (user) {
       res.status(200).json({ user });
@@ -126,7 +126,7 @@ export const getUserById = async (req: Request, res: Response) => {
  */
 export const getUserByUsername = async (req: Request, res: Response) => {
   try {
-    const query: string = req.params['username'] as string;
+    const query: string = req.params.username as string;
     const users: IUser[] | null = await User.find({
       username: new RegExp(query, 'i'), // Search by username
     });

@@ -121,7 +121,7 @@ export const addUserToChannel = async (
 
     // Check if the user is part of the channel
     const isUserInChannel: boolean = channel.members.includes(user_id);
-    if (isUserInChannel) {
+    if (!isUserInChannel) {
       res
         .status(400)
         .json({ error: 'The user entered is already part of the channel' });

@@ -22,9 +22,9 @@ const teamSchema = new Schema(
 // Remove _id and __v before sending response to the client
 teamSchema.set('toJSON', {
   transform: (doc, ret) => {
-    delete ret['id'];
-    delete ret['_id'];
-    delete ret['__v'];
+    delete ret.id;
+    delete ret._id;
+    delete ret.__v;
     return ret;
   },
 });

@@ -1,4 +1,3 @@
-import { loginUser } from './../../../../../backend/src/controllers/usersController';
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
