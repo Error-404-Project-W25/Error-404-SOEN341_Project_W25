@@ -102,6 +102,12 @@
   --pop-up-delete-button: #d32f2f; /* Red delete button */
   --pop-up-delete-hover: #b71c1c;
   --delete-button-text: #ffffff;
+
+  /* Delete message button dark-theme*/
+  --delete-button-background: #313338;
+  --delete-button-hover-background: #ff4d4d;
+  --delete-button-text: #ffffff;
+  --delete-button-icon-fill: #ffffff;
 }
 
 .light-theme {
@@ -131,57 +137,57 @@
   --user-options-border: #f53f3d; /* User options border color */
 
   /* Sidebar #2 */
-  --side-bar-2-background: #f5f5f5; /* Sidebar background */
+  --side-bar-2-background: #f8f9fa; /* Sidebar background */
   --side-bar-2-text: #000000; /* Sidebar text color */
-  --side-bar-2-title-background: #f5f5f5; /* Title background */
-  --side-bar-2-title-text: #000000; /* Title text color */
+  --side-bar-2-title-background: #f8f9fa; /* Title background */
+  --side-bar-2-title-text: #343a40; /* Title text color */
 
   /* Team Title */
-  --team-title-background: #f5f5f5; /* Team title background */
-  --team-title-text: #000000; /* Team title text color */
+  --team-title-background: #f8f9fa; /* Team title background */
+  --team-title-text: #343a40; /* Team title text color */
 
   /* Team setting list */
   --team-setting-list-background: #ffffff; /* Team setting list background */
-  --team-setting-list-text: #000000; /* Team setting list text color */
+  --team-setting-list-text: #495057; /* Team setting list text color */
   --team-setting-list-element-background-hover: #f53f3d; /* Team setting list hover background */
   --team-setting-list-text-hover: #ffffff; /* Team setting list hover text color */
 
   /* Channel list */
-  --channel-list-background: #f5f5f5; /* Channel list background */
-  --channel-list-backround-hover: #e0e0e0; /* Channel list hover background */
-  --channel-list-text: #000000; /* Channel list text color */
+  --channel-list-background: #f8f9fa; /* Channel list background */
+  --channel-list-backround-hover: #e9ecef; /* Channel list hover background */
+  --channel-list-text: #6c757d; /* Channel list text color */
   --channel-list-text-hover: #f53f3d; /* Channel list hover text color */
 
   /* Chat log */
   --chat-box-background: #ffffff; /* Chat box background */
-  --chat-box-text: #000000; /* Chat box text color */
+  --chat-box-text: #212529; /* Chat box text color */
   --message-background: #ffffff; /* Message background */
-  --message-background-hover: #e0e0e0; /* Message hover background */
-  --message-text: #000000; /* Message text color */
-  --message-username: #000000; /* Message username color */
-  --message-date: #757575; /* Message date color */
+  --message-background-hover: #e9ecef; /* Message hover background */
+  --message-text: #212529; /* Message text color */
+  --message-username: #f53f3d; /* Message username color */
+  --message-date: #6c757d; /* Message date color */
   --profile-picture-background: #f53f3d; /* Profile picture background */
 
   /* Input Container */
-  --input-container-background: #f0f0f0; /* Input container background */
-  --input-container-hover: #d0d0d0; /* Input container hover background */
-  --input-container-text: #000000; /* Input container text color */
-  --input-container-border: #c0c0c0; /* Input container border color */
-  --input-container-focus-border: #a0a0a0; /* Input container focus border color */
-  --input-container-border-color: #b0b0b0; /* Input container border color */
+  --input-container-background: #f1f3f5; /* Input container background */
+  --input-container-hover: #e2e6ea; /* Input container hover background */
+  --input-container-text: #212529; /* Input container text color */
+  --input-container-border: #ced4da; /* Input container border color */
+  --input-container-focus-border: #adb5bd; /* Input container focus border color */
+  --input-container-border-color: #ced4da; /* Input container border color */
 
   /* Send button */
-  --send-button-background: #000000; /* Send button background */
+  --send-button-background: #f53f3d; /* Send button background */
   --send-button-text: #ffffff; /* Send button text color */
-  --send-button-hover-fill: #e0e0e0; /* Send button hover fill color */
-  --send-button-hover-stroke: #000000; /* Send button hover stroke color */
-  --send-button-path: #e0e0e0; /* Send button path color */
-  --send-button-stroke: #000000; /* Send button stroke color */
+  --send-button-hover-fill: #0056b3; /* Send button hover fill color */
+  --send-button-hover-stroke: #ffffff; /* Send button hover stroke color */
+  --send-button-path: #0056b3; /* Send button path color */
+  --send-button-stroke: #ffffff; /* Send button stroke color */
 
   /* Tooltip */
-  --tooltip-background: #ffffff; /* Tooltip background */
-  --tooltip-border: #c0c0c0; /* Tooltip border color */
-  --tooltip-shadow: #a0a0a0; /* Tooltip shadow color */
+  --tooltip-background: #343a40; /* Tooltip background */
+  --tooltip-border: #6c757d; /* Tooltip border color */
+  --tooltip-shadow: #adb5bd; /* Tooltip shadow color */
 
   /* Message input */
   --message-input-text: #000000; /* Message input text color */
@@ -192,21 +198,28 @@
   /* Pop-up */
   --pop-up-background-color: #ffffff;
   --pop-up-text-color: #000000;
-  --pop-up-secondary-text-color: #757575;
-  --pop-up-border-color: #c0c0c0;
-  --pop-up-highlight-color: #f53f3d;
-  --pop-up-button-background: #f0f0f0;
+  --pop-up-secondary-text-color: #6c757d;
 
-  /* delete message Pop-up*/
+  --pop-up-border-color: #ced4da;
+  --pop-up-highlight-color: #f53f3d;
+  --pop-up-button-background: #f8f9fa;
+
+  /* delete message Pop-up */
   --pop-up-background-color: #ffffff; /* Light grey */
   --pop-up-text-color: #000000;
   --pop-up-secondary-text-color: #000000;
-  --pop-up-border-color: #ccc;
+  --pop-up-border-color: #ced4da;
   --pop-up-highlight-color: #f53f3d; /* Bright accent color */
-  --pop-up-button-background: #f0f0f0;
-  --pop-up-delete-button: #d32f2f; /* Red delete button */
-  --pop-up-delete-hover: #b71c1c;
+  --pop-up-button-background: #f8f9fa;
+  --pop-up-delete-button: #dc3545; /* Red delete button */
+  --pop-up-delete-hover: #c82333;
+  --delete-button-text: #ffffff;
+
+  /* Delete message button light-theme */
+  --delete-button-background: #f8f9fa;
+  --delete-button-hover-background: #ff4d4d;
   --delete-button-text: #000000;
+  --delete-button-icon-fill: #000000;
 }
 
 body {

@@ -193,9 +193,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   /*Send Message */
   sendMessage() {
+    let currentUser = this.userService.getUser()?.username || 'Unknown User';
     if (!this.newMessage) return;
     this.messages.unshift(
-      new Message('User1', new Date().toLocaleTimeString(), this.newMessage)
+      new Message(currentUser, new Date().toLocaleTimeString(), this.newMessage)
     );
     console.log('Sending message:', this.newMessage);
     this.newMessage = '';

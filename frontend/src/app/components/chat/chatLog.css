@@ -5,7 +5,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%;
+  width: calc(100% - 35rem);
+  size: auto;
   overflow-y: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -57,7 +58,7 @@
 
 .message {
   border-radius: 10px;
-  width: 95%;
+  width: calc(100% - 10px);
   margin: 5px auto;
   padding: 5px;
   display: flex;
@@ -88,14 +89,16 @@
 }
 
 .message-content {
+  margin: 0 auto;
+  padding: 5px 0;
+  position: relative;
   align-items: flex-start;
   display: flex;
   flex-direction: column;
   gap: 5px;
   justify-content: center;
-  margin: 0;
-  padding: 0;
-  width: auto;
+  width: 100%;
+  overflow: hidden;
 }
 
 .message-header {
@@ -130,13 +133,13 @@
 .message-text {
   padding: 5px;
   text-align: justify;
+  overflow-wrap: break-word;
   width: 99%;
 }
 
 .input-container {
   border-radius: 10px;
-  border: 1
-  px solid var(--input-container-border);
+  border: 1 px solid var(--input-container-border);
   bottom: 0;
   background-color: var(--input-container-background);
   box-sizing: border-box;
@@ -181,3 +184,77 @@
   background-color: var(--send-button-hover-fill);
   color: var(--send-button-hover-stroke);
 }
+
+.delete-button-container {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.message-content:hover .delete-button-container {
+  display: block;
+}
+
+.delete-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--delete-button-background);
+  border: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  position: relative;
+}
+
+.delete-svgIcon {
+  width: 15px;
+  transition-duration: 0.3s;
+}
+
+.delete-svgIcon path {
+  fill: var(--delete-button-icon-fill);
+}
+
+.delete-button:hover {
+  width: fit-content;
+  border-radius: 50px;
+  transition-duration: 0.3s;
+  background-color: var(--delete-button-hover-background);
+  align-items: center;
+}
+
+.delete-button:hover .delete-svgIcon {
+  width: 20px;
+  transition-duration: 0.3s;
+  transform: translateY(60%);
+  -webkit-transform: rotate(360deg);
+  -moz-transform: rotate(360deg);
+  -o-transform: rotate(360deg);
+  -ms-transform: rotate(360deg);
+  transform: rotate(360deg);
+}
+
+.delete-button::before {
+  display: none;
+  content: "Delete Message";
+  color: var(--delete-button-text);
+  transition-duration: 0.3s;
+  font-size: 2px;
+}
+
+.delete-button:hover::before {
+  display: block;
+  padding-right: 10px;
+  font-size: 13px;
+  opacity: 1;
+  transform: translateY(0px);
+  transition-duration: 0.3s;
+}
+
+
