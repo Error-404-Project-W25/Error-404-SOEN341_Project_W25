@@ -25,3 +25,16 @@ export interface IUser {
   teams: ITeam[];
   direct_messages: string[];
 }
+
+export interface IMessage {
+  message_id: string;
+  content: string; 
+  sender: IUser; 
+  time: string; 
+}
+
+export interface IConvrsation{
+  conversation_id: string; 
+  convoName: string; 
+  messages: IMessage[];
+}
