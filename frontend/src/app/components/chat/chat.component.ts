@@ -16,6 +16,7 @@ import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/rem
 import { DeleteMessageComponent } from '../moderate-channel-messages/delete-message/delete-message.component';
 import { EditChannelPopUpComponent } from '../edit-channel-pop-up/edit-channel-pop-up.component';
 import { AddMemberChannelPopUpComponent } from '../add-member-channel-pop-up/add-member-channel-pop-up.component';
+import { TeamSettingsComponent } from '../team-settings/team-settings.component';
 
 @Component({
   selector: 'app-root',
@@ -34,7 +35,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   title = 'chatHaven';
   loginUser: IUser | null = null; // current user
 
-  isDarkTheme = true;// initial theme is light
+  isDarkTheme = true; // initial theme is light
   newMessage: string = ''; // message input
 
   channelTitle: string = ''; // channel title
@@ -124,8 +125,19 @@ export class ChatComponent implements OnInit, OnDestroy {
       alert('You do not have the necessary permissions to create a team.');
       return;
     }
-    this.dialog.open(AddTeamDialogComponent, {
+    const dialogRef = this.dialog.open(AddTeamDialogComponent, {
       data: { theme: this.isDarkTheme },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.team_id) {
+        this.dialog.open(AddMemberTeamPopUpComponent, {
+          data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
+        });
+        this.refreshTeamList();
+        this.selectTeam(result.team_id);
+      } else {
+        console.log('No team created or team ID not returned.');
+      }
     });
   }
 
@@ -198,7 +210,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   sendMessage() {
     if (!this.newMessage) return;
     this.messages.unshift(
-      new Message(this.loginUser?.username || 'Unknown', new Date().toLocaleTimeString(), this.newMessage)
+      new Message(
+        this.loginUser?.username || 'Unknown',
+        new Date().toLocaleTimeString(),
+        this.newMessage
+      )
     );
     console.log('Sending message:', this.newMessage);
     this.newMessage = '';
@@ -265,6 +281,36 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  openEditTeamDialog(team: ITeam): void {
+    console.log('Opening edit team dialog for:', team.team_name);
+    const dialogRef = this.dialog.open(TeamSettingsComponent, {
+      width: '500px',
+      data: {
+        name: team.team_name,
+        description: team.description,
+        team_id: team.team_id,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Update the team in the list
+        const teamIndex = this.teamList.findIndex(
+          (t) => t.team_id === team.team_id
+        );
+        if (teamIndex > -1) {
+          this.teamList[teamIndex] = {
+            ...this.teamList[teamIndex],
+            ...result,
+          };
+          console.log('Updated team settings:', this.teamList[teamIndex]);
+        }
+      }
+    });
+  }
+
+
 
   //IMPLEMENT DELETE MESSAGE FUNCTIONALITY/////////////////////////////////////////////////////////////////////////////////////////////
 
