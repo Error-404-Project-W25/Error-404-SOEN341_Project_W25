@@ -10,7 +10,6 @@ import authRoutes from './routes/authRoutes';
 import channelsRoutes from './routes/channelsRoutes';
 import teamsRoutes from './routes/teamsRoutes';
 import userRoutes from './routes/userRoutes';
-// import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
 
@@ -44,10 +43,10 @@ const startServer = async () => {
     app.use('/users', userRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-    // Uncomment the line below to run the authentication tests
-    // runAuthTests();
+    if (process.env.NODE_ENV !== 'test') {
+      app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    }
   } catch (error) {
     console.error('Failed to connect to the database', error);
     process.exit(1); // Exit the process with failure
@@ -55,3 +54,4 @@ const startServer = async () => {
 };
 
 startServer();
+export { app, connectDB, startServer };
