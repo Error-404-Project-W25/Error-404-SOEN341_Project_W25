@@ -23,6 +23,7 @@ import { AddMemberChannelPopUpComponent } from '../add-member-channel-pop-up/add
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule], // Add FormsModule here
   templateUrl: './chat.component.html',
   styleUrls: [
+    './../../../assets/theme.css',
     './chat.component.css',
     './sideBarOne.css',
     './sideBarTwo.css',
@@ -288,12 +289,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   openEditChannelDialog(channel: IChannel): void {
     console.log('Opening edit channel dialog for:', channel.name);
     const dialogRef = this.dialog.open(EditChannelPopUpComponent, {
-      width: '500px',
       data: {
         name: channel.name,
         description: channel.description,
         channel_id: channel.channel_id,
         team_id: this.selectedTeamId,
+        isDarkTheme: this.isDarkTheme,
       },
     });
 

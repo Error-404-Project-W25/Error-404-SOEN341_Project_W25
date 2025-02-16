@@ -5,8 +5,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   selector: 'app-delete-message',
   templateUrl: './delete-message.component.html',
   styleUrls: [
+    './../../../../assets/theme.css',
     './delete-message.component.css',
-    '../../chat/chat.component.css',
   ],
 })
 export class DeleteMessageComponent {

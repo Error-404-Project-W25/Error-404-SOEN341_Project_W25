@@ -1,38 +1,51 @@
-.container {
+.body {
+  margin: 0;
+  padding: 0;
+}
+.pop-up-container {
+  /* border-radius: 16px; */
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   height: auto;
   width: 100%;
-  background-color: var(--pop-up-background-color);
+  background-color: var(--pop-up-primary-bg);
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 0;
+  padding: 0;
 }
 .h1 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 24px;
-  color: var(--pop-up-text-color);
+  color: black;
   font-weight: 600;
   margin-bottom: 16px;
 }
+.form-container .form-search-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
 .form-container {
-  font-family: Arial, Helvetica, sans-serif;
-  height: auto;
   width: 400px;
   background: linear-gradient(
-        var(--pop-up-background-color),
-        var(--pop-up-background-color)
+        var(--pop-up-primary-bg),
+        var(--pop-up-primary-bg)
       )
       padding-box,
     linear-gradient(
         145deg,
         transparent 35%,
-        var(--pop-up-highlight-color),
-        var(--pop-up-highlight-color)
+        var(--pop-up-gradient-color1),
+        var(--pop-up-gradient-color2)
       )
       border-box;
   border: 2px solid transparent;
@@ -80,16 +93,15 @@
 }
 
 .form-container .form-group label {
-  font-family: Arial, Helvetica, sans-serif;
   display: block;
   margin-bottom: 5px;
-  color: var(--pop-up-secondary-text-color);
+  color: var(--pop-up-label-color);
   font-weight: 600;
   font-size: 12px;
 }
 
 .form-container .form-group input {
-  width: 90%;
+  width: 100%;
   padding: 12px 16px;
   border-radius: 8px;
   color: var(--pop-up-text-color);
@@ -99,7 +111,7 @@
 }
 
 .form-container .form-group textarea {
-  width: 90%;
+  width: 100%;
   padding: 12px 16px;
   border-radius: 8px;
   resize: none;
@@ -116,12 +128,12 @@
 
 .form-container .form-group input:focus {
   outline: none;
-  border-color: var(--pop-up-highlight-color);
+  border-color: var(--pop-up-gradient-color1);
 }
 
 .form-container .form-group textarea:focus {
   outline: none;
-  border-color: var(--pop-up-highlight-color);
+  border-color: var(--pop-up-gradient-color1);
 }
 
 .form-container .form-submit-btn {
@@ -130,10 +142,10 @@
   justify-content: center;
   align-self: flex-start;
   font-family: inherit;
-  color: var(--pop-up-secondary-text-color);
+  color: var(--pop-up-label-color);
   font-weight: 600;
   width: 40%;
-  background: var(--pop-up-button-background);
+  background: var(--pop-up-button-bg);
   border: 1px solid var(--pop-up-border-color);
   padding: 12px 16px;
   font-size: inherit;
@@ -143,30 +155,16 @@
   border-radius: 6px;
 }
 
-.form-container .form-submit-btn:hover {
-  color: var(--pop-up-highlight-color);
-  background-color: var(--pop-up-background-color);
-  border-color: var(--pop-up-highlight-color);
-}
-
-.container-add-member {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-
-.add-member-btn {
+.form-container .form-add-btn {
   display: flex;
   align-items: flex-start;
   justify-content: center;
   align-self: flex-start;
   font-family: inherit;
-  color: var(--pop-up-secondary-text-color);
+  color: var(--pop-up-label-color);
   font-weight: 600;
   width: 40%;
-  background: var(--pop-up-button-background);
+  background: var(--pop-up-button-bg);
   border: 1px solid var(--pop-up-border-color);
   padding: 12px 16px;
   font-size: inherit;
@@ -176,8 +174,8 @@
   border-radius: 6px;
 }
 
-.add-member-btn:hover {
-  color: var(--pop-up-highlight-color);
-  background-color: var(--pop-up-background-color);
-  border-color: var(--pop-up-highlight-color);
+.form-container .form-add-btn:hover,
+.form-container .form-submit-btn:hover {
+  background-color: var(--pop-up-button-hover);
+  border-color: var(--pop-up-button-hover);
 }

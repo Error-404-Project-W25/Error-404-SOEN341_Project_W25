@@ -15,16 +15,11 @@ import { IUser, IChannel } from '@shared/interfaces';
   selector: 'app-add-member-team-pop-up',
   templateUrl: './remove-member-team-pop-up.component.html',
   styleUrls: [
-    '../chat/chat.component.css',
+    './../../../assets/theme.css',
     './remove-member-team-pop-up.component.css',
   ],
   standalone: true,
-  imports: [
-    MatDialogModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-  ],
+  imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule],
 })
 export class RemoveMemberTeamPopUpComponent {
   isDarkTheme: boolean = false;
