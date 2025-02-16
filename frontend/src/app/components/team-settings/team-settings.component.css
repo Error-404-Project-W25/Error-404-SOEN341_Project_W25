@@ -7,12 +7,13 @@
   width: 100%;
   background-color: var(--pop-up-background-color);
   overflow-x: hidden;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-h1 {
+.h1 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 24px;
   color: var(--pop-up-text-color);
@@ -24,11 +25,22 @@ h1 {
   font-family: Arial, Helvetica, sans-serif;
   height: auto;
   width: 400px;
-  background: linear-gradient(var(--pop-up-background-color), var(--pop-up-background-color)) padding-box,
-  linear-gradient(145deg, transparent 35%, var(--pop-up-highlight-color), var(--pop-up-highlight-color)) border-box;
+  background: linear-gradient(
+    var(--pop-up-background-color),
+    var(--pop-up-background-color)
+  )
+  padding-box,
+  linear-gradient(
+    145deg,
+    transparent 35%,
+    var(--pop-up-highlight-color),
+    var(--pop-up-highlight-color)
+  )
+  border-box;
   border: 2px solid transparent;
   padding: 32px 24px;
   font-size: 14px;
+  font-family: inherit;
   color: var(--pop-up-text-color);
   display: flex;
   flex-direction: column;
@@ -100,6 +112,20 @@ h1 {
   font-family: inherit;
 }
 
+.form-container .form-group input::placeholder {
+  opacity: 0.5;
+}
+
+.form-container .form-group input:focus {
+  outline: none;
+  border-color: var(--pop-up-highlight-color);
+}
+
+.form-container .form-group textarea:focus {
+  outline: none;
+  border-color: var(--pop-up-highlight-color);
+}
+
 .form-container .form-submit-btn {
   display: flex;
   align-items: flex-start;
@@ -119,11 +145,10 @@ h1 {
   border-radius: 6px;
 }
 
-.form-container .form-submit-btn:hover {
+.form-container .form-submit-btn:hover{
   background-color: #fff;
   border-color: #fff;
 }
-
 .member-management-section {
   margin-top: 2rem;
   padding-top: 1.5rem;
