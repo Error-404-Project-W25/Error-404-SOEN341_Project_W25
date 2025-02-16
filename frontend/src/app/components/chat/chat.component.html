@@ -255,12 +255,12 @@
         </div>
         <div class="member-list">
           <ul>
-            <li *ngFor="let member of teamMemberList" class="member-container">
-              <span class="member-name">{{ member.username }}</span>
-              <!-- (click) create conversation or menu ??-->
-              <button class="member-button">
-                <i class="fas fa-comment-alt" style="font-size: 1rem"></i>
-              </button>
+            <li *ngFor="let member of teamMemberList">
+                <div class="member-name">{{ member.username }}</div>
+                <!-- (click) create conversation or menu ??-->
+                <button class="member-button">
+                  <i class="far fa-comment-alt" style="font-size: 1rem"></i>
+                </button>
             </li>
           </ul>
         </div>
