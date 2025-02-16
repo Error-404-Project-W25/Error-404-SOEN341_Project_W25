@@ -47,7 +47,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   teamList: ITeam[] = []; // team list
   channelList: IChannel[] = []; // channel list
   conversationList: IChannel[] = []; // conversation list
+
   teamMemberList: IUser[] = []; // team member list
+  chatMemberList: IUser[] = []; // chat member list
   messages: Message[] = []; // message list
 
   selectedMessageId: string | null = null; // Track selected message for delete button
@@ -218,6 +220,16 @@ export class ChatComponent implements OnInit, OnDestroy {
       .getChannelById(this.selectedTeamId!, channel)
       .then((channelData) => {
         this.channelTitle = channelData?.name || '';
+        const memberPromises =
+          channelData?.members.map((member) =>
+            this.backendService.getUserById(member)
+          ) || [];
+
+        Promise.all(memberPromises).then((users) => {
+          this.chatMemberList = users.filter(
+            (user) => user !== undefined
+          ) as IUser[];
+        });
       });
     this.handleResize();
   }
