@@ -39,8 +39,10 @@ export class AddMemberTeamPopUpComponent {
   constructor(
     private dialogRef: MatDialogRef<AddMemberTeamPopUpComponent>,
     private backendService: BackendService,
-    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string }
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string, theme: boolean }
+  ) {
+    this.isDarkTheme = data.theme;
+  }
 
   // Search for members to add to the channel
   async search() {

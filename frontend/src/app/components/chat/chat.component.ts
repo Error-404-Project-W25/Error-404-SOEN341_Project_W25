@@ -168,6 +168,36 @@ export class ChatComponent implements OnInit, OnDestroy {
       data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
   }
+  openDeleteDialog(messageId: string, messageText: string): void {
+    const dialogRef = this.dialog.open(DeleteMessageComponent, {
+      data: { messageId, messageText, theme: this.isDarkTheme },
+    });
+
+    // Handle the result after dialog is closed
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Temporarily remove the message with the returned ID (msg reappears when refreshed),
+        // WILL BE MODIFIED ONCE BACKEND IS IMPLEMENTED
+        this.messages = this.messages.filter((msg) => msg.id !== result);
+      }
+    });
+  }
+
+  openAddMemberChannelDialog(channel: IChannel): void {
+    const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
+      data: {
+        channel_id: channel.channel_id,
+        team_id: this.selectedTeamId,
+        theme: this.isDarkTheme,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.added) {
+        console.log('Members added:', result.members);
+      }
+    });
+  }
 
   /*Select Different Team, Channel, Conversation */
   selectTeam(team: string): void {
@@ -290,43 +320,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   //IMPLEMENT DELETE MESSAGE FUNCTIONALITY/////////////////////////////////////////////////////////////////////////////////////////////
 
-  // Open the DeleteMessageComponent with the selected message ID: passes msg ID and text to the dialog
-  openDeleteDialog(messageId: string, messageText: string): void {
-    const dialogRef = this.dialog.open(DeleteMessageComponent, {
-      data: { messageId, messageText, theme: this.isDarkTheme },
-    });
-
-    // Handle the result after dialog is closed
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // Temporarily remove the message with the returned ID (msg reappears when refreshed),
-        // WILL BE MODIFIED ONCE BACKEND IS IMPLEMENTED
-        this.messages = this.messages.filter((msg) => msg.id !== result);
-      }
-    });
-  }
-
-  // Toggle the delete button visibility (Optional)
-  toggleDeleteButton(messageId: string): void {
-    this.selectedMessageId =
-      this.selectedMessageId === messageId ? null : messageId;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  openAddMemberChannelDialog(channel: IChannel): void {
-    const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
-      data: {
-        channel_id: channel.channel_id,
-        team_id: this.selectedTeamId,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result?.added) {
-        console.log('Members added:', result.members);
-      }
-    });
-  }
   // Handle window resize events
   handleResize() {
     console.log('handleResize called');

@@ -244,20 +244,6 @@ body {
   width: 100%;
 }
 
-.separator {
-  align-self: center;
-  background-color: var(--separator-color);
-  border-bottom: var(--separator-color);
-  border-left: var(--separator-color);
-  border-right: var(--separator-color);
-  border-top: var(--separator-color);
-  color: var(--separator-color);
-  height: 2px;
-  margin: 0 auto;
-  padding: 0;
-  width: 80%;
-}
-
 .card-container {
   display: flex;
   flex-direction: row;
@@ -269,6 +255,7 @@ body {
   width: 100%;
   height: 100%;
 }
+
 .card {
   width: 50%;
   height: 50%;
@@ -285,7 +272,7 @@ body {
   text-align: center;
   z-index: 1;
   color: var(--chat-box-text);
-  font-size: 2em;
+  font-size: fit-content;
 }
 
 .card::before {

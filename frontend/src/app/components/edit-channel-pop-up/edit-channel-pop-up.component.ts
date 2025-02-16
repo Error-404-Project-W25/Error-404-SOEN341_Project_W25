@@ -20,6 +20,7 @@ import { BackendService } from '@services/backend.service';
   imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule],
 })
 export class EditChannelPopUpComponent {
+  isDarkTheme = false;
   channelName = '';
   description = '';
   constructor(
@@ -30,27 +31,28 @@ export class EditChannelPopUpComponent {
     // Initialize the form with the existing channel data
     this.channelName = data.name;
     this.description = data.description;
+    this.isDarkTheme = data.isDarkTheme;
   }
 
   /* Need backend to make the updateChannel() method */
-  // async updateChannel(): Promise<void> {
-  //   if (this.channelName && this.description) {
-  //     const success = await this.backendService.updateChannel(
-  //       this.data.team_id,
-  //       this.data.channel_id,
-  //       this.channelName,
-  //       this.description
-  //     );
-
-  //     if (success) {
-  //       this.dialogRef.close({
-  //         name: this.channelName,
-  //         description: this.description
-  //       });
-  //     } else {
-  //       console.error('Failed to update channel');
-  //     }
-  //   }
-
-  // }
+  async updateChannel(): Promise<void> {
+    console.log('Updating channel');
+    console.log('Dark theme:', this.isDarkTheme);
+    // if (this.channelName && this.description) {
+    //   const success = await this.backendService.updateChannel(
+    //     this.data.team_id,
+    //     this.data.channel_id,
+    //     this.channelName,
+    //     this.description
+    //   );
+    //   if (success) {
+    //     this.dialogRef.close({
+    //       name: this.channelName,
+    //       description: this.description
+    //     });
+    //   } else {
+    //     console.error('Failed to update channel');
+    //   }
+    // }
+  }
 }

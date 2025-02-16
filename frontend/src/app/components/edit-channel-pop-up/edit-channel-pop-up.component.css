@@ -1,194 +1,183 @@
 .container {
-    font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: auto;
-    width: 100%;
-    background-color: var(--pop-up-background-color);
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 100%;
+  background-color: var(--pop-up-background-color);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.h1 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  color: var(--pop-up-text-color);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.form-container {
+  font-family: Arial, Helvetica, sans-serif;
+  height: auto;
+  width: 400px;
+  background: linear-gradient(
+        var(--pop-up-background-color),
+        var(--pop-up-background-color)
+      )
+      padding-box,
+    linear-gradient(
+        145deg,
+        transparent 35%,
+        var(--pop-up-highlight-color),
+        var(--pop-up-highlight-color)
+      )
+      border-box;
+  border: 2px solid transparent;
+  padding: 32px 24px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--pop-up-text-color);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  background-size: 200% 100%;
+  animation: gradient 5s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
   }
 
-  .h1 {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 24px;
-    color: var(--pop-up-text-color);
-    font-weight: 600;
-    margin-bottom: 16px;
+  50% {
+    background-position: 100% 50%;
   }
-  
-  .form-container {
-    font-family: Arial, Helvetica, sans-serif;
-    height: auto;
-    width: 400px;
-    background: linear-gradient(
-          var(--pop-up-background-color),
-          var(--pop-up-background-color)
-        )
-        padding-box,
-      linear-gradient(
-          145deg,
-          transparent 35%,
-          var(--pop-up-highlight-color),
-          var(--pop-up-highlight-color)
-        )
-        border-box;
-    border: 2px solid transparent;
-    padding: 32px 24px;
-    font-size: 14px;
-    font-family: inherit;
-    color: var(--pop-up-text-color);
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    box-sizing: border-box;
-    border-radius: 16px;
-    background-size: 200% 100%;
-    animation: gradient 5s ease infinite;
+
+  100% {
+    background-position: 0% 50%;
   }
-  
-  @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-  
-    50% {
-      background-position: 100% 50%;
-    }
-  
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  
-  .form-container button:active {
-    scale: 0.95;
-  }
-  
-  .form-container .form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .form-container .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  
-  .form-container .form-group label {
-    font-family: Arial, Helvetica, sans-serif;
-    display: block;
-    margin-bottom: 5px;
-    color: var(--pop-up-secondary-text-color);
-    font-weight: 600;
-    font-size: 12px;
-  }
-  
-  .form-container .form-group input {
-    width: 90%;
-    padding: 12px 16px;
-    border-radius: 8px;
-    color: #fff;
-    font-family: inherit;
-    background-color: transparent;
-    border: 1px solid var(--pop-up-border-color);
-  }
-  
-  .form-container .form-group textarea {
-    width: 90%;
-    padding: 12px 16px;
-    border-radius: 8px;
-    resize: none;
-    color: #fff;
-    height: 96px;
-    border: 1px solid var(--pop-up-border-color);
-    background-color: transparent;
-    font-family: inherit;
-  }
-  
-  .form-container .form-group input::placeholder {
-    opacity: 0.5;
-  }
-  
-  .form-container .form-group input:focus {
-    outline: none;
-    border-color: var(--pop-up-highlight-color);
-  }
-  
-  .form-container .form-group textarea:focus {
-    outline: none;
-    border-color: var(--pop-up-highlight-color);
-  }
-  
-  .form-container .form-submit-btn {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    align-self: flex-start;
-    font-family: inherit;
-    color: var(--pop-up-secondary-text-color);
-    font-weight: 600;
-    width: 40%;
-    background: var(--pop-up-button-background);
-    border: 1px solid var(--pop-up-border-color);
-    padding: 12px 16px;
-    font-size: inherit;
-    gap: 8px;
-    margin-top: 8px;
-    cursor: pointer;
-    border-radius: 6px;
-  }
-  
-  .form-container .form-submit-btn:hover{
-    background-color: #fff;
-    border-color: #fff;
-  }
-  .member-management-section {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--pop-up-border-color);
-  }
-  
-  .member-management-section h2 {
-    color: var(--pop-up-text-color);
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .member-buttons {
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .member-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: inherit;
-    color: var(--pop-up-secondary-text-color);
-    font-weight: 600;
-    width: auto;
-    background: var(--pop-up-button-background);
-    border: 1px solid var(--pop-up-border-color);
-    padding: 12px 16px;
-    font-size: inherit;
-    gap: 8px;
-    cursor: pointer;
-    border-radius: 6px;
-  }
-  
-  .member-btn:hover {
-    background-color: #fff;
-    border-color: #fff;
-    color: var(--pop-up-background-color);
-  }
-  
-  .member-btn i {
-    font-size: 16px;
-  }
+}
+
+.form-container button:active {
+  scale: 0.95;
+}
+
+.form-container .form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-container .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.form-container .form-group label {
+  font-family: Arial, Helvetica, sans-serif;
+  display: block;
+  margin-bottom: 5px;
+  color: var(--pop-up-secondary-text-color);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.form-container .form-group input {
+  width: 90%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--pop-up-text-color);
+  font-family: inherit;
+  background-color: transparent;
+  border: 1px solid var(--pop-up-border-color);
+}
+
+.form-container .form-group textarea {
+  width: 90%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  resize: none;
+  color: var(--pop-up-text-color);
+  height: 96px;
+  border: 1px solid var(--pop-up-border-color);
+  background-color: transparent;
+  font-family: inherit;
+}
+
+.form-container .form-group input::placeholder {
+  opacity: 0.5;
+}
+
+.form-container .form-group input:focus {
+  outline: none;
+  border-color: var(--pop-up-highlight-color);
+}
+
+.form-container .form-group textarea:focus {
+  outline: none;
+  border-color: var(--pop-up-highlight-color);
+}
+
+.form-container .form-submit-btn {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: flex-start;
+  font-family: inherit;
+  color: var(--pop-up-secondary-text-color);
+  font-weight: 600;
+  width: 40%;
+  background: var(--pop-up-button-background);
+  border: 1px solid var(--pop-up-border-color);
+  padding: 12px 16px;
+  font-size: inherit;
+  gap: 8px;
+  margin-top: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.form-container .form-submit-btn:hover {
+  color: var(--pop-up-highlight-color);
+  background-color: var(--pop-up-background-color);
+  border-color: var(--pop-up-highlight-color);
+}
+
+.container-add-member {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.add-member-btn {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: flex-start;
+  font-family: inherit;
+  color: var(--pop-up-secondary-text-color);
+  font-weight: 600;
+  width: 40%;
+  background: var(--pop-up-button-background);
+  border: 1px solid var(--pop-up-border-color);
+  padding: 12px 16px;
+  font-size: inherit;
+  gap: 8px;
+  margin-top: 8px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.add-member-btn:hover {
+  color: var(--pop-up-highlight-color);
+  background-color: var(--pop-up-background-color);
+  border-color: var(--pop-up-highlight-color);
+}

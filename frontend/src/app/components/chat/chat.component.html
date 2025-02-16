@@ -109,7 +109,7 @@
                 ></i
                 >Add Member
               </div>
-              <!-- (click) remove member to eamt-->
+              <!-- (click) remove member to team-->
               <div
                 class="dropdown-team-setting-list"
                 (click)="openRemoveMemberTeamDialog()"
@@ -185,6 +185,12 @@
       <div class="chat-box" id="chat-box" *ngIf="channelTitle !== ''">
         <div class="channel-title-container">
           <div class="channel-title">{{ channelTitle }}</div>
+          <div class="team-setting-button-container">
+            <!-- (click) teamlist toggle -->
+            <button class="team-list-toggle-button">
+              <i class="fa fa-bars" style="font-size: 24px"></i>
+            </button>
+          </div>
         </div>
         <div class="chat-log">
           <div class="message" *ngFor="let message of messages">
@@ -223,7 +229,7 @@
             placeholder="Type your message here..."
           />
           <button class="input-container" (click)="sendMessage()">
-            <i class="material-icons" style="font-size: 24px">send</i>
+            <i class="fa-solid fa-arrow-right" style="font-size: 24px"></i>
           </button>
         </div>
       </div>

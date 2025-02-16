@@ -28,6 +28,7 @@ import { IUser, IChannel, ITeam } from '@shared/interfaces';
   ],
 })
 export class AddMemberChannelPopUpComponent {
+  isDarkTheme: boolean = false;
   searchQuery = '';
   found = '';
   memberIdsToAdd: string[] = [];
@@ -39,8 +40,11 @@ export class AddMemberChannelPopUpComponent {
     public data: {
       channel_id: string;
       team_id: string;
+      theme: boolean;
     }
-  ) {}
+  ) {
+    this.isDarkTheme = data.theme;
+  }
 
   async search() {
     console.log('Searching for:', this.searchQuery);

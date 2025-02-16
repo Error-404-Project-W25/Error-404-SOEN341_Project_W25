@@ -1,6 +1,7 @@
 .team-setting-sidebar {
   background-color: var(--side-bar-2-background);
   color: var(--message-input-text);
+  border-left: 5px solid var(--separator-color);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -10,16 +11,14 @@
   right: 0;
   width: auto;
   display: flex;
-  /* justify-content: center; */
   align-items: center;
-  /* position: absolute; */
   right: 0;
 }
 
 .member-list-title-container {
   align-items: center;
   background-color: var(--side-bar-2-background);
-  border-bottom: 2px solid var(--separator-color);
+  /* border-bottom: 2px solid var(--separator-color); */
   display: flex;
   flex-shrink: 0;
   height: 3rem;
@@ -132,4 +131,18 @@
 
 .member-button:hover {
   color: var(--add-team-button-hover);
+}
+
+.team-list-toggle-button {
+  background-color: var(--side-bar-2-background);
+  border: none;
+  color: var(--message-input-text);
+  cursor: pointer;
+  font-size: 16px;
+  height: inherit;
+  outline: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
