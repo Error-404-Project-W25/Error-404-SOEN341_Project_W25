@@ -28,13 +28,13 @@ export interface IUser {
 
 export interface IMessage {
   message_id: string;
-  content: string; 
-  sender: IUser; 
-  time: string; 
+  content: string;
+  sender: IUser;
+  time: string;
 }
 
-export interface IConvrsation{
-  conversation_id: string; 
-  convoName: string; 
+export interface IConversation {
+  conversation_id: string;
+  convoName: string;
   messages: IMessage[];
 }
