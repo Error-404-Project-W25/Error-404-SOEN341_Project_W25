@@ -136,7 +136,7 @@ describe('teams', () => {
             it("should return the new ITeam's id", async () => {
 
                 const teamName = "jest-create-team";
-                const description = "jest description";
+                const description = "jest team description";
                 const userId = "JEST-TESTUSERID-456";
 
                 const res = await request(server).post('/teams/create')
