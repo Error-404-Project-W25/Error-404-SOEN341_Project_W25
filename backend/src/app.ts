@@ -10,9 +10,25 @@ import authRoutes from './routes/authRoutes';
 import channelsRoutes from './routes/channelsRoutes';
 import teamsRoutes from './routes/teamsRoutes';
 import userRoutes from './routes/userRoutes';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 // import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
+
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+  },
+});
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
 
 // Connect to database
 const DB_CONN_STRING = process.env.DB_CONN_STRING || '';
@@ -44,7 +60,7 @@ const startServer = async () => {
     app.use('/users', userRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
     // Uncomment the line below to run the authentication tests
     // runAuthTests();
@@ -55,3 +71,5 @@ const startServer = async () => {
 };
 
 startServer();
+
+export { io };

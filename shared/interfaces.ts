@@ -26,14 +26,14 @@ export interface IUser {
 }
 
 export interface IMessage {
-  message_id: string;
+  messageId: string;
   content: string; 
   sender: IUser; 
   time: string; 
 }
 
-export interface IConvrsation{
-  conversation_id: string; 
-  convoName: string; 
+export interface IConversation{
+  conversationId: string; 
+  conversationName: string; 
   messages: IMessage[];
 }

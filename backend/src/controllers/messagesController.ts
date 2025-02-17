@@ -1,8 +1,9 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Messages } from '../models/messagesModel';
 import { Conversation } from '../models/conversationsModel';
 import { IMessage } from '@shared/interfaces';
+import { io } from '../app';
 
 /**
  * Send a message to a conversation
@@ -31,6 +32,8 @@ export const sendMessage = async (req: Request, res: Response) => {
      const conversation = await Conversation.findOne({ conversationId });
      if (conversation){
       conversation.messages.push(newMessage);
+      await conversation.save();
+      io.to(conversationId).emit('newMessage', newMessage);
      }
      res.status(200).json({ success: true });
   } catch (error) {
@@ -50,6 +53,8 @@ export const deleteMessage = async (req: Request, res: Response) => {
     const conversation = await Conversation.findOne({ conversationId });
     if (conversation){
       conversation.messages = conversation.messages.filter((message) => message.messageId !== messageId);
+      await conversation.save();
+      io.to(conversationId).emit('deleteMessage', messageId);
     }
     res.status(200).json({ success: true });
   } catch (error) {

@@ -5,7 +5,7 @@ import { IMessage } from '../../../shared/interfaces';
 // Schema for channel
 const messageSchema = new Schema(
   {
-    message_id: { type: String, unique: true },
+    messageId: { type: String, unique: true },
     content : { type: String, required: true },
     sender: { type: [userSchema] },
     time : { type: String, required: true },
@@ -25,5 +25,5 @@ messageSchema.set('toJSON', {
   },
 });
 
-export { channelSchema };
-export const Channel = mongoose.model<IChannel>('Channel', channelSchema);
+export { messageSchema };
+export const Messages = mongoose.model<IMessage>('Messages', messageSchema);

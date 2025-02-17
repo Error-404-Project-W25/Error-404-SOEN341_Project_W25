@@ -7,14 +7,18 @@ import {
   UserSignInData,
 } from '@shared/user-auth.types';
 import { firstValueFrom } from 'rxjs';
+import { io, Socket } from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BackendService {
   private backendURL: string = 'http://localhost:3000';
+  private socket: Socket;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.socket = io(this.backendURL);
+  }
 
   //////////////////////////// USERS ////////////////////////////
 
@@ -303,63 +307,37 @@ export class BackendService {
 //////////////////////////// MESSAGES ////////////////////////////
 
 async sendMessage(
-  content : string,
+  content: string,
   conversationId: string,
-  sender : IUser
+  sender: IUser
 ): Promise<boolean> {
-  try {
-    const response = await firstValueFrom(
-      this.http.post<{ success: boolean; error?: string }>(
-        `${this.backendURL}/messages/send`,
-        {
-          content,
-          sender,
-          conversationId,
-        }
-      )
-    );
-
-    if (response.success) {
-      return true;
-    } else {
-      console.error(response.error);
-    }
-  } catch (error) {
-    console.error('Error sending message:', error);
-  }
-  return false;
+  return new Promise((resolve, reject) => {
+    this.socket.emit('sendMessage', { content, sender, conversationId }, (response: { success: boolean; error?: string }) => {
+      if (response.success) {
+        resolve(true);
+      } else {
+        console.error(response.error);
+        reject(false);
+      }
+    });
+  });
 }
-
 
 async deleteMessage(
   conversationId: string,
   messageId: string
 ): Promise<boolean> {
-  try {
-    const response = await firstValueFrom(
-      this.http.post<{ success: boolean; error?: string }>(
-        `${this.backendURL}/messages/delete`,
-        {
-          conversationId,
-          messageId,
-        }
-      )
-    );
-
-    if (response.success) {
-      return true;
-    } else {
-      console.error(response.error);
-    }
-  } catch (error) {
-    console.error('Error deleting message:', error);
-  }
-  return false;
-
+  return new Promise((resolve, reject) => {
+    this.socket.emit('deleteMessage', { conversationId, messageId }, (response: { success: boolean; error?: string }) => {
+      if (response.success) {
+        resolve(true);
+      } else {
+        console.error(response.error);
+        reject(false);
+      }
+    });
+  });
 }
-
-
-
 
 ///////////// CONVERSATIONS ///
 

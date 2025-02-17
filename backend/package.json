@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/socket.io": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "latest",
     "express": "^4.21.2",
@@ -18,6 +19,8 @@
     "mongoose": "latest",
     "mongoose-sequence": "^6.0.1",
     "nodemon": "latest",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "ts-node": "latest",
     "uuid": "^11.0.5"
   },
@@ -28,6 +31,7 @@
     "@types/mongoose": "latest",
     "@types/mongoose-sequence": "^3.0.11",
     "@types/node": "latest",
+    "@types/socket.io-client": "^3.0.0",
     "@types/uuid": "^10.0.0",
     "eslint": "^9.20.1",
     "globals": "^15.15.0",
