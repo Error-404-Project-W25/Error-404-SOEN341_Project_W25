@@ -60,7 +60,10 @@ const startServer = async () => {
     app.use('/users', userRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
-    httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+    if (process.env.NODE_ENV !== 'test'){
+      httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    }
 
     // Uncomment the line below to run the authentication tests
     // runAuthTests();
@@ -71,5 +74,5 @@ const startServer = async () => {
 };
 
 startServer();
+export { app, io, connectDB, startServer };
 
-export { io };

@@ -23,6 +23,7 @@ export interface IUser {
   email: string;
   role: 'admin' | 'user';
   teams: ITeam[];
+  direct_messages: string[];
 }
 
 export interface IMessage {
