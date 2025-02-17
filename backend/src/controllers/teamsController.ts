@@ -17,6 +17,7 @@ export const getUserTeams = async (req: Request, res: Response) => {
     });
     res.json({ teams });
   } catch (error) {
+    console.error('Error fetching teams:', error);
     res.status(500).json({ error: 'Error fetching teams' });
   }
 };
@@ -36,6 +37,7 @@ export const getTeamById = async (req: Request, res: Response) => {
     }
     res.status(200).json({ team });
   } catch (error) {
+    console.error('Error fetching team:', error);
     res.status(500).json({ error: 'Error fetching team' });
   }
 };
@@ -92,7 +94,7 @@ export const createTeam = async (req: Request, res: Response) => {
 };
 
 /**
- * Add a member to a team
+ * Add a member to a team given the member_id and team_id
  * @param req member_id, team_id
  * @param res returns success or error message
  */
@@ -107,17 +109,18 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
       return;
     }
 
-    const memberToAdd = await User.findOne({ member_id });
-
     if (team.members.includes(member_id)) {
       res.status(400).json({
         error: `User with user_id ${member_id} is already a member of the team`,
       });
       return;
+    } else {
+      team.members.push(member_id);
     }
 
     const updatedTeam: ITeam = await team.save();
 
+    const memberToAdd = await User.findOne({ user_id: member_id });
     if (!memberToAdd) {
       res.status(404).json({ error: 'User not found' });
       return;
@@ -137,3 +140,72 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
     console.error('Failed to add member to team:', errorMessage);
   }
 };
+
+/**
+ * Remove a member from a team given the member_id and team_id
+ * @param req member_id, team_id
+ * @param res returns success or error message
+ */
+export const removeMemberFromTeam = async (req: Request, res: Response) => {
+  try {
+    const { member_id, team_id } = req.body;
+
+    const team = await Team.findOne({ team_id });
+
+    if (!team) {
+      res.status(404).json({ error: 'Team not found' });
+      return;
+    } 
+
+    if (!team.members.includes(member_id)) {
+      res.status(400).json({
+        error: `User with user_id ${member_id} is not a member of the team`,
+      });
+      return;
+    } else {    
+      team.members = team.members.filter((member) => member !== member_id);
+    }   
+
+    await team.save();
+    res.json({ success: true });
+
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    res.status(500).json({
+      success: false,
+      error: 'Failed to remove member from team',
+      details: errorMessage,
+    });
+    console.error('Failed to remove member from team', errorMessage);
+  }
+
+};
+
+/**
+ * Delete a team from the database
+ * @param req team_name
+ * @param res returns success or error message
+ */
+export const deleteTeam = async (req: Request, res: Response) => {
+  try {
+    const { team_name } = req.body;
+
+    const team = await Team.findOne({ team_name });
+    if (!team) {
+      res.status(404).json({ error: 'Team not found' });
+      return;
+    }   
+
+    await team.deleteOne();
+    res.json({ success: true });
+
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete team',
+      details: errorMessage,
+    });
+    console.error('Failed to delete team:', errorMessage);
+  }
+}
