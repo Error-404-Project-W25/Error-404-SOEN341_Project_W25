@@ -20,7 +20,7 @@ import { AddMemberChannelPopUpComponent } from '../add-member-channel-pop-up/add
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule], // Add FormsModule here
+  imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
   templateUrl: './chat.component.html',
   styleUrls: [
     './../../../assets/theme.css',
@@ -33,35 +33,26 @@ import { AddMemberChannelPopUpComponent } from '../add-member-channel-pop-up/add
 })
 export class ChatComponent implements OnInit, OnDestroy {
   title = 'chatHaven';
-  loginUser: IUser | null = null; // current user
-
-  isDarkTheme = true; // initial theme is light
-  newMessage: string = ''; // message input
-
-  channelTitle: string = ''; // channel title
-  teamTitle: string = ''; // team title
-
-  selectedTeamId: string | null = null; // selected team
-  selectedChannel: string | null = null; // selected channel
-
-  teamList: ITeam[] = []; // team list
-  channelList: IChannel[] = []; // channel list
-  conversationList: IChannel[] = []; // conversation list
-
-  teamMemberList: IUser[] = []; // team member list
-  chatMemberList: IUser[] = []; // chat member list
-  messages: Message[] = []; // message list
-
-  selectedMessageId: string | null = null; // Track selected message for delete button
-
-  private teamCreatedSubscription: Subscription | null = null; // subscription to team creation
-  private channelCreatedSubscription: Subscription | null = null; // subscription to channel creation
-
-  private channelsSubject = new BehaviorSubject<IChannel[]>([]); // channels subject
-  private teamsSubject = new BehaviorSubject<ITeam[]>([]); // teams subject
-
-  teams$ = this.teamsSubject.asObservable(); // teams observable
-  channels$ = this.channelsSubject.asObservable(); // channels observable
+  loginUser: IUser | null = null;
+  isDarkTheme = true;
+  newMessage: string = '';
+  channelTitle: string = '';
+  teamTitle: string = '';
+  selectedTeamId: string | null = null;
+  selectedChannel: string | null = null;
+  teamList: ITeam[] = [];
+  channelList: IChannel[] = [];
+  conversationList: IChannel[] = [];
+  teamMemberList: IUser[] = [];
+  chatMemberList: IUser[] = [];
+  messages: Message[] = [];
+  selectedMessageId: string | null = null;
+  private teamCreatedSubscription: Subscription | null = null;
+  private channelCreatedSubscription: Subscription | null = null;
+  private channelsSubject = new BehaviorSubject<IChannel[]>([]);
+  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
+  teams$ = this.teamsSubject.asObservable();
+  channels$ = this.channelsSubject.asObservable();
 
   constructor(
     private router: Router,
@@ -72,12 +63,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     window.addEventListener('resize', this.handleResize.bind(this));
-    this.handleResize(); // Initial check
-
-    // Fetch user from the service
+    this.handleResize();
     this.loginUser = this.userService.getUser() || null;
-
-    // If user is not already set, subscribe to userService updates
     if (!this.loginUser) {
       this.userService.user$.subscribe((user) => {
         this.loginUser = user || null;
@@ -92,10 +79,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // window.removeEventListener('resize', this.handleResize.bind(this));
+    window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
-  /*Refresh Team and Channel List */
   refreshTeamList() {
     this.loginUser = this.userService.getUser() || null;
     this.teamList = this.loginUser?.teams || [];
@@ -112,12 +98,10 @@ export class ChatComponent implements OnInit, OnDestroy {
       [];
   }
 
-  /*Toggle Theme */
   toggleTheme() {
     this.isDarkTheme = !this.isDarkTheme;
   }
 
-  /*Open Different Dialogue */
   openCreateTeamDialog(): void {
     if (this.loginUser?.role !== 'admin') {
       alert('You do not have the necessary permissions to create a team.');
@@ -158,16 +142,13 @@ export class ChatComponent implements OnInit, OnDestroy {
       data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
   }
+
   openDeleteDialog(messageId: string, messageText: string): void {
     const dialogRef = this.dialog.open(DeleteMessageComponent, {
       data: { messageId, messageText, theme: this.isDarkTheme },
     });
-
-    // Handle the result after dialog is closed
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Temporarily remove the message with the returned ID (msg reappears when refreshed),
-        // WILL BE MODIFIED ONCE BACKEND IS IMPLEMENTED
         this.messages = this.messages.filter((msg) => msg.id !== result);
       }
     });
@@ -181,102 +162,10 @@ export class ChatComponent implements OnInit, OnDestroy {
         theme: this.isDarkTheme,
       },
     });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.added) {
       }
     });
-  }
-
-  /*Select Different Team, Channel, Conversation */
-  selectTeam(team: string): void {
-    let teamMemberListID: string[] = [];
-    this.teamMemberList = [];
-    this.selectedTeamId = team;
-    this.backendService.getTeamById(team).then((teamData) => {
-      if (teamData) {
-        this.channelList = teamData.channels || [];
-        this.teamTitle = teamData.team_name || '';
-        teamMemberListID = teamData.members || [];
-      }
-
-      teamMemberListID.forEach((member) => {
-        this.backendService.getUserById(member).then((userData) => {
-          if (userData) {
-            this.teamMemberList.unshift(userData);
-          }
-        });
-      });
-
-      this.channelTitle = '';
-      this.handleResize();
-    });
-  }
-
-  selectChannel(channel: string): void {
-    this.messages = [];
-    this.selectedChannel = channel;
-    this.backendService
-      .getChannelById(this.selectedTeamId!, channel)
-      .then((channelData) => {
-        this.channelTitle = channelData?.name || '';
-        const memberPromises =
-          channelData?.members.map((member) =>
-            this.backendService.getUserById(member)
-          ) || [];
-
-        Promise.all(memberPromises).then((users) => {
-          this.chatMemberList = users.filter(
-            (user) => user !== undefined
-          ) as IUser[];
-        });
-      });
-    this.handleResize();
-  }
-
-  selectConversation(conversation: string): void {
-    // this.selectedTeam = conversation;
-  }
-
-  /*Send Message */
-  sendMessage() {
-    if (!this.newMessage) return;
-    this.messages.unshift(
-      new Message(
-        this.loginUser?.username || 'Unknown',
-        new Date().toLocaleTimeString(),
-        this.newMessage
-      )
-    );
-    this.newMessage = '';
-  }
-
-  /*Logout */
-  async signOut() {
-    const response: UserAuthResponse | undefined =
-      await this.backendService.logoutUser();
-    if (response && !response.error) {
-      this.userService.clearUser();
-      this.router.navigate(['/']);
-    } else if (response) {
-      console.error(response.error);
-    } else {
-      console.error('No response from backend');
-    }
-  }
-
-  /*Dropdown */
-  myChannelFunction() {
-    const dropdown = document.getElementById('myDropdownChannel');
-    if (dropdown) {
-      dropdown.classList.toggle('channelList-show');
-    }
-  }
-  myConvoFunction() {
-    const dropdown = document.getElementById('myDropdownConvo');
-    if (dropdown) {
-      dropdown.classList.toggle('channelList-show');
-    }
   }
 
   openEditChannelDialog(channel: IChannel): void {
@@ -289,10 +178,8 @@ export class ChatComponent implements OnInit, OnDestroy {
         isDarkTheme: this.isDarkTheme,
       },
     });
-
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Update the channel in the list
         const teamIndex = this.teamList.findIndex(
           (t) => t.team_id === this.selectedTeamId
         );
@@ -311,22 +198,101 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  //IMPLEMENT DELETE MESSAGE FUNCTIONALITY/////////////////////////////////////////////////////////////////////////////////////////////
+  selectTeam(team: string): void {
+    let teamMemberListID: string[] = [];
+    this.teamMemberList = [];
+    this.selectedTeamId = team;
+    this.backendService.getTeamById(team).then((teamData) => {
+      if (teamData) {
+        this.channelList = teamData.channels || [];
+        this.teamTitle = teamData.team_name || '';
+        teamMemberListID = teamData.members || [];
+      }
+      teamMemberListID.forEach((member) => {
+        this.backendService.getUserById(member).then((userData) => {
+          if (userData) {
+            this.teamMemberList.unshift(userData);
+          }
+        });
+      });
+      this.channelTitle = '';
+      this.handleResize();
+    });
+  }
 
-  // Handle window resize events
+  selectChannel(channel: string): void {
+    this.messages = [];
+    this.selectedChannel = channel;
+    this.backendService
+      .getChannelById(this.selectedTeamId!, channel)
+      .then((channelData) => {
+        this.channelTitle = channelData?.name || '';
+        const memberPromises =
+          channelData?.members.map((member) =>
+            this.backendService.getUserById(member)
+          ) || [];
+        Promise.all(memberPromises).then((users) => {
+          this.chatMemberList = users.filter(
+            (user) => user !== undefined
+          ) as IUser[];
+        });
+      });
+    this.handleResize();
+  }
+
+  selectConversation(conversation: string): void {
+    // this.selectedTeam = conversation;
+  }
+
+  sendMessage() {
+    if (!this.newMessage) return;
+    this.messages.unshift(
+      new Message(
+        this.loginUser?.username || 'Unknown',
+        new Date().toLocaleTimeString(),
+        this.newMessage
+      )
+    );
+    this.newMessage = '';
+  }
+
+  async signOut() {
+    const response: UserAuthResponse | undefined =
+      await this.backendService.logoutUser();
+    if (response && !response.error) {
+      this.userService.clearUser();
+      this.router.navigate(['/']);
+    } else if (response) {
+      console.error(response.error);
+    } else {
+      console.error('No response from backend');
+    }
+  }
+
+  myChannelFunction() {
+    const dropdown = document.getElementById('myDropdownChannel');
+    if (dropdown) {
+      dropdown.classList.toggle('channelList-show');
+    }
+  }
+
+  myConvoFunction() {
+    const dropdown = document.getElementById('myDropdownConvo');
+    if (dropdown) {
+      dropdown.classList.toggle('channelList-show');
+    }
+  }
+
   handleResize() {
     const width = window.innerWidth;
-
     const sideBarOne = document.getElementById('side-bar-1');
     const sideBarTwo = document.getElementById('side-bar-2');
     const chatLog = document.getElementById('chat-box');
     const cardContainer = document.getElementById('card-container');
     const teamListSettingBar = document.getElementById('team-setting-sidebar');
-
     const displayStyle = (element: HTMLElement | null, style: string) => {
       if (element) element.style.display = style;
     };
-
     if (width <= 450) {
       displayStyle(cardContainer, 'none');
       if (this.selectedChannel) {
@@ -344,7 +310,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       displayStyle(sideBarTwo, 'flex');
       displayStyle(chatLog, 'flex');
     }
-
     if (width <= 1025) {
       displayStyle(teamListSettingBar, 'none');
     } else {
@@ -358,8 +323,6 @@ class Message {
     public author: string,
     public date: string,
     public text: string,
-
-    //TO BE CHANGED ONCE BACKEND CREATES UNIQUE ID MESSAGES
-    public id: string = Math.random().toString(36).substr(2, 9) // Generate a random ID
+    public id: string = Math.random().toString(36).substr(2, 9)
   ) {}
 }

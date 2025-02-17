@@ -26,7 +26,7 @@
   margin: 0;
   padding: 0;
   width: 100%;
-  border-bottom: 2px solid var(--side-bar-1-separator);
+  border-bottom: 2px solid var(--separator);
 }
 
 .add-team-button {
@@ -85,7 +85,8 @@
   display: flex;
   flex-direction: column;
   height: calc(100% - 8rem);
-  margin-top: 7rem;
+  /*FIX*/
+  margin-top: 4rem;
   margin-bottom: 7rem;
   max-height: fit-content;
   padding-top: 0;
@@ -167,7 +168,7 @@
   margin: 0;
   padding: 0;
   width: 100%;
-  border-top: 2px solid var(--side-bar-1-separator);
+  border-top: 2px solid var(--separator);
 }
 
 
