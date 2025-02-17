@@ -45,32 +45,15 @@ export const createChannel = async (req: Request, res: Response) => {
       newChannel.members.push(...team.admin);
     }
 
-    const savedChannel: IChannel = await newChannel.save();
+    await newChannel.save();
 
-    // Add the channel to the team
-    team.channels.push(savedChannel);
+    // Add the channel ID to the team
+    team.channels.push(channel_id);
     await team.save();
-
-    const user = await User.findOne({ user_id: creator_id });
-    if (user && user.teams){
-      // Find the team by team_id
-      const teamIndex: number = user.teams.findIndex((team) => team.team_id === team_id);
-
-      if (teamIndex === -1) {
-        res.status(404).json({ error: 'Team not found' });
-        return;
-      }
-      
-      // Find the channel by channel_id
-      user.teams[teamIndex].channels.push(savedChannel);
-
-      await user.save();
-    }
-    
 
     res.status(201).json({
       message: 'The channel has been created successfully',
-      channel_id: savedChannel.channel_id,
+      channel_id: channel_id,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -120,7 +103,7 @@ export const addUserToChannel = async (
 
     // Check if the user is part of the channel
     const isUserInChannel: boolean = channel.members.includes(user_id);
-    if (!isUserInChannel) {
+    if (isUserInChannel) {
       res
         .status(400)
         .json({ error: 'The user entered is already part of the channel' });
@@ -130,12 +113,7 @@ export const addUserToChannel = async (
     // Otherwise, add the user to the members of the channel
     channel.members.push(user_id);
 
-    // Save the channel
-    const savedChannel: IChannel = await channel.save();
-
-    // Update the team
-    team.channels.push(savedChannel);
-    await team.save();
+    await channel.save();
 
     res.status(201).json({
       success: true,
@@ -170,16 +148,7 @@ export const getChannelById = async (req: Request, res: Response) => {
     return;
   }
   try {
-    const team = await Team.findOne({ team_id });
-    if (!team) {
-      res.status(404).json({ error: 'Team not found' });
-      return;
-    }
-
-    const channel: IChannel | undefined = team.channels.find(
-      (channel) => channel.channel_id === channel_id
-    );
-
+    const channel = await Channel.findOne({ channel_id });
     if (!channel) {
       res.status(404).json({ error: 'Channel not found' });
       return;

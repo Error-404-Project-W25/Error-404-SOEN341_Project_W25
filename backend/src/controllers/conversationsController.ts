@@ -1,41 +1,46 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Conversation } from '../models/conversationsModel';
+import { IConversation } from '@shared/interfaces';
 
 /**
- * create a new conversation 
- * @param req conversationName, messages[]
- * @param res returns the new conversation
+ * Create a new conversation
+ * @param req conversationName
+ * @param res returns the new conversation's ID
  */
 export const createConversation = async (req: Request, res: Response) => {
   try {
     const { conversationName } = req.body;
+
+    // Generate a UUID for the conversationId
     const conversationId: string = uuidv4();
 
-    const newConversation = await new Conversation({
-      conversationId: conversationId,
-      conversationName: conversationName,
+    // Create a new conversation document
+    const newConversation: IConversation = await new Conversation({
+      conversationId,
+      conversationName,
       messages: [],
     }).save();
-    res.status(201).json({ newConversation });
+
+    res.status(201).json({ conversationId });
   } catch (error) {
-    console.error('Error creating conversation:', error);
-    res.status(500).json({ error: 'Error creating conversation' });
+    const errorMessage: string = (error as Error).message;
+    res
+      .status(500)
+      .json({ error: 'Failed to create conversation', details: errorMessage });
+    console.error('Failed to create conversation:', errorMessage);
   }
-}
-
-
+};
 
 /**
- * Getting the conversation with its id 
+ * Get a conversation by its ID
  * @param req conversationId
- * @param res returns the conversation
+ * @param res returns an IConversation object
  */
-
 export const getConversationById = async (req: Request, res: Response) => {
   try {
     const conversationId: string = req.params.conversationId;
-    const conversation = await Conversation.findOne({ conversationId });
+    const conversation: IConversation | null = await Conversation.findOne({ conversationId });
     if (!conversation) {
       res.status(404).json({ error: 'Conversation not found' });
       return;
@@ -45,4 +50,4 @@ export const getConversationById = async (req: Request, res: Response) => {
     console.error('Error fetching conversation:', error);
     res.status(500).json({ error: 'Error fetching conversation' });
   }
-}
+};

@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Messages } from '../models/messagesModel';
 import { Conversation } from '../models/conversationsModel';

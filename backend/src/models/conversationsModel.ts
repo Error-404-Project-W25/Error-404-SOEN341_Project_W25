@@ -1,17 +1,16 @@
 import mongoose, { Schema } from 'mongoose';
-import { messageSchema } from './messagesModel';
 import { IConversation } from '../../../shared/interfaces';
 
-// Schema for channel
+// Schema for conversation
 const conversationSchema = new Schema(
   {
     conversationId: { type: String, unique: true },
     conversationName: { type: String, required: true },
-    messages : { type: [messageSchema], default: [] },
+    messages: { type: [Object], default: [] },
   },
   {
     timestamps: false,
-    collection: 'Channels',
+    collection: 'Conversations',
   }
 );
 

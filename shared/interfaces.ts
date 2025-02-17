@@ -12,7 +12,7 @@ export interface ITeam {
   description: string;
   admin: string[]; // user_id
   members: string[]; // user_id
-  channels: IChannel[];
+  channels: string[]; // channel_id
 }
 
 export interface IUser {
@@ -22,7 +22,7 @@ export interface IUser {
   username: string;
   email: string;
   role: 'admin' | 'user';
-  teams: ITeam[];
+  teams: string[]; // team_id
   direct_messages: string[];
 }
 
@@ -33,7 +33,7 @@ export interface IMessage {
   time: string; 
 }
 
-export interface IConversation{
+export interface IConversation {
   conversationId: string; 
   conversationName: string; 
   messages: IMessage[];

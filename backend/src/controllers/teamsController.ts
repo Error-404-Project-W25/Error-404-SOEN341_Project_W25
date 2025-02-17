@@ -1,46 +1,9 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { ITeam } from '@shared/interfaces';
+import { ITeam, IChannel } from '@shared/interfaces';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
-
-/**
- * Get all teams in the database
- * @param req user_id
- * @param res returns all teams of which the user is a member
- */
-export const getUserTeams = async (req: Request, res: Response) => {
-  try {
-    const userIdQuery: string = req.params.user_id;
-    const teams: ITeam[] | null = await Team.find({
-      members: userIdQuery,
-    });
-    res.json({ teams });
-  } catch (error) {
-    console.error('Error fetching teams:', error);
-    res.status(500).json({ error: 'Error fetching teams' });
-  }
-};
-
-/**
- * Get a team by team_id
- * @param req team_id
- * @param res returns an ITeam object
- */
-export const getTeamById = async (req: Request, res: Response) => {
-  try {
-    const team_id: string = req.params.team_id;
-    const team: ITeam | null = await Team.findOne({ team_id });
-    if (!team) {
-      res.status(404).json({ error: 'Team not found' });
-      return;
-    }
-    res.status(200).json({ team });
-  } catch (error) {
-    console.error('Error fetching team:', error);
-    res.status(500).json({ error: 'Error fetching team' });
-  }
-};
+import { Channel } from '../models/channelsModel'; // Import the Channel model
 
 /**
  * Create a new team
@@ -54,6 +17,18 @@ export const createTeam = async (req: Request, res: Response) => {
     // Generate a UUID for the team_id
     const team_id: string = uuidv4();
 
+    // Generate a UUID for the default channel
+    const channel_id: string = uuidv4();
+
+    // Create a new default channel document
+    const defaultChannel: IChannel = await new Channel({
+      channel_id,
+      name: 'General',
+      description: 'This is the default channel',
+      team_id,
+      members: [user_id],
+    }).save();
+
     // Create a new team document
     const newTeam: ITeam = await new Team({
       team_id,
@@ -61,25 +36,13 @@ export const createTeam = async (req: Request, res: Response) => {
       description,
       admin: [user_id],
       members: [user_id],
-      channels: [
-        {
-          channel_id: uuidv4(),
-          name: 'General',
-          description: 'This is the default channel',
-          team_id: team_id,
-          members: [user_id], // Add the creator to the default channel members
-        },
-      ],
+      channels: [defaultChannel.channel_id], // Add the default channel ID
     }).save();
 
-    // Add the new ITeam to the signed-in user
+    // Add the new ITeam ID to the signed-in user
     const user = await User.findOne({ user_id });
     if (user) {
-      if (user.teams) {
-        user.teams.push(newTeam);
-      } else {
-        user.teams = [newTeam];
-      }
+      user.teams.push(newTeam.team_id);
       await user.save();
     }
 
@@ -118,7 +81,7 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
       team.members.push(member_id);
     }
 
-    const updatedTeam: ITeam = await team.save();
+    await team.save();
 
     const memberToAdd = await User.findOne({ user_id: member_id });
     if (!memberToAdd) {
@@ -126,7 +89,7 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
       return;
     }
 
-    memberToAdd.teams.push(updatedTeam);
+    memberToAdd.teams.push(team_id);
     await memberToAdd.save();
 
     res.json({ success: true });
@@ -194,36 +157,25 @@ export const removeMemberFromTeam = async (req: Request, res: Response) => {
 
 /**
  * Delete a team from the database
- * @param req team_name
+ * @param req team_id
  * @param res returns success or error message
  */
 export const deleteTeam = async (req: Request, res: Response) => {
   try {
-    const { team_name } = req.body;
-
-    const team = await Team.findOne({ team_name });
+    const { team_id } = req.body;
+    const team = await Team.findOne({ team_id });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
-    }   
-
-    // remove the team from all its members teams
-    for (const member of team.members) {
-      const user = await User.findOne({ user_id: member });
-      if (!user) {
-        res.status(404).json({ error: 'User not found' });
-        return;
-      }
-        
-      user.teams = user.teams.filter((team) => team.team_id !== team_name.team_id);
-      
-      await user.save();
     }
-
-    // delete the team from the database
+    //remove team from all users
+    const users = await User.find({ teams: team_id });
+    users.forEach(async (user) => {
+      user.teams = user.teams.filter((team) => team !== team_id);
+      await user.save();
+    });
     await team.deleteOne();
     res.json({ success: true });
-
   } catch (error) {
     const errorMessage = (error as Error).message;
     res.status(500).json({
@@ -233,4 +185,5 @@ export const deleteTeam = async (req: Request, res: Response) => {
     });
     console.error('Failed to delete team:', errorMessage);
   }
-}
+
+};

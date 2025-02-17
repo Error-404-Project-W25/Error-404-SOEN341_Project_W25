@@ -2,6 +2,7 @@ import { IUser } from '@shared/interfaces';
 import { AuthStatus } from '../../types/authentication.types';
 import { Request, Response } from 'express';
 import { User } from '../models/userModel';
+import { Team } from '../models/teamsModel';
 import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
@@ -28,6 +29,8 @@ export const registerUser = async (req: Request, res: Response) => {
         username,
         email,
         role,
+        teams: [], // Initialize with an empty array of team IDs
+        direct_messages: [],
       }).save();
 
       res.status(201).json({
@@ -106,9 +109,10 @@ export const getUserById = async (req: Request, res: Response) => {
   try {
     const user: IUser | null = await User.findOne({
       user_id: req.params.user_id,
-    });
+    }).populate('teams');
     if (user) {
-      res.status(200).json({ user });
+      const populatedTeams = await Team.find({ team_id: { $in: user.teams } });
+      res.status(200).json({ user, teams: populatedTeams });
     } else {
       res.status(404).json({ error: 'User not found' });
     }

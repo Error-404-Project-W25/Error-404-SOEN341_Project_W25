@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { teamSchema } from './teamsModel';
 import { IUser } from '../../../shared/interfaces';
 
 // User Schema
@@ -9,14 +8,14 @@ const userSchema: Schema = new Schema(
     firstName: { type: String },
     lastName: { type: String },
     username: { type: String, unique: true },
-    email: { type: String, },
+    email: { type: String },
     role: {
       type: String,
       enum: ['admin', 'user'],
       default: 'user',
       required: true,
     },
-    teams: { type: [teamSchema], default: [] },
+    teams: { type: [String], default: [] }, // team IDs
     direct_messages: { type: [String], default: [] },
   },
   {
