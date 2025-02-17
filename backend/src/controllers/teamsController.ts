@@ -167,6 +167,17 @@ export const removeMemberFromTeam = async (req: Request, res: Response) => {
     }   
 
     await team.save();
+
+    // Remove the team from the user's teams 
+    const user = await User.findOne({ user_id: member_id });
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    } else {    
+      user.teams = user.teams.filter((team) => team !== team_id);
+    }   
+
+    await user.save();
     res.json({ success: true });
 
   } catch (error) {
@@ -196,6 +207,20 @@ export const deleteTeam = async (req: Request, res: Response) => {
       return;
     }   
 
+    // remove the team from all its members teams
+    for (const member of team.members) {
+      const user = await User.findOne({ user_id: member });
+      if (!user) {
+        res.status(404).json({ error: 'User not found' });
+        return;
+      }
+        
+      user.teams = user.teams.filter((team) => team.team_id !== team_name.team_id);
+      
+      await user.save();
+    }
+
+    // delete the team from the database
     await team.deleteOne();
     res.json({ success: true });
 
