@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import { app, startServer } from "../src/app";
 import { Express } from 'express';
@@ -18,31 +18,63 @@ describe('teams', () => {
     });
 
     /*
+        Cleanup after the tests:
+        Remove the user that was added during addMemberToTeam, and
+        Delete the team that was created during createTeam.
+    */
+    afterAll(async () => {
+        try {
+            await request(server).post('/teams/removeMember') 
+                .send({
+                    team_id: "JEST-TESTTEAMID-123",
+                    member_id: "JEST-TESTUSERID-456" 
+                });
+            console.log("User removed from team in afterAll");
+
+            await request(server).delete('/teams/delete')
+                .send({
+                    team_name: "jest-create-team"
+                });
+            console.log("Team deleted in afterAll");
+
+        } catch (error) {
+            console.error("Error: ", error);
+        }
+    });
+
+    /*
         === Test getUserTeams() ===
     */
    describe('getUserTeams', () => {
     /*
         Test Case 1: The user ID cannot be found
+        A random user ID is used that does not exist in the database.
+        The expected result is an empty array of teams.
     */
         describe('given the user id cannot be found', () => {
             it("should return a 500", async () => {
 
-                const userId = 'userId-doesnotexist-123'; // random test userId
+                const userId = 'userId-doesnotexist-123'; 
+
                 const res = await request(server).get(`/teams/user/${userId}`);
-                expect(res.body.teams).toHaveLength(0); // teams will have an array of 0
+                expect(res.body.teams).toHaveLength(0); 
 
             });
         });
 
     /*
         Test Case 2: The user ID can be found
+        The user ID is one that exists in the database & used exclusively for testing.
+        The expected result is the one team (JEST-TESTTEAMID-123) that the user is a member of.
     */
         describe('given the user id can be found', () => {
             it("should return all teams of which the user is a member", async () => {
                 
-                const userId = 'xi4Ug88Ft0TfLbKfpFbV1SaLiVw2';
+                const userId = 'JEST-TESTUSERID-123';
+
                 const res = await request(server).get(`/teams/user/${userId}`);
-                expect(res.body.teams).toBeTruthy();
+                expect(res.body.teams[0].team_id).toBe("JEST-TESTTEAMID-123");
+                expect(res.body.teams[0].team_name).toBe("TEST TEAM");
 
             });
         });
@@ -56,11 +88,14 @@ describe('teams', () => {
 
         /*
             Test Case 1: The team ID does not exist
+            The team ID used is a random one that does not exist in the database.
+            The expected result is a 404 status.
         */
         describe('given the team does not exist', () => {
             it("should return a 404", async () => {
 
-                const teamId = 'teamId-doesnotexist-123' // random test teamId
+                const teamId = 'teamId-doesnotexist-123' 
+
                 const res = await request(server).get(`/teams/getTeamById/${teamId}`)
                 expect(res.statusCode).toEqual(404);
                 
@@ -69,19 +104,19 @@ describe('teams', () => {
 
         /*
             Test Case 2: The team ID exists
+            The team ID used is one that exists in the database & used exclusively for testing.
+            The expected result is a 200 status and the team object.
         */
        describe('given the team does exist', () => {
             it("should return a 200 status and the team object", async () => {
                 
-                const teamId = "7c4fe90a-4331-4ea8-9918-85ab499ee8fd";
-                const teamName = "team1";
+                const teamId = "JEST-TESTTEAMID-123";
+                const teamName = "TEST TEAM";
 
-                const res = await request(server)
-                    .get(`/teams/getTeamById/${teamId}`)
-                
+                const res = await request(server).get(`/teams/getTeamById/${teamId}`)
                 expect(res.statusCode).toEqual(200);
                 expect(res.body.team.team_name).toBe(teamName);
-                
+
             });
        });
             
@@ -94,16 +129,17 @@ describe('teams', () => {
 
         /*
             Test Case 1: The team is created successfully
+            The team name, description, and user ID are provided.
+            The expected result is a 201 status and the new team's ID.
         */
         describe('given the team is created successfully', () => {
             it("should return the new ITeam's id", async () => {
 
-                const teamName = 'team_jest';
-                const description = 'jest desecription';
-                const userId = 'xi4Ug88Ft0TfLbKfpFbV1SaLiVw2';
+                const teamName = "jest-create-team";
+                const description = "jest description";
+                const userId = "JEST-TESTUSERID-456";
 
-                const res = await request(server)
-                    .post('/teams/create')
+                const res = await request(server).post('/teams/create')
                     .send({
                         user_id: userId,
                         team_name: teamName,
@@ -111,25 +147,22 @@ describe('teams', () => {
                     })
                 
                 expect(res.statusCode).toEqual(201);
-                expect(res.body.team_id).toBeTruthy();
+                expect(res.body.team_id).toBeTruthy(); // Will be a random value, check if exists
                 
             });
         });
 
         /*
             Test Case 2: The team is not created successfully
+            No inputs are provided.
+            The expected result is a 500 status.
         */
-        describe('given the team is not created successfully (missing team name)', () => {
+        describe('given the team is not created successfully', () => {
             it("should return a 500", async () => {
 
-                const description = 'team5 description';
-                const userId = 'userId-doesnotexist-123';
-
-                const res = await request(server)
-                    .post('/teams/create')
+                const res = await request(server).post('/teams/create')
                     .send({
-                        user_id: userId,
-                        description: description
+                        // Send nothing
                     })
                 
                 expect(res.statusCode).toEqual(500);
@@ -145,37 +178,37 @@ describe('teams', () => {
     
             /*
                 Test Case 1: The member is added successfully
+                The team ID and member ID are provided, both exist in the DB aand are exclusively for testing.
+                The expected result is a success message.
             */
             describe('given the member is added successfully', () => {
                 it("should return a success message", async () => {
     
-                    const teamId = '7c4fe90a-4331-4ea8-9918-85ab499ee8fd';
-                    const memberId = 'zLWYEqRcE3MZNwN8uaG1A5iCCp72';
+                    const teamId = "JEST-TESTTEAMID-123";
+                    const memberId = "JEST-TESTUSERID-456";
     
-                    const res = await request(server)
-                        .post('/teams/addMember')
+                    const res = await request(server).post('/teams/addMember')
                         .send({
                             team_id: teamId,
                             member_id: memberId
                         })
                     
-                    expect(res.body).toEqual('success');
+                    expect(res.body).toEqual({"success": true});
                     
                 });
             });
     
             /*
                 Test Case 2: The member is not added successfully
+                No inputs are provided.
+                The expected result is a 404 status.
             */
             describe('given the member is not added successfully', () => {
                 it("should return a 500", async () => {
     
-                    const memberId = '123456';
-    
-                    const res = await request(server)
-                        .post('/teams/addMember')
+                    const res = await request(server).post('/teams/addMember')
                         .send({
-                            member_id: memberId
+                            // send nothing
                         })
                     
                     expect(res.statusCode).toEqual(404);
