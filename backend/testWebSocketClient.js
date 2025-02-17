@@ -6,11 +6,14 @@ socket.on('connect', () => {
   console.log('Connected to WebSocket server');
 
   // Send a message
-  socket.emit('sendMessage', {
+  const message = {
+    messageId: 'msg1',
     content: 'Hello',
-    sender: 'user1',
-    conversationId: 'conv1'
-  }, (response) => {
+    sender: { user_id: 'ue8ynA4g4hW82AFlgUDdbXWH88s1', firstName: 'Amy', lastName: 'SprintTwo', username: 'amy_sprint_two', email: 'amy_sprint_two@example.com', role: 'admin', teams: [] },
+    time: new Date().toISOString()
+  };
+
+  socket.emit('sendMessage', message, (response) => {
     console.log('Send message response:', response);
   });
 
