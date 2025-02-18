@@ -25,7 +25,7 @@ export const sendMessage = async (req: Request, res: Response) => {
     const newMessage: IMessage = await new Messages({
       messageId: messageId, 
       content: content, 
-      sender: sender, 
+      sender: sender,
       time: time
      }).save();
 
@@ -33,7 +33,9 @@ export const sendMessage = async (req: Request, res: Response) => {
      if (conversation){
       conversation.messages.push(newMessage);
       await conversation.save();
-      io.to(conversationId).emit('newMessage', newMessage);
+      console.log('emitting to');
+      io.to(conversationId).emit('newMessage', newMessage); 
+      console.log('Message sent');
      }
      res.status(200).json({ success: true });
   } catch (error) {
@@ -62,3 +64,29 @@ export const deleteMessage = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Error deleting message' });
   }
 }
+
+/**
+ * Get messages for a conversation
+ * @param req string conversationId
+ * @param res returns array of messages
+ */
+export const getMessages = async (req: Request, res: Response) => {
+  try {
+    const { conversationId } = req.params;
+    if (!conversationId) {
+      res.status(400).json({ error: 'Missing conversationId' });
+      return;
+    }
+
+    const conversation = await Conversation.findOne({ conversationId });
+    if (!conversation) {
+      res.status(404).json({ error: 'Conversation not found' });
+      return;
+    }
+
+    res.status(200).json({ messages: conversation.messages });
+  } catch (error) {
+    console.error('Error retrieving messages:', error);
+    res.status(500).json({ error: 'Error retrieving messages' });
+  }
+};

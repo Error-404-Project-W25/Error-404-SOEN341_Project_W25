@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import { messageSchema } from './messagesModel';
 import { IConversation } from '../../../shared/interfaces';
 
-// Schema for channel
+// Schema for conversation
 const conversationSchema = new Schema(
   {
     conversationId: { type: String, unique: true },
@@ -11,7 +11,7 @@ const conversationSchema = new Schema(
   },
   {
     timestamps: false,
-    collection: 'Channels',
+    collection: 'Conversations',
   }
 );
 

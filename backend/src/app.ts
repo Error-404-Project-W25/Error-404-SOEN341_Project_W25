@@ -4,14 +4,16 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 import cors from 'cors';
-import express, { Application } from 'express';
+import express, { Application, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes';
 import channelsRoutes from './routes/channelsRoutes';
 import teamsRoutes from './routes/teamsRoutes';
 import userRoutes from './routes/userRoutes';
+import conversationsRoutes from './routes/conversationsRoutes';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import { sendMessage, getMessages } from './controllers/messagesController';
 // import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
@@ -25,6 +27,42 @@ const io = new Server(httpServer, {
 
 io.on('connection', (socket) => {
   console.log('a user connected');
+
+  socket.on('joinRoom', ({ conversationId }) => {
+    socket.join(conversationId);
+    console.log(`User joined room: ${conversationId}`);
+  });
+
+  socket.on('sendMessage', async (data, callback) => {
+    const req = {
+      body: data,
+    } as Request;
+    const res = {
+      status: (statusCode: number) => ({
+        json: (responseBody: any) => {
+          callback(responseBody);
+        },
+      }),
+    } as Response;
+
+    await sendMessage(req, res);
+  });
+
+  socket.on('getMessages', async (data, callback) => {
+    const req = {
+      params: data,
+    } as Request;
+    const res = {
+      status: (statusCode: number) => ({
+        json: (responseBody: any) => {
+          callback(responseBody);
+        },
+      }),
+    } as Response;
+
+    await getMessages(req, res);
+  });
+
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
@@ -58,6 +96,7 @@ const startServer = async () => {
     app.use('/auth', authRoutes);
     app.use('/channels', channelsRoutes);
     app.use('/users', userRoutes);
+    app.use('/conversations', conversationsRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
 

@@ -4,6 +4,7 @@ export interface IChannel {
   description: string;
   team_id: string;
   members: string[]; // user_id
+  conversationId: string; // Add conversationId
 }
 
 export interface ITeam {
@@ -29,11 +30,11 @@ export interface IUser {
 export interface IMessage {
   messageId: string;
   content: string; 
-  sender: IUser; 
+  sender: string; // user_id
   time: string; 
 }
 
-export interface IConversation{
+export interface IConversation {
   conversationId: string; 
   conversationName: string; 
   messages: IMessage[];

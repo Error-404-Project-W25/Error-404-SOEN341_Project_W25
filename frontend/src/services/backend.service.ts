@@ -339,6 +339,10 @@ async deleteMessage(
   });
 }
 
+async joinRoom(conversationId: string): Promise<void> {
+  this.socket.emit('joinRoom', { conversationId });
+}
+
 ///////////// CONVERSATIONS ///
 
 async createConversation(

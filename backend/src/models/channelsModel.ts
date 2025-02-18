@@ -8,7 +8,8 @@ const channelSchema = new Schema(
     name: { type: String, required: true },
     description: { type: String },
     team_id: { type: String },
-    members: { type: [String], default: [] }, 
+    members: { type: [String], default: [] },
+    conversationId: { type: String, required: true }, // Add conversationId
   },
   {
     timestamps: false,

@@ -3,23 +3,31 @@ const { io } = require('socket.io-client');
 const socket = io('http://localhost:3000');
 
 socket.on('connect', () => {
-  console.log('Connected to WebSocket server');
+  console.log('Connected to WebSocket server');  
+  const conversationId = '1'; 
 
-  // Send a message
-  const message = {
-    messageId: 'msg1',
-    content: 'Hello',
-    sender: { user_id: 'ue8ynA4g4hW82AFlgUDdbXWH88s1', firstName: 'Amy', lastName: 'SprintTwo', username: 'amy_sprint_two', email: 'amy_sprint_two@example.com', role: 'admin', teams: [] },
-    time: new Date().toISOString()
-  };
+  // Join the conversation room
+  socket.emit('joinRoom', { conversationId });
 
-  socket.emit('sendMessage', message, (response) => {
-    console.log('Send message response:', response);
+  // Request messages for the conversation
+  socket.emit('getMessages', { conversationId }, (response) => {
+    console.log('Messages received:', response.messages);
+
+    // Send a message after getting messages
+    const message = {
+      content: 'last test',
+      sender: 'ue8ynA4g4hW82AFlgUDdbXWH88s1', // user_id
+      conversationId: conversationId,
+    };
+
+    socket.emit('sendMessage', message, (response) => {
+      console.log('Send message response:', response);
+    });
   });
 
   // Listen for new messages
   socket.on('newMessage', (message) => {
-    console.log('New message received:', message);
+    console.log('NEW MESSAGGEEEEEEE');
   });
 
   // Listen for deleted messages

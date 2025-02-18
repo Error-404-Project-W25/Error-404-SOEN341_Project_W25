@@ -1,14 +1,13 @@
 import mongoose, { Schema } from 'mongoose';
-import { userSchema } from './userModel';
 import { IMessage } from '../../../shared/interfaces';
 
-// Schema for channel
+// Schema for message
 const messageSchema = new Schema(
   {
     messageId: { type: String, unique: true },
-    content : { type: String, required: true },
-    sender: { type: [userSchema] },
-    time : { type: String, required: true },
+    content: { type: String, required: true },
+    sender: { type: String, required: true }, // user_id
+    time: { type: String, required: true },
   },
   {
     timestamps: false,
