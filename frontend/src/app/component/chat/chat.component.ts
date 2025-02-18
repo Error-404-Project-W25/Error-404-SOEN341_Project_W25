@@ -62,6 +62,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize();
     this.loginUser = this.userService.getUser() || null;
@@ -73,7 +74,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user) {
+        console.log('User:', user);
         this.teamList = user.teams;
+      }else{
+        console.log('No user');
+        this.router.navigate(['/login']);
       }
     });
   }
