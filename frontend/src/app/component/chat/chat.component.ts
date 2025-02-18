@@ -23,12 +23,12 @@ import { AddMemberChannelPopUpComponent } from './dialogue/add-member-channel-po
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
   templateUrl: './chat.component.html',
   styleUrls: [
-    './../../assets/theme.css',
+    './../../../assets/theme.css',
     './chat.component.css',
-    './sideBarOne.css',
-    './sideBarTwo.css',
-    './chatLog.css',
-    './teamList.css',
+    './component/sideBarOne.css',
+    './component/sideBarTwo.css',
+    './component/chatLog.css',
+    './component/teamList.css',
   ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
