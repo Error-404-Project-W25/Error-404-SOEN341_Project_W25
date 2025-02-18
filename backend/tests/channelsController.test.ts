@@ -23,6 +23,9 @@ describe('channels', () => {
         
     });
 
+    /*
+        === Test createChannel() ===
+    */
     describe('createChannel', () => {
         /*
             Test Case 1: The team ID cannot be found
@@ -47,6 +50,7 @@ describe('channels', () => {
                 
                 expect(res.statusCode).toEqual(201);
                 expect(res.body.channel_id).toBeTruthy(); // Will be a random value, check if exists
+            
             });
         });
 
@@ -57,14 +61,106 @@ describe('channels', () => {
         */
        describe('given the channel is not created successfully', () => {
             it("should return a 404", async () => {
+               
                 const res = await request(server).post('/channels/create')
                     .send({
                         // Send nothing
                     })
                                 
                     expect(res.statusCode).toEqual(404);
+
             });
        });
+    });
+
+    describe('addUserToChannel', () => {    
+        /*
+            Test Case 1: The user is added successfully
+            The team ID, channel ID, and user ID are provided, all exist in theDB and are exclusively used for testing.
+            The expected result is a 201 status.
+        */
+        describe('given the user is added to the channel', () => {
+            it("should return a 201", async () => {
+                
+                const user_id = "JEST-TESTUSERID-123";
+                const team_id = "JEST-TESTTEAMID-123";
+                const channel_id = "JEST-TESTCHANNELID-123";
+
+                const res = await request(server).post('/channels/addUser')
+                    .send({
+                        user_id: user_id,
+                        team_id: team_id,
+                        channel_id: channel_id
+                    });
+                
+                expect(res.statusCode).toEqual(201);
+
+            });
+        });
+
+        /*
+            Test Case 2: The user is not added to the channel
+            No inputs are provided.
+            The expected result is a 404 status.
+        */
+        describe('given the user is not added to the channel', () => {
+            it("should return a 404", async () => {
+                
+                const res = await request(server).post('/channels/addUser')
+                    .send({
+                        // Send nothing
+                    })
+                                
+                    expect(res.statusCode).toEqual(404);
+
+            });
+        });
+    });
+
+    /*
+        === Test getChannelById() ===
+    */
+    describe('getChannelById', () => {
+        /*
+            Test Case 1: The channel ID exists
+            A channel ID used exists in the database and used exlusively for testing.
+            The expected result is a 200 status and the channel object.
+        */
+        describe('given the channel is found', () => {
+            it("should return a 200 and the channel object", async () => {
+                
+                const channel_id = "JEST-TESTCHANNELID-123";
+                const team_id = "JEST-TESTTEAMID-123";
+
+                const res = await request(server).post('/channels/getChannelById')
+                    .send({
+                        team_id: team_id,
+                        channel_id: channel_id
+                    });
+                
+                expect(res.statusCode).toEqual(200);
+                //expect(res.body.channel.channelName).toBe("JEST-TESTCHANNELID-123");
+
+            });
+        });
+
+        /*
+            Test Case 2: The channel is not found
+            No inputs are provided.
+            The expected result is a 404 status.
+        */
+        describe('given the channel is not found', () => {
+            it("should return a 404", async () => {
+                
+                const res = await request(server).post('/channels/getChannelById')
+                    .send({
+                        // Send nothing
+                    })
+                                
+                    expect(res.statusCode).toEqual(400);
+
+            });
+        });
     });
 
 
