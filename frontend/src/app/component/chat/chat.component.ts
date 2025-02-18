@@ -9,13 +9,13 @@ import { UserService } from '@services/user.service';
 import { IChannel, ITeam, IUser } from '@shared/interfaces';
 import { UserAuthResponse } from '@shared/user-auth.types';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { AddChannelDialogComponent } from '../components/create-channel-pop-up/add-channel-dialog.component';
-import { AddMemberTeamPopUpComponent } from '../components/add-member-team-pop-up/add-member-team-pop-up.component';
-import { AddTeamDialogComponent } from '../components/create-team-pop-up/add-team-dialog.component';
-import { RemoveMemberTeamPopUpComponent } from '../components/remove-member-team-pop-up/remove-member-team-pop-up.component';
-import { DeleteMessageComponent } from '../components/moderate-channel-messages/delete-message/delete-message.component';
-import { EditChannelPopUpComponent } from '../components/edit-channel-pop-up/edit-channel-pop-up.component';
-import { AddMemberChannelPopUpComponent } from '../components/add-member-channel-pop-up/add-member-channel-pop-up.component';
+import { AddChannelDialogComponent } from './dialogue/create-channel-pop-up/add-channel-dialog.component';
+import { AddMemberTeamPopUpComponent } from './dialogue/add-member-team-pop-up/add-member-team-pop-up.component';
+import { AddTeamDialogComponent } from './dialogue/create-team-pop-up/add-team-dialog.component';
+import { RemoveMemberTeamPopUpComponent } from './dialogue/remove-member-team-pop-up/remove-member-team-pop-up.component';
+import { DeleteMessageComponent } from './dialogue/moderate-channel-messages/delete-message/delete-message.component';
+import { EditChannelPopUpComponent } from './dialogue/edit-channel-pop-up/edit-channel-pop-up.component';
+import { AddMemberChannelPopUpComponent } from './dialogue/add-member-channel-pop-up/add-member-channel-pop-up.component';
 
 @Component({
   selector: 'app-root',
