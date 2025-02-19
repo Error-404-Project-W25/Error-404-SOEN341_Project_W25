@@ -13,6 +13,7 @@ import { AddChannelDialogComponent } from '../create-channel-pop-up/add-channel-
 import { AddMemberTeamPopUpComponent } from '../add-member-team-pop-up/add-member-team-pop-up.component';
 import { AddTeamDialogComponent } from '../create-team-pop-up/add-team-dialog.component';
 import { RemoveMemberTeamPopUpComponent } from '../remove-member-team-pop-up/remove-member-team-pop-up.component';
+import { WebSocketService } from '../../../services/webSocket.service';
 
 @Component({
   selector: 'app-root',
@@ -41,40 +42,7 @@ export class ChatComponent implements OnInit {
     (_, i) => `Conversation ${i + 1}`
   );
   teamList: ITeam[] = []; 
-  messages: Message[] = [
-    new Message(
-      'User3',
-      '10:29 AM',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit,'
-    ),
-    new Message('User1', '10:30 AM', 'Hello, how are you?'),
-    new Message('User2', '10:31 AM', "I'm good, thanks! How about you?"),
-    new Message('User1', '10:32 AM', 'Doing great, thanks for asking!'),
-    new Message('User2', '10:33 AM', 'What have you been up to lately?'),
-    new Message('User1', '10:34 AM', 'Just working on some projects. You?'),
-    new Message('User2', '10:35 AM', 'Same here, been really busy with work.'),
-    new Message(
-      'User1',
-      '10:36 AM',
-      'Yeah, it’s been a hectic week for me too.'
-    ),
-    new Message('User2', '10:37 AM', 'Any plans for the weekend?'),
-    new Message(
-      'User1',
-      '10:38 AM',
-      'Not yet, but thinking of going hiking. You?'
-    ),
-    new Message(
-      'User2',
-      '10:39 AM',
-      'That sounds fun! I might just relax at home.'
-    ),
-    new Message('User1', '10:40 AM', 'Nice, that sounds like a good break.'),
-    new Message('User2', '10:41 AM', 'Yeah, I could use one after this week.'),
-    new Message('User1', '10:42 AM', 'Understandable. Hope you enjoy it!'),
-    new Message('User2', '10:43 AM', 'Thanks! Let’s catch up next week.'),
-    new Message('User1', '10:44 AM', 'Sounds good! Have a great weekend.'),
-  ];
+  messages: Message[] = [];
   teams: ITeam[] = [];
   channels: IChannel[] = [];
   selectedTeamId: string | null = null;
@@ -92,6 +60,7 @@ export class ChatComponent implements OnInit {
     private userService: UserService,
     private backendService: BackendService,
     // private themeService: ThemeService
+    private webSocketService: WebSocketService
   ) {}
 
   ngOnInit() {
@@ -104,6 +73,11 @@ export class ChatComponent implements OnInit {
         this.teamList = user.teams;
         console.log(user.teams)
       }
+
+      this.webSocketService.getMessages().subscribe((message: any) => {
+        console.log('Received message:', message);
+        this.messages.push(new Message(message.author, message.date, message.text));
+      });
     });
   }
 
