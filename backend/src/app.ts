@@ -11,6 +11,7 @@ import channelsRoutes from './routes/channelsRoutes';
 import teamsRoutes from './routes/teamsRoutes';
 import userRoutes from './routes/userRoutes';
 import conversationsRoutes from './routes/conversationsRoutes';
+import messagesRoutes from './routes/messagesRoutes';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { sendMessage, getMessages } from './controllers/messagesController';
@@ -97,6 +98,7 @@ const startServer = async () => {
     app.use('/channels', channelsRoutes);
     app.use('/users', userRoutes);
     app.use('/conversations', conversationsRoutes);
+    app.use('/messages', messagesRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
 

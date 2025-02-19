@@ -53,6 +53,7 @@ export const createTeam = async (req: Request, res: Response) => {
 
     // Generate a UUID for the team_id
     const team_id: string = uuidv4();
+    const conversation_id: string = uuidv4();
 
     // Create a new team document
     const newTeam: ITeam = await new Team({
@@ -68,6 +69,7 @@ export const createTeam = async (req: Request, res: Response) => {
           description: 'This is the default channel',
           team_id: team_id,
           members: [user_id], // Add the creator to the default channel members
+          conversationId: conversation_id,
         },
       ],
     }).save();

@@ -10,7 +10,6 @@ import { io } from '../app';
  * @param req Message message, string conversationId 
  * @param res returns boolean success
  */
-
 export const sendMessage = async (req: Request, res: Response) => {
   try { 
     const { content, sender, conversationId } = req.body; 
@@ -33,9 +32,7 @@ export const sendMessage = async (req: Request, res: Response) => {
      if (conversation){
       conversation.messages.push(newMessage);
       await conversation.save();
-      console.log('emitting to');
       io.to(conversationId).emit('newMessage', newMessage); 
-      console.log('Message sent');
      }
      res.status(200).json({ success: true });
   } catch (error) {

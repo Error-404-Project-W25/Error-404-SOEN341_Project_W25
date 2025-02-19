@@ -4,7 +4,7 @@ export interface IChannel {
   description: string;
   team_id: string;
   members: string[]; // user_id
-  conversationId: string; // Add conversationId
+  conversationId: string; // conversation_id
 }
 
 export interface ITeam {
