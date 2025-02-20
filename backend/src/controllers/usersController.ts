@@ -155,8 +155,6 @@ export const deleteUser = async (req: Request, res: Response) => {
       return;
     }
 
-    console.log('user:', user);
-
     // remove user from all teams
     for (let i = 0; i < user.teams.length; i++) {
       const team = await Team.findOne({ team_id: user.teams[i].team_id });
@@ -166,18 +164,11 @@ export const deleteUser = async (req: Request, res: Response) => {
         return;
       }
 
-      console.log('team name:', team.team_name);
-      console.log('team.members before:', team.members);
-
       team.members = team.members.filter((member) => member !== user_id);
-
-      console.log('team.members after:', team.members);
 
       // remove from general channel
       team.channels[0].members = team.channels[0].members.filter((member) => member !== user_id );
       await team.save();
-
-      console.log('team.channels[0].members after:', team.channels[0].name, " and ", team.channels[0].members);
 
       // remove user from all other channels in team
       for (let j = 1; j < team.channels.length; j++) {
@@ -189,23 +180,18 @@ export const deleteUser = async (req: Request, res: Response) => {
           return;
         }
 
-        console.log('channel name:', channel.name);
-        console.log('channel.members before:', channel.members);
-
         channel.members = channel.members.filter((member) => member !== user_id);
         await channel.save();
-        
+
         team.channels[j].members = team.channels[j].members.filter((member) => member !== user_id);
         await team.save();
 
-        console.log('channel.members after:', channel.members);
       }
     }
 
     // remove user from database
     await user.deleteOne();
     res.json({ success: true });
-
 
   } catch (error: any) {
     const errorMessage = error.message;
