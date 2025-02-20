@@ -31,7 +31,7 @@ export interface IMessage {
   messageId: string;
   content: string; 
   sender: string; // user_id
-  time: string; 
+  date: string; 
 }
 
 export interface IConversation {
