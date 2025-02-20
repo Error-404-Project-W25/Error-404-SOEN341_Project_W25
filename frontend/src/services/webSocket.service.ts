@@ -7,9 +7,11 @@ import { IMessage } from '@shared/interfaces';
   providedIn: 'root'
 })
 export class WebSocketService {
-  private socket: Socket;
+  socket: Socket;
   private messagesSubject = new BehaviorSubject<IMessage[]>([]);
   public messages$ = this.messagesSubject.asObservable();
+  private connectionStatusSubject = new BehaviorSubject<boolean>(false);
+  connectionStatus$ = this.connectionStatusSubject.asObservable();
 
   constructor() {
     this.socket = io('http://localhost:3000');
@@ -19,14 +21,17 @@ export class WebSocketService {
   private setupSocketListeners(): void {
     this.socket.on('connect', () => {
       console.log('WebSocket connected, socket ID:', this.socket.id);
+      this.connectionStatusSubject.next(true);
     });
   
     this.socket.on('connect_error', (error) => {
       console.error('WebSocket connection error:', error);
+      this.connectionStatusSubject.next(false);
     });
   
     this.socket.on('disconnect', (reason) => {
       console.log('WebSocket disconnected:', reason);
+      this.connectionStatusSubject.next(false);
     });
     
     this.socket.on('newMessage', (message: IMessage) => {
