@@ -3,6 +3,8 @@ import { AuthStatus } from '../../types/authentication.types';
 import { Request, Response } from 'express';
 import { User } from '../models/userModel';
 import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
+import { Team } from '../models/teamsModel';
+import { Channel } from '../models/channelsModel';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
 
@@ -135,5 +137,83 @@ export const getUserByUsername = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ error: 'Failed to search users', details: error.message });
+  }
+};
+
+/**
+ * Delete a user from the database
+ * @param req user_id 
+ * @param res returns success or error message
+ */
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { user_id } = req.params;
+
+    const user = await User.findOne({ user_id });
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    console.log('user:', user);
+
+    // remove user from all teams
+    for (let i = 0; i < user.teams.length; i++) {
+      const team = await Team.findOne({ team_id: user.teams[i].team_id });
+
+      if (!team) {
+        res.status(404).json({ error: 'Team not found' });
+        return;
+      }
+
+      console.log('team name:', team.team_name);
+      console.log('team.members before:', team.members);
+
+      team.members = team.members.filter((member) => member !== user_id);
+
+      console.log('team.members after:', team.members);
+
+      // remove from general channel
+      team.channels[0].members = team.channels[0].members.filter((member) => member !== user_id );
+      await team.save();
+
+      console.log('team.channels[0].members after:', team.channels[0].name, " and ", team.channels[0].members);
+
+      // remove user from all other channels in team
+      for (let j = 1; j < team.channels.length; j++) {
+
+        const channel = await Channel.findOne({ channel_id: team.channels[j].channel_id });
+
+        if (!channel) {
+          res.status(404).json({ error: 'Channel not found' });
+          return;
+        }
+
+        console.log('channel name:', channel.name);
+        console.log('channel.members before:', channel.members);
+
+        channel.members = channel.members.filter((member) => member !== user_id);
+        await channel.save();
+        
+        team.channels[j].members = team.channels[j].members.filter((member) => member !== user_id);
+        await team.save();
+
+        console.log('channel.members after:', channel.members);
+      }
+    }
+
+    // remove user from database
+    await user.deleteOne();
+    res.json({ success: true });
+
+
+  } catch (error: any) {
+    const errorMessage = error.message;
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete user',
+      details: errorMessage,
+    });
+    console.error('Failed to delete user', errorMessage);
   }
 };
