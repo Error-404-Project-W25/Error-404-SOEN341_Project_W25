@@ -143,7 +143,14 @@ export const addUserToChannel = async (
     const savedChannel: IChannel = await channel.save();
 
     // Update the team
-    team.channels.push(savedChannel);
+    for (let i = 0; i < team.channels.length; i++) {
+      if (team.channels[i].channel_id === channel_id) { // find the corresponding channel in the team
+        const channelUpdate = team.channels[i];
+        channelUpdate.members.push(user_id); // add the user to the channel in the team
+        break;
+      }
+    }
+
     await team.save();
 
     res.status(201).json({
@@ -186,7 +193,7 @@ export const getChannelById = async (req: Request, res: Response) => {
     }
 
     const channel: IChannel | undefined = team.channels.find(
-      (channel) => channel.channel_id === channel_id
+      (c) => c.channel_id === channel_id
     );
 
     if (!channel) {
@@ -224,6 +231,7 @@ export const removeMemberFromChannel = async (req: Request, res: Response) => {
       return;
     }
 
+    // Remove the user from the members array in the channel object
     if (!channel.members.includes(member_id)) {
       res.status(400).json({
         error: `User with user_id ${member_id} is not a member of the channel`,
@@ -235,18 +243,34 @@ export const removeMemberFromChannel = async (req: Request, res: Response) => {
 
     await channel.save();
 
-    // Remove the channel from the user's channels
+    // Remove the user from the members array in the channels array of the teams object
+    const team = await Team.findOne({ team_id: channel.team_id });
+    if (!team) {
+      res.status(404).json({ error: 'Team not found' });  
+      return;
+    } else {
+      team.channels.forEach((channel) => {
+        channel.members = channel.members.filter((member) => member !== member_id);
+      });
+    }
+
+    await team.save();
+
+    // Remove the user from the members array of the channels array that's in the teams array in the user object
     const user = await User.findOne({ user_id: member_id });
     if (!user) {
       res.status(404).json({ error: 'User not found' });
       return;
     } else {
       user.teams.forEach(team => {
-        team.channels = team.channels.filter(channel => channel.channel_id !== channel_id);
+        team.channels.forEach(channel => {
+          channel.members = channel.members.filter((member) => member !== member_id);
+        });
       });
     }
 
     await user.save();
+
     res.json({ success: true });
   } catch (error) {
     const errorMessage = (error as Error).message;
@@ -284,7 +308,7 @@ export const deleteChannel = async (req: Request, res: Response) => {
       }
 
       user.teams.forEach(team => {
-        team.channels = team.channels.filter(channel => channel.channel_id !== channel.channel_id);
+        team.channels = team.channels.filter(c => c.channel_id !== channel_id);
       });
 
       await user.save();
@@ -300,7 +324,7 @@ export const deleteChannel = async (req: Request, res: Response) => {
       await t.save();
     }
     
-    // delete the team from the database
+    // delete the channel from the database
     await channel.deleteOne();
     res.json({ success: true });
 

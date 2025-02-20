@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from '@jest/globals';
 import request from 'supertest';
 import { app, startServer } from "../src/app";
 import { Express } from 'express';
@@ -7,9 +7,11 @@ import { Express } from 'express';
     === Testing Channels APIs ===
 */
 describe('channels', () => {
+
     /*
         Run the app before running the tests
     */
+    let ChannelIdToDelete: string | undefined;
     let server: Express;
     beforeAll(async () => { 
         server = app as Express;
@@ -18,9 +20,28 @@ describe('channels', () => {
 
     /*
         Cleanup after the tests:
+        Remove the user that was added during addUserToChannel, and
+        Delete the team that was created during createChannel.
     */
     afterAll(async () => {
-        
+        try {
+            await request(server).post('/channels/removeMember') 
+                .send({
+                    channel_id: "JEST-TESTCHANNELID-123",
+                    member_id: "JEST-TESTUSERID-123" 
+                });
+            console.log("User removed from channel in afterAll");
+
+            
+            await request(server).delete('/channels/delete')
+                .send({
+                    channel_id: ChannelIdToDelete
+                });
+            console.log("Channel deleted in afterAll, id: ", ChannelIdToDelete);
+            
+        } catch (error) {
+            console.error("Error: ", error);
+        }
     });
 
     /*
@@ -47,9 +68,13 @@ describe('channels', () => {
                         channelName: channelName,
                         channelDescription: channelDescription
                     });
+
+                console.log("created channel is: ", res.body.channel_id);
                 
                 expect(res.statusCode).toEqual(201);
                 expect(res.body.channel_id).toBeTruthy(); // Will be a random value, check if exists
+            
+                ChannelIdToDelete = res.body.channel_id; // Save the channel ID to delete in afterAll
             
             });
         });
@@ -139,7 +164,7 @@ describe('channels', () => {
                     });
                 
                 expect(res.statusCode).toEqual(200);
-                //expect(res.body.channel.channelName).toBe("JEST-TESTCHANNELID-123");
+                expect(res.body.channel.name).toBe("JEST CHANNEL");
 
             });
         });
