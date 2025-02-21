@@ -24,12 +24,13 @@ jobs:
         with:
           node-version: '18'
 
-      # # Inject environment variables (MongoDB Atlas connection) - are we missing firebase?
-      # - name: Create .env file
-      #   run: |
-      #     echo "DB_CONN_STRING=${{ secrets.DB_CONN_STRING }}" >> .env
-      #     echo "DB_NAME=chatHavenDB" >> .env
-      #     echo "PORT=3000" >> .env
+      # Inject environment variables (MongoDB Atlas & Firebase connections)
+      - name: Create .env file
+        run: |
+          echo "DB_CONN_STRING=${{ secrets.DB_CONN_STRING }}" >> .env
+          echo "DB_NAME=chatHavenDB" >> .env
+          echo "PORT=3000" >> .env
+          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
       
       # Install backend dependencies
       - name: Install backend dependencies
@@ -41,12 +42,10 @@ jobs:
         working-directory: ./frontend
         run: npm ci
        
-
       # # Run backend tests
       - name: Run Jest unit tests
         working-directory: ./backend
         run: npm test
-
       
       # Lint: check for errors/stylistic inconsistencies in code
       - name : Lint backend code 
