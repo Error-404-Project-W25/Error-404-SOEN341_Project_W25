@@ -55,6 +55,12 @@ export const deleteMessage = async (req: Request, res: Response) => {
       await conversation.save();
       io.to(conversationId).emit('deleteMessage', messageId);
     }
+
+    const message = await Messages.findOne({ messageId });
+    if (message) {
+      await message.deleteOne();
+    }
+    
     res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error deleting message:', error);
