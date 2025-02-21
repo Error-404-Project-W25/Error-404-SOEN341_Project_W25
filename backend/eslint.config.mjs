@@ -13,7 +13,8 @@ export default [
     },
     rules: {
       "@typescript-eslint/no-explicit-any": "off", // Disable this rule
-      "unused-vars": "warn" // unused variables will be warnings and not errors
+      "no-unused-vars": "off", // turn off default rule
+      "@typescript-eslint/no-unused-vars": "warn" // unused variables will be warnings and not errors
     },
   },
 ];
