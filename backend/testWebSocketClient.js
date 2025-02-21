@@ -26,7 +26,7 @@ socket.on('connect', () => {
   });
 
   // Listen for new messages
-  socket.on('newMessage', (_message) => {
+  socket.on('newMessage', (message) => {
     console.log('NEW MESSAGGEEEEEEE');
   });
 
