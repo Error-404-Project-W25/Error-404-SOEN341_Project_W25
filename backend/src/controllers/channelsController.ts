@@ -151,7 +151,7 @@ export const addUserToChannel = async (
     channel.members.push(user_id);
 
     // Save the channel
-    const savedChannel: IChannel = await channel.save();
+    await channel.save();
 
     // Update the team
     for (let i = 0; i < team.channels.length; i++) {

@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
       body: data,
     } as Request;
     const res = {
-      status: (statusCode: number) => ({
+      status: (_statusCode: number) => ({
         json: (responseBody: any) => {
           callback(responseBody);
         },
@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
       params: data,
     } as Request;
     const res = {
-      status: (statusCode: number) => ({
+      status: (_statusCode: number) => ({
         json: (responseBody: any) => {
           callback(responseBody);
         },

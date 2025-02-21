@@ -1,4 +1,4 @@
-const { io } = require('socket.io-client');
+import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:3000');
 
@@ -26,7 +26,7 @@ socket.on('connect', () => {
   });
 
   // Listen for new messages
-  socket.on('newMessage', (message) => {
+  socket.on('newMessage', (_message) => {
     console.log('NEW MESSAGGEEEEEEE');
   });
 
