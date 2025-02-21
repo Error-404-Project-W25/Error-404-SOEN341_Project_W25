@@ -43,6 +43,9 @@ jobs:
        
 
       # # Run backend tests
+      - name: Run Teams unit tests
+        working-directory: ./backend
+        run: npm test
 
       
       # Lint: check for errors/stylistic inconsistencies in code
