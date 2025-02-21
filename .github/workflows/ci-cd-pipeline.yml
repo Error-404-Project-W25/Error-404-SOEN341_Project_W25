@@ -43,7 +43,7 @@ jobs:
        
 
       # # Run backend tests
-      - name: Run Teams unit tests
+      - name: Run Jest unit tests
         working-directory: ./backend
         run: npm test
 
