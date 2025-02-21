@@ -212,11 +212,11 @@
                 </button>
               </div>
               <div class="message-header">
-                <span class="message-author">{{ message.author }}</span>
-                <span class="message-date">{{ message.date }}</span>
+                <span class="message-author">{{ message.sender }}</span>
+                <span class="message-date">{{ message.time }}</span>
               </div>
-              <article class="message-text">
-                {{ message.text }}
+              <article class="message-text" readonly>
+                {{ message.content }}
               </article>
             </div>
           </div>

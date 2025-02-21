@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
+import { Conversation } from '../models/conversationsModel';
+import { io } from '../app';
 
 /**
  * Create a channel
@@ -22,6 +24,7 @@ export const createChannel = async (req: Request, res: Response) => {
     }
 
     const channel_id = uuidv4();
+    const conversationId = uuidv4(); // Create a new conversationId
 
     const isUserInTeam: boolean = team.members.includes(creator_id);
 
@@ -38,6 +41,7 @@ export const createChannel = async (req: Request, res: Response) => {
       description: channelDescription,
       team_id: team_id, // associated team
       members: [creator_id], // creator of the channel
+      conversationId: conversationId, // Store conversationId
     });
 
     // If the creator is not an admin, add them to the admin list
@@ -69,8 +73,17 @@ export const createChannel = async (req: Request, res: Response) => {
       await user.save();
     }
 
+    // Create a new conversation for the channel
+    await new Conversation({
+      conversationId: conversationId,
+      conversationName: channelName,
+      messages: [],
+    }).save();
+
+    io.to(creator_id).emit('joinRoom', { conversationId });
+
     res.status(201).json({
-      message: 'The channel has been created successfully',
+      message: 'The channel and conversation has been created successfully',
       channel_id: savedChannel.channel_id,
     });
   } catch (error: unknown) {
@@ -121,7 +134,7 @@ export const addUserToChannel = async (
 
     // Check if the user is part of the channel
     const isUserInChannel: boolean = channel.members.includes(user_id);
-    if (!isUserInChannel) {
+    if (isUserInChannel) {
       res
         .status(400)
         .json({ error: 'The user entered is already part of the channel' });
@@ -138,9 +151,12 @@ export const addUserToChannel = async (
     team.channels.push(savedChannel);
     await team.save();
 
+    // Add the user to the conversation room
+    io.to(user_id).emit('joinRoom', { conversationId: channel.conversationId });
+
     res.status(201).json({
       success: true,
-      message: 'The user has been added to the channel successfully',
+      message: 'The user has been added to the channel and conversation successfully',
     });
   } catch (error: unknown) {
     if (error instanceof Error) {

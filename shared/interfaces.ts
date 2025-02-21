@@ -4,6 +4,7 @@ export interface IChannel {
   description: string;
   team_id: string;
   members: string[]; // user_id
+  conversationId: string; // conversation_id
 }
 
 export interface ITeam {
@@ -23,4 +24,18 @@ export interface IUser {
   email: string;
   role: 'admin' | 'user';
   teams: ITeam[];
+  direct_messages: string[];
+}
+
+export interface IMessage {
+  messageId: string;
+  content: string; 
+  sender: string; // user_id
+  time: string; 
+}
+
+export interface IConversation {
+  conversationId: string; 
+  conversationName: string; 
+  messages: IMessage[];
 }

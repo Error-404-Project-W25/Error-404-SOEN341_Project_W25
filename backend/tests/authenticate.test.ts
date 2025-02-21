@@ -1,8 +1,9 @@
 import {
   RegistrationData,
   UserSignInData,
-  AuthStatus,
+  //AuthStatus,
 } from '../../shared/user-auth.types';
+import { AuthStatus } from '../../backend/types/authentication.types'
 import { signUpUser, signInUser, signOutUser } from '../src/utils/authenticate';
 
 const runAuthTests = async (): Promise<void> => {
