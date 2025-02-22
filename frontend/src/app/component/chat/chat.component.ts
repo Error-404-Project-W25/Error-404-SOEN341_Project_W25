@@ -253,7 +253,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   async loadMessages(conversationId: string): Promise<void> {
     const messages = await this.backendService.getMessages(conversationId);
+    console.log('Messages:', messages);
     if (messages) {
+      console.log('Messages:', messages);
       this.messages = messages;
     }
   }

@@ -16,7 +16,7 @@ import { IChannel, ITeam, IUser } from '@shared/interfaces';
   selector: 'app-add-channel-dialog',
   templateUrl: './add-channel-dialog.component.html',
   styleUrls: [
-    './../../../assets/theme.css',
+    './../../../../../assets/theme.css',
     './add-channel-dialog.component.css',
   ],
   standalone: true,

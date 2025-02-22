@@ -15,7 +15,7 @@ import { IUser, IChannel } from '@shared/interfaces';
   selector: 'app-add-member-team-pop-up',
   templateUrl: './remove-member-team-pop-up.component.html',
   styleUrls: [
-    './../../../assets/theme.css',
+    './../../../../../assets/theme.css',
     './remove-member-team-pop-up.component.css',
   ],
   standalone: true,

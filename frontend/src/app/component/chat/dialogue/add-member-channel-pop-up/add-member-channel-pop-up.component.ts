@@ -23,7 +23,7 @@ import { IUser, IChannel, ITeam } from '@shared/interfaces';
   ],
   templateUrl: './add-member-channel-pop-up.component.html',
   styleUrls: [
-    './../../../assets/theme.css',
+    './../../../../../assets/theme.css',
     './add-member-channel-pop-up.component.css',
   ],
 })
