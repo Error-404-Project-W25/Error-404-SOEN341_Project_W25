@@ -13,7 +13,7 @@ import { BackendService } from '@services/backend.service';
   selector: 'app-edit-channel-pop-up',
   templateUrl: './edit-channel-pop-up.component.html',
   styleUrls: [
-    './../../../assets/theme.css',
+    './../../../../../assets/theme.css',
     './edit-channel-pop-up.component.css',
   ],
   standalone: true,
