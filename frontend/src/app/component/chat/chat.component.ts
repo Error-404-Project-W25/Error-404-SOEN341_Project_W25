@@ -6,7 +6,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { IChannel, ITeam, IUser } from '@shared/interfaces';
+import { IChannel, ITeam, IUser, IMessage } from '@shared/interfaces';
 import { UserAuthResponse } from '@shared/user-auth.types';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { AddChannelDialogComponent } from './dialogue/create-channel-pop-up/add-channel-dialog.component';
@@ -39,13 +39,14 @@ export class ChatComponent implements OnInit, OnDestroy {
   channelTitle: string = '';
   teamTitle: string = '';
   selectedTeamId: string | null = null;
-  selectedChannel: string | null = null;
+  selectedChannelId: string | null = null;
+  selectedChannelObject: IChannel | null = null;
   teamList: ITeam[] = [];
   channelList: IChannel[] = [];
   conversationList: IChannel[] = [];
   teamMemberList: IUser[] = [];
   chatMemberList: IUser[] = [];
-  messages: Message[] = [];
+  messages: IMessage[] = [];
   selectedMessageId: string | null = null;
   private teamCreatedSubscription: Subscription | null = null;
   private channelCreatedSubscription: Subscription | null = null;
@@ -154,7 +155,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.messages = this.messages.filter((msg) => msg.id !== result);
+        this.messages = this.messages.filter((msg) => msg.messageId !== result);
       }
     });
   }
@@ -227,7 +228,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   selectChannel(channel: string): void {
     this.messages = [];
-    this.selectedChannel = channel;
+    this.selectedChannelId = channel;
     this.backendService
       .getChannelById(this.selectedTeamId!, channel)
       .then((channelData) => {
@@ -246,19 +247,32 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   selectConversation(conversation: string): void {
+    console.log('Selected conversation:', conversation);
     // this.selectedTeam = conversation;
   }
 
-  sendMessage() {
-    if (!this.newMessage) return;
-    this.messages.unshift(
-      new Message(
-        this.loginUser?.username || 'Unknown',
-        new Date().toLocaleTimeString(),
-        this.newMessage
-      )
-    );
-    this.newMessage = '';
+  async loadMessages(conversationId: string): Promise<void> {
+    const messages = await this.backendService.getMessages(conversationId);
+    if (messages) {
+      this.messages = messages;
+    }
+  }
+
+  async sendMessage() {
+    console.log('Sending message:', this.selectedChannelId);
+    console.log('NewMessage:', this.newMessage);
+    if (this.newMessage && this.selectedChannelObject) {
+      console.log('if case');
+      const sender = this.userService.getUser();
+      if (sender) {
+        console.log('Sending message:', this.newMessage);
+        const success = await this.backendService.sendMessage(this.newMessage, this.selectedChannelObject.conversationId, sender.user_id);
+        console.log('Message sent:', success);
+        if (success) {
+          await this.loadMessages(this.selectedChannelObject.conversationId);
+        }
+      }
+    }
   }
 
   async signOut() {
@@ -300,7 +314,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     };
     if (width <= 450) {
       displayStyle(cardContainer, 'none');
-      if (this.selectedChannel) {
+      if (this.selectedChannelId) {
         displayStyle(sideBarOne, 'none');
         displayStyle(sideBarTwo, 'none');
         displayStyle(chatLog, 'flex');
@@ -323,11 +337,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 }
 
-class Message {
-  constructor(
-    public author: string,
-    public date: string,
-    public text: string,
-    public id: string = Math.random().toString(36).substr(2, 9)
-  ) {}
-}
+// class Message {
+//   constructor(
+//     public author: string,
+//     public date: string,
+//     public text: string,
+//     public id: string = Math.random().toString(36).substr(2, 9)
+//   ) {}
+// }
