@@ -265,10 +265,19 @@ export class ChatComponent implements OnInit, OnDestroy {
        this.selectedChannelObject = selectedChannel || null;
        if (selectedChannel) {
         console.log('Selected conversation:', selectedChannel.conversationId);
+        console.log('Selected channel:', selectedChannel);
+        this.selectedChannelId = channelId;
+        this.channelTitle = selectedChannel.name;
+        this.chatMemberList = [];
+        selectedChannel.members.forEach(async (memberId: string) => {
+          const userData = await this.backendService.getUserById(memberId);
+          if (userData) {
+            this.chatMemberList.push(userData);
+          }
+        });
         await this.loadMessages(selectedChannel.conversationId);
       }
     }
-
   }
 
   async loadMessages(conversationId: string): Promise<void> {
