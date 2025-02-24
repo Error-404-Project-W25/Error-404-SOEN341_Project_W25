@@ -258,54 +258,41 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  selectChannel(channel: string): void {
-    this.messages = [];
-    this.selectedChannelId = channel;
-    this.backendService
-      .getChannelById(this.selectedTeamId!, channel)
-      .then((channelData) => {
-        this.channelTitle = channelData?.name || '';
-        const memberPromises =
-          channelData?.members.map((member) =>
-            this.backendService.getUserById(member)
-          ) || [];
-        Promise.all(memberPromises).then((users) => {
-          this.chatMemberList = users.filter(
-            (user) => user !== undefined
-          ) as IUser[];
-        });
-      });
-    this.handleResize();
+  async selectChannel(channelId: string): Promise<void> {
+    console.log('Selected channel:', channelId);
+    if (this.selectedTeamId) {
+       const selectedChannel = await this.backendService.getChannelById(this.selectedTeamId, channelId);
+       this.selectedChannelObject = selectedChannel || null;
+       if (selectedChannel) {
+        console.log('Selected conversation:', selectedChannel.conversationId);
+        await this.loadMessages(selectedChannel.conversationId);
+      }
+    }
+
   }
+
+  async loadMessages(conversationId: string): Promise<void> {
+    const messages = await this.backendService.getMessages(conversationId);
+    if (messages) {
+      this.messages = messages;
+    }
+  }
+
 
   selectConversation(conversation: string): void {
     console.log('Selected conversation:', conversation);
     // this.selectedTeam = conversation;
   }
 
-  async loadMessages(conversationId: string): Promise<void> {
-    const messages = await this.backendService.getMessages(conversationId);
-    console.log('Messages:', messages);
-    if (messages) {
-      console.log('Messages:', messages);
-      this.messages = messages;
-    }
-  }
-
   async sendMessage() {
     console.log('Sending message:', this.selectedChannelId);
-    console.log('NewMessage:', this.newMessage);
+
     if (this.newMessage && this.selectedChannelObject) {
       console.log('if case');
       const sender = this.userService.getUser();
       if (sender) {
         console.log('Sending message:', this.newMessage);
-        const success = await this.backendService.sendMessage(
-          this.newMessage,
-          this.selectedChannelObject.conversationId,
-          sender.user_id
-        );
-        this.webSocketService.sendMessage(this.newMessage);
+        const success = await this.backendService.sendMessage(this.newMessage, this.selectedChannelObject.conversationId, sender.user_id);
         console.log('Message sent:', success);
         if (success) {
           await this.loadMessages(this.selectedChannelObject.conversationId);
