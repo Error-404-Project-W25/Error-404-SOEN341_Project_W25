@@ -5,7 +5,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100%;
+  width: calc(100% - 40rem);
   size: auto;
   overflow-y: none;
   scrollbar-width: none;
@@ -53,7 +53,8 @@
   width: 100%;
   -ms-overflow-style: none;
   display: flex;
-  flex-direction: column-reverse;
+  overflow-y: bottom;
+  /* flex-direction: column-reverse; */
 }
 
 .message {
