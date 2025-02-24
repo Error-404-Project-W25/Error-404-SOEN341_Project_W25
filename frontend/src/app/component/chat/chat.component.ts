@@ -4,11 +4,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { IChannel, ITeam, IUser, IMessage } from '@shared/interfaces';
+import { WebSocketService } from '@services/webSocket.service';
+import { IChannel, ITeam, IUser, IMessage, IConversation } from '@shared/interfaces';
+
 import { UserAuthResponse } from '@shared/user-auth.types';
+
 import { BehaviorSubject, Subscription } from 'rxjs';
+
 import { AddChannelDialogComponent } from './dialogue/create-channel-pop-up/add-channel-dialog.component';
 import { AddMemberTeamPopUpComponent } from './dialogue/add-member-team-pop-up/add-member-team-pop-up.component';
 import { AddTeamDialogComponent } from './dialogue/create-team-pop-up/add-team-dialog.component';
@@ -33,33 +38,44 @@ import { AddMemberChannelPopUpComponent } from './dialogue/add-member-channel-po
 })
 export class ChatComponent implements OnInit, OnDestroy {
   title = 'chatHaven';
+
   loginUser: IUser | null = null;
+
   isDarkTheme = true;
+
   newMessage: string = '';
+
   channelTitle: string = '';
   teamTitle: string = '';
+
   selectedTeamId: string | null = null;
   selectedChannelId: string | null = null;
+  selectedMessageId: string | null = null;
+
   selectedChannelObject: IChannel | null = null;
+
   teamList: ITeam[] = [];
   channelList: IChannel[] = [];
-  conversationList: IChannel[] = [];
+  conversationList: IConversation[] = [];
+
   teamMemberList: IUser[] = [];
   chatMemberList: IUser[] = [];
   messages: IMessage[] = [];
-  selectedMessageId: string | null = null;
-  private teamCreatedSubscription: Subscription | null = null;
-  private channelCreatedSubscription: Subscription | null = null;
-  private channelsSubject = new BehaviorSubject<IChannel[]>([]);
-  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
-  teams$ = this.teamsSubject.asObservable();
-  channels$ = this.channelsSubject.asObservable();
+
+  // private teamCreatedSubscription: Subscription | null = null;
+  // private channelCreatedSubscription: Subscription | null = null;
+
+  // private channelsSubject = new BehaviorSubject<IChannel[]>([]);
+  // private teamsSubject = new BehaviorSubject<ITeam[]>([]);
+  // teams$ = this.teamsSubject.asObservable();
+  // channels$ = this.channelsSubject.asObservable();
 
   constructor(
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private webSocketService: WebSocketService
   ) {}
 
   ngOnInit() {
@@ -70,6 +86,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.userService.user$.subscribe((user) => {
         this.loginUser = user || null;
         this.refreshTeamList();
+
       });
     }
     this.userService.user$.subscribe((user: IUser | undefined) => {
@@ -98,9 +115,17 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   refreshChannelList() {
     this.loginUser = this.userService.getUser() || null;
-    this.channelList =
-      this.teamList.find((t) => t.team_id === this.selectedTeamId)?.channels ||
-      [];
+    this.backendService.getTeamById(this.selectedTeamId!).then((teamData) => {
+      if (teamData) {
+      this.channelList = teamData.channels || [];
+      }
+    });
+  }
+
+
+  refreshConversationList() {
+    this.loginUser = this.userService.getUser() || null;
+    this.conversationList = this.loginUser?.direct_messages.map(id => ({ conversationId: id, conversationName: '', messages: [] })) || [];
   }
 
   toggleTheme() {
@@ -127,8 +152,16 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   openCreateChannelDialog(): void {
-    this.dialog.open(AddChannelDialogComponent, {
+    const dialogRef = this.dialog.open(AddChannelDialogComponent, {
       data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.channel_id) {
+      this.dialog.open(AddMemberChannelPopUpComponent, {
+        data: { channel_id: result.channel_id, team_id: this.selectedTeamId, theme: this.isDarkTheme },
+      });
+      this.refreshChannelList();
+      }
     });
   }
 
@@ -272,6 +305,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.selectedChannelObject.conversationId,
           sender.user_id
         );
+        this.webSocketService.sendMessage(this.newMessage);
         console.log('Message sent:', success);
         if (success) {
           await this.loadMessages(this.selectedChannelObject.conversationId);
@@ -308,45 +342,5 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   handleResize() {
-    const width = window.innerWidth;
-    const sideBarOne = document.getElementById('side-bar-1');
-    const sideBarTwo = document.getElementById('side-bar-2');
-    const chatLog = document.getElementById('chat-box');
-    const cardContainer = document.getElementById('card-container');
-    const teamListSettingBar = document.getElementById('team-setting-sidebar');
-    const displayStyle = (element: HTMLElement | null, style: string) => {
-      if (element) element.style.display = style;
-    };
-    if (width <= 450) {
-      displayStyle(cardContainer, 'none');
-      if (this.selectedChannelId) {
-        displayStyle(sideBarOne, 'none');
-        displayStyle(sideBarTwo, 'none');
-        displayStyle(chatLog, 'flex');
-      } else {
-        displayStyle(sideBarOne, 'flex');
-        displayStyle(sideBarTwo, 'flex');
-        displayStyle(chatLog, 'none');
-      }
-    } else {
-      displayStyle(cardContainer, 'flex');
-      displayStyle(sideBarOne, 'flex');
-      displayStyle(sideBarTwo, 'flex');
-      displayStyle(chatLog, 'flex');
-    }
-    if (width <= 1025) {
-      displayStyle(teamListSettingBar, 'none');
-    } else {
-      displayStyle(teamListSettingBar, 'flex');
-    }
   }
 }
-
-// class Message {
-//   constructor(
-//     public author: string,
-//     public date: string,
-//     public text: string,
-//     public id: string = Math.random().toString(36).substr(2, 9)
-//   ) {}
-// }
