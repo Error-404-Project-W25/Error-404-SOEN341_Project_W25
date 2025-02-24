@@ -94,7 +94,7 @@ export class AddChannelDialogComponent {
         }
       });
 
-      this.dialogRef.close();
+      this.dialogRef.close({ channel_id: channelId });
     } catch (error) {
       console.error('Error creating channel', error);
     }
