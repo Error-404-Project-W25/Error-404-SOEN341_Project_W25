@@ -229,9 +229,10 @@
               <i class="far fa-user-circle" style="font-size: 3rem"></i>
             </div>
             <div class="message-content">
+              <!-- make sure only channel admin or sender can delete message -->
               <div class="delete-button-container">
                 <button
-                  *ngIf="loginUser?.role === 'admin'"
+                  *ngIf="message.sender === loginUser?.user_id || loginUser?.role === 'admin'"
                   class="delete-button"
                   (click)="openDeleteDialog(message.messageId, message.content)"
                   readonly
