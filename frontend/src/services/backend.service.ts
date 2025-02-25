@@ -145,7 +145,6 @@ export class BackendService {
         return response.team;
       }
       console.error(response.error);
-
     } catch (error) {
       console.error('Error getting team by id:', error);
     }
@@ -245,7 +244,6 @@ export class BackendService {
     return undefined;
   }
 
-  // Returns true on success, false on failure
   async addUserToChannel(
     team_id: string,
     channel_id: string,

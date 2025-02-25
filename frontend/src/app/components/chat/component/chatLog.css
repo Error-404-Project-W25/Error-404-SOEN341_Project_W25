@@ -5,7 +5,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: auto;
+  width: calc(100% - 40rem);
+  size: auto;
   overflow-y: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -33,10 +34,10 @@
   flex-direction: row;
   font-size: 20px;
   font-weight: bold;
-  height: 100%;
+  height: inherit;
   margin: 0;
   overflow: hidden;
-  padding: 5px;
+  padding-left: 5px;
   text-align: left;
   width: 100%;
 }
@@ -51,10 +52,14 @@
   scrollbar-width: none;
   width: 100%;
   -ms-overflow-style: none;
+  display: flex;
+  overflow-y: bottom;
+  /* flex-direction: column-reverse; */
 }
 
 .message {
-  width: 95%;
+  border-radius: 10px;
+  width: calc(100% - 10px);
   margin: 5px auto;
   padding: 5px;
   display: flex;
@@ -70,7 +75,7 @@
 
 .message-profile-picture {
   align-items: center;
-  background-color: green;
+  background-color: var(--profile-picture-background);
   border-radius: 50%;
   color: var(--chat-box-background);
   display: flex;
@@ -85,14 +90,16 @@
 }
 
 .message-content {
+  margin: 0 auto;
+  padding: 5px 0;
+  position: relative;
   align-items: flex-start;
   display: flex;
   flex-direction: column;
   gap: 5px;
   justify-content: center;
-  margin: 0;
-  padding: 0;
-  width: auto;
+  width: 100%;
+  overflow: hidden;
 }
 
 .message-header {
@@ -127,13 +134,13 @@
 .message-text {
   padding: 5px;
   text-align: justify;
-  width: 100%;
+  overflow-wrap: break-word;
+  width: 99%;
 }
 
 .input-container {
   border-radius: 10px;
-  border: 1
-  px solid var(--input-container-border);
+  border: 1 px solid var(--input-container-border);
   bottom: 0;
   background-color: var(--input-container-background);
   box-sizing: border-box;
@@ -177,4 +184,82 @@
 .input-container button:hover {
   background-color: var(--send-button-hover-fill);
   color: var(--send-button-hover-stroke);
+}
+
+.delete-button-container {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.message-content:hover .delete-button-container {
+  display: block;
+}
+
+.delete-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--delete-button-background);
+  border: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition-duration: 0.3s;
+  overflow: hidden;
+  position: relative;
+}
+
+.delete-svgIcon {
+  width: 15px;
+  transition-duration: 0.3s;
+}
+
+.delete-svgIcon path {
+  fill: var(--delete-button-icon-fill);
+}
+
+.delete-button:hover {
+  width: fit-content;
+  border-radius: 50px;
+  transition-duration: 0.3s;
+  background-color: var(--delete-button-hover-background);
+  align-items: center;
+}
+
+.delete-button:hover .delete-svgIcon {
+  width: 20px;
+  transition-duration: 0.3s;
+  transform: translateY(60%);
+  -webkit-transform: rotate(360deg);
+  -moz-transform: rotate(360deg);
+  -o-transform: rotate(360deg);
+  -ms-transform: rotate(360deg);
+  transform: rotate(360deg);
+}
+
+.delete-button::before {
+  display: none;
+  content: "Delete Message";
+  color: var(--delete-button-text);
+  transition-duration: 0.3s;
+  font-size: 2px;
+}
+
+.delete-button:hover::before {
+  display: block;
+  padding-right: 10px;
+  font-size: 13px;
+  opacity: 1;
+  transform: translateY(0px);
+  transition-duration: 0.3s;
+}
+
+.team-setting-button-container {
+  display: block;
+  margin: 5px;
+  background-color: var(--team-setting-button-background);
 }

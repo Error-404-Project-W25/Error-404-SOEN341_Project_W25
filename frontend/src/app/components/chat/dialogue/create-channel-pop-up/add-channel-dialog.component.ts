@@ -15,7 +15,10 @@ import { IChannel, ITeam, IUser } from '@shared/interfaces';
 @Component({
   selector: 'app-add-channel-dialog',
   templateUrl: './add-channel-dialog.component.html',
-  styleUrls: ['./../../components/chat/chat.component.css', './add-channel-dialog.component.css'],
+  styleUrls: [
+    './../../../../../assets/theme.css',
+    './add-channel-dialog.component.css',
+  ],
   standalone: true,
   imports: [
     MatDialogModule,
@@ -26,6 +29,8 @@ import { IChannel, ITeam, IUser } from '@shared/interfaces';
   ],
 })
 export class AddChannelDialogComponent {
+  isDarkTheme: boolean = false;
+  searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   channelName = '';
   description = '';
   found = '';
@@ -35,9 +40,11 @@ export class AddChannelDialogComponent {
     private dialogRef: MatDialogRef<AddChannelDialogComponent>,
     private backendService: BackendService,
     private userService: UserService,
-    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string | null }
+    @Inject(MAT_DIALOG_DATA)
+    public data: { selectedTeam: string | null; theme: boolean }
   ) {
     this.selectedTeamId = data.selectedTeam;
+    this.isDarkTheme = data.theme;
   }
 
   // Creating the channel
@@ -56,19 +63,24 @@ export class AddChannelDialogComponent {
     }
 
     try {
-      const channelId: string | undefined = await this.backendService.createChannel(
-        currentUser.user_id,
-        this.selectedTeamId,
-        this.channelName,
-        this.description
-      );
+      const channelId: string | undefined =
+        await this.backendService.createChannel(
+          currentUser.user_id,
+          this.selectedTeamId,
+          this.channelName,
+          this.description
+        );
 
       if (!channelId) {
         console.error('Error creating channel');
         return;
       }
 
-      const newChannel: IChannel | undefined = await this.backendService.getChannelById(this.selectedTeamId, channelId);
+      const newChannel: IChannel | undefined =
+        await this.backendService.getChannelById(
+          this.selectedTeamId,
+          channelId
+        );
 
       if (!newChannel) {
         console.error('Error getting channel');
@@ -82,7 +94,7 @@ export class AddChannelDialogComponent {
         }
       });
 
-      this.dialogRef.close();
+      this.dialogRef.close({ channel_id: channelId });
     } catch (error) {
       console.error('Error creating channel', error);
     }

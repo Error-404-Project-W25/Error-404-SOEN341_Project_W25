@@ -3,9 +3,9 @@
  * https://jestjs.io/docs/configuration
  */
 
-import type {Config} from 'jest';
+import type { InitialOptionsTsJest } from 'ts-jest/dist/types';
 
-const config: Config = {
+const config: InitialOptionsTsJest = {
 
   collectCoverage: false,
   //coverageDirectory: "coverage",
