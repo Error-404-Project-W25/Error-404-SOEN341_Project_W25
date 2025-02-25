@@ -15,13 +15,21 @@
           name="email"
           required
         />
-        <input
-          type="password"
-          placeholder="Password"
-          [(ngModel)]="signInForm.password"
-          name="password"
-          required
-        />
+        <div class="input-container">
+          <input
+            type="{{ passwordVisible ? 'text' : 'password' }}"
+            placeholder="Password"
+            [(ngModel)]="signInForm.password"
+            name="password"
+            required
+          />
+          <i
+            class="fa password-toggle"
+            [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+            (click)="togglePasswordVisibility()"
+          ></i>
+        </div>
+
         <span *ngIf="loginError" id="logInError"
           >Incorrect email or password</span
         >
@@ -102,7 +110,7 @@
 
         <div class="input-container">
           <input
-            type="password"
+            type="{{ passwordVisible ? 'text' : 'password' }}"
             placeholder="Password"
             [(ngModel)]="signUpForm.password"
             name="password"
@@ -110,6 +118,11 @@
             autocomplete="new-password"
             (input)="confirmPasswordMatch()"
           />
+          <i
+            class="fa password-toggle"
+            [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+            (click)="togglePasswordVisibility()"
+          ></i>
           <span *ngIf="!validationErrors.passwordValid">
             {{ validationErrorMessages.passwordError }}
           </span>
@@ -117,7 +130,7 @@
 
         <div class="input-container">
           <input
-            type="password"
+            type="{{ passwordVisible ? 'text' : 'password' }}"
             placeholder="Confirm Password"
             [(ngModel)]="confirmPassword"
             name="confirmPassword"
@@ -125,6 +138,11 @@
             autocomplete="new-password"
             (input)="confirmPasswordMatch()"
           />
+          <i
+            class="fa password-toggle"
+            [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+            (click)="togglePasswordVisibility()"
+          ></i>
           <span *ngIf="!validationErrors.passwordsMatch">
             {{ validationErrorMessages.passwordMatchError }}
           </span>

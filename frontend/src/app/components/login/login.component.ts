@@ -58,6 +58,8 @@ export class LoginComponent implements OnInit {
     passwordMatchError: '',
   };
 
+  passwordVisible = false; // New property to track password visibility
+
   constructor(
     private router: Router,
     private backendService: BackendService,
@@ -301,5 +303,9 @@ export class LoginComponent implements OnInit {
       console.error('Error logging in:', error);
       alert('Failed to log in.');
     }
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
   }
 }
