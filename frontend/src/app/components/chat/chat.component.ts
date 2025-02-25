@@ -125,14 +125,17 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.refreshConversationList();
   }
 
-  refreshConversationList() {
+  async refreshConversationList() {
     this.loginUser = this.userService.getUser() || null;
-    this.conversationList =
-      this.loginUser?.direct_messages.map((id) => ({
-        conversationId: id,
-        conversationName: '',
-        messages: [],
-      })) || [];
+    this.conversationList = [];
+    if (this.loginUser?.direct_messages) {
+      for (const conversationId of this.loginUser.direct_messages) {
+        const conversation = await this.backendService.getConversationById(conversationId);
+        if (conversation) {
+          this.conversationList.push(conversation);
+        }
+      }
+    }
   }
 
   toggleTheme() {
@@ -302,14 +305,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectConversation(conversationObject: IConversation ): void {
+  async selectConversation(conversationObject: IConversation): Promise<void> {
     console.log('Selected conversation:', conversationObject);
     this.selectedConversationId = conversationObject.conversationId;
-    this.conversationList = this.userService.getUser()?.direct_messages || [];
-    const conversation = this.conversationList.find((c) => c === conversationId);
-    if (conversation){
-      this.loadMessages(conversationId);
-    }
+    await this.loadMessages(conversationObject.conversationId);
   }
 
   async sendMessage() {

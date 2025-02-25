@@ -157,7 +157,7 @@
               <div
                 class="channelList-dropdown-content-container"
                 *ngFor="let conversation of conversationList"
-                (click)="selectConversation(conversation.conversationId)"
+                (click)="selectConversation(conversation)"
                 readonly
               >
                 <div class="channel-name-container">{{ conversation }}</div>
