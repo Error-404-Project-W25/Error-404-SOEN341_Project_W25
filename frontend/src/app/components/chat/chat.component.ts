@@ -36,10 +36,7 @@ export class ChatComponent implements OnInit {
     (_, i) => `Member ${i + 1}`
   );
   channelNameList: IChannel[] = [];
-  conversationList: string[] = Array.from(
-    { length: 30 },
-    (_, i) => `Conversation ${i + 1}`
-  );
+  conversationList: string[] = [];
   teamList: ITeam[] = []; 
   messages: IMessage[] = [];
   teams: ITeam[] = [];
@@ -47,6 +44,7 @@ export class ChatComponent implements OnInit {
   selectedTeamId: string | null = null;
   selectedChannelId: string | null = null;
   selectedChannelObject: IChannel | null = null;
+  selectedConversationId: string | null = null;
   title = 'chatHaven';
 
   newMessage: string = '';
@@ -132,16 +130,20 @@ export class ChatComponent implements OnInit {
   }
 
 
-  selectConversation(conversation: string): void {
-    console.log('Selected conversation:', conversation);
-    // this.selectedTeam = conversation;
+  selectConversation(conversationId: string): void {
+    console.log('Selected conversation:', conversationId);
+    this.selectedConversationId = conversationId;
+    this.conversationList = this.userService.getUser()?.direct_messages || [];
+    const conversation = this.conversationList.find((c) => c === conversationId);
+    if (conversation){
+      this.loadMessages(conversationId);
+    }
   }
 
   async sendMessage() {
     console.log('Sending message:', this.selectedChannelId);
     
     if (this.newMessage && this.selectedChannelObject) {
-      console.log('if case');
       const sender = this.userService.getUser();
       if (sender) {
         console.log('Sending message:', this.newMessage);

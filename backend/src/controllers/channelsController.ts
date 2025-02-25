@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
-import { Conversation } from '../models/conversationsModel';
 import { io } from '../app'; 
+import { createGeneralConversation } from './conversationsController';
 
 /**
  * Create a channel
@@ -72,11 +72,11 @@ export const createChannel = async (req: Request, res: Response) => {
     }
     
     // Create a new conversation for the channel
-    await new Conversation({
-      conversationId: conversationId,
-      conversationName: channelName,
-      messages: [],
-    }).save();
+    const newConversation = await createGeneralConversation(channelName, creator_id, creator_id, conversationId);
+    if (!newConversation) {
+      res.status(500).json({ error: 'Failed to create conversation for the channel' });
+      return;
+    }
 
     io.to(creator_id).emit('joinRoom', { conversationId });
 

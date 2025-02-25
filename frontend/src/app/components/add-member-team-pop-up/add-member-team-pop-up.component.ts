@@ -50,7 +50,7 @@ export class AddMemberTeamPopUpComponent {
   }
   teamMembers: string[] = [];
 
-  // Search for members to add to the channel
+  // Search for members to add to the team
   search() {
     console.log('Searching for:', this.searchQuery);
 
@@ -65,6 +65,7 @@ export class AddMemberTeamPopUpComponent {
             ...this.teamMembers,
             user.user_id,
           ].filter((id): id is string => id !== undefined);
+          this.addMembersToTeam();
         } else {
           this.found = 'No user found';
           console.log(this.found);
@@ -77,5 +78,20 @@ export class AddMemberTeamPopUpComponent {
       .catch((error) => {
         console.error('Error searching users:', error);
       });
+  }
+
+  // Add selected members to the team
+  async addMembersToTeam() {
+    if (this.selectedTeamId) {
+      for (const memberId of this.teamMembers) {
+        const success = await this.backendService.addMemberToTeam(memberId, this.selectedTeamId);
+        if (success) {
+          console.log(`Member ${memberId} added to team ${this.selectedTeamId}`);
+        } else {
+          console.error(`Failed to add member ${memberId} to team ${this.selectedTeamId}`);
+        }
+      }
+      this.dialogRef.close();
+    }
   }
 }
