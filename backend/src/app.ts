@@ -38,47 +38,17 @@ io.on('connection', (socket) => {
     console.log(`User joined room: ${conversationId}`);
   });
 
-  // socket.on('sendMessage', async (data, callback) => {
-  //   const req = {
-  //     body: data,
-  //   } as Request;
-  //   const res = {
-  //     status: (statusCode: number) => ({
-  //       json: (responseBody: any) => {
-  //         callback(responseBody);
-  //       },
-  //     }),
-  //   } as Response;
-
-  //   await sendMessage(req, res);
-  // });
-
-  // socket.on('getMessages', async (data, callback) => {
-  //   const req = {
-  //     params: data,
-  //   } as Request;
-  //   const res = {
-  //     status: (statusCode: number) => ({
-  //       json: (responseBody: any) => {
-  //         callback(responseBody);
-  //       },
-  //     }),
-  //   } as Response;
-
-  //   await getMessages(req, res);
-  // });
-
   socket.on('sendMessage', async (data, callback) => {
     const req = {
       body: data,
     } as Request;
     const res = {
-      status: () => ({
+      status: (statusCode: number) => ({
         json: (responseBody: any) => {
           callback(responseBody);
         },
       }),
-    } as unknown as Response;
+    } as Response;
 
     await sendMessage(req, res);
   });
@@ -88,12 +58,12 @@ io.on('connection', (socket) => {
       params: data,
     } as Request;
     const res = {
-      status: () => ({
+      status: (statusCode: number) => ({
         json: (responseBody: any) => {
           callback(responseBody);
         },
       }),
-    } as unknown as Response;
+    } as Response;
 
     await getMessages(req, res);
   });
