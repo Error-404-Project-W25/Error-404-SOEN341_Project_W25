@@ -1,4 +1,8 @@
-<body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme" style="margin: 0; padding: 0;">
+<body
+  [class.dark-theme]="isDarkTheme"
+  [class.light-theme]="!isDarkTheme"
+  style="margin: 0; padding: 0"
+>
   <div class="pop-up-container">
     <div class="form-container">
       <h1>Add Member To Channel</h1>
@@ -23,25 +27,29 @@
             <table id="myTable">
               <thead>
                 <tr>
-                  <th>User Name</th>
-                  <th>Add</th>
+                  <th style="width: 75%">User Name</th>
+                  <th style="width: 25%">Add</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let member of teamMembers">
                   <td>{{ member.username }}</td>
                   <td>
-                    <input
-                      type="checkbox"
-                      [value]="member.user_id"
-                    />
+                    <label class="container">
+                      <input type="checkbox" />
+                      <span class="checkmark"></span>
+                    </label>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-        <button type="submit" class="form-submit-btn" (click)="addMembersToChannel()">
+        <button
+          type="submit"
+          class="form-submit-btn"
+          (click)="addMembersToChannel()"
+        >
           Done
         </button>
       </form>
