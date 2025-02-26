@@ -32,6 +32,7 @@
   justify-content: center;
   align-items: center;
   gap: 20px;
+  margin: 5px;
 }
 
 .form-container {
@@ -179,3 +180,41 @@
   background-color: var(--pop-up-button-hover);
   border-color: var(--pop-up-button-hover);
 }
+
+/*Team member List*/
+.team-member-team {
+  border-radius: 5px;
+  border-color: var(--pop-up-border-color);
+  overflow: auto;
+  max-height: 50vh;
+  scrollbar-width: none; /* For Firefox */
+}
+
+.team-member-team::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
+.team-member-team thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Just common table stuff. Really. */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th,
+td {
+  padding: 8px 16px;
+}
+th {
+  background: var(--pop-up-gradient-color1);
+}
+
+tr:hover {
+  border-radius: 15px;
+  background: var(--pop-up-button-bg);
+}
+

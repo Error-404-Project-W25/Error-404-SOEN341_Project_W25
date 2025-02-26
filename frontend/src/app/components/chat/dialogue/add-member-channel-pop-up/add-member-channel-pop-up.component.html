@@ -1,16 +1,8 @@
-<body
-  [class.dark-theme]="isDarkTheme"
-  [class.light-theme]="!isDarkTheme"
-  style="margin: 0; padding: 0"
->
+<body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme" style="margin: 0; padding: 0;">
   <div class="pop-up-container">
     <div class="form-container">
       <h1>Add Member To Channel</h1>
-      <form
-        class="form"
-        (ngSubmit)="addMembersToChannel()"
-        #addMemberForm="ngForm"
-      >
+      <form class="form" #addMemberForm="ngForm">
         <div class="form-group">
           <label for="searchQuery">Add Member</label>
           <div class="container-add-member">
@@ -22,17 +14,36 @@
                 name="searchQuery"
                 required
                 #searchQueryInput="ngModel"
+                (keyup)="search()"
+                placeholder="Search usernames.."
               />
-              <button class="form-add-btn" type="button" (click)="search()">
-                Add
-              </button>
             </div>
           </div>
-          <div class="found-message" *ngIf="found" style="height: 10px">
-            {{ found }}
+          <div class="team-member-team">
+            <table id="myTable">
+              <thead>
+                <tr>
+                  <th>User Name</th>
+                  <th>Add</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let member of teamMembers">
+                  <td>{{ member.username }}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      [value]="member.user_id"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <button type="submit" class="form-submit-btn">Done</button>
+        <button type="submit" class="form-submit-btn" (click)="addMembersToChannel()">
+          Done
+        </button>
       </form>
     </div>
   </div>

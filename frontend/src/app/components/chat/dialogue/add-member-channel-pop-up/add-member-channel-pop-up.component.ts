@@ -7,7 +7,7 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { BackendService } from '@services/backend.service';
 import { IUser, IChannel, ITeam } from '@shared/interfaces';
 
@@ -19,7 +19,7 @@ import { IUser, IChannel, ITeam } from '@shared/interfaces';
     MatInputModule,
     FormsModule,
     MatButtonModule,
-    NgIf,
+    NgFor,
   ],
   templateUrl: './add-member-channel-pop-up.component.html',
   styleUrls: [
@@ -32,6 +32,7 @@ export class AddMemberChannelPopUpComponent {
   searchQuery = '';
   found = '';
   memberIdsToAdd: string[] = [];
+  teamMembers: IUser[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<AddMemberChannelPopUpComponent>,
@@ -43,63 +44,61 @@ export class AddMemberChannelPopUpComponent {
       theme: boolean;
     }
   ) {
+    this.backendService.getTeamById(this.data.team_id).then(async (team) => {
+      if (team) {
+        const members = await Promise.all(
+          team.members.map((memberId) =>
+            this.backendService.getUserById(memberId)
+          )
+        );
+        this.teamMembers = members.filter(
+          (member): member is IUser => member !== undefined
+        );
+      } else {
+        console.error('Team not found');
+      }
+    });
     this.isDarkTheme = data.theme;
   }
 
-  async search() {
-    console.log('Searching for:', this.searchQuery);
-
-    try {
-      const user: IUser | undefined =
-        await this.backendService.getUserByUsername(this.searchQuery);
-
-      if (!user) {
-        this.found = 'No user found';
-        return;
+  search() {
+    const input = this.searchQuery.toUpperCase();
+    const table = document.getElementById('myTable');
+    if (table) {
+      const tr = table.getElementsByTagName('tr');
+      for (let i = 0; i < tr.length; i++) {
+        const td = tr[i].getElementsByTagName('td')[0];
+        if (td) {
+          const txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(input) > -1) {
+            tr[i].style.display = '';
+          } else {
+            tr[i].style.display = 'none';
+          }
+        }
       }
-
-      const currTeam: ITeam | undefined = await this.backendService.getTeamById(
-        this.data.team_id
-      );
-
-      if (!currTeam?.members.includes(user?.user_id)) {
-        this.found = 'User must be a member of the team first';
-        return;
-      }
-
-      const targetChannel: IChannel | undefined =
-        await this.backendService.getChannelById(
-          this.data.team_id,
-          this.data.channel_id
-        );
-
-      if (!targetChannel) {
-        console.error('Channel not found');
-        return;
-      }
-
-      const isUserInChannel: boolean = targetChannel.members.includes(
-        user.user_id
-      );
-
-      if (isUserInChannel) {
-        this.found = 'User is already in this channel';
-        return;
-      }
-
-      this.found = 'User found';
-      this.memberIdsToAdd.push(user.user_id);
-    } catch (error) {
-      console.error('Error searching user:', error);
-      this.found = 'Error searching for user';
     }
+  }
 
-    setTimeout(() => {
-      this.found = '';
-    }, 2000);
+  getCheckedValues() {
+    const checkedValues: string[] = [];
+    const checkboxes = document.querySelectorAll(
+      'input[type="checkbox"]:checked'
+    );
+    checkboxes.forEach((checkbox) => {
+      // BUG: This is not the correct way to check if the checkbox is value is the user_id
+      if (checkbox instanceof HTMLInputElement && checkbox.value.length > 3) {
+        console.log('Checkbox:', checkbox);
+        checkedValues.push(checkbox.value);
+        console.log('Checked values:', checkedValues);
+      }
+    });
+    this.memberIdsToAdd = checkedValues;
   }
 
   async addMembersToChannel() {
+    this.getCheckedValues();
+    console.log('1Adding members:', this.memberIdsToAdd);
     for (const memberId of this.memberIdsToAdd) {
       try {
         const response: boolean = await this.backendService.addUserToChannel(
