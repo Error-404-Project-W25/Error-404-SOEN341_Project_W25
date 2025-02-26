@@ -84,6 +84,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private webSocketService: WebSocketService
   ) {}
 
+  //////////////////////////////////////////////Chat Page Setup//////////////////////////////////////////////
   ngOnInit() {
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize();
@@ -144,6 +145,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.isDarkTheme = !this.isDarkTheme;
   }
 
+
+  //////////////////////////////////////////////Open Dialogue//////////////////////////////////////////////
   openCreateTeamDialog(): void {
     if (this.loginUser?.role !== 'admin') {
       alert('You do not have the necessary permissions to create a team.');
@@ -349,13 +352,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   myChannelFunction() {
     const dropdown = document.getElementById('myDropdownChannel');
-    if (dropdown) {
-      dropdown.classList.toggle('channelList-show');
-    }
-  }
-
-  myConvoFunction() {
-    const dropdown = document.getElementById('myDropdownConvo');
     if (dropdown) {
       dropdown.classList.toggle('channelList-show');
     }

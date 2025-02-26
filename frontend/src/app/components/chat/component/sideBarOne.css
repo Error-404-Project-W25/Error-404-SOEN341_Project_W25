@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  height: 4rem;
+  height: 8rem;
   justify-content: center;
   margin: 0;
   padding: 0;
@@ -45,7 +45,31 @@
   position: relative;
 }
 
+.conversation-button {
+  align-items: center;
+  background-color: var(--user-button-background);
+  border: none;
+  border-radius: 50%;
+  color: var(--user-button-text);
+  cursor: pointer;
+  justify-content: center;
+  margin: 5px;
+  max-width: 3rem;
+  min-height: 3rem;
+  min-width: 3rem;
+  padding: 10px;
+  position: relative;
+}
+
 .add-team-button:hover {
+  background-color: var(--add-team-button-hover);
+  border-radius: 30%;
+  transform: rotate(90deg);
+  transition: transform 0.3s ease-in-out;
+  visibility: visible;
+}
+
+.conversation-button:hover {
   background-color: var(--add-team-button-hover);
   border-radius: 30%;
   visibility: visible;
@@ -84,9 +108,9 @@
 .team-list {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 8rem);
+  height: calc(100% - 12rem);
   /*FIX*/
-  margin-top: 4rem;
+  margin-top: 8.5rem;
   margin-bottom: 7rem;
   max-height: fit-content;
   padding-top: 0;
@@ -171,7 +195,6 @@
   border-top: 2px solid var(--separator);
 }
 
-
 .menu-toggle-button {
   cursor: pointer;
   position: absolute;
@@ -249,8 +272,6 @@
   scale: 0.98;
   border-radius: 30%;
 }
-
-
 
 .menu-toggle-checkbox:checked ~ .menu-option-1 {
   transition-delay: 0.1s;

@@ -29,7 +29,7 @@
   padding: 0;
   position: relative;
   width: 100%;
-  border-bottom: 2px solid var(--side-bar-1-separator);
+  border-bottom: 2px solid var(--side-bar-1-background);
 }
 
 .main > .inp {
