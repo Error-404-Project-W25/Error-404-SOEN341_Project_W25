@@ -2,8 +2,8 @@
   margin: 0;
   padding: 0;
 }
+
 .pop-up-container {
-  /* border-radius: 16px; */
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
   justify-content: center;
@@ -12,13 +12,11 @@
   width: 100%;
   background-color: var(--pop-up-primary-bg);
   overflow-x: hidden;
-  display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   margin: 0;
   padding: 0;
 }
+
 .h1 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 24px;
@@ -26,6 +24,7 @@
   font-weight: 600;
   margin-bottom: 16px;
 }
+
 .form-container .form-search-container {
   display: flex;
   flex-direction: row;
@@ -67,11 +66,9 @@
   0% {
     background-position: 0% 50%;
   }
-
   50% {
     background-position: 100% 50%;
   }
-
   100% {
     background-position: 0% 50%;
   }
@@ -127,35 +124,13 @@
   opacity: 0.5;
 }
 
-.form-container .form-group input:focus {
-  outline: none;
-  border-color: var(--pop-up-gradient-color1);
-}
-
+.form-container .form-group input:focus,
 .form-container .form-group textarea:focus {
   outline: none;
   border-color: var(--pop-up-gradient-color1);
 }
 
-.form-container .form-submit-btn {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  align-self: flex-start;
-  font-family: inherit;
-  color: var(--pop-up-label-color);
-  font-weight: 600;
-  width: 40%;
-  background: var(--pop-up-button-bg);
-  border: 1px solid var(--pop-up-border-color);
-  padding: 12px 16px;
-  font-size: inherit;
-  gap: 8px;
-  margin-top: 8px;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
+.form-container .form-submit-btn,
 .form-container .form-add-btn {
   display: flex;
   align-items: flex-start;
@@ -181,7 +156,7 @@
   border-color: var(--pop-up-button-hover);
 }
 
-/*Team member List*/
+/* Team member List */
 .team-member-team {
   border-radius: 5px;
   border-color: var(--pop-up-border-color);
@@ -200,17 +175,19 @@
   z-index: 1;
 }
 
-/* Just common table stuff. Really. */
+/* Table styles */
 table {
   border-collapse: collapse;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 18px;
   width: 100%;
 }
+
 th,
 td {
   padding: 16px 16px; /* Increase the padding to increase row height */
 }
+
 th {
   background: var(--pop-up-gradient-color1);
 }
@@ -220,7 +197,7 @@ tr:hover {
   background: var(--pop-up-button-bg);
 }
 
-/* The container */
+/* Custom checkbox styles */
 .container {
   display: flex;
   justify-content: center;
@@ -230,13 +207,9 @@ tr:hover {
   margin-bottom: 12px;
   cursor: pointer;
   font-size: 22px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
-/* Hide the browser's default checkbox */
 .container input {
   position: absolute;
   opacity: 0;
@@ -245,7 +218,6 @@ tr:hover {
   width: 0;
 }
 
-/* Create a custom checkbox */
 .checkmark {
   position: absolute;
   top: 50%;
@@ -257,29 +229,24 @@ tr:hover {
   border-color: var(--pop-up-border-color);
 }
 
-/* On mouse-over, add a grey background color */
 .container:hover input ~ .checkmark {
   background-color: var(--pop-up-button-hover);
 }
 
-/* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
   background-color: var(--pop-up-gradient-color1);
 }
 
-/* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
   content: "";
   position: absolute;
   display: none;
 }
 
-/* Show the checkmark when checked */
 .container input:checked ~ .checkmark:after {
   display: block;
 }
 
-/* Style the checkmark/indicator */
 .container .checkmark:after {
   left: 9px;
   top: 5px;
@@ -287,7 +254,5 @@ tr:hover {
   height: 10px;
   border: solid var(--pop-up-text-color);
   border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
