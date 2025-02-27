@@ -54,7 +54,7 @@
   -ms-overflow-style: none;
   display: flex;
   overflow-y: bottom;
-  /* flex-direction: column-reverse; */
+  flex-direction: column-reverse;
 }
 
 .message {

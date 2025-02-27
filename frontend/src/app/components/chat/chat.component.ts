@@ -307,6 +307,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (messages) {
       this.messages = messages;
     }
+    this.messages.reverse();
   }
 
   selectConversation(conversation: string): void {
