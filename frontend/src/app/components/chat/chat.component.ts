@@ -145,7 +145,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.isDarkTheme = !this.isDarkTheme;
   }
 
-
   //////////////////////////////////////////////Open Dialogue//////////////////////////////////////////////
   openCreateTeamDialog(): void {
     if (this.loginUser?.role !== 'admin') {
@@ -334,6 +333,23 @@ export class ChatComponent implements OnInit, OnDestroy {
           await this.loadMessages(this.selectedChannelObject.conversationId);
         }
       }
+    }
+  }
+
+  async createCoversation(memberId: string) {
+    const sender = this.userService.getUser();
+    const receiver = await this.backendService.getUserById(memberId);
+    const conversationName = `Conversation: ${sender?.username}, ${receiver?.username}`;
+    console.log('Creating conversation:', conversationName);
+    console.log('Sender:', sender?.user_id);
+    console.log('Receiver:', receiver?.user_id);
+    if (sender) {
+      const conversation = await this.backendService.createConversation(
+        conversationName,
+        sender.user_id,
+        memberId
+      );
+      console.log('Conversation created:', conversation);
     }
   }
 

@@ -328,6 +328,7 @@
                     <div class="member-name">{{ member.username }}</div>
                     <!-- (click) create conversation or menu ??-->
                     <button
+                      (click)="createCoversation(member.user_id)"
                       class="member-button"
                       readonly
                       title="Start Conversation"
