@@ -171,20 +171,28 @@ export class ChatComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddTeamDialogComponent, {
       data: { theme: this.isDarkTheme },
     });
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       if (result && result.team_id) {
-        // Properly refresh teams list first before selecting the team
-        this.refreshTeamList().then(() => {
-          this.selectTeam(result.team_id);
-          // Open the add member dialog after the team list is refreshed
-          this.dialog.open(AddMemberTeamPopUpComponent, {
-            data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
-          });
+        // First fetch the latest user data to get the updated teams array
+        if (this.loginUser) {
+          const updatedUser = await this.backendService.getUserById(this.loginUser.user_id);
+          if (updatedUser) {
+            // Update the local user object with the latest teams array
+            this.userService.updateUser(updatedUser);
+          }
+        }
+        
+        // Now refresh the team list with the updated user data
+        await this.refreshTeamList();
+        
+        // Then select the team and open add member dialog
+        this.selectTeam(result.team_id);
+        this.dialog.open(AddMemberTeamPopUpComponent, {
+          data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
         });
       }
     });
   }
-  
 
   openCreateChannelDialog(): void {
     const dialogRef = this.dialog.open(AddChannelDialogComponent, {
