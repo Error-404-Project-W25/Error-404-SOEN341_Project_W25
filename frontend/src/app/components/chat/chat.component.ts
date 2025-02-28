@@ -107,21 +107,18 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   async refreshTeamList(): Promise<void> {
     this.loginUser = this.userService.getUser() || null;
-    
     this.teamList = [];
     
-    if (this.loginUser?.user_id && this.loginUser?.teams) {
-      for (const teamId of this.loginUser.teams) {
-        const team = await this.backendService.getTeamById(teamId);
-        if (team) {
-          if (!this.teamList.some(t => t.team_id === team.team_id)) {
-            this.teamList.push(team);
-          }
-        }
-      }
+    if (this.loginUser?.user_id && this.loginUser?.teams && this.loginUser.teams.length > 0) {
+      const teamPromises = this.loginUser.teams.map(teamId => 
+        this.backendService.getTeamById(teamId)
+      );
+      
+      const teams = await Promise.all(teamPromises);
+      
+      this.teamList = teams.filter(team => team !== undefined) as ITeam[];
     }
     
-    // Only set default team if user has teams
     if (this.teamList.length > 0 && !this.selectedTeamId) {
       this.selectedTeamId = this.teamList[0].team_id;
       this.refreshChannelList();
