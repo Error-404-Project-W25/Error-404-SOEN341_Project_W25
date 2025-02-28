@@ -47,6 +47,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   loginUser: IUser | null = null;
 
+  isTeamListOpen = true;
   isDarkTheme = true;
 
   newMessage: string = '';
@@ -374,5 +375,35 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleResize() {}
+  toggleTeamList() {
+    const chatBox = document.querySelector('.chat-box') as HTMLElement;
+    const teamSidebar = document.querySelector(
+      '.team-setting-sidebar'
+    ) as HTMLElement;
+    if (teamSidebar) {
+      console.log('Toggle team list:', this.isTeamListOpen);
+      if (this.isTeamListOpen) {
+        teamSidebar.style.display = 'none';
+        chatBox.style.width = 'calc(100% - 20rem)';
+        this.isTeamListOpen = false;
+      } else {
+        teamSidebar.style.display = 'flex';
+        chatBox.style.width = 'calc(100% - 40rem)';
+        this.isTeamListOpen = true;
+      }
+    }
+  }
+
+  handleResize() {
+    const chatBox = document.querySelector('.chat-box') as HTMLElement;
+    const teamSidebar = document.querySelector(
+      '.team-setting-sidebar'
+    ) as HTMLElement;
+    if (window.innerWidth < 1135) {
+      this.isTeamListOpen = true;
+    } else {
+      this.isTeamListOpen = false;
+    }
+    this.toggleTeamList();
+  }
 }

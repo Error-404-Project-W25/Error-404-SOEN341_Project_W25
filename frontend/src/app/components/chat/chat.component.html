@@ -9,7 +9,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
     <style>
-      @media (max-width: 1135px) {
+      /* @media (max-width: 1135px) {
         .chat-box {
           width: calc(100% - 20rem);
         }
@@ -17,7 +17,7 @@
           z-index: 1;
           display: none;
         }
-      }
+      }*/
       @media (max-width: 600px) {
         .chat-box {
           display: none;
@@ -32,7 +32,7 @@
           min-width: calc(100% - 5rem);
           max-width: max-content;
         }
-      }
+      } 
     </style>
   </head>
   <body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
@@ -190,37 +190,35 @@
         </div>
         <div class="channel-list">
           <div
-          class="channelList-dropdown-content-container"
-          *ngFor="let channel of channelList"
-          (click)="selectChannel(channel.channel_id)"
-          readonly
-        >
-          <div class="channel-name-container">{{ channel.name }}</div>
-          <div class="channel-actions">
-            <!--(click) add member to channel-->
-            <button
-              class="channel-button"
-              (click)="
-                openAddMemberChannelDialog(channel);
-                $event.stopPropagation()
-              "
-              readonly
-              title="Add Member to Channel"
-            >
-              <i class="fa fa-user-plus" style="font-size: 16px"> </i>
-            </button>
-            <!-- (click) open channel setting -->
-            <button
-              class="channel-button"
-              (click)="openEditChannelDialog(channel)"
-              readonly
-              title="Channel Settings"
-            >
-              <i class="fa fa-gear" style="font-size: 16px"></i>
-            </button>
+            class="channelList-dropdown-content-container"
+            *ngFor="let channel of channelList"
+            (click)="selectChannel(channel.channel_id)"
+            readonly
+          >
+            <div class="channel-name-container">{{ channel.name }}</div>
+            <div class="channel-actions">
+              <!--(click) add member to channel-->
+              <button
+                class="channel-button"
+                (click)="
+                  openAddMemberChannelDialog(channel); $event.stopPropagation()
+                "
+                readonly
+                title="Add Member to Channel"
+              >
+                <i class="fa fa-user-plus" style="font-size: 16px"> </i>
+              </button>
+              <!-- (click) open channel setting -->
+              <button
+                class="channel-button"
+                (click)="openEditChannelDialog(channel)"
+                readonly
+                title="Channel Settings"
+              >
+                <i class="fa fa-gear" style="font-size: 16px"></i>
+              </button>
+            </div>
           </div>
-        </div>
-
         </div>
       </div>
       <div class="chat-box" id="chat-box" *ngIf="channelTitle !== ''">
@@ -230,7 +228,7 @@
             <!-- (click) teamlist toggle -->
             <button
               class="team-list-toggle-button"
-              readonly
+              (click)="toggleTeamList()"
               title="Toggle Team List"
             >
               <i class="fa fa-bars" style="font-size: 24px"></i>
