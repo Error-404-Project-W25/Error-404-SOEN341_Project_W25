@@ -87,13 +87,6 @@ export class AddChannelDialogComponent {
         return;
       }
 
-      // Add the new channel to the current user's teams
-      currentUser.teams.forEach((team) => {
-        if (team.team_id === this.selectedTeamId) {
-          team.channels.push(newChannel);
-        }
-      });
-
       this.dialogRef.close({ channel_id: channelId });
     } catch (error) {
       console.error('Error creating channel', error);

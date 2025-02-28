@@ -67,6 +67,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   chatMemberList: IUser[] = [];
   messages: IMessage[] = [];
 
+  userIdToName: {[userId: string]: string} = {};
 
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   channels$ = this.channelsSubject.asObservable();
@@ -320,6 +321,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     const messages = await this.backendService.getMessages(conversationId);
     if (messages) {
       this.messages = messages;
+      await this.loadUserNames();
     }
   }
 
@@ -378,4 +380,19 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   handleResize() {}
+
+  async loadUserNames(): Promise<void> {
+    const uniqueSenderIds = [...new Set(this.messages.map(msg => msg.sender))];
+    
+    for (const userId of uniqueSenderIds) {
+      const user = await this.backendService.getUserById(userId);
+      if (user) {
+        this.userIdToName[userId] = user.username;
+      }
+    }
+  }
+
+  getUserName(userId: string): string {
+    return this.userIdToName[userId] || userId;
+  }  
 }

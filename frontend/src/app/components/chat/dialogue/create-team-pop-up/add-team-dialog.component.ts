@@ -74,10 +74,11 @@ export class AddTeamDialogComponent {
       }
 
       // Add the new team to the user's list of teams
-      this.userService.getUser()?.teams.push(newTeam);
+      this.userService.getUser()?.teams.push(newTeam.team_id);
 
       this.dialogRef.close({ team_id: teamId });
       console.log('Team created successfully');
+
     } catch (error) {
       console.error('Error creating team:', error);
     }

@@ -9,7 +9,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "typeRoots": ["../node_modules/@types", "./node_modules/@types", "../node_modules/@testing-library"],
-    "types": ["node", "jest", "jest-dom"],
+    "types": ["jest", "jest-dom"],
     "resolveJsonModule": true,
     "paths": {
       "@shared/*": ["../shared/*"]
