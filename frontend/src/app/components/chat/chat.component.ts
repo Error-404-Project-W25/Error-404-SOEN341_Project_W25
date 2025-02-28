@@ -72,6 +72,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   channels$ = this.channelsSubject.asObservable();
 
+  private skipNextTeamRefresh = false;
+
   constructor(
     private router: Router,
     public dialog: MatDialog,
@@ -106,6 +108,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   async refreshTeamList(): Promise<void> {
+    // Skip this refresh if flag is set
+    if (this.skipNextTeamRefresh) {
+      this.skipNextTeamRefresh = false;
+      return;
+    }
+    
     this.loginUser = this.userService.getUser() || null;
     this.teamList = [];
     
@@ -171,20 +179,24 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result && result.team_id) {
-        // First fetch the latest user data to get the updated teams array
         if (this.loginUser) {
+          // Set flag to skip next team refresh
+          this.skipNextTeamRefresh = true;
+          
           const updatedUser = await this.backendService.getUserById(this.loginUser.user_id);
           if (updatedUser) {
-            // Update the local user object with the latest teams array
             this.userService.updateUser(updatedUser);
+            
+            const newTeam = await this.backendService.getTeamById(result.team_id);
+            if (newTeam) {
+
+              this.teamList.push(newTeam);
+              
+              this.selectTeam(result.team_id);
+            }
           }
         }
         
-        // Now refresh the team list with the updated user data
-        await this.refreshTeamList();
-        
-        // Then select the team and open add member dialog
-        this.selectTeam(result.team_id);
         this.dialog.open(AddMemberTeamPopUpComponent, {
           data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
         });
