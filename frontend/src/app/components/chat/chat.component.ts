@@ -105,14 +105,18 @@ export class ChatComponent implements OnInit, OnDestroy {
     window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
-  async refreshTeamList() {
+  async refreshTeamList(): Promise<void> {
     this.loginUser = this.userService.getUser() || null;
+    // Clear the team list before fetching
     this.teamList = [];
     if (this.loginUser?.teams) {
       for (const teamId of this.loginUser.teams) {
         const team = await this.backendService.getTeamById(teamId);
         if (team) {
-          this.teamList.push(team);
+          // Check if team already exists in the list to avoid duplicates
+          if (!this.teamList.some(t => t.team_id === team.team_id)) {
+            this.teamList.push(team);
+          }
         }
       }
     }
@@ -120,6 +124,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.selectedTeamId = this.teamList[0].team_id;
       this.refreshChannelList();
     }
+    return;
   }
 
   async refreshChannelList() {
@@ -168,14 +173,18 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result.team_id) {
-        this.dialog.open(AddMemberTeamPopUpComponent, {
-          data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
+        // Properly refresh teams list first before selecting the team
+        this.refreshTeamList().then(() => {
+          this.selectTeam(result.team_id);
+          // Open the add member dialog after the team list is refreshed
+          this.dialog.open(AddMemberTeamPopUpComponent, {
+            data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
+          });
         });
-        this.refreshTeamList();
-        this.selectTeam(result.team_id);
       }
     });
   }
+  
 
   openCreateChannelDialog(): void {
     const dialogRef = this.dialog.open(AddChannelDialogComponent, {
