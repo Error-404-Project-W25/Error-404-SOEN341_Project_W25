@@ -92,7 +92,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user) {
         console.log('User:', user);
-        this.teamList = user.teams;
+        this.refreshTeamList();
       } else {
         console.log('No user');
         this.router.navigate(['/login']);
@@ -104,20 +104,35 @@ export class ChatComponent implements OnInit, OnDestroy {
     window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
-  refreshTeamList() {
+  async refreshTeamList() {
     this.loginUser = this.userService.getUser() || null;
-    this.teamList = this.loginUser?.teams || [];
+    this.teamList = [];
+    if (this.loginUser?.teams) {
+      for (const teamId of this.loginUser.teams) {
+        const team = await this.backendService.getTeamById(teamId);
+        if (team) {
+          this.teamList.push(team);
+        }
+      }
+    }
     if (this.teamList.length > 0 && !this.selectedTeamId) {
       this.selectedTeamId = this.teamList[0].team_id;
       this.refreshChannelList();
     }
   }
 
-  refreshChannelList() {
+  async refreshChannelList() {
     this.loginUser = this.userService.getUser() || null;
-    this.channelList =
-      this.teamList.find((t) => t.team_id === this.selectedTeamId)?.channels ||
-      [];
+    this.channelList = [];
+    const selectedTeam = this.teamList.find((t) => t.team_id === this.selectedTeamId);
+    if (selectedTeam?.channels) {
+      for (const channelId of selectedTeam.channels) {
+        const channel = await this.backendService.getChannelById(this.selectedTeamId!, channelId);
+        if (channel) {
+          this.channelList.push(channel);
+        }
+      }
+    }
     if (this.channelList.length > 0 && !this.selectedChannelId) {
       this.selectedChannelId = this.channelList[0].channel_id;
       this.selectChannel(this.selectedChannelId);
@@ -238,13 +253,10 @@ export class ChatComponent implements OnInit, OnDestroy {
         );
         if (teamIndex > -1) {
           const channelIndex = this.teamList[teamIndex].channels.findIndex(
-            (c) => c.channel_id === channel.channel_id
+            (c) => c === channel.channel_id
           );
           if (channelIndex > -1) {
-            this.teamList[teamIndex].channels[channelIndex] = {
-              ...this.teamList[teamIndex].channels[channelIndex],
-              ...result,
-            };
+            this.teamList[teamIndex].channels[channelIndex] = result.channel_id;
           }
         }
       }
@@ -257,9 +269,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.selectedTeamId = team;
     this.backendService.getTeamById(team).then((teamData) => {
       if (teamData) {
-        this.channelList = teamData.channels || [];
+        this.channelList = [];
         this.teamTitle = teamData.team_name || '';
         teamMemberListID = teamData.members || [];
+        teamData.channels.forEach(async (channelId) => {
+          const channel = await this.backendService.getChannelById(team, channelId);
+          if (channel) {
+            this.channelList.push(channel);
+          }
+        });
       }
       teamMemberListID.forEach((member) => {
         this.backendService.getUserById(member).then((userData) => {

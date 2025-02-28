@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
-import { User } from '../models/userModel';
 import { io } from '../app'; 
 import { createGeneralConversation } from './conversationsController';
 
@@ -51,25 +50,11 @@ export const createChannel = async (req: Request, res: Response) => {
 
     const savedChannel: IChannel = await newChannel.save();
 
-    // Add the channel to the team
-    team.channels.push(savedChannel);
+    // Add the channel ID to the team
+    team.channels.push(savedChannel.channel_id);
     await team.save();
 
-    const user = await User.findOne({ user_id: creator_id });
-    if (user && user.teams){
-      // Find the team by team_id
-      const teamIndex: number = user.teams.findIndex((team) => team.team_id === team_id);
-
-      if (teamIndex === -1) {
-        res.status(404).json({ error: 'Team not found' });
-        return;
-      }
-      
-      // Find the channel by channel_id
-      user.teams[teamIndex].channels.push(savedChannel);
-
-      await user.save();
-    }
+  
     
     // Create a new conversation for the channel
     const newConversation = await createGeneralConversation(channelName, creator_id, creator_id, conversationId);
@@ -146,7 +131,7 @@ export const addUserToChannel = async (
     const savedChannel: IChannel = await channel.save();
 
     // Update the team
-    team.channels.push(savedChannel);
+    team.channels.push(savedChannel.channel_id);
     await team.save();
 
     // Add the user to the conversation room
@@ -191,9 +176,7 @@ export const getChannelById = async (req: Request, res: Response) => {
       return;
     }
 
-    const channel: IChannel | undefined = team.channels.find(
-      (channel) => channel.channel_id === channel_id
-    );
+    const channel: IChannel | null | undefined = await Channel.findOne({ channel_id });
 
     if (!channel) {
       res.status(404).json({ error: 'Channel not found' });
