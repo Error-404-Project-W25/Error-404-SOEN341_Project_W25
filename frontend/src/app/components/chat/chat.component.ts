@@ -107,24 +107,25 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   async refreshTeamList(): Promise<void> {
     this.loginUser = this.userService.getUser() || null;
-    // Clear the team list before fetching
+    
     this.teamList = [];
-    if (this.loginUser?.teams) {
+    
+    if (this.loginUser?.user_id && this.loginUser?.teams) {
       for (const teamId of this.loginUser.teams) {
         const team = await this.backendService.getTeamById(teamId);
         if (team) {
-          // Check if team already exists in the list to avoid duplicates
           if (!this.teamList.some(t => t.team_id === team.team_id)) {
             this.teamList.push(team);
           }
         }
       }
     }
+    
+    // Only set default team if user has teams
     if (this.teamList.length > 0 && !this.selectedTeamId) {
       this.selectedTeamId = this.teamList[0].team_id;
       this.refreshChannelList();
     }
-    return;
   }
 
   async refreshChannelList() {
@@ -412,4 +413,21 @@ export class ChatComponent implements OnInit, OnDestroy {
   getUserName(userId: string): string {
     return this.userIdToName[userId] || userId;
   }  
+
+  async login() {
+
+    this.teamList = [];
+    this.channelList = [];
+    this.conversationList = [];
+    this.teamMemberList = [];
+    this.chatMemberList = [];
+    this.messages = [];
+    
+    this.selectedTeamId = '';
+    this.teamTitle = '';
+    this.channelTitle = '';
+    
+    await this.refreshTeamList();
+  }
+
 }
