@@ -231,7 +231,11 @@
               (click)="toggleTeamList()"
               title="Toggle Team List"
             >
-              <i class="fa fa-bars" style="font-size: 24px"></i>
+                <i
+                class="fa"
+                [ngClass]="isTeamListOpen ? 'fa-times' : 'fa-bars'"
+                style="font-size: 24px"
+                ></i>
             </button>
           </div>
         </div>
