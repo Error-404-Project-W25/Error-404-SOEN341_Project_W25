@@ -86,11 +86,9 @@ export class AddMemberChannelPopUpComponent {
       'input[type="checkbox"]:checked'
     );
     checkboxes.forEach((checkbox) => {
-      // BUG: This is not the correct way to check if the checkbox is value is the user_id
-      if (checkbox instanceof HTMLInputElement && checkbox.value.length > 3) {
-        console.log('Checkbox:', checkbox);
+      if (checkbox instanceof HTMLInputElement) {
+        console.log('Checkbox:', checkbox.value);
         checkedValues.push(checkbox.value);
-        console.log('Checked values:', checkedValues);
       }
     });
     this.memberIdsToAdd = checkedValues;
