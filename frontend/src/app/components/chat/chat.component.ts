@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { WebSocketService } from '@services/webSocket.service';
+//import { WebSocketService } from '@services/webSocket.service';
 import {
   IChannel,
   ITeam,
@@ -76,7 +76,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private userService: UserService,
     private backendService: BackendService,
-    private webSocketService: WebSocketService
+   // private webSocketService: WebSocketService
   ) {}
 
   ngOnInit() {
@@ -129,7 +129,12 @@ export class ChatComponent implements OnInit, OnDestroy {
       for (const channelId of selectedTeam.channels) {
         const channel = await this.backendService.getChannelById(this.selectedTeamId!, channelId);
         if (channel) {
-          this.channelList.push(channel);
+          for (const member of channel.members) {
+            if (this.loginUser?.user_id === member) {
+              this.channelList.push(channel);
+              break; // Exit the loop once the user is found in the members list
+            }
+          }
         }
       }
     }
@@ -330,8 +335,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   async sendMessage() {
-    console.log('Sending message:', this.selectedChannelId);
-
     if (this.newMessage && this.selectedChannelObject) {
       const sender = this.userService.getUser();
       if (sender) {
