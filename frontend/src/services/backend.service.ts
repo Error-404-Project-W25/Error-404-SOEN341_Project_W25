@@ -352,6 +352,7 @@ async sendMessage(
     }
   }
 
+
 async getMessages(conversationId: string): Promise<IMessage[] | undefined> {
   try {
     const response = await firstValueFrom(
@@ -378,7 +379,7 @@ async getMessages(conversationId: string): Promise<IMessage[] | undefined> {
 ///////////// CONVERSATIONS ///
 
 async createConversation(
-  conversationName: string, 
+  conversationName: string,
   creatorId: string, // userId of the one that created the DM
   addedUserId: string // userId of the one that was added to the DM
 ): Promise<string | undefined> {
