@@ -215,9 +215,26 @@ export class ChatComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(DeleteMessageComponent, {
       data: { messageId, messageText, theme: this.isDarkTheme },
     });
-    dialogRef.afterClosed().subscribe((result) => {
+
+    dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        this.messages = this.messages.filter((msg) => msg.messageId !== result);
+        // Get the appropriate conversation ID
+        const conversationId = this.selectedChannelObject?.conversationId || this.selectedConversationId;
+
+        if (conversationId) {
+          console.log('Deleting message:', result, 'from conversation:', conversationId);
+          const success = await this.backendService.deleteMessage(conversationId, result);
+
+          console.log('Delete message result:', success);
+
+          if (success) {
+            this.messages = this.messages.filter((msg) => msg.messageId !== result);
+          } else {
+            console.error('Failed to delete message');
+          }
+        } else {
+          console.error('No conversation ID found for deletion');
+        }
       }
     });
   }
