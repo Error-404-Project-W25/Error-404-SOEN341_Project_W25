@@ -328,28 +328,29 @@ async sendMessage(
   return false;
 }
 
-async deleteMessage(
-  conversationId: string,
-  messageId: string
-): Promise<boolean> {
-  try {
-    const response = await firstValueFrom(
-      this.http.post<{ success: boolean; error?: string }>(
-        `${this.backendURL}/messages/delete`,
-        { conversationId, messageId }
-      )
-    );
+  async deleteMessage(
+    conversationId: string,
+    messageId: string
+  ): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ success: boolean; error?: string }>(
+          `${this.backendURL}/messages/delete`,
+          { conversationId, messageId }
+        )
+      );
 
-    if (response.success) {
-      return true;
-    } else {
-      console.error(response.error);
+      if (response.success) {
+        return true;
+      } else {
+        console.error('Server error:', response.error);
+        return false;
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      return false;
     }
-  } catch (error) {
-    console.error('Error deleting message:', error);
   }
-  return false;
-}
 
 async getMessages(conversationId: string): Promise<IMessage[] | undefined> {
   try {
