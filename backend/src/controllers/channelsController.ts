@@ -5,7 +5,7 @@ import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
 import { Conversation } from '../models/conversationsModel';
-import { io } from '../app'; 
+import { io } from '../app';
 
 /**
  * Create a channel
@@ -51,9 +51,27 @@ export const createChannel = async (req: Request, res: Response) => {
 
     const savedChannel: IChannel = await newChannel.save();
 
-    // Add the channel ID to the team
-    team.channels.push(savedChannel.channel_id);
+    // Add the channel to the team
+    team.channels.push(savedChannel);
     await team.save();
+
+    const user = await User.findOne({ user_id: creator_id });
+    if (user && user.teams) {
+      // Find the team by team_id
+      const teamIndex: number = user.teams.findIndex(
+        (team) => team.team_id === team_id
+      );
+
+      if (teamIndex === -1) {
+        res.status(404).json({ error: 'Team not found' });
+        return;
+      }
+
+      // Find the channel by channel_id
+      user.teams[teamIndex].channels.push(savedChannel);
+
+      await user.save();
+    }
 
     // Create a new conversation for the channel
     await new Conversation({
@@ -129,6 +147,10 @@ export const addUserToChannel = async (
     // Save the channel
     const savedChannel: IChannel = await channel.save();
 
+    // Update the team
+    team.channels.push(savedChannel);
+    await team.save();
+
     // Add the user to the conversation room
     io.to(user_id).emit('joinRoom', { conversationId: channel.conversationId });
 
@@ -165,7 +187,15 @@ export const getChannelById = async (req: Request, res: Response) => {
     return;
   }
   try {
-    const channel: IChannel | null | undefined = await Channel.findOne({ channel_id });
+    const team = await Team.findOne({ team_id });
+    if (!team) {
+      res.status(404).json({ error: 'Team not found' });
+      return;
+    }
+
+    const channel: IChannel | undefined = team.channels.find(
+      (channel) => channel.channel_id === channel_id
+    );
 
     if (!channel) {
       res.status(404).json({ error: 'Channel not found' });

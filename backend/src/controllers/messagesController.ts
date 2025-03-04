@@ -12,8 +12,8 @@ import { io } from '../app';
  */
 export const sendMessage = async (req: Request, res: Response) => {
   try { 
-    const { content, senderId, conversationId } = req.body; 
-    if (!content || !conversationId || !senderId) {
+    const { content, sender, conversationId } = req.body; 
+    if (!content || !conversationId || !sender) {
       res.status(400).json({ error: 'Missing required fields' });
       return;
     }
@@ -24,7 +24,7 @@ export const sendMessage = async (req: Request, res: Response) => {
     const newMessage: IMessage = await new Messages({
       messageId: messageId, 
       content: content, 
-      sender: senderId,
+      sender: sender,
       time: time
      }).save();
 

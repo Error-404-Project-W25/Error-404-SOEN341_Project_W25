@@ -1,4 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
+import { channelSchema } from './channelsModel';
 import { ITeam } from '../../../shared/interfaces';
 
 // Schema for team
@@ -9,7 +10,7 @@ const teamSchema = new Schema(
     description: { type: String },
     admin: { type: [String], required: true },
     members: { type: [String], default: [] },
-    channels: { type: [String], required: true }, // List of channel IDs
+    channels: { type: [channelSchema], required: true },
     created_at: { type: Date, default: Date.now },
   },
   {

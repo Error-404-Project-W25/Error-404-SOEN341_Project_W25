@@ -13,7 +13,7 @@ export interface ITeam {
   description: string;
   admin: string[]; // user_id
   members: string[]; // user_id
-  channels: string[]; // channel_id
+  channels: IChannel[];
 }
 
 export interface IUser {
@@ -23,7 +23,7 @@ export interface IUser {
   username: string;
   email: string;
   role: 'admin' | 'user';
-  teams: string[]; // team_id
+  teams: ITeam[];
   direct_messages: string[];
 }
 

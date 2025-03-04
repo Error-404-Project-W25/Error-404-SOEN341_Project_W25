@@ -189,77 +189,39 @@
           </label>
         </div>
         <div class="channel-list">
-          <div class="dropdown">
-            <button
-              (click)="myConvoFunction()"
-              class="channelList-dropbtn"
-              readonly
-            >
-              Conversation
-              <span style="flex-grow: 1"></span>
-              <i class="fa fa-caret-down" style="margin-left: 5px"></i>
-            </button>
-            <div id="myDropdownConvo" class="channelList-dropdown-content">
-              <div
-                class="channelList-dropdown-content-container"
-                *ngFor="let conversation of conversationList"
-                (click)="selectConversation(conversation.conversationId)"
+          <div
+            class="channelList-dropdown-content-container"
+            *ngFor="let channel of channelList"
+            (click)="selectChannel(channel.channel_id)"
+            readonly
+          >
+            <div class="channel-name-container">{{ channel.name }}</div>
+            <div class="channel-actions">
+              <!--(click) add member to channel-->
+              <button
+                class="channel-button"
+                (click)="
+                  openAddMemberChannelDialog(channel); $event.stopPropagation()
+                "
                 readonly
+                title="Add Member to Channel"
               >
-                <div class="channel-name-container">{{ conversation }}</div>
-                <!-- (click) open channel setting -->
-                <button class="channel-button" readonly>
-                  <i class="fa fa-gear" style="font-size: 16px"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="dropdown">
-            <button
-              (click)="myChannelFunction()"
-              class="channelList-dropbtn"
-              readonly
-            >
-              Channel
-              <span style="flex-grow: 1"></span>
-              <i class="fa fa-caret-down" style="margin-left: 5px"></i>
-            </button>
-            <div id="myDropdownChannel" class="channelList-dropdown-content">
-              <div
-                class="channelList-dropdown-content-container"
-                *ngFor="let channel of channelList"
-                (click)="selectChannel(channel.channel_id)"
+                <i class="fa fa-user-plus" style="font-size: 16px"> </i>
+              </button>
+              <!-- (click) open channel setting -->
+              <button
+                class="channel-button"
+                (click)="openEditChannelDialog(channel)"
                 readonly
+                title="Channel Settings"
               >
-                <div class="channel-name-container">{{ channel.name }}</div>
-                <div class="channel-actions">
-                  <!--(click) add member to channel-->
-                  <button
-                    class="channel-button"
-                    (click)="
-                      openAddMemberChannelDialog(channel);
-                      $event.stopPropagation()
-                    "
-                    readonly
-                  >
-                    <i class="fa fa-user-plus" style="font-size: 16px"> </i>
-                  </button>
-                  <!-- (click) open channel setting -->
-                  <button
-                    class="channel-button"
-                    (click)="openEditChannelDialog(channel)"
-                    readonly
-                  >
-                    <i class="fa fa-gear" style="font-size: 16px"></i>
-                  </button>
-                </div>
-              </div>
+                <i class="fa fa-gear" style="font-size: 16px"></i>
+              </button>
             </div>
           </div>
         </div>
-      </div>
-      <div class="chat-box" id="chat-box" *ngIf="channelTitle !== ''">
+      </aside>
+      <section class="chat-box" id="chat-box" *ngIf="channelTitle !== ''">
         <div class="channel-title-container">
           <div class="channel-title">{{ channelTitle }}</div>
           <div class="team-setting-button-container">
@@ -300,7 +262,8 @@
                 </button>
               </div>
               <div class="message-header">
-                <span class="message-author">{{ getUserName(message.sender) }}</span>                <span class="message-date">{{
+                <span class="message-author">{{ message.sender }}</span>
+                <span class="message-date">{{
                   message.time | date : "yyyy-MM-dd HH:mm"
                 }}</span>
               </div>

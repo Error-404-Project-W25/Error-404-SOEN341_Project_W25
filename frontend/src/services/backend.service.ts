@@ -145,7 +145,6 @@ export class BackendService {
         return response.team;
       }
       console.error(response.error);
-
     } catch (error) {
       console.error('Error getting team by id:', error);
     }
@@ -245,7 +244,6 @@ export class BackendService {
     return undefined;
   }
 
-  // Returns true on success, false on failure
   async addUserToChannel(
     team_id: string,
     channel_id: string,
@@ -309,39 +307,51 @@ export class BackendService {
 async sendMessage(
   content: string,
   conversationId: string,
-  senderId: string
+  sender: string // user_id
 ): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    this.socket.emit('sendMessage', { content, senderId, conversationId }, (response: { success: boolean; error?: string }) => {
-      if (response.success) {
-        resolve(true);
-      } else {
-        console.error(response.error);
-        reject(false);
-      }
-    });
-  });
+  try {
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean; error?: string }>(
+        `${this.backendURL}/messages/send`,
+        { content, sender, conversationId }
+      )
+    );
+
+    if (response.success) {
+      return true;
+    } else {
+      console.error(response.error);
+    }
+  } catch (error) {
+    console.error('Error sending message:', error);
+  }
+  return false;
 }
 
 async deleteMessage(
   conversationId: string,
   messageId: string
 ): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    this.socket.emit('deleteMessage', { conversationId, messageId }, (response: { success: boolean; error?: string }) => {
-      if (response.success) {
-        resolve(true);
-      } else {
-        console.error(response.error);
-        reject(false);
-      }
-    });
-  });
+  try {
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean; error?: string }>(
+        `${this.backendURL}/messages/delete`,
+        { conversationId, messageId }
+      )
+    );
+
+    if (response.success) {
+      return true;
+    } else {
+      console.error(response.error);
+    }
+  } catch (error) {
+    console.error('Error deleting message:', error);
+  }
+  return false;
 }
 
-async getMessages (
-  conversationId: string)
-  : Promise<IMessage[] | undefined> {
+async getMessages(conversationId: string): Promise<IMessage[] | undefined> {
   try {
     const response = await firstValueFrom(
       this.http.get<{ messages?: IMessage[]; error?: string }>(
@@ -356,14 +366,20 @@ async getMessages (
     }
   } catch (error) {
     console.error('Error getting messages:', error);
-  } 
+  }
   return undefined;
 }
+
+// async joinRoom(conversationId: string): Promise<void> {
+//   this.socket.emit('joinRoom', { conversationId });
+// }
 
 ///////////// CONVERSATIONS ///
 
 async createConversation(
-  conversationName: string
+  conversationName: string, 
+  creatorId: string, // userId of the one that created the DM
+  addedUserId: string // userId of the one that was added to the DM
 ): Promise<string | undefined> {
   try {
     const response = await firstValueFrom(
@@ -371,6 +387,8 @@ async createConversation(
         `${this.backendURL}/conversations/create`,
         {
           conversationName,
+          creatorId,
+          addedUserId
         }
       )
     );
