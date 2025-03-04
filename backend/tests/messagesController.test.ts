@@ -1,7 +1,9 @@
-import { describe, it, expect, beforeAll } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import { app, startServer } from "../src/app";
 import { Express } from 'express';
+import { Conversation } from '../src/models/conversationsModel'; // Import your Conversation model
+import { Messages } from '../src/models/messagesModel'; // Import your Messages model
 
 /*
     === Testing Messages APIs ===
@@ -9,40 +11,42 @@ import { Express } from 'express';
 describe('messages', () => {
 
   let server: Express;
-  let conversationId: string;
-  let messageId: string| undefined;
 
+  // Setup the server and create conversation and message before tests
   beforeAll(async () => {
     server = app as Express;
     await startServer();
 
-    // Create a conversation for testing with the required 'conversationName'
-    const res = await request(server).post('/conversations/create')
-      .send({
-        creatorId: 'TEST-CREATOR-ID',         // Make sure this is a valid ID
-        conversationName: 'Test Conversation'  // Add a valid conversation name
-      });
-    conversationId = res.body.conversationId;
-  });
-  afterAll(async () => {
-    // Cleanup any created conversation or messages if necessary
-    try {
-      await request(server).post('/messages/delete')
-        .send({
-          conversationId: conversationId,
-          messageId: messageId
-        });
-      console.log("Message deleted after all tests.");
+    // Create a conversation for testing
+    const conversation = await Conversation.create({
+      conversationId: 'JEST-TESTCONVERSATIONID-123',
+      conversationName: 'JEST-CONVERSATIONNAME-456',
+      messages: [] // Start with an empty message list
+    });
+    console.log('Conversation created:', conversation);
 
-      // Delete the conversation after tests
-      await request(server).delete('/conversations/delete')
-        .send({
-          conversationId: conversationId
-        });
-      console.log("Conversation deleted after all tests.");
-    } catch (error) {
-      console.error("Error in cleanup: ", error);
-    }
+    // Add a message to the conversation to test deletion
+    await Messages.create({
+      messageId: 'JEST-TESTMESSAGEID-123',
+      content: 'Test message',
+      sender: 'User1',
+      time: new Date().toISOString()
+    }).then(async (message) => {
+      // Add the message to the conversation's messages
+      conversation.messages.push(message);
+      await conversation.save();
+      console.log('Message created:', message);
+      console.log('Message added to conversation:', conversation);
+    });
+  });
+
+  // Cleanup after tests by removing the conversation and messages
+  afterAll(async () => {
+    await Conversation.deleteOne({ conversationId: 'JEST-TESTCONVERSATIONID-123' });
+    console.log('Conversation deleted: JEST-TESTCONVERSATIONID-123');
+
+    await Messages.deleteOne({ messageId: 'JEST-TESTMESSAGEID-123' });
+    console.log('Message deleted: JEST-TESTMESSAGEID-123');
   });
 
   /*
@@ -50,10 +54,7 @@ describe('messages', () => {
   */
   describe('sendMessage', () => {
 
-    /*
-        Test Case 1: Missing required fields
-        If any required field (content, sender, or conversationId) is missing, it should return a 400 status with an error.
-    */
+    // Test case to check missing required fields
     describe('given missing required fields', () => {
       it("should return a 400 error", async () => {
         const res = await request(server)
@@ -65,10 +66,7 @@ describe('messages', () => {
       });
     });
 
-    /*
-        Test Case 2: Successfully sending a message
-        When all required fields are provided, it should return a 200 status with success.
-    */
+    // Test case for successfully sending a message
     describe('given all required fields are provided', () => {
       it("should return a 200 success", async () => {
         const res = await request(server)
@@ -76,18 +74,16 @@ describe('messages', () => {
           .send({
             content: "Hello",
             sender: "User1",
-            conversationId: "conversation-123"
+            conversationId: "JEST-TESTCONVERSATIONID-123"
           });
 
         expect(res.status).toEqual(200);
         expect(res.body.success).toBe(true);
+        console.log('Message sent successfully:', res.body);
       });
     });
 
-    /*
-        Test Case 3: Conversation not found
-        If the conversation does not exist, it should still return a 200 status with success, but no actual message will be sent.
-    */
+    // Test case when the conversation does not exist
     describe('given the conversation does not exist', () => {
       it("should return a 200 but no action on the conversation", async () => {
         const res = await request(server)
@@ -100,52 +96,51 @@ describe('messages', () => {
 
         expect(res.status).toEqual(200);  // Success even if the conversation doesn't exist
         expect(res.body.success).toBe(true);
+        console.log('Attempted to send message to nonexistent conversation');
       });
     });
   });
 
   /*
-          === Test deleteMessage() ===
-      */
+      === Test deleteMessage() ===
+  */
   describe('deleteMessage', () => {
 
-    /*
-        Test Case 1: Missing required fields
-        If conversationId or messageId is missing, it should return a 400 error.
-    */
+    // Test case for missing required fields
     describe('given missing required fields', () => {
       it("should return a 400 error", async () => {
         const res = await request(server)
           .post('/messages/delete')
-          .send({ conversationId: "conversation-123" }); // Missing messageId
+          .send({ conversationId: "JEST-TESTCONVERSATIONID-123" }); // Missing messageId
 
         expect(res.status).toEqual(400);
         expect(res.body.error).toBe('Missing required fields');
       });
     });
 
-    /*
-        Test Case 2: Successfully deleting a message
-        When both fields are provided, it should return a 200 status with success.
-    */
+    // Test case for successfully deleting a message
     describe('given all required fields are provided', () => {
       it("should return a 200 success", async () => {
         const res = await request(server)
           .post('/messages/delete')
           .send({
-            messageId: "message-123",
-            conversationId: "conversation-123"
+            messageId: "JEST-TESTMESSAGEID-123",
+            conversationId: "JEST-TESTCONVERSATIONID-123"
           });
 
         expect(res.status).toEqual(200);
         expect(res.body.success).toBe(true);
+        console.log('Message deleted successfully:', res.body.success);
+
+        // Verify the message has been deleted from the database
+        const conversation = await Conversation.findOne({ conversationId: 'JEST-TESTCONVERSATIONID-123' });
+        const message = conversation?.messages.find(m => m.messageId === 'JEST-TESTMESSAGEID-123');
+        expect(message).toBeUndefined(); // The message should be undefined after deletion
+        console.log('Message after deletion:', message);  // Should log 'undefined'
       });
     });
   });
 
-  /*
-      === Test getMessages() ===
-  */
 
 
 });
