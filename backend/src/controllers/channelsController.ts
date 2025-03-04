@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
+import { Conversation } from '../models/conversationsModel';
+import { io } from '../app'; 
 
 /**
  * Create a channel
@@ -22,6 +24,7 @@ export const createChannel = async (req: Request, res: Response) => {
     }
 
     const channel_id = uuidv4();
+    const conversationId = uuidv4(); // Create a new conversationId
 
     const isUserInTeam: boolean = team.members.includes(creator_id);
 
@@ -38,6 +41,7 @@ export const createChannel = async (req: Request, res: Response) => {
       description: channelDescription,
       team_id: team_id, // associated team
       members: [creator_id], // creator of the channel
+      conversationId: conversationId, // Store conversationId
     });
 
     // If the creator is not an admin, add them to the admin list
@@ -47,29 +51,21 @@ export const createChannel = async (req: Request, res: Response) => {
 
     const savedChannel: IChannel = await newChannel.save();
 
-    // Add the channel to the team
-    team.channels.push(savedChannel);
+    // Add the channel ID to the team
+    team.channels.push(savedChannel.channel_id);
     await team.save();
 
-    const user = await User.findOne({ user_id: creator_id });
-    if (user && user.teams){
-      // Find the team by team_id
-      const teamIndex: number = user.teams.findIndex((team) => team.team_id === team_id);
+    // Create a new conversation for the channel
+    await new Conversation({
+      conversationId: conversationId,
+      conversationName: channelName,
+      messages: [],
+    }).save();
 
-      if (teamIndex === -1) {
-        res.status(404).json({ error: 'Team not found' });
-        return;
-      }
-      
-      // Find the channel by channel_id
-      user.teams[teamIndex].channels.push(savedChannel);
-
-      await user.save();
-    }
-    
+    io.to(creator_id).emit('joinRoom', { conversationId });
 
     res.status(201).json({
-      message: 'The channel has been created successfully',
+      message: 'The channel and conversation has been created successfully',
       channel_id: savedChannel.channel_id,
     });
   } catch (error: unknown) {
@@ -120,7 +116,7 @@ export const addUserToChannel = async (
 
     // Check if the user is part of the channel
     const isUserInChannel: boolean = channel.members.includes(user_id);
-    if (!isUserInChannel) {
+    if (isUserInChannel) {
       res
         .status(400)
         .json({ error: 'The user entered is already part of the channel' });
@@ -133,13 +129,12 @@ export const addUserToChannel = async (
     // Save the channel
     const savedChannel: IChannel = await channel.save();
 
-    // Update the team
-    team.channels.push(savedChannel);
-    await team.save();
+    // Add the user to the conversation room
+    io.to(user_id).emit('joinRoom', { conversationId: channel.conversationId });
 
     res.status(201).json({
       success: true,
-      message: 'The user has been added to the channel successfully',
+      message: 'The user has been added to the channel and conversation successfully',
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -170,15 +165,7 @@ export const getChannelById = async (req: Request, res: Response) => {
     return;
   }
   try {
-    const team = await Team.findOne({ team_id });
-    if (!team) {
-      res.status(404).json({ error: 'Team not found' });
-      return;
-    }
-
-    const channel: IChannel | undefined = team.channels.find(
-      (channel) => channel.channel_id === channel_id
-    );
+    const channel: IChannel | null | undefined = await Channel.findOne({ channel_id });
 
     if (!channel) {
       res.status(404).json({ error: 'Channel not found' });

@@ -1,0 +1,184 @@
+.dark-theme {
+  --separator: #35363c; /* Separator color */
+
+  /* Sidebar #1 */
+  --side-bar-1-background: #1e1f22; /* Sidebar background */
+  --side-bar-1-text: #ffffff; /* Sidebar text color */
+
+  /* Add team button */
+  --add-team-button-background: #313338; /* Button background */
+  --add-team-button-hover: #f0483e; /* Button hover background */
+  --add-team-button-text: #ffffff; /* Button text color */
+
+  /* Team list */
+  --team-letter-color: #ffffff; /* Team letter color */
+  --team-button-background: #313338; /* Team button background */
+  --team-button-hover: #f0483e; /* Team button hover background */
+  --team-background: #1e1f22; /* Team background */
+
+  /* User menu */
+  --user-button-background: #f0483e; /* User button background */
+  --user-button-text: #313338; /* User button text color */
+  --user-button-border: #313338; /* User button text color */
+
+  --user-options-background: #1e1f22; /* User options background */
+  --user-options-text: #f0483e; /* User options text color */
+  --user-options-border: #f0483e; /* User options border color */
+
+  /* Sidebar #2 */
+  --side-bar-2-background: #2b2d31; /* Sidebar background */
+  --side-bar-2-text: #ffffff; /* Sidebar text color */
+
+  /* Team Title*/
+  --team-title-background: #2b2d31; /* Team title background */
+  --team-title-text: #ffffff; /* Team title text color */
+
+  /* Team setting list */
+  --team-setting-list-background: #111214; /* Team setting list background */
+  --team-setting-list-text: #b5bac1; /* Team setting list text color */
+  --team-setting-list-element-background-hover: #f0483e; /* Team setting list hover background */
+
+  /* Channel list */
+  --channel-list-background: #2b2d31; /* Channel list background */
+  --channel-list-backround-hover: #404249; /* Channel list hover background */
+  --channel-list-text: #949ba4; /* Channel list text color */
+  --channel-list-text-hover: #ffffff; /* Channel list hover text color */
+
+  /* Chat log */
+  --chat-box-background: #313338; /* Chat box background */
+  --chat-box-text: #ffffff; /* Chat box text color */
+  --message-background: #313338; /* Message background */
+  --message-background-hover: #2e3035; /* Message hover background */
+  --message-text: #ffffff; /* Message text color */
+  --message-username: #ffffff; /* Message username color */
+  --message-date: #949ba4; /* Message date color */
+  --profile-picture-background: #f0483e; /* Profile picture background */
+
+  /* Input Container */
+  --input-container-background: #383a40; /* Input container background */
+  --input-container-text: #c7cace; /* Input container text color */
+
+  /* Send button */
+  --send-button-background: #b5bac1; /* Send button background */
+  --send-button-text: #b5bac1; /* Send button text color */
+  --send-button-text-hover: #dbdee1; /* Send button text color */
+
+  /* Tooltip */
+  --tooltip-background: #111214; /* Tooltip background */
+  --tooltip-text: #dbdee1; /* Tooltip text color */
+
+
+  --pop-up-primary-bg: #212121;
+  --pop-up-gradient-color1: #f0483e;
+  --pop-up-gradient-color2: #f0483e;
+  --pop-up-label-color: #717171;
+  --pop-up-border-color: #414141;
+  --pop-up-text-color: #fff;
+  --pop-up-button-bg: #313131;
+  --pop-up-button-hover: #fff;
+
+  /* delete message Pop-up*/
+  --pop-up-background-color: #2c2c2c; /* Dark grey */
+  --pop-up-text-color: #ffffff;
+  --pop-up-secondary-text-color: #ffffff;
+  --pop-up-border-color: #444;
+  --pop-up-highlight-color: #ff6b6b; /* Bright accent color */
+  --pop-up-button-background: #555;
+  --pop-up-delete-button: #d32f2f; /* Red delete button */
+  --pop-up-delete-hover: #b71c1c;
+  --delete-button-text: #ffffff;
+
+  /* Delete message button*/
+  --delete-button-background: #313338;
+  --delete-button-hover-background: #ff4d4d;
+  --delete-button-text: #ffffff;
+  --delete-button-icon-fill: #ffffff;
+}
+
+.light-theme {
+  --separator: #e0e0e0; /* Separator color */
+
+  /* Sidebar #1 */
+  --side-bar-1-background: #ffffff; /* Sidebar background */
+  --side-bar-1-text: #000000; /* Sidebar text color */
+
+  /* Add team button */
+  --add-team-button-background: #f0f0f0; /* Button background */
+  --add-team-button-hover: #f0483e; /* Button hover background */
+  --add-team-button-text: #000000; /* Button text color */
+
+  /* Team list */
+  --team-letter-color: #000000; /* Team letter color */
+  --team-button-background: #f0f0f0; /* Team button background */
+  --team-button-hover: #f0483e; /* Team button hover background */
+  --team-background: #ffffff; /* Team background */
+
+  /* User menu */
+  --user-button-background: #f0483e; /* User button background */
+  --user-button-text: #ffffff; /* User button text color */
+  --user-button-border: #ffffff; /* User button border color */
+
+  --user-options-background: #ffffff; /* User options background */
+  --user-options-text: #f0483e; /* User options text color */
+  --user-options-border: #f0483e; /* User options border color */
+
+  /* Sidebar #2 */
+  --side-bar-2-background: #f0f0f0; /* Sidebar background */
+  --side-bar-2-text: #000000; /* Sidebar text color */
+
+  /* Team Title */
+  --team-title-background: #f0f0f0; /* Team title background */
+  --team-title-text: #000000; /* Team title text color */
+
+  /* Team setting list */
+  --team-setting-list-background: #ffffff; /* Team setting list background */
+  --team-setting-list-text: #4a4a4a; /* Team setting list text color */
+  --team-setting-list-element-background-hover: #f0483e; /* Team setting list hover background */
+
+  /* Channel list */
+  --channel-list-background: #f0f0f0; /* Channel list background */
+  --channel-list-backround-hover: #e0e0e0; /* Channel list hover background */
+  --channel-list-text: #4a4a4a; /* Channel list text color */
+  --channel-list-text-hover: #000000; /* Channel list hover text color */
+
+  /* Chat log */
+  --chat-box-background: #f0f0f0; /* Chat box background */
+  --chat-box-text: #000000; /* Chat box text color */
+  --message-background: #f0f0f0; /* Message background */
+  --message-background-hover: #e0e0e0; /* Message hover background */
+  --message-text: #000000; /* Message text color */
+  --message-username: #000000; /* Message username color */
+  --message-date: #4a4a4a; /* Message date color */
+  --profile-picture-background: #f0483e; /* Profile picture background */
+
+  /* Input Container */
+  --input-container-background: #e0e0e0; /* Input container background */
+  --input-container-text: #4a4a4a; /* Input container text color */
+
+  /* Send button */
+  --send-button-background: #4a4a4a; /* Send button background */
+  --send-button-text: #4a4a4a; /* Send button text color */
+  --send-button-text-hover: #000000; /* Send button text color */
+
+  /* Tooltip */
+  --tooltip-background: #ffffff; /* Tooltip background */
+  --tooltip-text: #4a4a4a; /* Tooltip text color */
+
+  /* Pop-up */
+  --pop-up-primary-bg: #ffffff;
+  --pop-up-gradient-color1: #f0483e;
+  --pop-up-gradient-color2: #f0483e;
+  --pop-up-label-color: #4a4a4a;
+  --pop-up-border-color: #e0e0e0;
+  --pop-up-text-color: #000000;
+  --pop-up-button-bg: #f0f0f0;
+  --pop-up-button-hover: #000000;
+
+  /* delete message Pop-up */
+
+  /* Delete message button */
+  --delete-button-background: #f0f0f0;
+  --delete-button-hover-background: #ff4d4d;
+  --delete-button-text: #000000;
+  --delete-button-icon-fill: #000000;
+}

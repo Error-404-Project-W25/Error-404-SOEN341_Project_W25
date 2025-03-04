@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { teamSchema } from './teamsModel';
 import { IUser } from '../../../shared/interfaces';
 
 // User Schema
@@ -16,7 +15,8 @@ const userSchema: Schema = new Schema(
       default: 'user',
       required: true,
     },
-    teams: { type: [teamSchema], default: [] },
+    teams: { type: [String], default: [] }, // List of team IDs
+    direct_messages: { type: [String], default: [] },
   },
   {
     collection: 'Users',

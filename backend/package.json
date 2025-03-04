@@ -5,11 +5,13 @@
   "main": "src/app.js",
   "scripts": {
     "start": "nodemon --exec ts-node src/app.ts",
+    "test": "jest",
     "lint": "eslint . --config eslint.config.mjs"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/socket.io": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "latest",
     "express": "^4.21.2",
@@ -18,19 +20,32 @@
     "mongoose": "latest",
     "mongoose-sequence": "^6.0.1",
     "nodemon": "latest",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "ts-node": "latest",
-    "uuid": "^11.0.5"
+    "uuid": "^11.0.5",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@testing-library/jest-dom": "^6.6.3",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
     "@types/mongoose": "latest",
     "@types/mongoose-sequence": "^3.0.11",
     "@types/node": "latest",
+    "@types/socket.io-client": "^3.0.0",
+    "@types/supertest": "^6.0.2",
     "@types/uuid": "^10.0.0",
     "eslint": "^9.20.1",
     "globals": "^15.15.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3",
     "typescript-eslint": "^8.24.0"
   }
 }
