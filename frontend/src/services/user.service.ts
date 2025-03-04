@@ -43,4 +43,18 @@ export class UserService {
     this.userSubject.next(undefined);
     localStorage.removeItem('currentUserUID');
   }
+
+  updateUser(user: IUser): void {
+    this.userSubject.next(user);
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  logout() {
+    this.userSubject.next(undefined);
+    localStorage.removeItem('user');
+    
+    localStorage.removeItem('teamList');
+    
+    sessionStorage.clear();
+  }
 }

@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { WebSocketService } from '@services/webSocket.service';
+//import { WebSocketService } from '@services/webSocket.service';
 import {
   IChannel,
   ITeam,
@@ -58,9 +58,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   selectedTeamId: string | null = null;
   selectedChannelId: string | null = null;
   selectedMessageId: string | null = null;
-
+  selectedConversationId: string | null = null;
   selectedChannelObject: IChannel | null = null;
-
   teamList: ITeam[] = [];
   channelList: IChannel[] = [];
   conversationList: IConversation[] = [];
@@ -69,20 +68,19 @@ export class ChatComponent implements OnInit, OnDestroy {
   chatMemberList: IUser[] = [];
   messages: IMessage[] = [];
 
-  // private teamCreatedSubscription: Subscription | null = null;
-  // private channelCreatedSubscription: Subscription | null = null;
+  userIdToName: {[userId: string]: string} = {};
 
-  // private channelsSubject = new BehaviorSubject<IChannel[]>([]);
-  // private teamsSubject = new BehaviorSubject<ITeam[]>([]);
-  // teams$ = this.teamsSubject.asObservable();
-  // channels$ = this.channelsSubject.asObservable();
+  private channelsSubject = new BehaviorSubject<IChannel[]>([]);
+  channels$ = this.channelsSubject.asObservable();
+
+  private skipNextTeamRefresh = false;
 
   constructor(
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
     private backendService: BackendService,
-    private webSocketService: WebSocketService
+   // private webSocketService: WebSocketService
   ) {}
 
   //////////////////////////////////////////////Chat Page Setup//////////////////////////////////////////////
@@ -99,7 +97,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user) {
         console.log('User:', user);
-        this.teamList = user.teams;
+        this.refreshTeamList();
       } else {
         console.log('No user');
         this.router.navigate(['/login']);
@@ -120,11 +118,23 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
-  refreshChannelList() {
+  async refreshChannelList() {
     this.loginUser = this.userService.getUser() || null;
-    this.channelList =
-      this.teamList.find((t) => t.team_id === this.selectedTeamId)?.channels ||
-      [];
+    this.channelList = [];
+    const selectedTeam = this.teamList.find((t) => t.team_id === this.selectedTeamId);
+    if (selectedTeam?.channels) {
+      for (const channelId of selectedTeam.channels) {
+        const channel = await this.backendService.getChannelById(this.selectedTeamId!, channelId);
+        if (channel) {
+          for (const member of channel.members) {
+            if (this.loginUser?.user_id === member) {
+              this.channelList.push(channel);
+              break; // Exit the loop once the user is found in the members list
+            }
+          }
+        }
+      }
+    }
     if (this.channelList.length > 0 && !this.selectedChannelId) {
       this.selectedChannelId = this.channelList[0].channel_id;
       this.selectChannel(this.selectedChannelId);
@@ -132,14 +142,17 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.refreshConversationList();
   }
 
-  refreshConversationList() {
+  async refreshConversationList() {
     this.loginUser = this.userService.getUser() || null;
-    this.conversationList =
-      this.loginUser?.direct_messages.map((id) => ({
-        conversationId: id,
-        conversationName: '',
-        messages: [],
-      })) || [];
+    this.conversationList = [];
+    if (this.loginUser?.direct_messages) {
+      for (const conversationId of this.loginUser.direct_messages) {
+        const conversation = await this.backendService.getConversationById(conversationId);
+        if (conversation) {
+          this.conversationList.push(conversation);
+        }
+      }
+    }
   }
 
   toggleTheme() {
@@ -155,13 +168,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddTeamDialogComponent, {
       data: { theme: this.isDarkTheme },
     });
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       if (result && result.team_id) {
         this.dialog.open(AddMemberTeamPopUpComponent, {
           data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
         });
-        this.refreshTeamList();
-        this.selectTeam(result.team_id);
       }
     });
   }
@@ -243,13 +254,10 @@ export class ChatComponent implements OnInit, OnDestroy {
         );
         if (teamIndex > -1) {
           const channelIndex = this.teamList[teamIndex].channels.findIndex(
-            (c) => c.channel_id === channel.channel_id
+            (c) => c === channel.channel_id
           );
           if (channelIndex > -1) {
-            this.teamList[teamIndex].channels[channelIndex] = {
-              ...this.teamList[teamIndex].channels[channelIndex],
-              ...result,
-            };
+            this.teamList[teamIndex].channels[channelIndex] = result.channel_id;
           }
         }
       }
@@ -262,9 +270,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.selectedTeamId = team;
     this.backendService.getTeamById(team).then((teamData) => {
       if (teamData) {
-        this.channelList = teamData.channels || [];
+        this.channelList = [];
         this.teamTitle = teamData.team_name || '';
         teamMemberListID = teamData.members || [];
+        teamData.channels.forEach(async (channelId) => {
+          const channel = await this.backendService.getChannelById(team, channelId);
+          if (channel) {
+            this.channelList.push(channel);
+          }
+        });
       }
       teamMemberListID.forEach((member) => {
         this.backendService.getUserById(member).then((userData) => {
@@ -307,20 +321,19 @@ export class ChatComponent implements OnInit, OnDestroy {
     const messages = await this.backendService.getMessages(conversationId);
     if (messages) {
       this.messages = messages;
+      await this.loadUserNames();
     }
     this.messages.reverse();
   }
 
-  selectConversation(conversation: string): void {
-    console.log('Selected conversation:', conversation);
-    // this.selectedTeam = conversation;
+  async selectConversation(conversationObject: IConversation): Promise<void> {
+    console.log('Selected conversation:', conversationObject);
+    this.selectedConversationId = conversationObject.conversationId;
+    await this.loadMessages(conversationObject.conversationId);
   }
 
   async sendMessage() {
-    console.log('Sending message:', this.selectedChannelId);
-
     if (this.newMessage && this.selectedChannelObject) {
-      console.log('if case');
       const sender = this.userService.getUser();
       if (sender) {
         console.log('Sending message:', this.newMessage);
