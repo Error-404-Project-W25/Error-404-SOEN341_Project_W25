@@ -79,7 +79,41 @@ describe('messages', () => {
   /*
           === Test deleteMessage() ===
       */
+  describe('deleteMessage', () => {
 
+    /*
+        Test Case 1: Missing required fields
+        If conversationId or messageId is missing, it should return a 400 error.
+    */
+    describe('given missing required fields', () => {
+      it("should return a 400 error", async () => {
+        const res = await request(server)
+          .post('/messages/delete')
+          .send({ conversationId: "conversation-123" }); // Missing messageId
+
+        expect(res.status).toEqual(400);
+        expect(res.body.error).toBe('Missing required fields');
+      });
+    });
+
+    /*
+        Test Case 2: Successfully deleting a message
+        When both fields are provided, it should return a 200 status with success.
+    */
+    describe('given all required fields are provided', () => {
+      it("should return a 200 success", async () => {
+        const res = await request(server)
+          .post('/messages/delete')
+          .send({
+            messageId: "message-123",
+            conversationId: "conversation-123"
+          });
+
+        expect(res.status).toEqual(200);
+        expect(res.body.success).toBe(true);
+      });
+    });
+  });
 
   /*
       === Test getMessages() ===
