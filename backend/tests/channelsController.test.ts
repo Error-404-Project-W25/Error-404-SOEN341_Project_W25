@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
-import request from 'supertest';
+import * as request from 'supertest'; /*ensures compatibility with the TypeScript compiler*/
 import { app, startServer } from "../src/app";
 import { Express } from 'express';
 
@@ -13,7 +13,7 @@ describe('channels', () => {
     */
     let ChannelIdToDelete: string | undefined;
     let server: Express;
-    beforeAll(async () => { 
+    beforeAll(async () => {
         server = app as Express;
         await startServer();
     });
@@ -25,20 +25,20 @@ describe('channels', () => {
     */
     afterAll(async () => {
         try {
-            await request(server).post('/channels/removeMember') 
+            await request(server).post('/channels/removeMember')
                 .send({
                     channel_id: "JEST-TESTCHANNELID-123",
-                    member_id: "JEST-TESTUSERID-123" 
+                    member_id: "JEST-TESTUSERID-123"
                 });
             console.log("User removed from channel in afterAll");
 
-            
+
             await request(server).delete('/channels/delete')
                 .send({
                     channel_id: ChannelIdToDelete
                 });
             console.log("Channel deleted in afterAll, id: ", ChannelIdToDelete);
-            
+
         } catch (error) {
             console.error("Error: ", error);
         }
@@ -70,12 +70,12 @@ describe('channels', () => {
                     });
 
                 console.log("created channel is: ", res.body.channel_id);
-                
+
                 expect(res.statusCode).toEqual(201);
                 expect(res.body.channel_id).toBeTruthy(); // Will be a random value, check if exists
-            
+
                 ChannelIdToDelete = res.body.channel_id; // Save the channel ID to delete in afterAll
-            
+
             });
         });
 
@@ -86,19 +86,19 @@ describe('channels', () => {
         */
        describe('given the channel is not created successfully', () => {
             it("should return a 404", async () => {
-               
+
                 const res = await request(server).post('/channels/create')
                     .send({
                         // Send nothing
                     })
-                                
+
                     expect(res.statusCode).toEqual(404);
 
             });
        });
     });
 
-    describe('addUserToChannel', () => {    
+    describe('addUserToChannel', () => {
         /*
             Test Case 1: The user is added successfully
             The team ID, channel ID, and user ID are provided, all exist in theDB and are exclusively used for testing.
@@ -106,7 +106,7 @@ describe('channels', () => {
         */
         describe('given the user is added to the channel', () => {
             it("should return a 201", async () => {
-                
+
                 const user_id = "JEST-TESTUSERID-123";
                 const team_id = "JEST-TESTTEAMID-123";
                 const channel_id = "JEST-TESTCHANNELID-123";
@@ -117,7 +117,7 @@ describe('channels', () => {
                         team_id: team_id,
                         channel_id: channel_id
                     });
-                
+
                 expect(res.statusCode).toEqual(201);
 
             });
@@ -130,12 +130,12 @@ describe('channels', () => {
         */
         describe('given the user is not added to the channel', () => {
             it("should return a 404", async () => {
-                
+
                 const res = await request(server).post('/channels/addUser')
                     .send({
                         // Send nothing
                     })
-                                
+
                     expect(res.statusCode).toEqual(404);
 
             });
@@ -153,7 +153,7 @@ describe('channels', () => {
         */
         describe('given the channel is found', () => {
             it("should return a 200 and the channel object", async () => {
-                
+
                 const channel_id = "JEST-TESTCHANNELID-123";
                 const team_id = "JEST-TESTTEAMID-123";
 
@@ -162,7 +162,7 @@ describe('channels', () => {
                         team_id: team_id,
                         channel_id: channel_id
                     });
-                
+
                 expect(res.statusCode).toEqual(200);
                 expect(res.body.channel.name).toBe("JEST CHANNEL");
 
@@ -176,12 +176,12 @@ describe('channels', () => {
         */
         describe('given the channel is not found', () => {
             it("should return a 404", async () => {
-                
+
                 const res = await request(server).post('/channels/getChannelById')
                     .send({
                         // Send nothing
                     })
-                                
+
                     expect(res.statusCode).toEqual(400);
 
             });

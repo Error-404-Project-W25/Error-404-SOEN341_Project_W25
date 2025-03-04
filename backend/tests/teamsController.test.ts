@@ -1,19 +1,19 @@
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
-import request from 'supertest';
+import * as request from 'supertest'; /*ensures compatibility with the TypeScript compiler*/
 import { app, startServer } from "../src/app";
 import { Express } from 'express';
 
 /*
     === Testing Teams APIs ===
 */
-describe('teams', () => { 
+describe('teams', () => {
 
     /*
         Run the app before running the tests
     */
     let TeamIDToDelete: string | undefined;
     let server: Express;
-    beforeAll(async () => { 
+    beforeAll(async () => {
         server = app as Express;
         await startServer();
     });
@@ -25,10 +25,10 @@ describe('teams', () => {
     */
     afterAll(async () => {
         try {
-            await request(server).post('/teams/removeMember') 
+            await request(server).post('/teams/removeMember')
                 .send({
                     team_id: "JEST-TESTTEAMID-123",
-                    member_id: "JEST-TESTUSERID-456" 
+                    member_id: "JEST-TESTUSERID-456"
                 });
             console.log("User removed from team in afterAll");
 
@@ -55,10 +55,10 @@ describe('teams', () => {
         describe('given the user id cannot be found', () => {
             it("should return a 500", async () => {
 
-                const userId = 'userId-doesnotexist-123'; 
+                const userId = 'userId-doesnotexist-123';
 
                 const res = await request(server).get(`/teams/user/${userId}`);
-                expect(res.body.teams).toHaveLength(0); 
+                expect(res.body.teams).toHaveLength(0);
 
             });
         });
@@ -70,7 +70,7 @@ describe('teams', () => {
     */
         describe('given the user id can be found', () => {
             it("should return all teams of which the user is a member", async () => {
-                
+
                 const userId = 'JEST-TESTUSERID-123';
 
                 const res = await request(server).get(`/teams/user/${userId}`);
@@ -80,12 +80,12 @@ describe('teams', () => {
             });
         });
    });
-   
+
 
     /*
         === Test getTeamById() ===
     */
-    describe('getTeamById', () => { 
+    describe('getTeamById', () => {
 
         /*
             Test Case 1: The team ID does not exist
@@ -95,11 +95,11 @@ describe('teams', () => {
         describe('given the team does not exist', () => {
             it("should return a 404", async () => {
 
-                const teamId = 'teamId-doesnotexist-123' 
+                const teamId = 'teamId-doesnotexist-123'
 
                 const res = await request(server).get(`/teams/getTeamById/${teamId}`)
                 expect(res.statusCode).toEqual(404);
-                
+
             });
         });
 
@@ -110,7 +110,7 @@ describe('teams', () => {
         */
        describe('given the team does exist', () => {
             it("should return a 200 status and the team object", async () => {
-                
+
                 const teamId = "JEST-TESTTEAMID-123";
                 const teamName = "TEST TEAM";
 
@@ -120,13 +120,13 @@ describe('teams', () => {
 
             });
        });
-            
+
     });
 
     /*
         === Test createTeam() ===
     */
-   describe('createTeam', () => { 
+   describe('createTeam', () => {
 
         /*
             Test Case 1: The team is created successfully
@@ -148,10 +148,10 @@ describe('teams', () => {
                     })
 
                     console.log("created team is: ", res.body);
-                
+
                 expect(res.statusCode).toEqual(201);
                 expect(res.body.team_id).toBeTruthy(); // Will be a random value, check if exists
-                
+
                 TeamIDToDelete = res.body.team_id; // Save the team ID to delete in afterAll
             });
         });
@@ -168,18 +168,18 @@ describe('teams', () => {
                     .send({
                         // Send nothing
                     })
-                
+
                 expect(res.statusCode).toEqual(400);
-                
+
             });
         });
    });
-   
+
     /*
         === Test addMemberToTeam() ===
     */
    describe('addMemberToTeam', () => {
-    
+
             /*
                 Test Case 1: The member is added successfully
                 The team ID and member ID are provided, both exist in the DB aand are exclusively for testing.
@@ -187,21 +187,21 @@ describe('teams', () => {
             */
             describe('given the member is added successfully', () => {
                 it("should return a success message", async () => {
-    
+
                     const teamId = "JEST-TESTTEAMID-123";
                     const memberId = "JEST-TESTUSERID-456";
-    
+
                     const res = await request(server).post('/teams/addMember')
                         .send({
                             team_id: teamId,
                             member_id: memberId
                         })
-                    
+
                     expect(res.body).toEqual({"success": true});
-                    
+
                 });
             });
-    
+
             /*
                 Test Case 2: The member is not added successfully
                 No inputs are provided.
@@ -209,14 +209,14 @@ describe('teams', () => {
             */
             describe('given the member is not added successfully', () => {
                 it("should return a 500", async () => {
-    
+
                     const res = await request(server).post('/teams/addMember')
                         .send({
                             // send nothing
                         })
-                    
+
                     expect(res.statusCode).toEqual(404);
-                    
+
                 });
             });
     });
