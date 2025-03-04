@@ -67,9 +67,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   chatMemberList: IUser[] = [];
   messages: IMessage[] = [];
 
+  userIdToName: {[userId: string]: string} = {};
 
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   channels$ = this.channelsSubject.asObservable();
+
+  private skipNextTeamRefresh = false;
 
   constructor(
     private router: Router,
@@ -104,17 +107,26 @@ export class ChatComponent implements OnInit, OnDestroy {
     window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
-  async refreshTeamList() {
+  async refreshTeamList(): Promise<void> {
+    // Skip this refresh if flag is set
+    if (this.skipNextTeamRefresh) {
+      this.skipNextTeamRefresh = false;
+      return;
+    }
+    
     this.loginUser = this.userService.getUser() || null;
     this.teamList = [];
-    if (this.loginUser?.teams) {
-      for (const teamId of this.loginUser.teams) {
-        const team = await this.backendService.getTeamById(teamId);
-        if (team) {
-          this.teamList.push(team);
-        }
-      }
+    
+    if (this.loginUser?.user_id && this.loginUser?.teams && this.loginUser.teams.length > 0) {
+      const teamPromises = this.loginUser.teams.map(teamId => 
+        this.backendService.getTeamById(teamId)
+      );
+      
+      const teams = await Promise.all(teamPromises);
+      
+      this.teamList = teams.filter(team => team !== undefined) as ITeam[];
     }
+    
     if (this.teamList.length > 0 && !this.selectedTeamId) {
       this.selectedTeamId = this.teamList[0].team_id;
       this.refreshChannelList();
@@ -170,13 +182,29 @@ export class ChatComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddTeamDialogComponent, {
       data: { theme: this.isDarkTheme },
     });
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       if (result && result.team_id) {
+        if (this.loginUser) {
+          // Set flag to skip next team refresh
+          this.skipNextTeamRefresh = true;
+          
+          const updatedUser = await this.backendService.getUserById(this.loginUser.user_id);
+          if (updatedUser) {
+            this.userService.updateUser(updatedUser);
+            
+            const newTeam = await this.backendService.getTeamById(result.team_id);
+            if (newTeam) {
+
+              this.teamList.push(newTeam);
+              
+              this.selectTeam(result.team_id);
+            }
+          }
+        }
+        
         this.dialog.open(AddMemberTeamPopUpComponent, {
           data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
         });
-        this.refreshTeamList();
-        this.selectTeam(result.team_id);
       }
     });
   }
@@ -325,6 +353,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     const messages = await this.backendService.getMessages(conversationId);
     if (messages) {
       this.messages = messages;
+      await this.loadUserNames();
     }
   }
 
@@ -381,4 +410,36 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   handleResize() {}
+
+  async loadUserNames(): Promise<void> {
+    const uniqueSenderIds = [...new Set(this.messages.map(msg => msg.sender))];
+    
+    for (const userId of uniqueSenderIds) {
+      const user = await this.backendService.getUserById(userId);
+      if (user) {
+        this.userIdToName[userId] = user.username;
+      }
+    }
+  }
+
+  getUserName(userId: string): string {
+    return this.userIdToName[userId] || userId;
+  }  
+
+  async login() {
+
+    this.teamList = [];
+    this.channelList = [];
+    this.conversationList = [];
+    this.teamMemberList = [];
+    this.chatMemberList = [];
+    this.messages = [];
+    
+    this.selectedTeamId = '';
+    this.teamTitle = '';
+    this.channelTitle = '';
+    
+    await this.refreshTeamList();
+  }
+
 }

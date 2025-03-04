@@ -70,6 +70,7 @@ export class AddTeamDialogComponent {
 
       this.dialogRef.close({ team_id: teamId });
       console.log('Team created successfully');
+
     } catch (error) {
       console.error('Error creating team:', error);
     }
