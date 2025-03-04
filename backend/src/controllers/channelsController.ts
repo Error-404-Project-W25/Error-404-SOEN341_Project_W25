@@ -3,8 +3,9 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
+import { User } from '../models/userModel';
+import { Conversation } from '../models/conversationsModel';
 import { io } from '../app'; 
-import { createGeneralConversation } from './conversationsController';
 
 /**
  * Create a channel
@@ -54,14 +55,12 @@ export const createChannel = async (req: Request, res: Response) => {
     team.channels.push(savedChannel.channel_id);
     await team.save();
 
-  
-    
     // Create a new conversation for the channel
-    const newConversation = await createGeneralConversation(channelName, creator_id, creator_id, conversationId);
-    if (!newConversation) {
-      res.status(500).json({ error: 'Failed to create conversation for the channel' });
-      return;
-    }
+    await new Conversation({
+      conversationId: conversationId,
+      conversationName: channelName,
+      messages: [],
+    }).save();
 
     io.to(creator_id).emit('joinRoom', { conversationId });
 
@@ -130,10 +129,6 @@ export const addUserToChannel = async (
     // Save the channel
     const savedChannel: IChannel = await channel.save();
 
-    // Update the team
-    team.channels.push(savedChannel.channel_id);
-    await team.save();
-
     // Add the user to the conversation room
     io.to(user_id).emit('joinRoom', { conversationId: channel.conversationId });
 
@@ -170,12 +165,6 @@ export const getChannelById = async (req: Request, res: Response) => {
     return;
   }
   try {
-    const team = await Team.findOne({ team_id });
-    if (!team) {
-      res.status(404).json({ error: 'Team not found' });
-      return;
-    }
-
     const channel: IChannel | null | undefined = await Channel.findOne({ channel_id });
 
     if (!channel) {

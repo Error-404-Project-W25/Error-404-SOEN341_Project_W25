@@ -27,22 +27,6 @@ export const createConversation = async (req: Request, res: Response) => {
   }
 }
 
-export const createGeneralConversation = async (conversationName: string, creatorId: string, addedUserId: string, conversationId: string) => {
-  try {
-    const newConversation = await new Conversation({
-      conversationId: conversationId,
-      conversationName: conversationName,
-      messages: [],
-    }).save();
-    io.to(creatorId).emit('joinRoom', { conversationId });
-    io.to(addedUserId).emit('joinRoom', { conversationId });
-    return newConversation;
-  } catch (error) {
-    console.error('Error creating conversation:', error);
-    return null;
-  }
-}
-
 /**
  * Getting the conversation with its id 
  * @param req conversationId

@@ -48,8 +48,7 @@ export class AddChannelDialogComponent {
   }
 
   // Creating the channel
-  // TODO: refactor in style of add-team-dialog.component.ts
-  async createChannel() {
+    async createChannel() {
     const currentUser: IUser | undefined = this.userService.getUser();
 
     if (!currentUser) {
@@ -86,6 +85,14 @@ export class AddChannelDialogComponent {
         console.error('Error getting channel');
         return;
       }
+
+      // Add the new channel to the current user's teams
+      currentUser.teams.forEach(async (teamId) => {
+        const team = await this.backendService.getTeamById(teamId);
+        if (team && teamId === this.selectedTeamId) {
+          team.channels.push(newChannel.channel_id);
+        }
+      });
 
       this.dialogRef.close({ channel_id: channelId });
     } catch (error) {

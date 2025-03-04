@@ -64,14 +64,9 @@ export class AddTeamDialogComponent {
         return;
       }
 
-      const newTeam: ITeam | undefined = await this.backendService.getTeamById(
-        teamId
-      );
 
-      if (!newTeam) {
-        console.error('Error getting team');
-        return;
-      }
+      // Add the new team to the user's list of teams
+      this.userService.getUser()?.teams.push(teamId);
 
       this.dialogRef.close({ team_id: teamId });
       console.log('Team created successfully');
