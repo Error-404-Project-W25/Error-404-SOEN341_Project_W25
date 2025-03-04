@@ -104,6 +104,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         console.log('No user');
         this.router.navigate(['/login']);
       }
+      
     });
   }
 
