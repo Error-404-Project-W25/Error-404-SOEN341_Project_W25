@@ -384,7 +384,12 @@ export class ChatComponent implements OnInit, OnDestroy {
       console.log('Toggle team list:', this.isTeamListOpen);
       if (this.isTeamListOpen) {
         teamSidebar.style.display = 'none';
-        chatBox.style.width = 'calc(100% - 20rem)';
+        // chatBox.style.width = 'calc(100% - 20rem)';
+        if (window.innerWidth < 600) {
+            chatBox.style.width = 'calc(100% - 40rem)';
+        } else {
+          chatBox.style.width = 'calc(100% - 20rem)';
+        }
         this.isTeamListOpen = false;
       } else {
         teamSidebar.style.display = 'flex';

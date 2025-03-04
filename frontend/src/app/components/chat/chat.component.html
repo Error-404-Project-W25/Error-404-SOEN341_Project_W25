@@ -32,12 +32,12 @@
           min-width: calc(100% - 5rem);
           max-width: max-content;
         }
-      } 
+      }
     </style>
   </head>
   <body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
     <div class="container">
-      <div class="side-bar-1" id="side-bar-1">
+      <aside class="side-bar-1" id="side-bar-1">
         <div class="add-team-button-container">
           <!-- (click) create team  -->
           <button class="conversation-button" readonly title="Conversations">
@@ -122,8 +122,8 @@
             <i class="fa fa-sign-out" style="font-size: 24px"></i>
           </button>
         </div>
-      </div>
-      <div class="side-bar-2" id="side-bar-2" *ngIf="teamTitle !== ''">
+      </aside>
+      <aside class="side-bar-2" id="side-bar-2" *ngIf="teamTitle !== ''">
         <div class="side-bar-2-title-container">
           <label class="main">
             {{ teamTitle }}
@@ -220,22 +220,19 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="chat-box" id="chat-box" *ngIf="channelTitle !== ''">
+      </aside>
+      <section class="chat-box" id="chat-box" *ngIf="channelTitle !== ''">
         <div class="channel-title-container">
           <div class="channel-title">{{ channelTitle }}</div>
           <div class="team-setting-button-container">
             <!-- (click) teamlist toggle -->
             <button
+              *ngIf="!isTeamListOpen"
               class="team-list-toggle-button"
               (click)="toggleTeamList()"
-              title="Toggle Team List"
+              title="Open Team List"
             >
-                <i
-                class="fa"
-                [ngClass]="isTeamListOpen ? 'fa-times' : 'fa-bars'"
-                style="font-size: 24px"
-                ></i>
+              <i class="fa fa-bars" style="font-size: 24px"></i>
             </button>
           </div>
         </div>
@@ -291,7 +288,7 @@
             <i class="fa-solid fa-arrow-right" style="font-size: 24px"></i>
           </button>
         </div>
-      </div>
+      </section>
       <div
         class="card-container"
         id="card-container"
@@ -304,13 +301,21 @@
           </h2>
         </div>
       </div>
-      <div
+      <aside
         class="team-setting-sidebar"
         id="team-setting-sidebar"
         *ngIf="teamTitle !== ''"
       >
         <div class="member-list-title-container">
-          <div class="member-list-title">Team Members</div>
+          <div class="member-list-title">Information</div>
+          <button
+            *ngIf="isTeamListOpen"
+            class="team-list-toggle-button"
+            (click)="toggleTeamList()"
+            title="close Team List"
+          >
+            <i class="fa fa-times" style="font-size: 24px"></i>
+          </button>
         </div>
 
         <div class="tabs">
@@ -361,7 +366,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </aside>
     </div>
   </body>
 </html>
