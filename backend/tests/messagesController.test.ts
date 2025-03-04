@@ -8,13 +8,41 @@ import { Express } from 'express';
 */
 describe('messages', () => {
 
-  /*
-      Run the app before running the tests
-  */
   let server: Express;
+  let conversationId: string;
+  let messageId: string| undefined;
+
   beforeAll(async () => {
     server = app as Express;
     await startServer();
+
+    // Create a conversation for testing with the required 'conversationName'
+    const res = await request(server).post('/conversations/create')
+      .send({
+        creatorId: 'TEST-CREATOR-ID',         // Make sure this is a valid ID
+        conversationName: 'Test Conversation'  // Add a valid conversation name
+      });
+    conversationId = res.body.conversationId;
+  });
+  afterAll(async () => {
+    // Cleanup any created conversation or messages if necessary
+    try {
+      await request(server).post('/messages/delete')
+        .send({
+          conversationId: conversationId,
+          messageId: messageId
+        });
+      console.log("Message deleted after all tests.");
+
+      // Delete the conversation after tests
+      await request(server).delete('/conversations/delete')
+        .send({
+          conversationId: conversationId
+        });
+      console.log("Conversation deleted after all tests.");
+    } catch (error) {
+      console.error("Error in cleanup: ", error);
+    }
   });
 
   /*
