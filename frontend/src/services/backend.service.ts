@@ -362,30 +362,33 @@ async getMessages (
 
 ///////////// CONVERSATIONS ///
 
-async createConversation(
-  conversationName: string
-): Promise<string | undefined> {
+async createDirectMessages(
+  conversationName: string,
+  creatorId: string,
+  addedUserId: string
+): Promise<IConversation | undefined> {
   try {
     const response = await firstValueFrom(
-      this.http.post<{ conversationId?: string; error?: string }>(
-        `${this.backendURL}/conversations/create`,
+      this.http.post<{ newConversation?: IConversation; error?: string }>(
+        `${this.backendURL}/conversations/createDirectMessages`,
         {
           conversationName,
+          creatorId,
+          addedUserId,
         }
       )
     );
 
-    if (response.conversationId) {
-      return response.conversationId;
+    if (response.newConversation) {
+      return response.newConversation;
     } else {
       console.error(response.error);
     }
-  } catch (error) {
-    console.error('Error creating conversation:', error);
+  } 
+  catch (error) {
+    console.error('Error creating direct messages:', error);
   }
   return undefined;
-
-
 }
 
 
