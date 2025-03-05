@@ -27,14 +27,11 @@ export const createConversation = async (req: Request, res: Response) => {
   }
 }
 
-
-
 /**
  * Getting the conversation with its id 
  * @param req conversationId
  * @param res returns the conversation
  */
-
 export const getConversationById = async (req: Request, res: Response) => {
   try {
     const conversationId: string = req.params.conversationId;

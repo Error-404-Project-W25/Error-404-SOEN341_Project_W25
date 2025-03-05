@@ -22,13 +22,9 @@ const app: Application = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:4200",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true
+    origin: '*',
   },
-  transports: ['websocket', 'polling']
-});
+  });
 
 io.on('connection', (socket) => {
   console.log('a user connected');
@@ -72,7 +68,6 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 });
-
 
 // Connect to database
 const DB_CONN_STRING = process.env.DB_CONN_STRING || '';

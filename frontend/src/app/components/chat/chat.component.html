@@ -32,7 +32,7 @@
           min-width: calc(100% - 5rem);
           max-width: max-content;
         }
-      } 
+      }
     </style>
   </head>
   <body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
@@ -221,7 +221,7 @@
           </div>
         </div>
       </div>
-      <div class="chat-box" id="chat-box" *ngIf="channelTitle !== ''">
+      <div *ngIf="channelTitle !== ''" class="chat-box" id="chat-box">
         <div class="channel-title-container">
           <div class="channel-title">{{ channelTitle }}</div>
           <div class="team-setting-button-container">
@@ -265,8 +265,7 @@
                 </button>
               </div>
               <div class="message-header">
-                <span class="message-author">{{ message.sender }}</span>
-                <span class="message-date">{{
+                <span class="message-author">{{ getUserName(message.sender) }}</span>                <span class="message-date">{{
                   message.time | date : "yyyy-MM-dd HH:mm"
                 }}</span>
               </div>
