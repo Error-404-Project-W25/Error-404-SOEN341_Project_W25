@@ -49,6 +49,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   isTeamListOpen = true;
   isDarkTheme = true;
+  isDirectMessage = false;
 
   newMessage: string = '';
 
@@ -79,9 +80,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService
-  ) // private webSocketService: WebSocketService
-  {}
+    private backendService: BackendService // private webSocketService: WebSocketService
+  ) {}
 
   //////////////////////////////////////////////Chat Page Setup//////////////////////////////////////////////
   ngOnInit() {
@@ -116,6 +116,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.isDirectMessage = false;
     this.loginUser = this.userService.getUser() || null;
     this.teamList = [];
 
@@ -159,7 +160,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   async refreshConversationList() {
+    this.isDirectMessage = true;
     this.loginUser = this.userService.getUser() || null;
+    this.teamTitle = 'Direct Messages';
     this.conversationList = [];
     if (this.loginUser?.direct_messages) {
       for (const conversationId of this.loginUser.direct_messages) {
@@ -304,6 +307,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   selectTeam(team: string): void {
+    this.isDirectMessage = false;
     let teamMemberListID: string[] = [];
     this.teamMemberList = [];
     this.selectedTeamId = team;
@@ -330,6 +334,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         });
       });
       this.channelTitle = '';
+      this.refreshChannelList();
       this.handleResize();
     });
   }
@@ -359,6 +364,20 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  async selectConversationId(conversationId: string): Promise<void> {
+    this.selectedChannelObject = null;
+    console.log('selectedChannelObject = :', this.selectedChannelObject);
+    console.log('Selected conversation:', conversationId);
+    const conversation = await this.backendService.getConversationById(
+      conversationId
+    );
+    if (conversation) {
+      this.selectedConversationId = conversationId;
+      this.messages = conversation.messages;
+      await this.loadUserNames();
+    }
+  }
+
   async loadMessages(conversationId: string): Promise<void> {
     const messages = await this.backendService.getMessages(conversationId);
     if (messages) {
@@ -370,24 +389,42 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   async selectConversation(conversationObject: IConversation): Promise<void> {
     console.log('Selected conversation:', conversationObject);
+    this.channelTitle = conversationObject.conversationName;
     this.selectedConversationId = conversationObject.conversationId;
     await this.loadMessages(conversationObject.conversationId);
   }
 
   async sendMessage() {
-    if (this.newMessage && this.selectedChannelObject) {
-      const sender = this.userService.getUser();
-      if (sender) {
-        console.log('Sending message:', this.newMessage);
-        const success = await this.backendService.sendMessage(
-          this.newMessage,
-          this.selectedChannelObject.conversationId,
-          sender.user_id
-        );
-        console.log('Message sent:', success);
-        this.newMessage = '';
-        if (success) {
-          await this.loadMessages(this.selectedChannelObject.conversationId);
+    if (this.newMessage) {
+      if (this.selectedChannelObject) {
+        const sender = this.userService.getUser();
+        if (sender) {
+          console.log('Sending message inside of channel:', this.newMessage);
+          const success = await this.backendService.sendMessage(
+            this.newMessage,
+            this.selectedChannelObject.conversationId,
+            sender.user_id
+          );
+          console.log('Message sent:', success);
+          this.newMessage = '';
+          if (success) {
+            await this.loadMessages(this.selectedChannelObject.conversationId);
+          }
+        }
+      }else if (this.selectedConversationId) {
+        const sender = this.userService.getUser();
+        if (sender) {
+          console.log('Sending message inside of conversation:', this.newMessage);
+          const success = await this.backendService.sendMessage(
+            this.newMessage,
+            this.selectedConversationId,
+            sender.user_id
+          );
+          console.log('Message sent:', success);
+          this.newMessage = '';
+          if (success) {
+            await this.loadMessages(this.selectedConversationId);
+          }
         }
       }
     }
@@ -400,12 +437,17 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log('Creating conversation:', conversationName);
     console.log('Sender:', sender?.user_id);
     console.log('Receiver:', receiver?.user_id);
-    if (sender) {
-      const conversation = await this.backendService.createConversation(
-        conversationName
+    if (sender && receiver?.user_id) {
+      const conversation = await this.backendService.createDirectMessages(
+        conversationName,
+        sender.user_id,
+        receiver.user_id
       );
       console.log('Conversation created:', conversation);
     }
+    console.log('Conversation created');
+    console.log('Sender:', sender);
+    console.log('Receiver:', receiver);
   }
 
   async signOut() {
@@ -476,5 +518,4 @@ export class ChatComponent implements OnInit, OnDestroy {
   getUserName(userId: string): string {
     return this.userIdToName[userId] || userId;
   }
-
 }

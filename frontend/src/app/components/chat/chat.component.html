@@ -40,14 +40,15 @@
       <div class="side-bar-1" id="side-bar-1">
         <div class="add-team-button-container">
           <!-- (click) create team  -->
-          <button class="conversation-button" readonly title="Conversations">
+            <button class="conversation-button" (click)="refreshConversationList()" readonly title="Conversations">
             <i
               class="far fa-comment-alt"
               style="font-size: 24px; transition: transform 0.3s"
               readonly
             >
-            </i></button
-          ><button
+            </i>
+            </button>
+          <button
             class="add-team-button"
             (click)="openCreateTeamDialog()"
             readonly
@@ -188,7 +189,7 @@
             </section>
           </label>
         </div>
-        <div class="channel-list">
+        <div class="channel-list" *ngIf="!isDirectMessage">
           <div
             class="channelList-dropdown-content-container"
             *ngFor="let channel of channelList"
@@ -220,6 +221,18 @@
             </div>
           </div>
         </div>
+
+        <div class="channel-list"*ngIf="isDirectMessage">
+          <div
+            class="channelList-dropdown-content-container"
+            *ngFor="let conversation of conversationList"
+            (click)="selectConversation(conversation)"
+            readonly
+          >
+            <div class="channel-name-container">{{ conversation.conversationName }}</div>
+          </div>
+        </div>
+
       </div>
       <div *ngIf="channelTitle !== ''" class="chat-box" id="chat-box">
         <div class="channel-title-container">
