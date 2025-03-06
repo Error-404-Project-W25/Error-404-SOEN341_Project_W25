@@ -157,7 +157,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     // remove user from all teams
     for (let i = 0; i < user.teams.length; i++) {
-      const team = await Team.findOne({ team_id: user.teams[i].team_id });
+      const team = await Team.findOne({ team_id: user.teams[i] });
 
       if (!team) {
         res.status(404).json({ error: 'Team not found' });
@@ -165,28 +165,6 @@ export const deleteUser = async (req: Request, res: Response) => {
       }
 
       team.members = team.members.filter((member) => member !== user_id);
-
-      // remove from general channel
-      team.channels[0].members = team.channels[0].members.filter((member) => member !== user_id );
-      await team.save();
-
-      // remove user from all other channels in team
-      for (let j = 1; j < team.channels.length; j++) {
-
-        const channel = await Channel.findOne({ channel_id: team.channels[j].channel_id });
-
-        if (!channel) {
-          res.status(404).json({ error: 'Channel not found' });
-          return;
-        }
-
-        channel.members = channel.members.filter((member) => member !== user_id);
-        await channel.save();
-
-        team.channels[j].members = team.channels[j].members.filter((member) => member !== user_id);
-        await team.save();
-
-      }
     }
 
     // remove user from database
