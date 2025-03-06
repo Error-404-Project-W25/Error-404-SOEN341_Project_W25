@@ -408,6 +408,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log('Selected conversation:', conversationObject);
     this.channelTitle = conversationObject.conversationName;
     this.selectedConversationId = conversationObject.conversationId;
+    this.selectedChannelObject = null;
     await this.loadMessages(conversationObject.conversationId);
   }
 
