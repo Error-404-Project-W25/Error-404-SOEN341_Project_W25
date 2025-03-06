@@ -57,6 +57,9 @@ export class DeleteMessageComponent {
     if (this.isCreator) {
       console.log('Creator can delete the message');
       this.dialogRef.close(this.data.messageId); // Return the message ID to be deleted
+    } else {
+      // If not the creator, show a simple alert message
+      alert('You are not the creator of this channel and cannot delete this message.');
     }
   }
 }
