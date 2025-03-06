@@ -12,8 +12,8 @@ import { io } from '../app';
  */
 export const sendMessage = async (req: Request, res: Response) => {
   try { 
-    const { content, sender, conversationId } = req.body; 
-    if (!content || !conversationId || !sender) {
+    const { content, senderId, conversationId } = req.body; 
+    if (!content || !conversationId || !senderId) {
       res.status(400).json({ error: 'Missing required fields' });
       return;
     }
@@ -24,7 +24,7 @@ export const sendMessage = async (req: Request, res: Response) => {
     const newMessage: IMessage = await new Messages({
       messageId: messageId, 
       content: content, 
-      sender: sender,
+      sender: senderId,
       time: time
      }).save();
 
@@ -55,6 +55,12 @@ export const deleteMessage = async (req: Request, res: Response) => {
       await conversation.save();
       io.to(conversationId).emit('deleteMessage', messageId);
     }
+
+    const message = await Messages.findOne({ messageId });
+    if (message) {
+      await message.deleteOne();
+    }
+    
     res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error deleting message:', error);

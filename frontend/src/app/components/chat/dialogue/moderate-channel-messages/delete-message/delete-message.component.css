@@ -1,0 +1,95 @@
+
+
+.container {
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 100%;
+  background-color: var(--pop-up-background-color);
+  overflow-x: hidden;
+  flex-direction: column;
+}
+
+.h1 {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 24px;
+  color: var(--pop-up-text-color);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.dialog-container {
+  font-family: Arial, Helvetica, sans-serif;
+  height: auto;
+  width: 400px;
+  background: linear-gradient(
+    var(--pop-up-background-color),
+    var(--pop-up-background-color)
+  )
+  padding-box,
+  linear-gradient(
+    145deg,
+    #5a5a5a, /* Lighter Grey */
+    #2c2c2c  /* Darker Grey */
+  )
+  border-box;
+  border: 2px solid var(--pop-up-border-color);
+  padding: 32px 24px;
+  font-size: 14px;
+  color: var(--pop-up-text-color);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+  border-radius: 0px;
+  background-size: 200% 100%;
+  animation: gradient 5s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.dialog-container button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  color: var(--pop-up-secondary-text-color);
+  font-weight: 600;
+  width: 40%;
+  background: var(--pop-up-button-background);
+  border: 1px solid var(--pop-up-border-color);
+  padding: 12px 16px;
+  font-size: inherit;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.3s ease-in-out;
+}
+
+.dialog-container button:hover {
+  background-color: var(--pop-up-highlight-color);
+  border-color: var(--pop-up-highlight-color);
+}
+
+/* Delete Button */
+.dialog-container .delete-btn {
+  background: var(--pop-up-delete-button);
+  color: var(--delete-button-text);
+}
+
+.dialog-container .delete-btn:hover {
+  background: var(--pop-up-delete-hover);
+}

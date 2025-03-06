@@ -76,16 +76,16 @@ export const createTeam = async (req: Request, res: Response) => {
           members: [user_id], // Add the creator to the default channel members
           conversationId: conversation_id,
         },
-      ],
+      ].map(channel => channel.channel_id), // Store only channel IDs
     }).save();
 
-    // Add the new ITeam to the signed-in user
+    // Add the new team ID to the signed-in user
     const user = await User.findOne({ user_id });
     if (user) {
       if (user.teams) {
-        user.teams.push(newTeam);
+        user.teams.push(newTeam.team_id);
       } else {
-        user.teams = [newTeam];
+        user.teams = [newTeam.team_id];
       }
       await user.save();
     }
@@ -133,7 +133,7 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
       return;
     }
 
-    memberToAdd.teams.push(updatedTeam);
+    memberToAdd.teams.push(updatedTeam.team_id);
     await memberToAdd.save();
 
     res.json({ success: true });
@@ -176,13 +176,13 @@ export const removeMemberFromTeam = async (req: Request, res: Response) => {
 
     await team.save();
 
-    // Remove the team from the teams array in the user object
+    // Remove the team ID from the user's teams 
     const user = await User.findOne({ user_id: member_id });
     if (!user) {
       res.status(404).json({ error: 'User not found' });
       return;
     } else {    
-      user.teams = user.teams.filter((team) => team.team_id !== team_id);
+      user.teams = user.teams.filter((team) => team !== team_id);
     }   
 
     await user.save();
@@ -223,7 +223,7 @@ export const deleteTeam = async (req: Request, res: Response) => {
         return;
       }
         
-      user.teams = user.teams.filter((team) => team.team_id !== team_id);
+      user.teams = user.teams.filter((team) => team !== team_id);
       
       await user.save();
     }
