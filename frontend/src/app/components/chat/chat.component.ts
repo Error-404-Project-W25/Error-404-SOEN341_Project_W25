@@ -213,7 +213,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   openDeleteDialog(messageId: string, messageText: string): void {
     const dialogRef = this.dialog.open(DeleteMessageComponent, {
-      data: { messageId, messageText, theme: this.isDarkTheme },
+      data: { messageId, messageText, theme: this.isDarkTheme, channelId: this.selectedChannelId, teamId: this.selectedTeamId },
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {

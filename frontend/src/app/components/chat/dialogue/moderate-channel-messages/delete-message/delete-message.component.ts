@@ -2,7 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { ITeam, IUser, IChannel} from '@shared/interfaces';
 
 @Component({
   selector: 'app-delete-message',
@@ -19,16 +18,16 @@ export class DeleteMessageComponent {
   constructor(
     public dialogRef: MatDialogRef<DeleteMessageComponent>, // Dialog reference
     @Inject(MAT_DIALOG_DATA)
-    public data: { messageId: string; messageText: string; theme: boolean, channelId : string }, // Injected data (message info)
+    public data: { messageId: string; messageText: string; theme: boolean, channelId : string, teamId: string }, // Injected data (message info)
     private userService: UserService,
     private backendService: BackendService
   ) {
     this.isDarkTheme = data.theme; // Set the theme based on the injected data
-    this.checkIfCreator(data.channelId);
+    this.checkIfCreator(data.teamId, data.channelId);
   }
 
   //checking if its the creator of the channel
-  private async checkIfCreator(channelId: string): Promise<void> {
+  private async checkIfCreator(teamId: string, channelId: string): Promise<void> {
     const currentUser = this.userService.getUser(); // Get current user
     if (!currentUser) {
       console.error('User not found');
@@ -37,16 +36,10 @@ export class DeleteMessageComponent {
 
     try {
       // Step 1: Retrieve the channel to get its team_id
-      const channel = await this.backendService.getChannelById(currentUser.user_id, channelId); // Pass currentUser.user_id instead of teamId
+      const channel = await this.backendService.getChannelById(teamId, channelId); // Pass currentUser.user_id instead of teamId
 
       if (channel) {
-        // Step 2: Use team_id from the channel to get team details
-        const team = await this.backendService.getTeamById(channel.team_id);
-
-        // Step 3: Check if the current user is in the admin list
-        if (team && team.admin.includes(currentUser.user_id)) {
-          this.isCreator = true; // Allow delete if user is the admin (creator)
-        }
+        channel.members[0] === currentUser.user_id ? this.isCreator = true : this.isCreator = false;
       }
     } catch (error) {
       console.error('Error checking channel creator:', error);
@@ -62,6 +55,7 @@ export class DeleteMessageComponent {
   // Confirm deletion, close the dialog, and pass the message ID back for removal
   onConfirm(): void {
     if (this.isCreator) {
+      console.log('Creator can delete the message');
       this.dialogRef.close(this.data.messageId); // Return the message ID to be deleted
     }
   }
