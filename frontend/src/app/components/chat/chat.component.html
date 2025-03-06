@@ -1,338 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ChatHaven</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-  </head>
-  <body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
-    <div class="container">
-      <div class="side-bar-1" id="side-bar-1">
-        <div class="add-team-button-container">
-          <!-- (click) create team  -->
-          <button
-            class="add-team-button"
-            (click)="openCreateTeamDialog()"
-            readonly
-          >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatHaven</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+</head>
+<body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
+<div class="container">
+  <div class="side-bar-1" id="side-bar-1">
+    <div class="add-team-button-container">
+      <!-- (click) create team  -->
+      <button
+        class="add-team-button"
+        (click)="openCreateTeamDialog()"
+        readonly
+      >
             <span class="tooltip-text" id="right">
               <i class="fa fa-plus" style="margin-right: 5px"></i>Create Team
             </span>
-            <i
-              class="fa fa-plus"
-              style="font-size: 24px; transition: transform 0.3s"
-              onmouseover="this.style.transform='rotate(90deg)'"
-              onmouseout="this.style.transform='rotate(0deg)'"
-              readonly
-            >
-            </i>
-          </button>
-        </div>
-        <div class="team-list">
-          <ul>
-            <!-- (click) select team -->
-            <li
-              *ngFor="let team of teamList"
-              (click)="selectTeam(team.team_id)"
-              readonly
-            >
-              <a href="#">{{ team.team_name.slice(0, 6) }}</a>
-            </li>
-          </ul>
-        </div>
-        <div class="user-menu-container">
-          <input class="menu-toggle-checkbox" type="checkbox" readonly />
-          <span class="menu-toggle-button">
+        <i
+          class="fa fa-plus"
+          style="font-size: 24px; transition: transform 0.3s"
+          onmouseover="this.style.transform='rotate(90deg)'"
+          onmouseout="this.style.transform='rotate(0deg)'"
+          readonly
+        >
+        </i>
+      </button>
+    </div>
+    <div class="team-list">
+      <ul>
+        <!-- (click) select team -->
+        <li
+          *ngFor="let team of teamList"
+          (click)="selectTeam(team.team_id)"
+          readonly
+        >
+          <a href="#">{{ team.team_name.slice(0, 6) }}</a>
+        </li>
+      </ul>
+    </div>
+    <div class="user-menu-container">
+      <input class="menu-toggle-checkbox" type="checkbox" readonly />
+      <span class="menu-toggle-button">
             <i class="fa fa-user-circle" style="font-size: 24px"></i>
           </span>
-          <!-- (click) change theme -->
-          <button
-            class="menu-option-1 menu-option"
-            (click)="toggleTheme()"
-            readonly
-          >
-            <i
-              class="fa"
-              [ngClass]="isDarkTheme ? 'fa-moon' : 'fa-sun'"
-              style="font-size: 1.5rem; transition: transform 0.3s"
-              onmouseover="this.style.transform='rotate(360deg)'"
-              onmouseout="this.style.transform='rotate(0deg)'"
-              readonly
-            ></i>
-          </button>
-          <!-- (click) user setting -->
-          <button class="menu-option-2 menu-option" readonly>
+      <!-- (click) change theme -->
+      <button
+        class="menu-option-1 menu-option"
+        (click)="toggleTheme()"
+        readonly
+      >
+        <i
+          class="fa"
+          [ngClass]="isDarkTheme ? 'fa-moon' : 'fa-sun'"
+          style="font-size: 1.5rem; transition: transform 0.3s"
+          onmouseover="this.style.transform='rotate(360deg)'"
+          onmouseout="this.style.transform='rotate(0deg)'"
+          readonly
+        ></i>
+      </button>
+      <!-- (click) user setting -->
+      <button class="menu-option-2 menu-option" readonly>
+        <i
+          class="fa fa-gear"
+          style="font-size: 24px; transition: transform 0.3s"
+          onmouseover="this.style.transform='rotate(90deg)'"
+          onmouseout="this.style.transform='rotate(0deg)'"
+          readonly
+        ></i>
+      </button>
+      <!-- (click) sign out -->
+      <button
+        class="menu-option-3 menu-option"
+        (click)="signOut()"
+        readonly
+      >
+        <i class="fa fa-sign-out" style="font-size: 24px"></i>
+      </button>
+    </div>
+  </div>
+  <div class="side-bar-2" id="side-bar-2" *ngIf="teamTitle !== ''">
+    <div class="side-bar-2-title-container">
+      <label class="main">
+        {{ teamTitle }}
+        <input class="inp" checked="" type="checkbox" readonly />
+        <div class="team-setting-bar">
+          <span class="top team-setting-bar-list"></span>
+          <span class="middle team-setting-bar-list"></span>
+          <span class="bottom team-setting-bar-list"></span>
+        </div>
+        <section class="dropdown-team-setting-container">
+          <!-- (click) Team Setting -->
+          <div class="dropdown-team-setting-list" readonly>
             <i
               class="fa fa-gear"
-              style="font-size: 24px; transition: transform 0.3s"
-              onmouseover="this.style.transform='rotate(90deg)'"
-              onmouseout="this.style.transform='rotate(0deg)'"
-              readonly
-            ></i>
-          </button>
-          <!-- (click) sign out -->
-          <button
-            class="menu-option-3 menu-option"
-            (click)="signOut()"
+              style="font-size: 24px; margin-right: 8px"
+            ></i
+            >Setting
+          </div>
+          <!-- (click) create channel -->
+          <div
+            class="dropdown-team-setting-list"
+            (click)="openCreateChannelDialog()"
             readonly
           >
-            <i class="fa fa-sign-out" style="font-size: 24px"></i>
-          </button>
+            <i
+              class="fa fa-plus"
+              style="font-size: 24px; margin-right: 8px"
+            ></i
+            >Create Channel
+          </div>
+          <!-- (click) add member to team -->
+          <div
+            class="dropdown-team-setting-list"
+            (click)="openAddMemberTeamDialog()"
+            readonly
+          >
+            <i
+              class="fa fa-user-plus"
+              style="font-size: 24px; margin-right: 8px"
+            ></i
+            >Add Member
+          </div>
+          <!-- (click) remove member to team-->
+          <div
+            class="dropdown-team-setting-list"
+            (click)="openRemoveMemberTeamDialog()"
+            readonly
+          >
+            <i
+              class="fa fa-user-times"
+              style="font-size: 24px; margin-right: 8px"
+            ></i
+            >Remove Member
+          </div>
+        </section>
+      </label>
+    </div>
+    <div class="channel-list">
+      <div class="dropdown">
+        <button
+          (click)="myConvoFunction()"
+          class="channelList-dropbtn"
+          readonly
+        >
+          Conversation
+          <span style="flex-grow: 1"></span>
+          <i class="fa fa-caret-down" style="margin-left: 5px"></i>
+        </button>
+        <div id="myDropdownConvo" class="channelList-dropdown-content">
+          <div
+            class="channelList-dropdown-content-container"
+            *ngFor="let conversation of conversationList"
+            (click)="selectConversation(conversation)"
+            readonly
+          >
+            <div class="channel-name-container">{{ conversation }}</div>
+            <!-- (click) open channel setting -->
+            <button class="channel-button" readonly>
+              <i class="fa fa-gear" style="font-size: 16px"></i>
+            </button>
+          </div>
         </div>
       </div>
-      <div class="side-bar-2" id="side-bar-2" *ngIf="teamTitle !== ''">
-        <div class="side-bar-2-title-container">
-          <label class="main">
-            {{ teamTitle }}
-            <input class="inp" checked="" type="checkbox" readonly />
-            <div class="team-setting-bar">
-              <span class="top team-setting-bar-list"></span>
-              <span class="middle team-setting-bar-list"></span>
-              <span class="bottom team-setting-bar-list"></span>
-            </div>
-            <section class="dropdown-team-setting-container">
-              <!-- (click) Team Setting -->
-              <div class="dropdown-team-setting-list" readonly>
-                <i
-                  class="fa fa-gear"
-                  style="font-size: 24px; margin-right: 8px"
-                ></i
-                >Setting
-              </div>
-              <!-- (click) create channel -->
-              <div
-                class="dropdown-team-setting-list"
-                (click)="openCreateChannelDialog()"
-                readonly
-              >
-                <i
-                  class="fa fa-plus"
-                  style="font-size: 24px; margin-right: 8px"
-                ></i
-                >Create Channel
-              </div>
-              <!-- (click) add member to team -->
-              <div
-                class="dropdown-team-setting-list"
-                (click)="openAddMemberTeamDialog()"
-                readonly
-              >
-                <i
-                  class="fa fa-user-plus"
-                  style="font-size: 24px; margin-right: 8px"
-                ></i
-                >Add Member
-              </div>
-              <!-- (click) remove member to team-->
-              <div
-                class="dropdown-team-setting-list"
-                (click)="openRemoveMemberTeamDialog()"
-                readonly
-              >
-                <i
-                  class="fa fa-user-times"
-                  style="font-size: 24px; margin-right: 8px"
-                ></i
-                >Remove Member
-              </div>
-            </section>
-          </label>
-        </div>
-        <div class="channel-list">
-          <div class="dropdown">
-            <button
-              (click)="myConvoFunction()"
-              class="channelList-dropbtn"
-              readonly
-            >
-              Conversation
-              <span style="flex-grow: 1"></span>
-              <i class="fa fa-caret-down" style="margin-left: 5px"></i>
-            </button>
-            <div id="myDropdownConvo" class="channelList-dropdown-content">
-              <div
-                class="channelList-dropdown-content-container"
-                *ngFor="let conversation of conversationList"
-                (click)="selectConversation(conversation)"
-                readonly
-              >
-                <div class="channel-name-container">{{ conversation }}</div>
-                <!-- (click) open channel setting -->
-                <button class="channel-button" readonly>
-                  <i class="fa fa-gear" style="font-size: 16px"></i>
-                </button>
-              </div>
-            </div>
-          </div>
 
-          <div class="dropdown">
-            <button
-              (click)="myChannelFunction()"
-              class="channelList-dropbtn"
-              readonly
-            >
-              Channel
-              <span style="flex-grow: 1"></span>
-              <i class="fa fa-caret-down" style="margin-left: 5px"></i>
-            </button>
-            <div id="myDropdownChannel" class="channelList-dropdown-content">
-              <div
-                class="channelList-dropdown-content-container"
-                *ngFor="let channel of channelList"
-                (click)="selectChannel(channel.channel_id)"
-                readonly
-              >
-                <div class="channel-name-container">{{ channel.name }}</div>
-                <div class="channel-actions">
-                  <!--(click) add member to channel-->
-                  <button
-                    class="channel-button"
-                    (click)="
+      <div class="dropdown">
+        <button
+          (click)="myChannelFunction()"
+          class="channelList-dropbtn"
+          readonly
+        >
+          Channel
+          <span style="flex-grow: 1"></span>
+          <i class="fa fa-caret-down" style="margin-left: 5px"></i>
+        </button>
+        <div id="myDropdownChannel" class="channelList-dropdown-content">
+          <div
+            class="channelList-dropdown-content-container"
+            *ngFor="let channel of channelList"
+            (click)="selectChannel(channel.channel_id)"
+            readonly
+          >
+            <div class="channel-name-container">{{ channel.name }}</div>
+            <div class="channel-actions">
+              <!--(click) add member to channel-->
+              <button
+                class="channel-button"
+                (click)="
                       openAddMemberChannelDialog(channel);
                       $event.stopPropagation()
                     "
-                    readonly
-                  >
-                    <i class="fa fa-user-plus" style="font-size: 16px"> </i>
-                  </button>
-                  <!-- (click) open channel setting -->
-                  <button
-                    class="channel-button"
-                    (click)="openEditChannelDialog(channel)"
-                    readonly
-                  >
-                    <i class="fa fa-gear" style="font-size: 16px"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="chat-box" id="chat-box" *ngIf="channelTitle !== ''">
-        <div class="channel-title-container">
-          <div class="channel-title">{{ channelTitle }}</div>
-          <div class="team-setting-button-container">
-            <!-- (click) teamlist toggle -->
-            <button class="team-list-toggle-button" readonly>
-              <i class="fa fa-bars" style="font-size: 24px"></i>
-            </button>
-          </div>
-        </div>
-        <div class="chat-log">
-          <div class="message" *ngFor="let message of messages" readonly>
-            <div class="message-profile-picture">
-              <i class="far fa-user-circle" style="font-size: 3rem"></i>
-            </div>
-            <div class="message-content">
-              <!-- make sure only channel admin or sender can delete message -->
-              <div class="delete-button-container">
-                <button
-                  *ngIf="message.sender === loginUser?.user_id || loginUser?.role === 'admin'"
-                  class="delete-button"
-                  (click)="openDeleteDialog(message.messageId, message.content)"
-                  readonly
-                >
-                  <svg class="delete-svgIcon" viewBox="0 0 448 512">
-                    <path
-                      d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
-              <div class="message-header">
-                <span class="message-author">{{ message.sender }}</span>
-                <span class="message-date">{{
-                  message.time | date : "yyyy-MM-dd HH:mm"
-                }}</span>
-              </div>
-              <article class="message-text" readonly>
-                {{ message.content }}
-              </article>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <input
-            class="input-container"
-            [(ngModel)]="newMessage"
-            (keyup.enter)="sendMessage()"
-            placeholder="Type your message here..."
-          />
-          <button class="input-container" (click)="sendMessage()">
-            <i class="fa-solid fa-arrow-right" style="font-size: 24px"></i>
-          </button>
-        </div>
-      </div>
-      <div
-        class="card-container"
-        id="card-container"
-        *ngIf="channelTitle === '' || teamTitle === ''"
-      >
-        <div class="card">
-          <h2 *ngIf="teamTitle === ''">Please choose a team to continue</h2>
-          <h2 *ngIf="channelTitle === '' && teamTitle !== ''">
-            Please choose a channel to continue
-          </h2>
-        </div>
-      </div>
-      <div
-        class="team-setting-sidebar"
-        id="team-setting-sidebar"
-        *ngIf="teamTitle !== ''"
-      >
-        <div class="member-list-title-container">
-          <div class="member-list-title">Team Members</div>
-        </div>
-
-        <div class="tabs">
-          <div class="tab-2">
-            <label for="tab2-1">Team Member</label>
-            <input
-              id="tab2-1"
-              name="tabs-two"
-              type="radio"
-              checked="checked"
-              readonly
-            />
-            <div class="tab-container">
-              <div class="member-list">
-                <ul>
-                  <li *ngFor="let member of teamMemberList" readonly>
-                    <div class="member-name">{{ member.username }}</div>
-                    <!-- (click) create conversation or menu ??-->
-                    <button class="member-button" readonly>
-                      <i class="far fa-comment-alt" style="font-size: 1rem"></i>
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="tab-2">
-            <label for="tab2-2">Chat Member</label>
-            <input id="tab2-2" name="tabs-two" type="radio" readonly />
-            <div class="tab-container">
-              <div class="member-list">
-                <ul>
-                  <li *ngFor="let member of chatMemberList" readonly>
-                    <div class="member-name">{{ member.username }}</div>
-                    <!-- <button> -->
-                    <!-- (click) create conversation or menu ??-->
-                    <!-- <button class="member-button">
-                  <i class="far fa-comment-alt" style="font-size: 1rem"></i>
-                </button> -->
-                  </li>
-                </ul>
-              </div>
+                readonly
+              >
+                <i class="fa fa-user-plus" style="font-size: 16px"> </i>
+              </button>
+              <!-- (click) open channel setting -->
+              <button
+                class="channel-button"
+                (click)="openEditChannelDialog(channel)"
+                readonly
+              >
+                <i class="fa fa-gear" style="font-size: 16px"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </body>
+  </div>
+  <div class="chat-box" id="chat-box" *ngIf="channelTitle !== ''">
+    <div class="channel-title-container">
+      <div class="channel-title">{{ channelTitle }}</div>
+      <div class="team-setting-button-container">
+        <!-- (click) teamlist toggle -->
+        <button class="team-list-toggle-button" readonly>
+          <i class="fa fa-bars" style="font-size: 24px"></i>
+        </button>
+      </div>
+    </div>
+    <div class="chat-log">
+      <div class="message" *ngFor="let message of messages" readonly>
+        <div class="message-profile-picture">
+          <i class="far fa-user-circle" style="font-size: 3rem"></i>
+        </div>
+        <div class="message-content">
+          <!-- make sure only channel admin or sender can delete message -->
+          <div class="delete-button-container">
+            <button
+              *ngIf="message.sender === loginUser?.user_id || loginUser?.role === 'admin'"
+              class="delete-button"
+              (click)="openDeleteDialog(message.messageId, message.content)"
+              readonly
+            >
+              <svg class="delete-svgIcon" viewBox="0 0 448 512">
+                <path
+                  d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <div class="message-header">
+            <span class="message-author">{{ message.sender }}</span>
+            <span class="message-date">{{
+                message.time | date : "yyyy-MM-dd HH:mm"
+              }}</span>
+          </div>
+          <article class="message-text" readonly>
+            {{ message.content }}
+          </article>
+        </div>
+      </div>
+    </div>
+    <div class="input-container">
+      <input
+        class="input-container"
+        [(ngModel)]="newMessage"
+        (keyup.enter)="sendMessage()"
+        placeholder="Type your message here..."
+      />
+      <button class="input-container" (click)="sendMessage()">
+        <i class="fa-solid fa-arrow-right" style="font-size: 24px"></i>
+      </button>
+    </div>
+  </div>
+  <div
+    class="card-container"
+    id="card-container"
+    *ngIf="channelTitle === '' || teamTitle === ''"
+  >
+    <div class="card">
+      <h2 *ngIf="teamTitle === ''">Please choose a team to continue</h2>
+      <h2 *ngIf="channelTitle === '' && teamTitle !== ''">
+        Please choose a channel to continue
+      </h2>
+    </div>
+  </div>
+  <div
+    class="team-setting-sidebar"
+    id="team-setting-sidebar"
+    *ngIf="teamTitle !== ''"
+  >
+    <div class="member-list-title-container">
+      <div class="member-list-title">Team Members</div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab-2">
+        <label for="tab2-1">Team Member</label>
+        <input
+          id="tab2-1"
+          name="tabs-two"
+          type="radio"
+          checked="checked"
+          readonly
+        />
+        <div class="tab-container">
+          <div class="member-list">
+            <ul>
+              <li *ngFor="let member of teamMemberList" readonly>
+                <div class="member-name">{{ member.username }}</div>
+                <!-- (click) create conversation or menu ??-->
+                <button class="member-button" readonly>
+                  <i class="far fa-comment-alt" style="font-size: 1rem"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="tab-2">
+        <label for="tab2-2">Chat Member</label>
+        <input id="tab2-2" name="tabs-two" type="radio" readonly />
+        <div class="tab-container">
+          <div class="member-list">
+            <ul>
+              <li *ngFor="let member of chatMemberList" readonly>
+                <div class="member-name">{{ member.username }}</div>
+                <!-- <button> -->
+                <!-- (click) create conversation or menu ??-->
+                <!-- <button class="member-button">
+              <i class="far fa-comment-alt" style="font-size: 1rem"></i>
+            </button> -->
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
 </html>
