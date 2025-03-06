@@ -3,8 +3,9 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
+import { User } from '../models/userModel';
+import { Conversation } from '../models/conversationsModel';
 import { io } from '../app'; 
-import { createGeneralConversation } from './conversationsController';
 
 /**
  * Create a channel
@@ -50,18 +51,32 @@ export const createChannel = async (req: Request, res: Response) => {
 
     const savedChannel: IChannel = await newChannel.save();
 
-    // Add the channel ID to the team
+    // Add the channel to the team
     team.channels.push(savedChannel.channel_id);
     await team.save();
 
-  
+    const user = await User.findOne({ user_id: creator_id });
+    if (user && user.teams){
+      // Find the team by team_id
+      const teamIndex: number = user.teams.findIndex((team) => team === team_id);
+
+      if (teamIndex === -1) {
+        res.status(404).json({ error: 'Team not found' });
+        return;
+      }
+      
+      // Add the channel ID to the user's team
+      user.teams[teamIndex] = team_id;
+
+      await user.save();
+    }
     
     // Create a new conversation for the channel
-    const newConversation = await createGeneralConversation(channelName, creator_id, creator_id, conversationId);
-    if (!newConversation) {
-      res.status(500).json({ error: 'Failed to create conversation for the channel' });
-      return;
-    }
+    await new Conversation({
+      conversationId: conversationId,
+      conversationName: channelName,
+      messages: [],
+    }).save();
 
     io.to(creator_id).emit('joinRoom', { conversationId });
 
@@ -79,6 +94,50 @@ export const createChannel = async (req: Request, res: Response) => {
         .status(500)
         .json({ error: 'Failed to create channel', details: 'Unknown error' });
     }
+  }
+};
+
+/**
+ * Create a general channel for a team
+ * @param team_id, creator_id
+ * @returns channel_id of the created channel
+ */
+export const createGeneralChannel = async (team_id: string, creator_id: string): Promise<string | null> => {
+  try {
+    const channel_id = uuidv4();
+    const conversationId = uuidv4(); // Create a new conversationId
+
+    const newChannel = new Channel({
+      channel_id: channel_id,
+      name: 'General',
+      description: 'This is the default channel',
+      team_id: team_id, // associated team
+      members: [creator_id], // creator of the channel
+      conversationId: conversationId, // Store conversationId
+    });
+
+    const savedChannel: IChannel = await newChannel.save();
+
+    // Add the channel to the team
+    const team = await Team.findOne({ team_id });
+    if (team) {
+      team.channels.push(savedChannel.channel_id);
+      await team.save();
+    }
+
+    // Create a new conversation for the channel
+    await new Conversation({
+      conversationId: conversationId,
+      conversationName: 'General',
+      messages: [],
+    }).save();
+
+    io.to(creator_id).emit('joinRoom', { conversationId });
+
+    return savedChannel.channel_id;
+  } catch (error: unknown) {
+    console.error('Failed to create general channel:', error);
+    return null;
   }
 };
 
@@ -129,10 +188,6 @@ export const addUserToChannel = async (
 
     // Save the channel
     const savedChannel: IChannel = await channel.save();
-
-    // Update the team
-    team.channels.push(savedChannel.channel_id);
-    await team.save();
 
     // Add the user to the conversation room
     io.to(user_id).emit('joinRoom', { conversationId: channel.conversationId });

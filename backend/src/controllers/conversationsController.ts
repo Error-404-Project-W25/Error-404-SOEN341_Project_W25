@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Conversation } from '../models/conversationsModel';
+import { User } from '../models/userModel';
 import { io } from '../app';
 
 /**
@@ -27,19 +28,42 @@ export const createConversation = async (req: Request, res: Response) => {
   }
 }
 
-export const createGeneralConversation = async (conversationName: string, creatorId: string, addedUserId: string, conversationId: string) => {
+/**
+ * create a new direct message conversation 
+ * @param req conversationName, creatorId, addedUserId
+ * @param res returns the new conversation
+ */
+export const createDirectMessages = async (req: Request, res: Response) => {
   try {
+    const { conversationName, creatorId, addedUserId } = req.body;
+    const conversationId: string = uuidv4();
+
     const newConversation = await new Conversation({
       conversationId: conversationId,
       conversationName: conversationName,
       messages: [],
     }).save();
+
+    // Fetch the users
+    const creator = await User.findOne({ user_id: creatorId });
+    const addedUser = await User.findOne({ user_id: addedUserId });
+
+    if (creator && addedUser) {
+      // Add conversationId to the direct_messages array of both users
+      creator.direct_messages.push(conversationId);
+      addedUser.direct_messages.push(conversationId);
+
+      // Save the updated user documents
+      await creator.save();
+      await addedUser.save();
+    }
+
     io.to(creatorId).emit('joinRoom', { conversationId });
     io.to(addedUserId).emit('joinRoom', { conversationId });
-    return newConversation;
+    res.status(201).json({ newConversation });
   } catch (error) {
-    console.error('Error creating conversation:', error);
-    return null;
+    console.error('Error creating direct messages:', error);
+    res.status(500).json({ error: 'Error creating direct messages' });
   }
 }
 

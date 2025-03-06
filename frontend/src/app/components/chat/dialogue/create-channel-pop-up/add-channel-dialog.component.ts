@@ -48,7 +48,7 @@ export class AddChannelDialogComponent {
   }
 
   // Creating the channel
-  async createChannel() {
+    async createChannel() {
     const currentUser: IUser | undefined = this.userService.getUser();
 
     if (!currentUser) {

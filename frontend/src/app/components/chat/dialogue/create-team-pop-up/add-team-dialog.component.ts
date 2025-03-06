@@ -44,6 +44,7 @@ export class AddTeamDialogComponent {
   ) {
     this.isDarkTheme = data.theme;
   }
+
   async createTeam() {
     const currentUser: IUser | undefined = this.userService.getUser();
 
@@ -64,9 +65,13 @@ export class AddTeamDialogComponent {
         return;
       }
 
+      // Ensure the teams property is initialized
+      if (!currentUser.teams) {
+        currentUser.teams = [];
+      }
 
       // Add the new team to the user's list of teams
-      this.userService.getUser()?.teams.push(teamId);
+      currentUser.teams.push(teamId);
 
       this.dialogRef.close({ team_id: teamId });
       console.log('Team created successfully');

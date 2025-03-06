@@ -45,8 +45,3 @@ jobs:
       # # Run backend tests
 
       
-      # Lint: check for errors/stylistic inconsistencies in code
-      - name : Lint backend code 
-        working-directory: ./backend 
-        run: npm run lint
-

@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { WebSocketService } from '@services/webSocket.service';
+//import { WebSocketService } from '@services/webSocket.service';
 import {
   IChannel,
   ITeam,
@@ -47,7 +47,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   loginUser: IUser | null = null;
 
+  isTeamListOpen = true;
   isDarkTheme = true;
+  isDirectMessage = false;
 
   newMessage: string = '';
 
@@ -67,18 +69,21 @@ export class ChatComponent implements OnInit, OnDestroy {
   chatMemberList: IUser[] = [];
   messages: IMessage[] = [];
 
+  userIdToName: { [userId: string]: string } = {};
 
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   channels$ = this.channelsSubject.asObservable();
+
+  private skipNextTeamRefresh = false;
 
   constructor(
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService,
-    private webSocketService: WebSocketService
+    private backendService: BackendService // private webSocketService: WebSocketService
   ) {}
 
+  //////////////////////////////////////////////Chat Page Setup//////////////////////////////////////////////
   ngOnInit() {
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize();
@@ -104,48 +109,66 @@ export class ChatComponent implements OnInit, OnDestroy {
     window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
-  async refreshTeamList() {
+  async refreshTeamList(): Promise<void> {
+    // Skip this refresh if flag is set
+    if (this.skipNextTeamRefresh) {
+      this.skipNextTeamRefresh = false;
+      return;
+    }
+
+    this.isDirectMessage = false;
     this.loginUser = this.userService.getUser() || null;
     this.teamList = [];
-    if (this.loginUser?.teams) {
-      for (const teamId of this.loginUser.teams) {
-        const team = await this.backendService.getTeamById(teamId);
-        if (team) {
-          this.teamList.push(team);
-        }
-      }
-    }
-    if (this.teamList.length > 0 && !this.selectedTeamId) {
-      this.selectedTeamId = this.teamList[0].team_id;
-      this.refreshChannelList();
+
+    if (
+      this.loginUser?.user_id &&
+      this.loginUser?.teams &&
+      this.loginUser.teams.length > 0
+    ) {
+      const teamPromises = this.loginUser.teams.map((teamId) =>
+        this.backendService.getTeamById(teamId)
+      );
+
+      const teams = await Promise.all(teamPromises);
+
+      this.teamList = teams.filter((team) => team !== undefined) as ITeam[];
     }
   }
 
   async refreshChannelList() {
     this.loginUser = this.userService.getUser() || null;
     this.channelList = [];
-    const selectedTeam = this.teamList.find((t) => t.team_id === this.selectedTeamId);
+    const selectedTeam = this.teamList.find(
+      (t) => t.team_id === this.selectedTeamId
+    );
     if (selectedTeam?.channels) {
       for (const channelId of selectedTeam.channels) {
-        const channel = await this.backendService.getChannelById(this.selectedTeamId!, channelId);
+        const channel = await this.backendService.getChannelById(
+          this.selectedTeamId!,
+          channelId
+        );
         if (channel) {
-          this.channelList.push(channel);
+          for (const member of channel.members) {
+            if (this.loginUser?.user_id === member) {
+              this.channelList.push(channel);
+              break; // Exit the loop once the user is found in the members list
+            }
+          }
         }
       }
     }
-    if (this.channelList.length > 0 && !this.selectedChannelId) {
-      this.selectedChannelId = this.channelList[0].channel_id;
-      this.selectChannel(this.selectedChannelId);
-    }
-    this.refreshConversationList();
   }
 
   async refreshConversationList() {
+    this.isDirectMessage = true;
     this.loginUser = this.userService.getUser() || null;
+    this.teamTitle = 'Direct Messages';
     this.conversationList = [];
     if (this.loginUser?.direct_messages) {
       for (const conversationId of this.loginUser.direct_messages) {
-        const conversation = await this.backendService.getConversationById(conversationId);
+        const conversation = await this.backendService.getConversationById(
+          conversationId
+        );
         if (conversation) {
           this.conversationList.push(conversation);
         }
@@ -157,6 +180,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.isDarkTheme = !this.isDarkTheme;
   }
 
+  //////////////////////////////////////////////Open Dialogue//////////////////////////////////////////////
   openCreateTeamDialog(): void {
     if (this.loginUser?.role !== 'admin') {
       alert('You do not have the necessary permissions to create a team.');
@@ -165,13 +189,32 @@ export class ChatComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddTeamDialogComponent, {
       data: { theme: this.isDarkTheme },
     });
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       if (result && result.team_id) {
+        if (this.loginUser) {
+          // Set flag to skip next team refresh
+          this.skipNextTeamRefresh = true;
+
+          const updatedUser = await this.backendService.getUserById(
+            this.loginUser.user_id
+          );
+          if (updatedUser) {
+            this.userService.updateUser(updatedUser);
+
+            const newTeam = await this.backendService.getTeamById(
+              result.team_id
+            );
+            if (newTeam) {
+              this.teamList.push(newTeam);
+
+              this.selectTeam(result.team_id);
+            }
+          }
+        }
+
         this.dialog.open(AddMemberTeamPopUpComponent, {
           data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
         });
-        this.refreshTeamList();
-        this.selectTeam(result.team_id);
       }
     });
   }
@@ -281,6 +324,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   selectTeam(team: string): void {
+    this.isDirectMessage = false;
     let teamMemberListID: string[] = [];
     this.teamMemberList = [];
     this.selectedTeamId = team;
@@ -290,7 +334,10 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.teamTitle = teamData.team_name || '';
         teamMemberListID = teamData.members || [];
         teamData.channels.forEach(async (channelId) => {
-          const channel = await this.backendService.getChannelById(team, channelId);
+          const channel = await this.backendService.getChannelById(
+            team,
+            channelId
+          );
           if (channel) {
             this.channelList.push(channel);
           }
@@ -304,6 +351,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         });
       });
       this.channelTitle = '';
+      this.refreshChannelList();
       this.handleResize();
     });
   }
@@ -333,38 +381,90 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  async selectConversationId(conversationId: string): Promise<void> {
+    this.selectedChannelObject = null;
+    console.log('selectedChannelObject = :', this.selectedChannelObject);
+    console.log('Selected conversation:', conversationId);
+    const conversation = await this.backendService.getConversationById(
+      conversationId
+    );
+    if (conversation) {
+      this.selectedConversationId = conversationId;
+      this.messages = conversation.messages;
+      await this.loadUserNames();
+    }
+  }
+
   async loadMessages(conversationId: string): Promise<void> {
     const messages = await this.backendService.getMessages(conversationId);
     if (messages) {
       this.messages = messages;
+      await this.loadUserNames();
     }
+    this.messages.reverse();
   }
 
   async selectConversation(conversationObject: IConversation): Promise<void> {
     console.log('Selected conversation:', conversationObject);
+    this.channelTitle = conversationObject.conversationName;
     this.selectedConversationId = conversationObject.conversationId;
     await this.loadMessages(conversationObject.conversationId);
   }
 
   async sendMessage() {
-    console.log('Sending message:', this.selectedChannelId);
-
-    if (this.newMessage && this.selectedChannelObject) {
-      const sender = this.userService.getUser();
-      if (sender) {
-        console.log('Sending message:', this.newMessage);
-        const success = await this.backendService.sendMessage(
-          this.newMessage,
-          this.selectedChannelObject.conversationId,
-          sender.user_id
-        );
-        console.log('Message sent:', success);
-        this.newMessage = '';
-        if (success) {
-          await this.loadMessages(this.selectedChannelObject.conversationId);
+    if (this.newMessage) {
+      if (this.selectedChannelObject) {
+        const sender = this.userService.getUser();
+        if (sender) {
+          console.log('Sending message inside of channel:', this.newMessage);
+          const success = await this.backendService.sendMessage(
+            this.newMessage,
+            this.selectedChannelObject.conversationId,
+            sender.user_id
+          );
+          console.log('Message sent:', success);
+          this.newMessage = '';
+          if (success) {
+            await this.loadMessages(this.selectedChannelObject.conversationId);
+          }
+        }
+      }else if (this.selectedConversationId) {
+        const sender = this.userService.getUser();
+        if (sender) {
+          console.log('Sending message inside of conversation:', this.newMessage);
+          const success = await this.backendService.sendMessage(
+            this.newMessage,
+            this.selectedConversationId,
+            sender.user_id
+          );
+          console.log('Message sent:', success);
+          this.newMessage = '';
+          if (success) {
+            await this.loadMessages(this.selectedConversationId);
+          }
         }
       }
     }
+  }
+
+  async createCoversation(memberId: string) {
+    const sender = this.userService.getUser();
+    const receiver = await this.backendService.getUserById(memberId);
+    const conversationName = `Conversation: ${sender?.username}, ${receiver?.username}`;
+    console.log('Creating conversation:', conversationName);
+    console.log('Sender:', sender?.user_id);
+    console.log('Receiver:', receiver?.user_id);
+    if (sender && receiver?.user_id) {
+      const conversation = await this.backendService.createDirectMessages(
+        conversationName,
+        sender.user_id,
+        receiver.user_id
+      );
+      console.log('Conversation created:', conversation);
+    }
+    console.log('Conversation created');
+    console.log('Sender:', sender);
+    console.log('Receiver:', receiver);
   }
 
   async signOut() {
@@ -387,12 +487,52 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
-  myConvoFunction() {
-    const dropdown = document.getElementById('myDropdownConvo');
-    if (dropdown) {
-      dropdown.classList.toggle('channelList-show');
+  toggleTeamList() {
+    const chatBox = document.querySelector('.chat-box') as HTMLElement;
+    const teamSidebar = document.querySelector(
+      '.team-setting-sidebar'
+    ) as HTMLElement;
+    if (teamSidebar) {
+      console.log('Toggle team list:', this.isTeamListOpen);
+      if (this.isTeamListOpen) {
+        teamSidebar.style.display = 'none';
+        chatBox.style.width = 'calc(100% - 20rem)';
+        this.isTeamListOpen = false;
+      } else {
+        teamSidebar.style.display = 'flex';
+        chatBox.style.width = 'calc(100% - 40rem)';
+        this.isTeamListOpen = true;
+      }
     }
   }
 
-  handleResize() {}
+  handleResize() {
+    const chatBox = document.querySelector('.chat-box') as HTMLElement;
+    const teamSidebar = document.querySelector(
+      '.team-setting-sidebar'
+    ) as HTMLElement;
+    if (window.innerWidth < 1135) {
+      this.isTeamListOpen = true;
+    } else {
+      this.isTeamListOpen = false;
+    }
+    this.toggleTeamList();
+  }
+
+  async loadUserNames(): Promise<void> {
+    const uniqueSenderIds = [
+      ...new Set(this.messages.map((msg) => msg.sender)),
+    ];
+
+    for (const userId of uniqueSenderIds) {
+      const user = await this.backendService.getUserById(userId);
+      if (user) {
+        this.userIdToName[userId] = user.username;
+      }
+    }
+  }
+
+  getUserName(userId: string): string {
+    return this.userIdToName[userId] || userId;
+  }
 }

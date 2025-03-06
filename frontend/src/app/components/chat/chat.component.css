@@ -79,6 +79,11 @@ body {
   inset: 5px;
   border-radius: 15px;
 }
+
+.hidden {
+  display: none;
+}
+
 .channel-actions {
   display: flex;
   gap: 4px;
