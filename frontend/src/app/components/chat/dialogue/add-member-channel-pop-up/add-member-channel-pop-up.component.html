@@ -6,11 +6,7 @@
   <div class="pop-up-container">
     <div class="form-container">
       <h1>Add Member To Channel</h1>
-      <form
-        class="form"
-        (ngSubmit)="addMembersToChannel()"
-        #addMemberForm="ngForm"
-      >
+      <form class="form" #addMemberForm="ngForm">
         <div class="form-group">
           <label for="searchQuery">Add Member</label>
           <div class="container-add-member">
@@ -22,17 +18,40 @@
                 name="searchQuery"
                 required
                 #searchQueryInput="ngModel"
+                (keyup)="search()"
+                placeholder="Search usernames.."
               />
-              <button class="form-add-btn" type="button" (click)="search()">
-                Add
-              </button>
             </div>
           </div>
-          <div class="found-message" *ngIf="found" style="height: 10px">
-            {{ found }}
+          <div class="team-member-team">
+            <table id="myTable">
+              <thead>
+                <tr>
+                  <th style="width: 75%">User Name</th>
+                  <th style="width: 25%">Add</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let member of teamMembers">
+                  <td>{{ member.username }}</td>
+                  <td>
+                    <label class="container">
+                      <input type="checkbox" />
+                      <span class="checkmark"></span>
+                    </label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <button type="submit" class="form-submit-btn">Done</button>
+        <button
+          type="submit"
+          class="form-submit-btn"
+          (click)="addMembersToChannel()"
+        >
+          Done
+        </button>
       </form>
     </div>
   </div>

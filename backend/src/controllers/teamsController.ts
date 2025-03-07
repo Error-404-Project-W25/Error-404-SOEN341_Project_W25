@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ITeam } from '@shared/interfaces';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
+import { createGeneralChannel } from './channelsController';
 
 /**
  * Get all teams in the database
@@ -58,8 +59,10 @@ export const createTeam = async (req: Request, res: Response) => {
 
     // Generate a UUID for the team_id
     const team_id: string = uuidv4();
-    const conversation_id: string = uuidv4();
 
+      // Create a general channel for the team
+      const generalChannelId = await createGeneralChannel(team_id, user_id);
+    
     // Create a new team document
     const newTeam: ITeam = await new Team({
       team_id,
@@ -67,16 +70,7 @@ export const createTeam = async (req: Request, res: Response) => {
       description,
       admin: [user_id],
       members: [user_id],
-      channels: [
-        {
-          channel_id: uuidv4(),
-          name: 'General',
-          description: 'This is the default channel',
-          team_id: team_id,
-          members: [user_id], // Add the creator to the default channel members
-          conversationId: conversation_id,
-        },
-      ].map(channel => channel.channel_id), // Store only channel IDs
+      channels: [generalChannelId],
     }).save();
 
     // Add the new team ID to the signed-in user
@@ -89,6 +83,7 @@ export const createTeam = async (req: Request, res: Response) => {
       }
       await user.save();
     }
+
 
     res.status(201).json({ team_id });
   } catch (error) {

@@ -323,21 +323,30 @@ async sendMessage(
   });
 }
 
-async deleteMessage(
-  conversationId: string,
-  messageId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    this.socket.emit('deleteMessage', { conversationId, messageId }, (response: { success: boolean; error?: string }) => {
+  async deleteMessage(
+    conversationId: string,
+    messageId: string
+  ): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ success: boolean; error?: string }>(
+          `${this.backendURL}/messages/delete`,
+          { conversationId, messageId }
+        )
+      );
+
       if (response.success) {
-        resolve(true);
+        return true;
       } else {
-        console.error(response.error);
-        reject(false);
+        console.error('Server error:', response.error);
+        return false;
       }
-    });
-  });
-}
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      return false;
+    }
+  }
+//trial
 
 async getMessages (
   conversationId: string)
@@ -362,30 +371,33 @@ async getMessages (
 
 ///////////// CONVERSATIONS ///
 
-async createConversation(
-  conversationName: string
-): Promise<string | undefined> {
+async createDirectMessages(
+  conversationName: string,
+  creatorId: string,
+  addedUserId: string
+): Promise<IConversation | undefined> {
   try {
     const response = await firstValueFrom(
-      this.http.post<{ conversationId?: string; error?: string }>(
-        `${this.backendURL}/conversations/create`,
+      this.http.post<{ newConversation?: IConversation; error?: string }>(
+        `${this.backendURL}/conversations/createDirectMessages`,
         {
           conversationName,
+          creatorId,
+          addedUserId,
         }
       )
     );
 
-    if (response.conversationId) {
-      return response.conversationId;
+    if (response.newConversation) {
+      return response.newConversation;
     } else {
       console.error(response.error);
     }
-  } catch (error) {
-    console.error('Error creating conversation:', error);
+  } 
+  catch (error) {
+    console.error('Error creating direct messages:', error);
   }
   return undefined;
-
-
 }
 
 
