@@ -9,11 +9,11 @@ import { UserService } from '@services/user.service';
 import { IChannel, ITeam, IUser } from '@shared/interfaces';
 import { UserAuthResponse } from '@shared/user-auth.types';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { AddChannelDialogComponent } from '../../dialogue/create-channel-dialogue/add-channel-dialog.component';
-import { AddMemberChannelPopUpComponent } from '../../dialogue/add-member-channel-dialogue/add-member-channel-pop-up.component';
-import { AddMemberTeamPopUpComponent } from '../../dialogue/add-member-team-dialogue/add-member-team-pop-up.component';
-import { EditChannelPopUpComponent } from '../../dialogue/edit-channel-dialogue/edit-channel-pop-up.component';
-import { RemoveMemberTeamPopUpComponent } from '../../dialogue/remove-member-team-dialogue/remove-member-team-pop-up.component';
+import { ChannelCreationDialog } from '../../dialogue/create-channel/create-channel.dialogue';
+import { AddChannelMembersDialogue } from '../../dialogue/add-member-channel/add-member-channel.dialogue';
+import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
+import { EditChannelDialog } from '../../dialogue/edit-channel/edit-channel.dialogue';
+import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remove-member-team.dialogue';
 
 @Component({
   selector: 'app-side-bar-channel',
@@ -56,7 +56,7 @@ export class ChannelSideBarComponent implements OnInit, OnDestroy {
   }
 
   openCreateChannelDialog() {
-    this.dialog.open(AddChannelDialogComponent, {
+    this.dialog.open(ChannelCreationDialog, {
       data: {
         selectedTeam: this.selectedTeam.team_id,
         theme: this.isDarkTheme,
@@ -69,7 +69,7 @@ export class ChannelSideBarComponent implements OnInit, OnDestroy {
       alert('No team selected');
       return;
     }
-    this.dialog.open(AddMemberTeamPopUpComponent, {
+    this.dialog.open(AddTeamMemberDialog, {
       data: {
         selectedTeam: this.selectedTeam.team_id,
         theme: this.isDarkTheme,
@@ -78,7 +78,7 @@ export class ChannelSideBarComponent implements OnInit, OnDestroy {
   }
 
   openRemoveMemberTeamDialog() {
-    this.dialog.open(RemoveMemberTeamPopUpComponent, {
+    this.dialog.open(TeamMemberRemovalDialog, {
       data: {
         selectedTeam: this.selectedTeam.team_id,
         theme: this.isDarkTheme,
@@ -109,7 +109,7 @@ export class ChannelSideBarComponent implements OnInit, OnDestroy {
   }
 
   openAddMemberChannelDialog(channel: IChannel) {
-    const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
+    const dialogRef = this.dialog.open(AddChannelMembersDialogue, {
       data: {
         channel_id: channel.channel_id,
         team_id: this.selectedTeam.team_id,
@@ -124,7 +124,7 @@ export class ChannelSideBarComponent implements OnInit, OnDestroy {
   }
 
   openEditChannelDialog(channel: IChannel) {
-    const dialogRef = this.dialog.open(EditChannelPopUpComponent, {
+    const dialogRef = this.dialog.open(EditChannelDialog, {
       data: {
         name: channel.name,
         description: channel.description,

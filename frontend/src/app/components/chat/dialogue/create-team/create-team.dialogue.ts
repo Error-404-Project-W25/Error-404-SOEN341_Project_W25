@@ -14,10 +14,10 @@ import { ITeam, IUser } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-team-dialog',
-  templateUrl: './add-team-dialog.component.html',
+  templateUrl: './create-team.dialogue.html',
   styleUrls: [
     './../../../../../assets/theme.css',
-    './add-team-dialog.component.css',
+    './create-team.dialogue.css',
   ],
   standalone: true,
   imports: [
@@ -28,7 +28,7 @@ import { ITeam, IUser } from '@shared/interfaces';
     MatButtonModule,
   ],
 })
-export class AddTeamDialogComponent {
+export class TeamCreationDialog {
   @Output() teamCreated = new EventEmitter<void>();
   isDarkTheme: boolean = false;
   teamName = '';
@@ -36,7 +36,7 @@ export class AddTeamDialogComponent {
   found = ' ';
 
   constructor(
-    private dialogRef: MatDialogRef<AddTeamDialogComponent>,
+    private dialogRef: MatDialogRef<TeamCreationDialog>,
     private backendService: BackendService,
     private userService: UserService,
     @Inject(MAT_DIALOG_DATA)

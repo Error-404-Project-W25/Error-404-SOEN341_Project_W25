@@ -14,10 +14,10 @@ import { IChannel, ITeam, IUser } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-channel-dialog',
-  templateUrl: './add-channel-dialog.component.html',
+  templateUrl: './create-channel.dialogue.html',
   styleUrls: [
     './../../../../../assets/theme.css',
-    './add-channel-dialog.component.css',
+    './create-channel.dialogue.css',
   ],
   standalone: true,
   imports: [
@@ -28,7 +28,7 @@ import { IChannel, ITeam, IUser } from '@shared/interfaces';
     NgIf,
   ],
 })
-export class AddChannelDialogComponent {
+export class ChannelCreationDialog {
   isDarkTheme: boolean = false;
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   channelName = '';
@@ -37,7 +37,7 @@ export class AddChannelDialogComponent {
   selectedTeamId: string | null = null; // stores the selected team ID
 
   constructor(
-    private dialogRef: MatDialogRef<AddChannelDialogComponent>,
+    private dialogRef: MatDialogRef<ChannelCreationDialog>,
     private backendService: BackendService,
     private userService: UserService,
     @Inject(MAT_DIALOG_DATA)
@@ -48,7 +48,7 @@ export class AddChannelDialogComponent {
   }
 
   // Creating the channel
-    async createChannel() {
+  async createChannel() {
     const currentUser: IUser | undefined = this.userService.getUser();
 
     if (!currentUser) {

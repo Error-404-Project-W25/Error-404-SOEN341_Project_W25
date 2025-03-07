@@ -11,20 +11,20 @@ import { BackendService } from '@services/backend.service';
 
 @Component({
   selector: 'app-edit-channel-pop-up',
-  templateUrl: './edit-channel-pop-up.component.html',
+  templateUrl: './edit-channel.dialogue.html',
   styleUrls: [
     './../../../../../assets/theme.css',
-    './edit-channel-pop-up.component.css',
+    './edit-channel.dialogue.css',
   ],
   standalone: true,
   imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule],
 })
-export class EditChannelPopUpComponent {
+export class EditChannelDialog {
   isDarkTheme = false;
   channelName = '';
   description = '';
   constructor(
-    public dialogRef: MatDialogRef<EditChannelPopUpComponent>,
+    public dialogRef: MatDialogRef<EditChannelDialog>,
     private backendService: BackendService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {

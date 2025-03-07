@@ -13,10 +13,10 @@ import { IUser, IChannel } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-member-team-pop-up',
-  templateUrl: './add-member-team-pop-up.component.html',
+  templateUrl: './add-member-team.dialogue.html',
   styleUrls: [
     './../../../../../assets/theme.css',
-    './add-member-team-pop-up.component.css',
+    './add-member-team.dialogue.css',
   ],
   standalone: true,
   imports: [
@@ -27,7 +27,7 @@ import { IUser, IChannel } from '@shared/interfaces';
     NgIf,
   ],
 })
-export class AddMemberTeamPopUpComponent {
+export class AddTeamMemberDialog {
   isDarkTheme: boolean = false;
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   description = '';
@@ -37,9 +37,10 @@ export class AddMemberTeamPopUpComponent {
   @Output() channelCreated = new EventEmitter<IChannel>();
 
   constructor(
-    private dialogRef: MatDialogRef<AddMemberTeamPopUpComponent>,
+    private dialogRef: MatDialogRef<AddTeamMemberDialog>,
     private backendService: BackendService,
-    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string, theme: boolean }
+    @Inject(MAT_DIALOG_DATA)
+    public data: { selectedTeam: string; theme: boolean }
   ) {
     this.isDarkTheme = data.theme;
   }

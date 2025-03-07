@@ -3,16 +3,16 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-delete-message',
-  templateUrl: './delete-message.component.html',
+  templateUrl: './delete-message.dialogue.html',
   styleUrls: [
     './../../../../../assets/theme.css',
-    './delete-message.component.css',
+    './delete-message.dialogue.css',
   ],
 })
-export class DeleteMessageComponent {
+export class DeleteMessageDialog {
   isDarkTheme: boolean = false; // Dark theme by default
   constructor(
-    public dialogRef: MatDialogRef<DeleteMessageComponent>, // Dialog reference
+    public dialogRef: MatDialogRef<DeleteMessageDialog>, // Dialog reference
     @Inject(MAT_DIALOG_DATA)
     public data: { messageId: string; messageText: string; theme: boolean } // Injected data (message info)
   ) {

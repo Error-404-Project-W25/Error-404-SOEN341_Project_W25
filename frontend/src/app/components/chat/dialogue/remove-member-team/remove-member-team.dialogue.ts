@@ -13,15 +13,15 @@ import { IUser, IChannel } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-member-team-pop-up',
-  templateUrl: './remove-member-team-pop-up.component.html',
+  templateUrl: './remove-member-team.dialogue.html',
   styleUrls: [
     './../../../../../assets/theme.css',
-    './remove-member-team-pop-up.component.css',
+    './remove-member-team.dialogue.css',
   ],
   standalone: true,
   imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule],
 })
-export class RemoveMemberTeamPopUpComponent {
+export class TeamMemberRemovalDialog {
   isDarkTheme: boolean = false;
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   description = '';
@@ -31,7 +31,7 @@ export class RemoveMemberTeamPopUpComponent {
   @Output() channelCreated = new EventEmitter<IChannel>();
 
   constructor(
-    private dialogRef: MatDialogRef<RemoveMemberTeamPopUpComponent>,
+    private dialogRef: MatDialogRef<TeamMemberRemovalDialog>,
     private backendService: BackendService,
     @Inject(MAT_DIALOG_DATA)
     public data: { selectedTeam: string; theme: boolean }

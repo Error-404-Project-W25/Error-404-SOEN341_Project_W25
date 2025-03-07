@@ -16,14 +16,16 @@ import { UserService } from '@services/user.service';
 import { IChannel, ITeam, IUser } from '@shared/interfaces';
 import { UserAuthResponse } from '@shared/user-auth.types';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { AddTeamDialogComponent } from '../../dialogue/create-team-dialogue/add-team-dialog.component';
-import { AddMemberTeamDialogueComponent } from '../../dialogue/add-member-team-dialogue/add-member-team-dialogue.component';
-import { RemoveMemberTeamDialogueComponent } from '../../dialogue/remove-member-team-dialogue/remove-member-team-dialogue.component';
+import { TeamCreationDialog } from '../../dialogue/create-team/create-team.dialogue';
+import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
 
 @Component({
   selector: 'app-team-list',
-  templateUrl: './team-list.component.html',
-  styleUrls: ['./team-list.component.css', './../../../../../assets/theme.css'],
+  templateUrl: './informationSideBar.component.html',
+  styleUrls: [
+    './../informationSideBar.component.css',
+    './../../../../../assets/theme.css',
+  ],
   standalone: true,
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
@@ -77,7 +79,7 @@ export class TeamListComponent implements OnInit, OnDestroy {
   }
 
   createTeam() {
-    const dialogRef = this.dialog.open(AddTeamDialogComponent, {
+    const dialogRef = this.dialog.open(TeamCreationDialog, {
       data: {
         theme: this.isDarkTheme,
       },
@@ -85,7 +87,7 @@ export class TeamListComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dialog.open(AddMemberTeamDialogueComponent, {
+        this.dialog.open(AddTeamMemberDialog, {
           data: {
             team: result,
             theme: this.isDarkTheme,

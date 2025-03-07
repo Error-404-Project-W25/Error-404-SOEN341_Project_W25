@@ -19,13 +19,13 @@ import { UserAuthResponse } from '@shared/user-auth.types';
 
 import { BehaviorSubject } from 'rxjs';
 
-import { AddChannelDialogComponent } from './dialogue/create-channel-dialogue/add-channel-dialog.component';
-import { AddMemberTeamPopUpComponent } from './dialogue/add-member-team-dialogue/add-member-team-pop-up.component';
-import { AddTeamDialogComponent } from './dialogue/create-team-dialogue/add-team-dialog.component';
-import { RemoveMemberTeamPopUpComponent } from './dialogue/remove-member-team-dialogue/remove-member-team-pop-up.component';
-import { DeleteMessageComponent } from './dialogue/delete-message-dialogue/delete-message.component';
-import { EditChannelPopUpComponent } from './dialogue/edit-channel-dialogue/edit-channel-pop-up.component';
-import { AddMemberChannelPopUpComponent } from './dialogue/add-member-channel-dialogue/add-member-channel-pop-up.component';
+import { ChannelCreationDialog } from './dialogue/create-channel/create-channel.dialogue';
+import { AddTeamMemberDialog } from './dialogue/add-member-team/add-member-team.dialogue';
+import { TeamCreationDialog } from './dialogue/create-team/create-team.dialogue';
+import { TeamMemberRemovalDialog } from './dialogue/remove-member-team/remove-member-team.dialogue';
+import { DeleteMessageDialog } from './dialogue/delete-message/delete-message.dialogue';
+import { EditChannelDialog } from './dialogue/edit-channel/edit-channel.dialogue';
+import { AddChannelMembersDialogue } from './dialogue/add-member-channel/add-member-channel.dialogue';
 
 @Component({
   selector: 'app-root',
@@ -180,7 +180,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       alert('You do not have the necessary permissions to create a team.');
       return;
     }
-    const dialogRef = this.dialog.open(AddTeamDialogComponent, {
+    const dialogRef = this.dialog.open(TeamCreationDialog, {
       data: { theme: this.isDarkTheme },
     });
     dialogRef.afterClosed().subscribe(async (result) => {
@@ -205,7 +205,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           }
         }
 
-        this.dialog.open(AddMemberTeamPopUpComponent, {
+        this.dialog.open(AddTeamMemberDialog, {
           data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
         });
       }
@@ -213,12 +213,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   openCreateChannelDialog(): void {
-    const dialogRef = this.dialog.open(AddChannelDialogComponent, {
+    const dialogRef = this.dialog.open(ChannelCreationDialog, {
       data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result.channel_id) {
-        this.dialog.open(AddMemberChannelPopUpComponent, {
+        this.dialog.open(AddChannelMembersDialogue, {
           data: {
             channel_id: result.channel_id,
             team_id: this.selectedTeamId,
@@ -235,19 +235,19 @@ export class ChatComponent implements OnInit, OnDestroy {
       alert('No team selected');
       return;
     }
-    this.dialog.open(AddMemberTeamPopUpComponent, {
+    this.dialog.open(AddTeamMemberDialog, {
       data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
   }
 
   openRemoveMemberTeamDialog(): void {
-    this.dialog.open(RemoveMemberTeamPopUpComponent, {
+    this.dialog.open(TeamMemberRemovalDialog, {
       data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
   }
 
   openDeleteDialog(messageId: string, messageText: string): void {
-    const dialogRef = this.dialog.open(DeleteMessageComponent, {
+    const dialogRef = this.dialog.open(DeleteMessageDialog, {
       data: { messageId, messageText, theme: this.isDarkTheme },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -258,7 +258,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   openAddMemberChannelDialog(channel: IChannel): void {
-    const dialogRef = this.dialog.open(AddMemberChannelPopUpComponent, {
+    const dialogRef = this.dialog.open(AddChannelMembersDialogue, {
       data: {
         channel_id: channel.channel_id,
         team_id: this.selectedTeamId,
@@ -272,7 +272,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   openEditChannelDialog(channel: IChannel): void {
-    const dialogRef = this.dialog.open(EditChannelPopUpComponent, {
+    const dialogRef = this.dialog.open(EditChannelDialog, {
       data: {
         name: channel.name,
         description: channel.description,

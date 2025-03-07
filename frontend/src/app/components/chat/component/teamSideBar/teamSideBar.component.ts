@@ -1,5 +1,5 @@
-import { AddTeamDialogComponent } from '../../dialogue/create-team-dialogue/add-team-dialog.component';
-import { AddMemberTeamDialogueComponent } from '../../dialogue/add-member-team-dialogue/add-member-team-dialogue.component';
+import { TeamCreationDialog } from '../../dialogue/create-team/create-team.dialogue';
+import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,9 +12,9 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-side-bar-team',
-  templateUrl: './side-bar-team.component.html',
+  templateUrl: './teamSideBar.component.html',
   styleUrls: [
-    './side-bar-team.component.css',
+    './../teamSideBar.component.css',
     './../../../../../assets/theme.css',
   ],
   standalone: true,
@@ -74,7 +74,7 @@ export class SideBarTeamComponent {
   }
 
   createTeam() {
-    const dialogRef = this.dialog.open(AddTeamDialogComponent, {
+    const dialogRef = this.dialog.open(TeamCreationDialog, {
       data: {
         theme: this.isDarkTheme,
       },
@@ -82,7 +82,7 @@ export class SideBarTeamComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dialog.open(AddMemberTeamDialogueComponent, {
+        this.dialog.open(AddTeamMemberDialog, {
           data: {
             team: result,
             theme: this.isDarkTheme,

@@ -9,12 +9,15 @@ import { UserService } from '@services/user.service';
 import { IChannel, ITeam, IUser } from '@shared/interfaces';
 import { UserAuthResponse } from '@shared/user-auth.types';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { DeleteMessageComponent } from '../../dialogue/delete-message-dialogue/delete-message-dialogue.component';
+import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-message.dialogue';
 
 @Component({
   selector: 'app-chat-log',
-  templateUrl: './chat-log.component.html',
-  styleUrls: ['./chat-log.component.css', './../../../../../assets/theme.css'],
+  templateUrl: './chatLog.component.html',
+  styleUrls: [
+    './../chatLog.component.css',
+    './../../../../../assets/theme.css',
+  ],
   standalone: true,
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
@@ -55,7 +58,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   openDeleteDialog(messageId: string, messageText: string): void {
-    const dialogRef = this.dialog.open(DeleteMessageComponent, {
+    const dialogRef = this.dialog.open(DeleteMessageDialog, {
       data: { messageId, messageText, theme: this.isDarkTheme },
     });
     dialogRef.afterClosed().subscribe((result) => {

@@ -21,13 +21,13 @@ import { IUser, IChannel, ITeam } from '@shared/interfaces';
     MatButtonModule,
     NgFor,
   ],
-  templateUrl: './add-member-channel-pop-up.component.html',
+  templateUrl: './add-member-channel.dialogue.html',
   styleUrls: [
     './../../../../../assets/theme.css',
-    './add-member-channel-pop-up.component.css',
+    './add-member-channel.dialogue.css',
   ],
 })
-export class AddMemberChannelPopUpComponent {
+export class AddChannelMembersDialogue {
   isDarkTheme: boolean = false;
   searchQuery = '';
   found = '';
@@ -35,7 +35,7 @@ export class AddMemberChannelPopUpComponent {
   teamMembers: IUser[] = [];
 
   constructor(
-    private dialogRef: MatDialogRef<AddMemberChannelPopUpComponent>,
+    private dialogRef: MatDialogRef<AddChannelMembersDialogue>,
     private backendService: BackendService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
