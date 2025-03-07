@@ -44,6 +44,6 @@ jobs:
        
       # # Run backend tests
       - name: Run Jest Unit Tests
-        working-directory: ./chathaven/backend
+        working-directory: ./backend
         run: npm test
       
