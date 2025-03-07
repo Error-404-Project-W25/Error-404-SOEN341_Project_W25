@@ -463,6 +463,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       );
       console.log('Conversation created:', conversation);
     }
+    alert ('Conversation created');
     console.log('Conversation created');
     console.log('Sender:', sender);
     console.log('Receiver:', receiver);
