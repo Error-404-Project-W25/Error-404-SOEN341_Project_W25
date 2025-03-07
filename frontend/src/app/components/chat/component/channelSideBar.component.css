@@ -1,4 +1,4 @@
-.side-bar-2 {
+.channel-sidebar {
   font-family: Arial, Helvetica, sans-serif;
   position: relative;
   align-items: horizontal;
@@ -16,7 +16,7 @@
   width: auto;
 }
 
-.side-bar-2-title-container {
+.channel-sidebar-title-container {
   font-family: Arial, Helvetica, sans-serif;
   position: absolute;
   align-items: center;

@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-//import { WebSocketService } from '@services/webSocket.service';
 import {
   IChannel,
   ITeam,
@@ -18,15 +17,15 @@ import {
 
 import { UserAuthResponse } from '@shared/user-auth.types';
 
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
-import { AddChannelDialogComponent } from './dialogue/create-channel-pop-up/add-channel-dialog.component';
-import { AddMemberTeamPopUpComponent } from './dialogue/add-member-team-pop-up/add-member-team-pop-up.component';
-import { AddTeamDialogComponent } from './dialogue/create-team-pop-up/add-team-dialog.component';
-import { RemoveMemberTeamPopUpComponent } from './dialogue/remove-member-team-pop-up/remove-member-team-pop-up.component';
-import { DeleteMessageComponent } from './dialogue/moderate-channel-messages/delete-message/delete-message.component';
-import { EditChannelPopUpComponent } from './dialogue/edit-channel-pop-up/edit-channel-pop-up.component';
-import { AddMemberChannelPopUpComponent } from './dialogue/add-member-channel-pop-up/add-member-channel-pop-up.component';
+import { AddChannelDialogComponent } from './dialogue/create-channel-dialogue/add-channel-dialog.component';
+import { AddMemberTeamPopUpComponent } from './dialogue/add-member-team-dialogue/add-member-team-pop-up.component';
+import { AddTeamDialogComponent } from './dialogue/create-team-dialogue/add-team-dialog.component';
+import { RemoveMemberTeamPopUpComponent } from './dialogue/remove-member-team-dialogue/remove-member-team-pop-up.component';
+import { DeleteMessageComponent } from './dialogue/delete-message-dialogue/delete-message.component';
+import { EditChannelPopUpComponent } from './dialogue/edit-channel-dialogue/edit-channel-pop-up.component';
+import { AddMemberChannelPopUpComponent } from './dialogue/add-member-channel-dialogue/add-member-channel-pop-up.component';
 
 @Component({
   selector: 'app-root',
@@ -36,10 +35,10 @@ import { AddMemberChannelPopUpComponent } from './dialogue/add-member-channel-po
   styleUrls: [
     './../../../assets/theme.css',
     './chat.component.css',
-    './component/sideBarOne.css',
-    './component/sideBarTwo.css',
-    './component/chatLog.css',
-    './component/teamList.css',
+    './component/teamSideBar.component.css',
+    './component/channelSideBar.component.css',
+    './component/chatLog.component.css',
+    './component/informationSideBar.component.css',
   ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
@@ -80,10 +79,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService // private webSocketService: WebSocketService
+    private backendService: BackendService
   ) {}
 
-  //////////////////////////////////////////////Chat Page Setup//////////////////////////////////////////////
   ngOnInit() {
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize();
@@ -96,10 +94,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
     this.userService.user$.subscribe((user: IUser | undefined) => {
       if (user) {
-        console.log('User:', user);
         this.refreshTeamList();
       } else {
-        console.log('No user');
         this.router.navigate(['/login']);
       }
     });
@@ -110,7 +106,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   async refreshTeamList(): Promise<void> {
-    // Skip this refresh if flag is set
     if (this.skipNextTeamRefresh) {
       this.skipNextTeamRefresh = false;
       return;
@@ -151,7 +146,7 @@ export class ChatComponent implements OnInit, OnDestroy {
           for (const member of channel.members) {
             if (this.loginUser?.user_id === member) {
               this.channelList.push(channel);
-              break; // Exit the loop once the user is found in the members list
+              break;
             }
           }
         }
@@ -180,7 +175,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.isDarkTheme = !this.isDarkTheme;
   }
 
-  //////////////////////////////////////////////Open Dialogue//////////////////////////////////////////////
   openCreateTeamDialog(): void {
     if (this.loginUser?.role !== 'admin') {
       alert('You do not have the necessary permissions to create a team.');
@@ -192,7 +186,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result && result.team_id) {
         if (this.loginUser) {
-          // Set flag to skip next team refresh
           this.skipNextTeamRefresh = true;
 
           const updatedUser = await this.backendService.getUserById(
@@ -224,7 +217,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('Result:', result);
       if (result && result.channel_id) {
         this.dialog.open(AddMemberChannelPopUpComponent, {
           data: {
@@ -340,7 +332,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   async selectChannel(channelId: string): Promise<void> {
-    console.log('Selected channel:', channelId);
     if (this.selectedTeamId) {
       const selectedChannel = await this.backendService.getChannelById(
         this.selectedTeamId,
@@ -348,8 +339,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       );
       this.selectedChannelObject = selectedChannel || null;
       if (selectedChannel) {
-        console.log('Selected conversation:', selectedChannel.conversationId);
-        console.log('Selected channel:', selectedChannel);
         this.selectedChannelId = channelId;
         this.channelTitle = selectedChannel.name;
         this.chatMemberList = [];
@@ -366,8 +355,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   async selectConversationId(conversationId: string): Promise<void> {
     this.selectedChannelObject = null;
-    console.log('selectedChannelObject = :', this.selectedChannelObject);
-    console.log('Selected conversation:', conversationId);
     const conversation = await this.backendService.getConversationById(
       conversationId
     );
@@ -388,7 +375,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   async selectConversation(conversationObject: IConversation): Promise<void> {
-    console.log('Selected conversation:', conversationObject);
     this.channelTitle = conversationObject.conversationName;
     this.selectedConversationId = conversationObject.conversationId;
     await this.loadMessages(conversationObject.conversationId);
@@ -399,28 +385,24 @@ export class ChatComponent implements OnInit, OnDestroy {
       if (this.selectedChannelObject) {
         const sender = this.userService.getUser();
         if (sender) {
-          console.log('Sending message inside of channel:', this.newMessage);
           const success = await this.backendService.sendMessage(
             this.newMessage,
             this.selectedChannelObject.conversationId,
             sender.user_id
           );
-          console.log('Message sent:', success);
           this.newMessage = '';
           if (success) {
             await this.loadMessages(this.selectedChannelObject.conversationId);
           }
         }
-      }else if (this.selectedConversationId) {
+      } else if (this.selectedConversationId) {
         const sender = this.userService.getUser();
         if (sender) {
-          console.log('Sending message inside of conversation:', this.newMessage);
           const success = await this.backendService.sendMessage(
             this.newMessage,
             this.selectedConversationId,
             sender.user_id
           );
-          console.log('Message sent:', success);
           this.newMessage = '';
           if (success) {
             await this.loadMessages(this.selectedConversationId);
@@ -434,20 +416,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     const sender = this.userService.getUser();
     const receiver = await this.backendService.getUserById(memberId);
     const conversationName = `Conversation: ${sender?.username}, ${receiver?.username}`;
-    console.log('Creating conversation:', conversationName);
-    console.log('Sender:', sender?.user_id);
-    console.log('Receiver:', receiver?.user_id);
     if (sender && receiver?.user_id) {
       const conversation = await this.backendService.createDirectMessages(
         conversationName,
         sender.user_id,
         receiver.user_id
       );
-      console.log('Conversation created:', conversation);
     }
-    console.log('Conversation created');
-    console.log('Sender:', sender);
-    console.log('Receiver:', receiver);
   }
 
   async signOut() {
@@ -476,7 +451,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       '.team-setting-sidebar'
     ) as HTMLElement;
     if (teamSidebar) {
-      console.log('Toggle team list:', this.isTeamListOpen);
       if (this.isTeamListOpen) {
         teamSidebar.style.display = 'none';
         chatBox.style.width = 'calc(100% - 20rem)';

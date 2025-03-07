@@ -1,4 +1,4 @@
-.side-bar-1 {
+.team-side-bar {
   position: relative;
   background-color: var(--side-bar-1-background);
   color: var(--side-bar-1-text);
@@ -12,7 +12,7 @@
   padding: 0;
 }
 
-.add-team-button-container {
+.direct-message-container {
   background-color: var(--side-bar-1-background);
   position: absolute;
   top: 0;
@@ -45,7 +45,7 @@
   position: relative;
 }
 
-.conversation-button {
+.direct-message-button {
   align-items: center;
   background-color: var(--user-button-background);
   border: none;
@@ -73,36 +73,6 @@
   background-color: var(--add-team-button-hover);
   border-radius: 30%;
   visibility: visible;
-}
-
-.tooltip-text {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 1.2rem; /* Increase font size */
-  visibility: hidden;
-  width: 150px; /* Increase width */
-  background-color: var(--tooltip-background);
-  color: var(--side-bar-1-text);
-  text-align: center;
-  border-radius: 6px;
-  padding: 10px 0; /* Increase padding */
-  position: absolute;
-  z-index: 1;
-  top: -8px;
-  left: 120%;
-  transform: translateX(0%);
-  transform: translateY(25%);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.add-team-button:hover .tooltip-text {
-  visibility: visible;
-  opacity: 1;
-}
-
-#right {
-  top: -8px;
-  left: 120%;
 }
 
 .team-list {

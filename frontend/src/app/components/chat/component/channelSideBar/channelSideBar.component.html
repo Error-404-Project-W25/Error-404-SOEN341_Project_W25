@@ -1,0 +1,110 @@
+<div class="channel-sidebar" id="side-bar-2" *ngIf="teamTitle !== ''">
+  <div class="channel-sidebar-title-container">
+    <label class="main">
+      {{ teamTitle }}
+      <input class="inp" checked="" type="checkbox" readonly />
+      <div class="team-setting-bar">
+        <span class="top team-setting-bar-list"></span>
+        <span class="middle team-setting-bar-list"></span>
+        <span class="bottom team-setting-bar-list"></span>
+      </div>
+      <section class="dropdown-team-setting-container">
+        <!-- (click) Team Setting -->
+        <div
+          class="dropdown-team-setting-list"
+          readonly
+          title="Team Settings"
+        >
+          <i
+            class="fa fa-gear"
+            style="font-size: 24px; margin-right: 8px"
+          ></i
+          >Setting
+        </div>
+        <!-- (click) create channel -->
+        <div
+          class="dropdown-team-setting-list"
+          (click)="openCreateChannelDialog()"
+          readonly
+          title="Create Channel"
+        >
+          <i
+            class="fa fa-plus"
+            style="font-size: 24px; margin-right: 8px"
+          ></i
+          >Create Channel
+        </div>
+        <!-- (click) add member to team -->
+        <div
+          class="dropdown-team-setting-list"
+          (click)="openAddMemberTeamDialog()"
+          readonly
+          title="Add Member"
+        >
+          <i
+            class="fa fa-user-plus"
+            style="font-size: 24px; margin-right: 8px"
+          ></i
+          >Add Member
+        </div>
+        <!-- (click) remove member to team-->
+        <div
+          class="dropdown-team-setting-list"
+          (click)="openRemoveMemberTeamDialog()"
+          readonly
+          title="Remove Member"
+        >
+          <i
+            class="fa fa-user-times"
+            style="font-size: 24px; margin-right: 8px"
+          ></i
+          >Remove Member
+        </div>
+      </section>
+    </label>
+  </div>
+  <div class="channel-list" *ngIf="!isDirectMessage">
+    <div
+      class="channelList-dropdown-content-container"
+      *ngFor="let channel of channelList"
+      (click)="selectChannel(channel.channel_id)"
+      readonly
+    >
+      <div class="channel-name-container">{{ channel.name }}</div>
+      <div class="channel-actions">
+        <!--(click) add member to channel-->
+        <button
+          class="channel-button"
+          (click)="
+            openAddMemberChannelDialog(channel); $event.stopPropagation()
+          "
+          readonly
+          title="Add Member to Channel"
+        >
+          <i class="fa fa-user-plus" style="font-size: 16px"> </i>
+        </button>
+        <!-- (click) open channel setting -->
+        <button
+          class="channel-button"
+          (click)="openEditChannelDialog(channel)"
+          readonly
+          title="Channel Settings"
+        >
+          <i class="fa fa-gear" style="font-size: 16px"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="channel-list" *ngIf="isDirectMessage">
+    <div
+      class="channelList-dropdown-content-container"
+      *ngFor="let conversation of conversationList"
+      (click)="selectConversation(conversation)"
+      readonly
+    >
+      <div class="channel-name-container">
+        {{ conversation.conversationName }}
+      </div>
+    </div>
+  </div>
+</div>

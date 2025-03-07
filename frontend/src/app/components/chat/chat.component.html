@@ -37,11 +37,11 @@
   </head>
   <body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
     <div class="container">
-      <div class="side-bar-1" id="side-bar-1">
-        <div class="add-team-button-container">
-          <!-- (click) create team  -->
+      <div class="team-side-bar" id="side-bar-1">
+        <div class="direct-message-container">
+          <!-- (click) direct message -->
           <button
-            class="conversation-button"
+            class="direct-message-button"
             (click)="refreshConversationList()"
             readonly
             title="Conversations"
@@ -53,15 +53,14 @@
             >
             </i>
           </button>
+          <!-- (click) create team  -->
           <button
+            *ngIf="loginUser?.role === 'admin'"
             class="add-team-button"
             (click)="openCreateTeamDialog()"
             readonly
             title="Create Team"
           >
-            <!-- <span class="tooltip-text" id="right">
-              <i class="fa fa-plus" style="margin-right: 5px"></i>Create Team
-            </span> -->
             <i
               class="fa fa-plus"
               style="font-size: 24px; transition: transform 0.3s"
@@ -129,8 +128,8 @@
           </button>
         </div>
       </div>
-      <div class="side-bar-2" id="side-bar-2" *ngIf="teamTitle !== ''">
-        <div class="side-bar-2-title-container">
+      <div class="channel-sidebar" id="side-bar-2" *ngIf="teamTitle !== ''">
+        <div class="channel-sidebar-title-container">
           <label class="main">
             {{ teamTitle }}
             <input class="inp" checked="" type="checkbox" readonly />
