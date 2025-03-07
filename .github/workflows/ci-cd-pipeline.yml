@@ -34,16 +34,16 @@ jobs:
       
       # Install backend dependencies
       - name: Install backend dependencies
-        working-directory: ./backend
+        working-directory: ./chathaven/backend
         run: npm ci
 
       # Install frontend dependencies
       - name: Install frontend dependencies
-        working-directory: ./frontend
+        working-directory: ./chathaven/frontend
         run: npm ci
        
       # # Run backend tests
       - name: Run Jest unit tests
-        working-directory: ./backend
+        working-directory: ./chathaven/backend
         run: npm test
       
