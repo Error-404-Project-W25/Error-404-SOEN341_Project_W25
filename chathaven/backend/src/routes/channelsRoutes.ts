@@ -3,6 +3,8 @@ import {
   createChannel,
   addUserToChannel,
   getChannelById,
+  removeMemberFromChannel,
+  deleteChannel
 } from '../controllers/channelsController';
 
 const router: Router = Router();
@@ -10,5 +12,7 @@ const router: Router = Router();
 router.post('/create', createChannel);
 router.post('/addUser', addUserToChannel);
 router.post('/getChannelById', getChannelById);
+router.post('/removeMember', removeMemberFromChannel);
+router.delete('/delete', deleteChannel);
 
 export default router;

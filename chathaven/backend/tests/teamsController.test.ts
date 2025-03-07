@@ -11,6 +11,7 @@ describe('teams', () => {
     /*
         Run the app before running the tests
     */
+    let TeamIDToDelete: string | undefined;
     let server: Express;
     beforeAll(async () => { 
         server = app as Express;
@@ -33,9 +34,9 @@ describe('teams', () => {
 
             await request(server).delete('/teams/delete')
                 .send({
-                    team_name: "jest-create-team"
+                    team_id: TeamIDToDelete
                 });
-            console.log("Team deleted in afterAll");
+            console.log("Team deleted in afterAll, id: ", TeamIDToDelete);
 
         } catch (error) {
             console.error("Error: ", error);
@@ -145,10 +146,13 @@ describe('teams', () => {
                         team_name: teamName,
                         description: description
                     })
+
+                    console.log("created team is: ", res.body);
                 
                 expect(res.statusCode).toEqual(201);
                 expect(res.body.team_id).toBeTruthy(); // Will be a random value, check if exists
                 
+                TeamIDToDelete = res.body.team_id; // Save the team ID to delete in afterAll
             });
         });
 
@@ -158,14 +162,14 @@ describe('teams', () => {
             The expected result is a 500 status.
         */
         describe('given the team is not created successfully', () => {
-            it("should return a 500", async () => {
+            it("should return a 400", async () => {
 
                 const res = await request(server).post('/teams/create')
                     .send({
                         // Send nothing
                     })
                 
-                expect(res.statusCode).toEqual(500);
+                expect(res.statusCode).toEqual(400);
                 
             });
         });

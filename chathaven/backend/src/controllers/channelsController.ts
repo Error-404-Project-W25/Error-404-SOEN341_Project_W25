@@ -251,3 +251,84 @@ export const getChannelById = async (req: Request, res: Response) => {
     }
   }
 };
+
+/**
+ * Remove a member from a channel given the member_id and channel_id
+ * @param req member_id, channel_id
+ * @param res returns success or error message
+ */
+export const removeMemberFromChannel = async (req: Request, res: Response) => {
+  try {
+    const { member_id, channel_id } = req.body;
+
+    const channel = await Channel.findOne({ channel_id });
+
+    if (!channel) {
+      res.status(404).json({ error: 'Channel not found' });
+      return;
+    }
+
+    // Remove the user from the members array in the channel object
+    if (!channel.members.includes(member_id)) {
+      res.status(400).json({
+        error: `User with user_id ${member_id} is not a member of the channel`,
+      });
+      return;
+    } else {
+      channel.members = channel.members.filter((member) => member !== member_id);
+    }
+
+    await channel.save();
+
+    res.json({ success: true });
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    res.status(500).json({
+      success: false,
+      error: 'Failed to remove member from channel',
+      details: errorMessage,
+    });
+    console.error('Failed to remove member from channel', errorMessage);
+  }
+};
+
+  /**
+   * Delete a channel from the database
+   * @param req channel_id 
+   * @param res success message or error message
+  */
+export const deleteChannel = async (req: Request, res: Response) => {
+  try {
+    const { channel_id } = req.body;
+
+    const channel = await Channel.findOne({ channel_id });
+
+    if (!channel) {
+      res.status(404).json({ error: 'Channel not found' });
+      return;
+    }
+
+    // remove the channel from the team's channels
+    const t = await Team.findOne({ team_id: channel.team_id });
+    if (!t) {
+      res.status(404).json({ error: 'Team not found' });
+      return;
+    } else {
+      t.channels = t.channels.filter((c) => c !== channel_id);
+      await t.save();
+    }
+    
+    // delete the channel from the database
+    await channel.deleteOne();
+    res.json({ success: true });
+
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete channel',
+      details: errorMessage,
+    });
+    console.error('Failed to delete channel', errorMessage);
+  }
+}

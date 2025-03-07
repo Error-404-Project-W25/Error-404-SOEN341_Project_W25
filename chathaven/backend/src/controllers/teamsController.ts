@@ -52,6 +52,11 @@ export const createTeam = async (req: Request, res: Response) => {
   try {
     const { user_id, team_name, description } = req.body;
 
+    if (!team_name || !user_id) {
+      res.status(400).json({ error: 'Missing required fields' });
+      return;
+    }
+
     // Generate a UUID for the team_id
     const team_id: string = uuidv4();
 
@@ -154,6 +159,7 @@ export const removeMemberFromTeam = async (req: Request, res: Response) => {
       return;
     } 
 
+    // Remove the user from the team object
     if (!team.members.includes(member_id)) {
       res.status(400).json({
         error: `User with user_id ${member_id} is not a member of the team`,
@@ -191,14 +197,14 @@ export const removeMemberFromTeam = async (req: Request, res: Response) => {
 
 /**
  * Delete a team from the database
- * @param req team_name
+ * @param req team_id
  * @param res returns success or error message
  */
 export const deleteTeam = async (req: Request, res: Response) => {
   try {
-    const { team_name } = req.body;
+    const { team_id } = req.body;
 
-    const team = await Team.findOne({ team_name });
+    const team = await Team.findOne({ team_id });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
@@ -212,7 +218,7 @@ export const deleteTeam = async (req: Request, res: Response) => {
         return;
       }
         
-      user.teams = user.teams.filter((team) => team !== team_name.team_id);
+      user.teams = user.teams.filter((team) => team !== team_id);
       
       await user.save();
     }

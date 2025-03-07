@@ -3,6 +3,8 @@ import { AuthStatus } from '../../types/authentication.types';
 import { Request, Response } from 'express';
 import { User } from '../models/userModel';
 import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
+import { Team } from '../models/teamsModel';
+import { Channel } from '../models/channelsModel';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
 
@@ -135,5 +137,47 @@ export const getUserByUsername = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ error: 'Failed to search users', details: error.message });
+  }
+};
+
+/**
+ * Delete a user from the database
+ * @param req user_id 
+ * @param res returns success or error message
+ */
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { user_id } = req.params;
+
+    const user = await User.findOne({ user_id });
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    // remove user from all teams
+    for (let i = 0; i < user.teams.length; i++) {
+      const team = await Team.findOne({ team_id: user.teams[i] });
+
+      if (!team) {
+        res.status(404).json({ error: 'Team not found' });
+        return;
+      }
+
+      team.members = team.members.filter((member) => member !== user_id);
+    }
+
+    // remove user from database
+    await user.deleteOne();
+    res.json({ success: true });
+
+  } catch (error: any) {
+    const errorMessage = error.message;
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete user',
+      details: errorMessage,
+    });
+    console.error('Failed to delete user', errorMessage);
   }
 };
