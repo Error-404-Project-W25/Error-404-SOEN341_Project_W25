@@ -64,8 +64,6 @@
 .add-team-button:hover {
   background-color: var(--add-team-button-hover);
   border-radius: 30%;
-  transform: rotate(90deg);
-  transition: transform 0.3s ease-in-out;
   visibility: visible;
 }
 

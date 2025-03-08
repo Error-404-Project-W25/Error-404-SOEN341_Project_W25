@@ -63,7 +63,7 @@
       </section>
     </label>
   </div>
-  <div class="channel-list" *ngIf="!isDirectMessage">
+  <div class="channel-list" id = "channel-list" *ngIf="!isDirectMessage">
     <div
       class="channelList-dropdown-content-container"
       *ngFor="let channel of channelList"
@@ -95,11 +95,11 @@
       </div>
     </div>
   </div>
-  <div class="channel-list" *ngIf="isDirectMessage">
+  <div class="channel-list" id = "conversation-list" *ngIf="isDirectMessage">
     <div
       class="channelList-dropdown-content-container"
       *ngFor="let directMessage of directMessageList"
-      (click)="selectConversation(directMessage.conversationId)"
+      (click)="selectDirectMessage(directMessage.conversationId)"
       readonly
     >
       <div class="channel-name-container">

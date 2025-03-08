@@ -15,7 +15,7 @@ import {
   IConversation,
 } from '@shared/interfaces';
 
-// import { UserAuthResponse } from '@shared/user-auth.types';
+import { UserAuthResponse } from '@shared/user-auth.types';
 
 import { BehaviorSubject } from 'rxjs';
 
@@ -423,16 +423,16 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   async signOut() {
-    // const response: UserAuthResponse | undefined =
-    //   await this.backendService.logoutUser();
-    // if (response && !response.error) {
-    //   this.userService.clearUser();
-    //   this.router.navigate(['/']);
-    // } else if (response) {
-    //   console.error(response.error);
-    // } else {
-    //   console.error('No response from backend');
-    // }
+    const response: UserAuthResponse | undefined =
+      await this.backendService.logoutUser();
+    if (response && !response.error) {
+      this.userService.clearUser();
+      this.router.navigate(['/']);
+    } else if (response) {
+      console.error(response.error);
+    } else {
+      console.error('No response from backend');
+    }
   }
 
   myChannelFunction() {

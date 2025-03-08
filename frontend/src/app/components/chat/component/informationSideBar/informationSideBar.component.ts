@@ -60,11 +60,11 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         this.selectedTeamId = teamId;
       })
     );
-    this.subscriptions.push(
-      this.dataService.currentChannelId.subscribe((channelId) => {
-        this.selectedChannelId = channelId;
-      })
-    );
+    // this.subscriptions.push(
+    //   this.dataService.currentChannelId.subscribe((channelId) => {
+    //     this.selectedChannelId = channelId;
+    //   })
+    // );
   }
 
   ngOnDestroy() {

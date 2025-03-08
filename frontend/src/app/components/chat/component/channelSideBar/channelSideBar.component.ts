@@ -34,11 +34,13 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   selectedTeamId: string | null = null;
   isDirectMessage: boolean = false;
   isDarkTheme: boolean = false;
-  teamTitle: string = '';
 
   //variables
+  teamTitle: string = '';
+
   selectedChannelID: string | null = null;
   channelList: IChannel[] = [];
+
   selectedDirectMessageID: string | null = null;
   directMessageList: IConversation[] = [];
 
@@ -58,31 +60,26 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       this.loginUser = user || null;
       if (!user) {
         this.router.navigate(['/login']);
-      } else {
-        this.setUp();
       }
     });
 
-    this.dataService.currentTeamId.subscribe((teamId) => {
-      this.selectedTeamId = teamId;
-    });
-    this.dataService.currentChannelId.subscribe((channelId) => {
-      this.selectedChannelID = channelId;
-    });
-    this.dataService.currentDirectMessageId.subscribe((directMessageId) => {
-      this.selectedDirectMessageID = directMessageId;
-    });
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
+      if (isDirectMessage) {
+        this.refreshDirectMessageList();
+      } else {
+        this.dataService.currentTeamId.subscribe((teamId) => {
+          this.selectedTeamId = teamId;
+        });
+        this.refreshChannelList();
+      }
+    });
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
     });
   }
 
   ngOnDestroy() {}
-
-  setUp() {
-    this.refreshDirectMessageList();
-    this.refreshChannelList();
-  }
 
   async refreshChannelList() {
     let selectedTeam = this.selectedTeamId
@@ -117,7 +114,8 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         this.directMessageList.push(directMessage);
       }
     });
-
+    this.teamTitle = 'Direct Messages';
+    console.log('Team Title:', this.teamTitle);
     console.log('Direct Message List:', this.directMessageList);
   }
 
@@ -170,26 +168,27 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   openEditChannelDialog(channel: IChannel): void {
-    // implementation for openEditChannelDialog
+    const dialogRef = this.dialog.open(EditChannelDialog, {
+      data: { channel: channel, theme: this.isDarkTheme },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.edited) {
+        this.refreshChannelList();
+      }
+    });
   }
 
   selectChannel(channelId: string): void {
-    this.dataService.selectChannel(channelId);
-    this.dataService.selectIsDirectMessage(false);
-    this.dataService.selectDirectMessage('');
+    this.backendService.getChannelById(this.selectedTeamId!, channelId).then((channel) => {
+      if (channel) {
+        this.selectedChannelID = channel.channel_id;
+        this.dataService.selectConversation(channel.conversationId);
+      }
+    });
   }
 
-  selectConversation(conversationId: string): void {
-    this.dataService.selectDirectMessage(conversationId);
-    this.dataService.selectIsDirectMessage(true);
-    this.dataService.selectChannel('');
+  selectDirectMessage(directMessageId: string): void {
+    this.dataService.selectConversation(directMessageId);
   }
 
-  myConvoFunction() {
-    // Implementation for myConvoFunction
-  }
-
-  myChannelFunction() {
-    // Implementation for myChannelFunction
-  }
 }

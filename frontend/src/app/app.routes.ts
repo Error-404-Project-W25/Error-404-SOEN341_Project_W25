@@ -12,6 +12,6 @@ export const routes: Routes = [
   {
     path: 'chat',
     component: ChatComponent,
-    canActivateChild: [AuthGuard],
+    // canActivateChild: [AuthGuard],
   }, // Chat page route [disabled AuthGuard]
 ];

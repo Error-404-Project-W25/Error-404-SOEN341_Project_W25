@@ -23,12 +23,16 @@ import { DataService } from '@services/data.service';
 })
 export class TeamSidebarComponent {
   title = 'chatHaven';
+  //verification
   loginUser: IUser | null = null;
 
-  isDarkTheme = true;
-
-  selectedTeamId: string = '';
+  //variables
   teamList: ITeam[] = [];
+
+  //output
+  isDarkTheme = true;
+  isDirectMessage = false;
+  selectedTeamId: string = '';
 
   constructor(
     private router: Router,
@@ -49,6 +53,7 @@ export class TeamSidebarComponent {
     this.userService.user$.subscribe((user) => {
       this.loginUser = user || null;
       if (!user) {
+        console.error('User not found inside of the team sidebar component');
         this.router.navigate(['/login']);
       }
     });
@@ -70,7 +75,6 @@ export class TeamSidebarComponent {
         this.teamList.push(team);
       }
     });
-
   }
 
   // Toggle between dark and light themes
@@ -78,14 +82,15 @@ export class TeamSidebarComponent {
     this.isDarkTheme = !this.isDarkTheme;
   }
 
+  // Placeholder for selecting a direct message
+  selectDirectMessage() {
+    this.dataService.toggleIsDirectMessage(true);
+  }
+
   // Select a team by its ID
   selectTeam(teamId: string): void {
     this.dataService.selectTeam(teamId);
-  }
-
-  // Placeholder for selecting a direct message
-  selectDirectMessage(event: Event): void {
-    this.dataService.selectIsDirectMessage(true);
+    this.dataService.toggleIsDirectMessage(false);
   }
 
   // Refresh the team list by fetching updated user data
@@ -147,6 +152,7 @@ export class TeamSidebarComponent {
 
   // Sign out the user and navigate to the home page
   async signOut() {
+    this.loginUser = null;
     const response: UserAuthResponse | undefined =
       await this.backendService.logoutUser();
     if (response && !response.error) {
@@ -157,5 +163,6 @@ export class TeamSidebarComponent {
     } else {
       console.error('No response from backend');
     }
+    window.location.reload();
   }
 }

@@ -6,33 +6,35 @@ export class DataService {
   private teamId = new BehaviorSubject<string>('');
   currentTeamId = this.teamId.asObservable();
 
-  private directMessageId = new BehaviorSubject<string>('');
-  currentDirectMessageId = this.directMessageId.asObservable();
-
-  private channelId = new BehaviorSubject<string>('');
-  currentChannelId = this.channelId.asObservable();
+  private conversationId = new BehaviorSubject<string>('');
+  currentConversationId = this.conversationId.asObservable();
 
   private isDirectMessageSelected = new BehaviorSubject<boolean>(false);
   isDirectMessage = this.isDirectMessageSelected.asObservable();
+
+  private isDarkThemeSelected = new BehaviorSubject<boolean>(false);
+  isDarkTheme = this.isDarkThemeSelected.asObservable();
+
+  private isInformationSelected = new BehaviorSubject<boolean>(false);
+  isInformationOpen = this.isInformationSelected.asObservable();
 
   selectTeam(selectedTeamId: string) {
     this.teamId.next(selectedTeamId);
   }
 
-  selectDirectMessage(selectedDirectMessageId: string) {
-    this.directMessageId.next(selectedDirectMessageId);
+  selectConversation(selectedConversationId: string) {
+    this.conversationId.next(selectedConversationId);
   }
 
-  selectChannel(selectedDirectMessageId: string) {
-    this.directMessageId.next(selectedDirectMessageId);
-  }
-
-  selectIsDirectMessage(isDirectMessage: boolean) {
+  toggleIsDirectMessage(isDirectMessage: boolean) {
     this.isDirectMessageSelected.next(isDirectMessage);
-    if (isDirectMessage) {
-      this.channelId.next('');
-    } else {
-      this.directMessageId.next('');
-    }
+  }
+
+  toggleDarkMode(isDarkTheme: boolean) {
+    this.isDarkThemeSelected.next(isDarkTheme);
+  }
+
+  toggleIsInformationOpen(isInformationOpen: boolean) {
+    this.isInformationSelected.next(isInformationOpen);
   }
 }
