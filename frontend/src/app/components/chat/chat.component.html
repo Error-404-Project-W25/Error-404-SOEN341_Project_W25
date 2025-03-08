@@ -55,7 +55,6 @@
           </button>
           <!-- (click) create team  -->
           <button
-            *ngIf="loginUser?.role === 'admin'"
             class="add-team-button"
             (click)="openCreateTeamDialog()"
             readonly
@@ -250,7 +249,7 @@
             >
               <i
                 class="fa"
-                [ngClass]="isTeamListOpen ? 'fa-times' : 'fa-bars'"
+                [ngClass]="isTeamListOpen ? 'fa-bars' : 'fa-times'"
                 style="font-size: 24px"
               ></i>
             </button>
@@ -326,7 +325,7 @@
       <div
         class="team-setting-sidebar"
         id="team-setting-sidebar"
-        *ngIf="teamTitle !== ''"
+        *ngIf="channelTitle !== ''"
       >
         <div class="member-list-title-container">
           <div class="member-list-title">Information</div>

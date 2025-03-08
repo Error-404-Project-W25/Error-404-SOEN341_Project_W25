@@ -18,6 +18,7 @@ import { UserAuthResponse } from '@shared/user-auth.types';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { TeamCreationDialog } from '../../dialogue/create-team/create-team.dialogue';
 import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
+import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'app-team-list',
@@ -29,89 +30,53 @@ import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-t
   standalone: true,
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
-export class TeamListComponent implements OnInit, OnDestroy {
-  @Input() title = 'chatHaven';
-  @Input() loginUser: IUser | null = null;
-  @Input() isDarkTheme = true;
-  @Input() teamList: ITeam[] = [];
-
-  @Output() teamSelected = new EventEmitter<ITeam>();
+export class InformationSidebarComponent implements OnInit, OnDestroy {
   selectedTeamId: string | null = null;
+  selectedChannelId: string | null = null;
 
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   private teamsSubject = new BehaviorSubject<ITeam[]>([]);
   teams$ = this.teamsSubject.asObservable();
   channels$ = this.channelsSubject.asObservable();
 
+  private subscriptions: Subscription[] = [];
+
+  teamTitle: string = '';
+  isDirectMessage: boolean = false;
+  teamMemberList: IUser[] = [];
+  chatMemberList: IUser[] = [];
+
   constructor(
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private dataService: DataService
   ) {}
 
   ngOnInit() {
-    this.teamList = this.loginUser?.teams || [];
-    this.refreshTeamList();
+    this.subscriptions.push(
+      this.dataService.currentTeamId.subscribe((teamId) => {
+        this.selectedTeamId = teamId;
+      })
+    );
+    this.subscriptions.push(
+      this.dataService.currentChannelId.subscribe((channelId) => {
+        this.selectedChannelId = channelId;
+      })
+    );
   }
 
-  ngOnDestroy() {}
-
-  refreshTeamList() {
-    this.loginUser = this.userService.getUser() || null;
-    this.teamList = this.loginUser?.teams || [];
-    if (this.teamList.length > 0 && !this.selectedTeamId) {
-      this.selectedTeamId = this.teamList[0].team_id;
-      this.refreshChannelList();
-    }
+  ngOnDestroy() {
+    this.unsubscribeAll();
   }
 
-  refreshChannelList() {
-    this.loginUser = this.userService.getUser() || null;
-    const channels =
-      this.teamList.find((t) => t.team_id === this.selectedTeamId)?.channels ||
-      [];
-    this.channelsSubject.next(channels);
+  private unsubscribeAll() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.subscriptions = [];
   }
 
-  toggleTheme() {
-    this.isDarkTheme = !this.isDarkTheme;
-  }
-
-  createTeam() {
-    const dialogRef = this.dialog.open(TeamCreationDialog, {
-      data: {
-        theme: this.isDarkTheme,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.dialog.open(AddTeamMemberDialog, {
-          data: {
-            team: result,
-            theme: this.isDarkTheme,
-          },
-        });
-        this.refreshTeamList();
-      }
-    });
-  }
-
-  selectTeam(team: ITeam): void {
-    this.teamSelected.emit(team);
-  }
-
-  async signOut() {
-    const response: UserAuthResponse | undefined =
-      await this.backendService.logoutUser();
-    if (response && !response.error) {
-      this.userService.clearUser();
-      this.router.navigate(['/']);
-    } else if (response) {
-      console.error(response.error);
-    } else {
-      console.error('No response from backend');
-    }
+  createCoversation(userId: string) {
+    // Implementation for creating a conversation
   }
 }

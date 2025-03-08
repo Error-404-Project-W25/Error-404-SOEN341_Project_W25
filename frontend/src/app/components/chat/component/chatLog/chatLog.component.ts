@@ -22,17 +22,15 @@ import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-messag
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
 export class ChatLogComponent implements OnInit, OnDestroy {
-  @Input() title = 'chatHaven';
-  @Input() loginUser: IUser | null = null;
-  @Input() isDarkTheme = true;
-  @Input() selectedChannel: IChannel | null = null;
-  @Input() messages: Message[] = [];
-  @Input() selectedTeam: ITeam[] = [];
-
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
   private teamsSubject = new BehaviorSubject<ITeam[]>([]);
   teams$ = this.teamsSubject.asObservable();
   channels$ = this.channelsSubject.asObservable();
+  isTeamListOpen: boolean = false;
+  newMessage: string = '';
+  loginUser: IUser | null = null;
+  messages: any[] = [];
+  channelTitle: string = '';
 
   constructor(
     private router: Router,
@@ -42,62 +40,40 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.refreshMessages();
+    // Implementation for ngOnInit
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    // Implementation for ngOnDestroy
+  }
 
   refreshMessages() {
-    // if (this.selectedChannel) {
-    //   this.backendService
-    //     .getMessagesByChannelId(this.selectedTeam, this.selectedChannel.channel_id)
-    //     .then((messages) => {
-    //       this.messages = messages;
-    //     });
-    // }
+    // Implementation for refreshMessages
   }
 
   openDeleteDialog(messageId: string, messageText: string): void {
-    const dialogRef = this.dialog.open(DeleteMessageDialog, {
-      data: { messageId, messageText, theme: this.isDarkTheme },
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.messages = this.messages.filter((msg) => msg.id !== result);
-      }
-    });
+    // Implementation for openDeleteDialog
   }
 
-  sendMessage(newMessage: string) {
-    if (!newMessage) return;
-    this.messages.unshift(
-      new Message(
-        this.loginUser?.username || 'Unknown',
-        new Date().toLocaleTimeString(),
-        newMessage
-      )
-    );
-  }
-
-  async signOut() {
-    const response: UserAuthResponse | undefined =
-      await this.backendService.logoutUser();
-    if (response && !response.error) {
-      this.userService.clearUser();
-      this.router.navigate(['/']);
-    } else if (response) {
-      console.error(response.error);
-    } else {
-      console.error('No response from backend');
+  sendMessage() {
+    if (this.newMessage.trim()) {
+      // Implementation for sendMessage
+      const message = {
+        sender: this.loginUser?.user_id,
+        content: this.newMessage,
+        time: new Date(),
+      };
+      this.messages.push(message);
+      this.newMessage = '';
     }
   }
-}
 
-class Message {
-  constructor(
-    public author: string,
-    public date: string,
-    public text: string,
-    public id: string = Math.random().toString(36).substr(2, 9)
-  ) {}
+  toggleTeamList() {
+    this.isTeamListOpen = !this.isTeamListOpen;
+  }
+
+  getUserName(userId: string): string {
+    // return this.userService.getUserNameById(userId);
+    return '';
+  }
 }

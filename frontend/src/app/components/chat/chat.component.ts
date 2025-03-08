@@ -15,7 +15,7 @@ import {
   IConversation,
 } from '@shared/interfaces';
 
-import { UserAuthResponse } from '@shared/user-auth.types';
+// import { UserAuthResponse } from '@shared/user-auth.types';
 
 import { BehaviorSubject } from 'rxjs';
 
@@ -86,17 +86,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize();
     this.loginUser = this.userService.getUser() || null;
-    if (!this.loginUser) {
-      this.userService.user$.subscribe((user) => {
-        this.loginUser = user || null;
-        this.refreshTeamList();
-      });
-    }
-    this.userService.user$.subscribe((user: IUser | undefined) => {
+
+    this.userService.user$.subscribe((user) => {
+      this.loginUser = user || null;
       if (user) {
+        console.log('User logged in as:', user);
         this.refreshTeamList();
       } else {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/home']);
       }
     });
   }
@@ -426,16 +423,16 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   async signOut() {
-    const response: UserAuthResponse | undefined =
-      await this.backendService.logoutUser();
-    if (response && !response.error) {
-      this.userService.clearUser();
-      this.router.navigate(['/']);
-    } else if (response) {
-      console.error(response.error);
-    } else {
-      console.error('No response from backend');
-    }
+    // const response: UserAuthResponse | undefined =
+    //   await this.backendService.logoutUser();
+    // if (response && !response.error) {
+    //   this.userService.clearUser();
+    //   this.router.navigate(['/']);
+    // } else if (response) {
+    //   console.error(response.error);
+    // } else {
+    //   console.error('No response from backend');
+    // }
   }
 
   myChannelFunction() {
@@ -446,6 +443,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   toggleTeamList() {
+    this.isTeamListOpen = !this.isTeamListOpen;
+    this.handleTeamListResize();
+  }
+
+  handleTeamListResize() {
     const chatBox = document.querySelector('.chat-box') as HTMLElement;
     const teamSidebar = document.querySelector(
       '.team-setting-sidebar'

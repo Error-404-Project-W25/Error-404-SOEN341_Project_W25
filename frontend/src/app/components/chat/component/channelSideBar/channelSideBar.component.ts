@@ -6,7 +6,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { IChannel, ITeam, IUser } from '@shared/interfaces';
+import { IChannel, IConversation, ITeam, IUser } from '@shared/interfaces';
 import { UserAuthResponse } from '@shared/user-auth.types';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChannelCreationDialog } from '../../dialogue/create-channel/create-channel.dialogue';
@@ -14,6 +14,7 @@ import { AddChannelMembersDialogue } from '../../dialogue/add-member-channel/add
 import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
 import { EditChannelDialog } from '../../dialogue/edit-channel/edit-channel.dialogue';
 import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remove-member-team.dialogue';
+import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'app-side-bar-channel',
@@ -25,126 +26,170 @@ import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remov
   standalone: true,
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
-export class ChannelSideBarComponent implements OnInit, OnDestroy {
-  @Input() title = 'chatHaven';
-  @Input() selectedTeam!: ITeam;
-  @Input() isDarkTheme: boolean | null = null;
+export class ChannelSidebarComponent implements OnInit, OnDestroy {
+  //verification if user is login
+  loginUser: IUser | null = null;
 
-  selectChannelID: string | null = null;
-  channelList: IChannel[] = [];
-  conversationList: IChannel[] = [];
+  //input
+  selectedTeamId: string | null = null;
+  isDirectMessage: boolean = false;
+  isDarkTheme: boolean = false;
   teamTitle: string = '';
+
+  //variables
+  selectedChannelID: string | null = null;
+  channelList: IChannel[] = [];
+  selectedDirectMessageID: string | null = null;
+  directMessageList: IConversation[] = [];
+
+  //output
+  conversationId: string | null = null;
 
   constructor(
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService
+    private backendService: BackendService,
+    private dataService: DataService
   ) {}
 
   ngOnInit() {
-    if (this.selectedTeam) {
-      this.teamTitle = this.selectedTeam.team_name;
-    }
-    this.refreshChannelList();
+    this.userService.user$.subscribe((user) => {
+      this.loginUser = user || null;
+      if (!user) {
+        this.router.navigate(['/login']);
+      } else {
+        this.setUp();
+      }
+    });
+
+    this.dataService.currentTeamId.subscribe((teamId) => {
+      this.selectedTeamId = teamId;
+    });
+    this.dataService.currentChannelId.subscribe((channelId) => {
+      this.selectedChannelID = channelId;
+    });
+    this.dataService.currentDirectMessageId.subscribe((directMessageId) => {
+      this.selectedDirectMessageID = directMessageId;
+    });
+    this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
+      this.isDirectMessage = isDirectMessage;
+    });
   }
 
   ngOnDestroy() {}
 
-  refreshChannelList() {
-    this.channelList = this.selectedTeam.channels;
+  setUp() {
+    this.refreshDirectMessageList();
+    this.refreshChannelList();
   }
 
-  openCreateChannelDialog() {
-    this.dialog.open(ChannelCreationDialog, {
-      data: {
-        selectedTeam: this.selectedTeam.team_id,
-        theme: this.isDarkTheme,
-      },
+  async refreshChannelList() {
+    let selectedTeam = this.selectedTeamId
+      ? await this.backendService.getTeamById(this.selectedTeamId)
+      : null;
+    this.teamTitle = selectedTeam?.team_name || '';
+    let channelListID = selectedTeam?.channels || [];
+    this.channelList = [];
+    channelListID.forEach(async (channelID) => {
+      const channel = await this.backendService.getChannelById(
+        this.selectedTeamId!,
+        channelID
+      );
+      if (channel) {
+        this.channelList.push(channel);
+      }
+    });
+
+    console.log('Team Title:', this.teamTitle);
+    console.log('Channel List:', this.channelList);
+  }
+
+  refreshDirectMessageList() {
+    this.loginUser = this.userService.getUser() || null;
+    let directMessageListId = this.loginUser?.direct_messages || [];
+    this.directMessageList = [];
+    directMessageListId.forEach(async (directMessageID) => {
+      const directMessage = await this.backendService.getConversationById(
+        directMessageID
+      );
+      if (directMessage) {
+        this.directMessageList.push(directMessage);
+      }
+    });
+
+    console.log('Direct Message List:', this.directMessageList);
+  }
+
+  openCreateChannelDialog(): void {
+    const dialogRef = this.dialog.open(ChannelCreationDialog, {
+      data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.channel_id) {
+        this.dialog.open(AddChannelMembersDialogue, {
+          data: {
+            channel_id: result.channel_id,
+            team_id: this.selectedTeamId,
+            theme: this.isDarkTheme,
+          },
+        });
+        this.refreshChannelList();
+      }
     });
   }
 
-  openAddMemberTeamDialog() {
-    if (!this.selectedTeam.team_id) {
+  openAddMemberTeamDialog(): void {
+    if (!this.selectedTeamId) {
       alert('No team selected');
       return;
     }
     this.dialog.open(AddTeamMemberDialog, {
-      data: {
-        selectedTeam: this.selectedTeam.team_id,
-        theme: this.isDarkTheme,
-      },
+      data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
   }
 
-  openRemoveMemberTeamDialog() {
+  openRemoveMemberTeamDialog(): void {
     this.dialog.open(TeamMemberRemovalDialog, {
-      data: {
-        selectedTeam: this.selectedTeam.team_id,
-        theme: this.isDarkTheme,
-      },
+      data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
     });
   }
 
-  selectConversation(channelId: string) {
-    // Implementation for selecting a conversation
-  }
-
-  selectChannel(channelId: string) {
-    // Implementation for selecting a channel
-  }
-
-  myConvoFunction() {
-    const dropdown = document.getElementById('myDropdownConvo');
-    if (dropdown) {
-      dropdown.classList.toggle('channelList-show');
-    }
-  }
-
-  myChannelFunction() {
-    const dropdown = document.getElementById('myDropdownChannel');
-    if (dropdown) {
-      dropdown.classList.toggle('channelList-show');
-    }
-  }
-
-  openAddMemberChannelDialog(channel: IChannel) {
+  openAddMemberChannelDialog(channel: IChannel): void {
     const dialogRef = this.dialog.open(AddChannelMembersDialogue, {
       data: {
         channel_id: channel.channel_id,
-        team_id: this.selectedTeam.team_id,
+        team_id: this.selectedTeamId,
         theme: this.isDarkTheme,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.added) {
-        // Handle the result if needed
       }
     });
   }
 
-  openEditChannelDialog(channel: IChannel) {
-    const dialogRef = this.dialog.open(EditChannelDialog, {
-      data: {
-        name: channel.name,
-        description: channel.description,
-        channel_id: channel.channel_id,
-        team_id: this.selectedTeam.team_id,
-        isDarkTheme: this.isDarkTheme,
-      },
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        const teamIndex = this.selectedTeam.channels.findIndex(
-          (c) => c.channel_id === channel.channel_id
-        );
-        if (teamIndex > -1) {
-          this.selectedTeam.channels[teamIndex] = {
-            ...this.selectedTeam.channels[teamIndex],
-            ...result,
-          };
-        }
-      }
-    });
+  openEditChannelDialog(channel: IChannel): void {
+    // implementation for openEditChannelDialog
+  }
+
+  selectChannel(channelId: string): void {
+    this.dataService.selectChannel(channelId);
+    this.dataService.selectIsDirectMessage(false);
+    this.dataService.selectDirectMessage('');
+  }
+
+  selectConversation(conversationId: string): void {
+    this.dataService.selectDirectMessage(conversationId);
+    this.dataService.selectIsDirectMessage(true);
+    this.dataService.selectChannel('');
+  }
+
+  myConvoFunction() {
+    // Implementation for myConvoFunction
+  }
+
+  myChannelFunction() {
+    // Implementation for myChannelFunction
   }
 }
