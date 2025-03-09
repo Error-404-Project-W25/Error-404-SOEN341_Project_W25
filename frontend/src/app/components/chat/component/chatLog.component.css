@@ -196,6 +196,7 @@
 }
 
 .message-content:hover .delete-button-container {
+  transition: display 10s;
   display: block;
 }
 

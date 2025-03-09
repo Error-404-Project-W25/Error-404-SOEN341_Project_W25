@@ -91,33 +91,42 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     });
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
-    });
-    this.dataService.currentConversationId.subscribe(async (conversationId) => {
-      if (conversationId !== '') {
-        try {
-          const conversation = await this.backendService.getConversationById(
-            conversationId
-          );
-          if (conversation) {
-            const conversationName = conversation.conversationName;
-            if (conversationName.includes(',')) {
-              const memberName = conversationName
-                .split(',')
-                .map((name) => name.trim());
-              console.log('Conversation Members:', memberName);
-              this.chatMemberList = [];
-              for (const name of memberName) {
-                const user = await this.backendService.getUserByUsername(name);
-                if (user) {
-                  this.chatMemberList.push(user);
-                  console.log('Conversation Member:', user);
+      if (isDirectMessage) {
+        this.teamMemberList = [];
+        this.dataService.currentConversationId.subscribe(
+          async (conversationId) => {
+            if (conversationId !== '') {
+              try {
+                const conversation =
+                  await this.backendService.getConversationById(conversationId);
+                if (conversation) {
+                  const conversationName = conversation.conversationName;
+                  if (conversationName.includes(',')) {
+                    const memberName = conversationName
+                      .split(',')
+                      .map((name) => name.trim());
+                    console.log('Conversation Members:', memberName);
+                    this.chatMemberList = [];
+                    for (const name of memberName) {
+                      const user = await this.backendService.getUserByUsername(
+                        name
+                      );
+                      if (user) {
+                        this.chatMemberList.push(user);
+                        console.log('Conversation Member:', user);
+                      }
+                    }
+                  }
                 }
+              } catch (error) {
+                console.error(
+                  'Error refreshing conversation member list:',
+                  error
+                );
               }
             }
           }
-        } catch (error) {
-          console.error('Error refreshing conversation member list:', error);
-        }
+        );
       }
     });
   }

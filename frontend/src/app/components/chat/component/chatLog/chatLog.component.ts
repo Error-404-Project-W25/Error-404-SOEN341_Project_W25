@@ -29,8 +29,10 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   messages: any[] = [];
   chatTitle: string = '';
   selectedChannelId: string = '';
+  selectedTeamId: string = '';
   conversationId: string = '';
   isDarkTheme: boolean = false;
+  isDirectMessage: boolean = false;
 
   userIdToName: { [userId: string]: string } = {};
 
@@ -44,18 +46,36 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.dataService.isDarkTheme.subscribe((theme) => {
       this.isDarkTheme = theme;
     });
-    this.dataService.currentChannelId.subscribe((channel) => {
-      this.selectedChannelId = channel;
-      if (this.selectedChannelId) {
-
-      }
+    this.dataService.currentTeamId.subscribe((teamId) => {
+      this.selectedTeamId = teamId;
     });
-    this.dataService.currentConversationId.subscribe((conversationId) => {
-      this.conversationId = conversationId;
-      this.backendService.getConversationById(this.conversationId).then((name) => {
-        this.chatTitle = 'Direct Message: '+ name?.conversationName || '';
-      });
-      this.loadMessages();
+
+    dataService.isDirectMessage.subscribe((isDirectMessage) => {
+      this.isDirectMessage = isDirectMessage;
+      if (this.isDirectMessage) {
+        this.dataService.currentConversationId.subscribe((conversationId) => {
+          this.conversationId = conversationId;
+          this.backendService
+            .getConversationById(this.conversationId)
+            .then((name) => {
+              this.chatTitle =
+                'Direct Message: ' + name?.conversationName || '';
+            });
+          this.loadMessages();
+        });
+      } else {
+        this.dataService.currentChannelId.subscribe((channel) => {
+          this.selectedChannelId = channel;
+          if (this.selectedChannelId) {
+            this.selectedChannelId = channel;
+            this.backendService
+              .getChannelById(this.selectedTeamId, this.selectedChannelId)
+              .then((channel) => {
+                this.chatTitle = channel?.name || '';
+              });
+          }
+        });
+      }
     });
   }
 
@@ -69,11 +89,44 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   openDeleteDialog(messageId: string, messageText: string): void {
     const dialogRef = this.dialog.open(DeleteMessageDialog, {
-      data: { messageId, messageText, theme: this.isDarkTheme },
+      data: {
+        messageId,
+        messageText,
+        theme: this.isDarkTheme,
+        channelId: this.selectedChannelId,
+        teamId: this.selectedTeamId,
+      },
     });
-    dialogRef.afterClosed().subscribe((result) => {
+
+    dialogRef.afterClosed().subscribe(async (result) => {
       if (result) {
-        this.messages = this.messages.filter((msg) => msg.messageId !== result);
+        // Get the appropriate conversation ID
+        // const conversationId = this.selectedChannelObject?.conversationId || this.selectedConversationId;
+
+        if (this.conversationId) {
+          console.log(
+            'Deleting message:',
+            result,
+            'from conversation:',
+            this.conversationId
+          );
+          const success = await this.backendService.deleteMessage(
+            this.conversationId,
+            result
+          );
+
+          console.log('Delete message result:', success);
+
+          if (success) {
+            this.messages = this.messages.filter(
+              (msg) => msg.messageId !== result
+            );
+          } else {
+            console.error('Failed to delete message');
+          }
+        } else {
+          console.error('No conversation ID found for deletion');
+        }
       }
     });
   }
@@ -123,6 +176,8 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   toggInformationSidebar() {
-    this.isTeamListOpen = !this.isTeamListOpen;
+    //Implementation for toggInformationSidebar
+    console.log('Toggling Information Sidebar');
+    // this.isTeamListOpen = !this.isTeamListOpen;
   }
 }
