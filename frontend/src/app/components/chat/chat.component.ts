@@ -46,7 +46,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   isTeamListOpen = true;
   isDirectMessage = false;
 
-  selectedChannelId: string | null = null;
+  selectedConversationId: string | null = null;
   selectedTeamId: string | null = null;
 
   private channelsSubject = new BehaviorSubject<IChannel[]>([]);
@@ -61,8 +61,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
       this.isDarkTheme = isDarkTheme;
     });
-    this.dataService.currentChannelId.subscribe((channelId) => {
-      this.selectedChannelId = channelId;
+    this.dataService.currentConversationId.subscribe((conversationId) => {
+      this.selectedConversationId = conversationId;
     });
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;

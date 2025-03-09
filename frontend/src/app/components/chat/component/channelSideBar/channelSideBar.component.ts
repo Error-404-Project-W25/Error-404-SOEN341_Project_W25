@@ -97,11 +97,8 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
       if (channel && channel.members.includes(this.userId || '')) {
         this.channelList.push(channel);
-        console.log('Channel List:', this.channelList);
       }
     });
-
-    console.log('Team Title:', this.teamTitle);
   }
 
   refreshDirectMessageList() {
@@ -114,11 +111,9 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       );
       if (directMessage) {
         this.directMessageList.push(directMessage);
-        console.log('Direct Message List:', this.directMessageList);
       }
     });
     this.teamTitle = 'Direct Messages';
-    console.log('Team Title:', this.teamTitle);
   }
 
   openCreateChannelDialog(): void {

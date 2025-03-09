@@ -57,7 +57,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
               const user = await this.backendService.getUserById(memberId);
               if (user) {
                 this.teamMemberList.push(user);
-                console.log('Team Member:', user);
               }
             }
           }
@@ -83,7 +82,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
                     const memberName = conversationName
                       .split(',')
                       .map((name) => name.trim());
-                    console.log('Conversation Members:', memberName);
                     this.chatMemberList = [];
                     for (const name of memberName) {
                       const user = await this.backendService.getUserByUsername(
@@ -91,7 +89,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
                       );
                       if (user) {
                         this.chatMemberList.push(user);
-                        console.log('Conversation Member:', user);
                       }
                     }
                   }
@@ -119,7 +116,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
                   const user = await this.backendService.getUserById(memberId);
                   if (user) {
                     this.chatMemberList.push(user);
-                    console.log('Channel Member:', user);
                   }
                 }
               }
@@ -132,9 +128,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
-    console.log('InformationSidebarComponent: ngOnInit');
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {}
 

@@ -51,10 +51,7 @@ export class TeamSidebarComponent {
 
   // Initialize component and subscribe to user changes
   ngOnInit() {
-    console.log('User ID:', this.userId);
-    this.backendService.getUserById(this.userId).then((user) => {
-      console.log('User:', user);
-    });
+    this.backendService.getUserById(this.userId).then((user) => {});
     this.refreshTeamList();
   }
 
@@ -66,7 +63,6 @@ export class TeamSidebarComponent {
   // Toggle between dark and light themes
   toggleTheme() {
     this.isDarkTheme = !this.isDarkTheme;
-    console.log('Theme:', this.isDarkTheme ? 'dark' : 'light');
     this.dataService.toggleDarkMode(this.isDarkTheme);
   }
 
@@ -74,7 +70,6 @@ export class TeamSidebarComponent {
   selectDirectMessage() {
     this.dataService.selectChannel('');
     this.dataService.toggleIsDirectMessage(true);
-
   }
 
   // Select a team by its ID
@@ -96,7 +91,6 @@ export class TeamSidebarComponent {
           this.teamList.push(team);
         }
       }
-      console.log('Team list:', this.teamList);
     }
   }
 
@@ -146,9 +140,7 @@ export class TeamSidebarComponent {
       this.userService.clearUser();
       this.router.navigate(['/']);
     } else if (response) {
-      console.error(response.error);
     } else {
-      console.error('No response from backend');
     }
     window.location.reload();
   }

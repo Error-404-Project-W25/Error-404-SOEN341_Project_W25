@@ -12,17 +12,17 @@
     <div
       class="card-container"
       id="card-container"
-      *ngIf="selectedChannelId === '' || selectedTeamId === ''"
+      *ngIf="selectedConversationId === '' || selectedTeamId === ''"
     >
       <div class="card">
         <h2 *ngIf="selectedTeamId === ''">Please choose a team to continue</h2>
-        <h2 *ngIf="selectedChannelId === '' && selectedTeamId !== ''">
+        <h2 *ngIf="selectedConversationId === '' && selectedTeamId !== ''">
           Please choose a channel to continue
         </h2>
       </div>
     </div>
-    <chat-chat-log *ngIf="selectedChannelId" [userId]="userId"></chat-chat-log>
-    <chat-information-sidebar *ngIf="selectedChannelId" [userId]="userId">
+    <chat-chat-log *ngIf="selectedConversationId" [userId]="userId"></chat-chat-log>
+    <chat-information-sidebar *ngIf="selectedConversationId" [userId]="userId">
     </chat-information-sidebar>
   </div>
 </body>
