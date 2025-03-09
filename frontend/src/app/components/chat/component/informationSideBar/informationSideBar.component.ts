@@ -67,28 +67,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.dataService.currentChannelId.subscribe(async (channelId) => {
-      if (channelId !== '') {
-        try {
-          const channel = await this.backendService.getChannelById(
-            this.selectedTeamId!,
-            channelId
-          );
-          if (channel) {
-            this.chatMemberList = [];
-            for (const memberId of channel.members) {
-              const user = await this.backendService.getUserById(memberId);
-              if (user) {
-                this.chatMemberList.push(user);
-                console.log('Channel Member:', user);
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Error refreshing channel member list:', error);
-        }
-      }
-    });
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
       if (isDirectMessage) {
@@ -127,6 +105,29 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
             }
           }
         );
+      } else {
+        this.dataService.currentChannelId.subscribe(async (channelId) => {
+          if (channelId !== '') {
+            try {
+              const channel = await this.backendService.getChannelById(
+                this.selectedTeamId!,
+                channelId
+              );
+              if (channel) {
+                this.chatMemberList = [];
+                for (const memberId of channel.members) {
+                  const user = await this.backendService.getUserById(memberId);
+                  if (user) {
+                    this.chatMemberList.push(user);
+                    console.log('Channel Member:', user);
+                  }
+                }
+              }
+            } catch (error) {
+              console.error('Error refreshing channel member list:', error);
+            }
+          }
+        });
       }
     });
   }

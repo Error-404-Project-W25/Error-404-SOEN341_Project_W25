@@ -8,6 +8,7 @@ import {
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { BackendService } from '@services/backend.service';
+import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'app-edit-channel-pop-up',
@@ -26,12 +27,15 @@ export class EditChannelDialog {
   constructor(
     public dialogRef: MatDialogRef<EditChannelDialog>,
     private backendService: BackendService,
+    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     // Initialize the form with the existing channel data
     this.channelName = data.name;
     this.description = data.description;
-    this.isDarkTheme = data.isDarkTheme;
+    this.dataService.isDarkTheme.subscribe((theme) => {
+      this.isDarkTheme = theme;
+    });
   }
 
   /* Need backend to make the updateChannel() method */

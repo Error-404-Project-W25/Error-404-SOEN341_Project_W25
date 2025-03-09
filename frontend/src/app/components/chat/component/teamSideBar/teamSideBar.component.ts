@@ -74,6 +74,7 @@ export class TeamSidebarComponent {
   selectDirectMessage() {
     this.dataService.selectChannel('');
     this.dataService.toggleIsDirectMessage(true);
+
   }
 
   // Select a team by its ID
@@ -84,11 +85,11 @@ export class TeamSidebarComponent {
 
   // Refresh the team list by fetching updated user data
   async refreshTeamList(): Promise<void> {
+    this.teamList = []; // Clear the team list to avoid duplicates
     const user = await this.backendService.getUserById(this.userId);
     this.loginUser = user ? user : null;
 
     if (this.loginUser) {
-      this.teamList = [];
       for (const teamId of this.loginUser.teams) {
         const team = await this.backendService.getTeamById(teamId);
         if (team) {
