@@ -22,12 +22,11 @@ import { DataService } from '@services/data.service';
   imports: [CommonModule], // Add CommonModule to imports
 })
 export class TeamSidebarComponent {
-  title = 'chatHaven';
-  //verification
-  loginUser: IUser | null = null;
+  @Input() userId: string = '';
 
   //variables
   teamList: ITeam[] = [];
+  loginUser: IUser | null = null;
 
   //output
   isDarkTheme = true;
@@ -48,35 +47,12 @@ export class TeamSidebarComponent {
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
     });
-    // Get user from local storage
-    // this.loginUser = this.userService.getUser() || null;
-    this.userService.user$.subscribe((user) => {
-      this.loginUser = user || null;
-      if (!user) {
-        console.error('User not found inside of the team sidebar component');
-        this.router.navigate(['/login']);
-      }else{
-        this.setUp();
-      }
-    });
+    this.refreshTeamList();
   }
 
   // Clean up subscriptions or resources
   ngOnDestroy() {
     // Implementation for ngOnDestroy
-  }
-
-  // Set up the component by fetching the user's teams
-  setUp() {
-    this.loginUser = this.userService.getUser() || null;
-    let teamListID = this.loginUser?.teams || [];
-    this.teamList = [];
-    teamListID.forEach(async (teamID) => {
-      const team = await this.backendService.getTeamById(teamID);
-      if (team) {
-        this.teamList.push(team);
-      }
-    });
   }
 
   // Toggle between dark and light themes
@@ -97,21 +73,18 @@ export class TeamSidebarComponent {
 
   // Refresh the team list by fetching updated user data
   async refreshTeamList(): Promise<void> {
+    const user = await this.backendService.getUserById(this.userId);
+    this.loginUser = user ? user : null;
+
     if (this.loginUser) {
-      const updatedUser = await this.backendService.getUserById(
-        this.loginUser.user_id
-      );
-      if (updatedUser) {
-        this.userService.updateUser(updatedUser);
-        let teamListID = updatedUser?.teams || [];
-        this.teamList = [];
-        teamListID.forEach(async (teamID) => {
-          const team = await this.backendService.getTeamById(teamID);
-          if (team) {
-            this.teamList.push(team);
-          }
-        });
+      this.teamList = [];
+      for (const teamId of this.loginUser.teams) {
+        const team = await this.backendService.getTeamById(teamId);
+        if (team) {
+          this.teamList.push(team);
+        }
       }
+      console.log('Team list:', this.teamList);
     }
   }
 
@@ -155,6 +128,7 @@ export class TeamSidebarComponent {
   // Sign out the user and navigate to the home page
   async signOut() {
     this.loginUser = null;
+    this.dataService.setUser('');
     const response: UserAuthResponse | undefined =
       await this.backendService.logoutUser();
     if (response && !response.error) {

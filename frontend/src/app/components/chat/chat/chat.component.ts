@@ -5,12 +5,15 @@ import {
   OnInit,
   CUSTOM_ELEMENTS_SCHEMA,
   Input,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { UserService } from '@services/user.service';
+import { DataService } from '@services/data.service';
 import { IChannel, IUser } from '@shared/interfaces';
 
 import { TeamSidebarComponent } from './../component/teamSideBar/teamSideBar.component';
@@ -34,6 +37,7 @@ import { InformationSidebarComponent } from './../component/informationSideBar/i
 })
 export class ChatComponent implements OnInit, OnDestroy {
   itle = 'chatHaven';
+  @Output() userId!: string;
 
   loginUser: IUser | null = null;
 
@@ -47,7 +51,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     public dialog: MatDialog,
-    private userService: UserService
+    private userService: UserService,
+    private dataService: DataService
   ) {}
 
   ngOnInit() {
@@ -61,7 +66,7 @@ export class ChatComponent implements OnInit, OnDestroy {
       if (!user) {
         this.router.navigate(['/home']);
       } else {
-        console.log('User:', user);
+        this.userId = user.user_id;
       }
     });
   }

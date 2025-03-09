@@ -4,9 +4,9 @@
 />
 <body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
   <div class="container">
-    <chat-team-sidebar></chat-team-sidebar>
-    <chat-channel-sidebar></chat-channel-sidebar>
-    <chat-chat-log></chat-chat-log>
-    <chat-information-sidebar> </chat-information-sidebar>
+    <chat-team-sidebar [userId]="userId"></chat-team-sidebar>
+    <chat-channel-sidebar [userId]="userId"></chat-channel-sidebar>
+    <chat-chat-log [userId]="userId"></chat-chat-log>
+    <chat-information-sidebar [userId]="userId"> </chat-information-sidebar>
   </div>
 </body>
