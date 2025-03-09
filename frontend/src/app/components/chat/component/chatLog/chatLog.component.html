@@ -25,10 +25,6 @@
         <!-- make sure only channel admin or sender can delete message -->
         <div class="delete-button-container">
           <button
-            *ngIf="
-              message.sender === loginUser?.user_id ||
-              loginUser?.role === 'admin'
-            "
             class="delete-button"
             (click)="openDeleteDialog(message.messageId, message.content)"
             readonly
