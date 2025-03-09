@@ -31,6 +31,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   loginUser: IUser | null = null;
 
   //input
+  @Input() userId: string = '';
   selectedTeamId: string | null = null;
   isDirectMessage: boolean = false;
   isDarkTheme: boolean = false;
@@ -95,11 +96,11 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       );
       if (channel) {
         this.channelList.push(channel);
+        console.log('1Channel List:', this.channelList);
       }
     });
 
     console.log('Team Title:', this.teamTitle);
-    console.log('Channel List:', this.channelList);
   }
 
   refreshDirectMessageList() {
@@ -112,11 +113,11 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       );
       if (directMessage) {
         this.directMessageList.push(directMessage);
+        console.log('Direct Message List:', this.directMessageList);
       }
     });
     this.teamTitle = 'Direct Messages';
     console.log('Team Title:', this.teamTitle);
-    console.log('Direct Message List:', this.directMessageList);
   }
 
   openCreateChannelDialog(): void {
@@ -179,16 +180,18 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   selectChannel(channelId: string): void {
-    this.backendService.getChannelById(this.selectedTeamId!, channelId).then((channel) => {
-      if (channel) {
-        this.selectedChannelID = channel.channel_id;
-        this.dataService.selectConversation(channel.conversationId);
-      }
-    });
+    this.backendService
+      .getChannelById(this.selectedTeamId!, channelId)
+      .then((channel) => {
+        if (channel) {
+          this.selectedChannelID = channel.channel_id;
+          this.dataService.selectChannel(channel.channel_id);
+          this.dataService.selectConversation(channel.conversationId);
+        }
+      });
   }
 
   selectDirectMessage(directMessageId: string): void {
     this.dataService.selectConversation(directMessageId);
   }
-
 }

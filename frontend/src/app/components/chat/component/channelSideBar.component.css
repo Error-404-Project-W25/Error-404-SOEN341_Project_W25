@@ -287,3 +287,8 @@
   padding-left: 15px;
   text-align: left;
 }
+
+.channel-actions {
+  display: flex;
+  /* gap: 2px; */
+}

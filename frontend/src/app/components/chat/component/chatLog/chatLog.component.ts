@@ -10,6 +10,7 @@ import { IChannel, ITeam, IUser } from '@shared/interfaces';
 import { UserAuthResponse } from '@shared/user-auth.types';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-message.dialogue';
+import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'chat-chat-log',
@@ -22,22 +23,41 @@ import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-messag
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
 export class ChatLogComponent implements OnInit, OnDestroy {
-  private channelsSubject = new BehaviorSubject<IChannel[]>([]);
-  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
-  teams$ = this.teamsSubject.asObservable();
-  channels$ = this.channelsSubject.asObservable();
   isTeamListOpen: boolean = false;
   newMessage: string = '';
   loginUser: IUser | null = null;
   messages: any[] = [];
-  channelTitle: string = '';
+  chatTitle: string = '';
+  selectedChannelId: string = '';
+  conversationId: string = '';
+  isDarkTheme: boolean = false;
+
+  userIdToName: { [userId: string]: string } = {};
 
   constructor(
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private backendService: BackendService
-  ) {}
+    private backendService: BackendService,
+    private dataService: DataService
+  ) {
+    this.dataService.isDarkTheme.subscribe((theme) => {
+      this.isDarkTheme = theme;
+    });
+    this.dataService.currentChannelId.subscribe((channel) => {
+      this.selectedChannelId = channel;
+      if (this.selectedChannelId) {
+
+      }
+    });
+    this.dataService.currentConversationId.subscribe((conversationId) => {
+      this.conversationId = conversationId;
+      this.backendService.getConversationById(this.conversationId).then((name) => {
+        this.chatTitle = 'Direct Message: '+ name?.conversationName || '';
+      });
+      this.loadMessages();
+    });
+  }
 
   ngOnInit() {
     // Implementation for ngOnInit
@@ -47,33 +67,62 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     // Implementation for ngOnDestroy
   }
 
-  refreshMessages() {
-    // Implementation for refreshMessages
-  }
-
   openDeleteDialog(messageId: string, messageText: string): void {
-    // Implementation for openDeleteDialog
+    const dialogRef = this.dialog.open(DeleteMessageDialog, {
+      data: { messageId, messageText, theme: this.isDarkTheme },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.messages = this.messages.filter((msg) => msg.messageId !== result);
+      }
+    });
   }
 
-  sendMessage() {
-    if (this.newMessage.trim()) {
-      // Implementation for sendMessage
-      const message = {
-        sender: this.loginUser?.user_id,
-        content: this.newMessage,
-        time: new Date(),
-      };
-      this.messages.push(message);
-      this.newMessage = '';
+  async loadMessages(): Promise<void> {
+    const messages = await this.backendService.getMessages(this.conversationId);
+    if (messages) {
+      this.messages = messages;
+      await this.loadUserNames();
+    }
+    this.messages.reverse();
+  }
+
+  async loadUserNames(): Promise<void> {
+    const uniqueSenderIds = [
+      ...new Set(this.messages.map((msg) => msg.sender)),
+    ];
+
+    for (const userId of uniqueSenderIds) {
+      const user = await this.backendService.getUserById(userId);
+      if (user) {
+        this.userIdToName[userId] = user.username;
+      }
     }
   }
 
-  toggleTeamList() {
-    this.isTeamListOpen = !this.isTeamListOpen;
+  async sendMessage() {
+    if (this.newMessage) {
+      const sender = this.userService.getUser();
+      if (sender) {
+        console.log('Sending message:', this.newMessage);
+        const success = await this.backendService.sendMessage(
+          this.newMessage,
+          this.conversationId,
+          sender.user_id
+        );
+        this.newMessage = '';
+        if (success) {
+          await this.loadMessages();
+        }
+      }
+    }
   }
 
   getUserName(userId: string): string {
-    // return this.userService.getUserNameById(userId);
-    return '';
+    return this.userIdToName[userId] || userId;
+  }
+
+  toggInformationSidebar() {
+    this.isTeamListOpen = !this.isTeamListOpen;
   }
 }

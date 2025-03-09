@@ -1,3 +1,4 @@
+import { BackendService } from '@services/backend.service';
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -53,7 +54,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private userService: UserService,
     private dataService: DataService
-  ) {}
+  ) {
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
+  }
 
   ngOnInit() {
     // Add event listener for window resize

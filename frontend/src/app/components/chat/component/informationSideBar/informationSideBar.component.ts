@@ -34,13 +34,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   selectedTeamId: string | null = null;
   selectedChannelId: string | null = null;
 
-  private channelsSubject = new BehaviorSubject<IChannel[]>([]);
-  private teamsSubject = new BehaviorSubject<ITeam[]>([]);
-  teams$ = this.teamsSubject.asObservable();
-  channels$ = this.channelsSubject.asObservable();
-
-  private subscriptions: Subscription[] = [];
-
   teamTitle: string = '';
   isDirectMessage: boolean = false;
   teamMemberList: IUser[] = [];
@@ -52,31 +45,99 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private backendService: BackendService,
     private dataService: DataService
-  ) {}
+  ) {
+    this.dataService.currentTeamId.subscribe(async (teamId) => {
+      if (teamId) {
+        this.selectedTeamId = teamId;
+        try {
+          const team = await this.backendService.getTeamById(teamId);
+          if (team) {
+            this.teamMemberList = [];
+            for (const memberId of team.members) {
+              const user = await this.backendService.getUserById(memberId);
+              if (user) {
+                this.teamMemberList.push(user);
+                console.log('Team Member:', user);
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error refreshing team member list:', error);
+        }
+      }
+    });
+
+    this.dataService.currentChannelId.subscribe(async (channelId) => {
+      if (channelId !== '') {
+        try {
+          const channel = await this.backendService.getChannelById(
+            this.selectedTeamId!,
+            channelId
+          );
+          if (channel) {
+            this.chatMemberList = [];
+            for (const memberId of channel.members) {
+              const user = await this.backendService.getUserById(memberId);
+              if (user) {
+                this.chatMemberList.push(user);
+                console.log('Channel Member:', user);
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error refreshing channel member list:', error);
+        }
+      }
+    });
+    this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
+      this.isDirectMessage = isDirectMessage;
+    });
+    this.dataService.currentConversationId.subscribe(async (conversationId) => {
+      if (conversationId !== '') {
+        try {
+          const conversation = await this.backendService.getConversationById(
+            conversationId
+          );
+          if (conversation) {
+            const conversationName = conversation.conversationName;
+            if (conversationName.includes(',')) {
+              const memberName = conversationName
+                .split(',')
+                .map((name) => name.trim());
+              console.log('Conversation Members:', memberName);
+              this.chatMemberList = [];
+              for (const name of memberName) {
+                const user = await this.backendService.getUserByUsername(name);
+                if (user) {
+                  this.chatMemberList.push(user);
+                  console.log('Conversation Member:', user);
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error refreshing conversation member list:', error);
+        }
+      }
+    });
+  }
 
   ngOnInit() {
-    this.subscriptions.push(
-      this.dataService.currentTeamId.subscribe((teamId) => {
-        this.selectedTeamId = teamId;
-      })
-    );
-    // this.subscriptions.push(
-    //   this.dataService.currentChannelId.subscribe((channelId) => {
-    //     this.selectedChannelId = channelId;
-    //   })
-    // );
+    console.log('InformationSidebarComponent: ngOnInit');
   }
 
-  ngOnDestroy() {
-    this.unsubscribeAll();
-  }
+  ngOnDestroy() {}
 
-  private unsubscribeAll() {
-    this.subscriptions.forEach((sub) => sub.unsubscribe());
-    this.subscriptions = [];
-  }
-
-  createCoversation(userId: string) {
-    // Implementation for creating a conversation
+  async createCoversation(memberId: string) {
+    const sender = this.userService.getUser();
+    const receiver = await this.backendService.getUserById(memberId);
+    const conversationName = `${sender?.username}, ${receiver?.username}`;
+    if (sender && receiver?.user_id) {
+      await this.backendService.createDirectMessages(
+        conversationName,
+        sender.user_id,
+        receiver.user_id
+      );
+    }
   }
 }

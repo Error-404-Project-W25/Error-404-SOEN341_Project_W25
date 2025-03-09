@@ -1,11 +1,11 @@
 <div class="chat-box" id="chat-box">
   <div class="channel-title-container">
-    <div class="channel-title">{{ channelTitle }}</div>
+    <div class="channel-title">{{ chatTitle }}</div>
     <div class="team-setting-button-container">
       <!-- (click) teamlist toggle -->
       <button
         class="team-list-toggle-button"
-        (click)="toggleTeamList()"
+        (click)="toggInformationSidebar()"
         title="Toggle Team List"
       >
         <i

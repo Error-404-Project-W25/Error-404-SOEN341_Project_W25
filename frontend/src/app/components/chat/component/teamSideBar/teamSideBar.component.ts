@@ -39,13 +39,21 @@ export class TeamSidebarComponent {
     private userService: UserService,
     private backendService: BackendService,
     private dataService: DataService
-  ) {}
+  ) {
+    this.dataService.currentTeamId.subscribe((teamId) => {
+      this.selectedTeamId = teamId;
+    });
+
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
+  }
 
   // Initialize component and subscribe to user changes
   ngOnInit() {
-    // Subscribe to the current team ID from the data service
-    this.dataService.currentTeamId.subscribe((teamId) => {
-      this.selectedTeamId = teamId;
+    console.log('User ID:', this.userId);
+    this.backendService.getUserById(this.userId).then((user) => {
+      console.log('User:', user);
     });
     this.refreshTeamList();
   }
@@ -58,10 +66,13 @@ export class TeamSidebarComponent {
   // Toggle between dark and light themes
   toggleTheme() {
     this.isDarkTheme = !this.isDarkTheme;
+    console.log('Theme:', this.isDarkTheme ? 'dark' : 'light');
+    this.dataService.toggleDarkMode(this.isDarkTheme);
   }
 
   // Placeholder for selecting a direct message
   selectDirectMessage() {
+    this.dataService.selectChannel('');
     this.dataService.toggleIsDirectMessage(true);
   }
 
@@ -128,7 +139,6 @@ export class TeamSidebarComponent {
   // Sign out the user and navigate to the home page
   async signOut() {
     this.loginUser = null;
-    this.dataService.setUser('');
     const response: UserAuthResponse | undefined =
       await this.backendService.logoutUser();
     if (response && !response.error) {

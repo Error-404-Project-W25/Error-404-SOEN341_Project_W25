@@ -10,7 +10,7 @@
   min-width: 20rem;
   top: 0;
   right: 0;
-  position: absolute;
+  /* position: absolute; */
   width: auto;
   /* align-items: center; */
 }
