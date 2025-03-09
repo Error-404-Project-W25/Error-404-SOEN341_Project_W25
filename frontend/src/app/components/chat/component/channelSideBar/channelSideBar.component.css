@@ -135,49 +135,6 @@
   transition: transform 0.4s var(--delay), opacity 0.4s var(--delay);
 }
 
-/* .dropdown-team-setting-list:nth-child(n) {
-  transition-delay: calc(var(--delay) + (var(--trdelay) * (n - 1)));
-} */
-
-.bar-inp {
-  display: none;
-  visibility: hidden;
-}
-
-.team-setting-bar {
-  display: flex;
-  height: 50%;
-  width: 20px;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.team-setting-bar-list {
-  --transform: -25%;
-  display: block;
-  width: 100%;
-  height: 3px;
-  border-radius: 50px;
-  background-color: var(--team-setting-list-text);
-  transition: all 0.4s;
-  position: relative;
-}
-
-.inp:not(:checked) ~ .bar > .top {
-  transform-origin: top right;
-  transform: translateY(var(--transform)) rotate(-45deg);
-}
-
-.inp:not(:checked) ~ .bar > .middle {
-  transform: translateX(-50%);
-  opacity: 0;
-}
-
-.inp:not(:checked) ~ .bar > .bottom {
-  transform-origin: bottom right;
-  transform: translateY(calc(var(--transform) * -1)) rotate(45deg);
-}
-
 .channel-list {
   /* align-items: center; */
   background-color: var(--channel-list-background);

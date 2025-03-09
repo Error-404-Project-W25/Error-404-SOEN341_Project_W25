@@ -16,7 +16,7 @@ import { DataService } from '@services/data.service';
   selector: 'chat-chat-log',
   templateUrl: './chatLog.component.html',
   styleUrls: [
-    './../chatLog.component.css',
+    './chatLog.component.css',
     './../../../../../assets/theme.css',
   ],
   standalone: true,

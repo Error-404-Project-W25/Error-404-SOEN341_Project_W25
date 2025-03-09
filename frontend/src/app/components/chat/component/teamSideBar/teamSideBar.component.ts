@@ -15,7 +15,7 @@ import { DataService } from '@services/data.service';
   selector: 'chat-team-sidebar',
   templateUrl: './teamSideBar.component.html',
   styleUrls: [
-    './../teamSideBar.component.css',
+    './teamSideBar.component.css',
     './../../../../../assets/theme.css',
   ],
   standalone: true,

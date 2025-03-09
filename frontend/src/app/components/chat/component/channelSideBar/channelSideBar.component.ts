@@ -20,7 +20,7 @@ import { DataService } from '@services/data.service';
   selector: 'chat-channel-sidebar',
   templateUrl: './channelSideBar.component.html',
   styleUrls: [
-    './../channelSideBar.component.css',
+    './channelSideBar.component.css',
     './../../../../../assets/theme.css',
   ],
   standalone: true,

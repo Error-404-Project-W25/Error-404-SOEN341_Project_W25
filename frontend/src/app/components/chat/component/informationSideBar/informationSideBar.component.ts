@@ -24,7 +24,7 @@ import { DataService } from '@services/data.service';
   selector: 'chat-information-sidebar',
   templateUrl: './informationSideBar.component.html',
   styleUrls: [
-    './../informationSideBar.component.css',
+    './informationSideBar.component.css',
     './../../../../../assets/theme.css',
   ],
   standalone: true,
