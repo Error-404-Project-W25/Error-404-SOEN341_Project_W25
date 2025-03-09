@@ -4,7 +4,7 @@ import { Router, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 // import { ChatComponent } from './components/chat/chat.component';
-import { ChatComponent } from './components/chat/chat/chat.component';
+import { ChatComponent } from './components/chat/chat.component';
 
 @Component({
   selector: 'app-root',
