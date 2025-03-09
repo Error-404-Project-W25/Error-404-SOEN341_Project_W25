@@ -5,8 +5,20 @@
 <body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
   <div class="container">
     <chat-team-sidebar [userId]="userId"></chat-team-sidebar>
-    <chat-channel-sidebar [userId]="userId"></chat-channel-sidebar>
-    <chat-chat-log [userId]="userId"></chat-chat-log>
-    <chat-information-sidebar [userId]="userId"> </chat-information-sidebar>
+    <chat-channel-sidebar *ngIf="selectedTeamId" [userId]="userId"></chat-channel-sidebar>
+    <div
+    class="card-container"
+    id="card-container"
+    *ngIf="selectedChannelId === '' || selectedTeamId === ''"
+  >
+    <div class="card">
+      <h2 *ngIf="selectedTeamId === ''">Please choose a team to continue</h2>
+      <h2 *ngIf="selectedChannelId === '' && selectedTeamId !== ''">
+        Please choose a channel to continue
+      </h2>
+    </div>
+  </div>
+    <chat-chat-log *ngIf="selectedChannelId"[userId]="userId"></chat-chat-log>
+    <chat-information-sidebar *ngIf="selectedChannelId"[userId]="userId"> </chat-information-sidebar>
   </div>
 </body>
