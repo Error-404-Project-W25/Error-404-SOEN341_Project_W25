@@ -94,9 +94,10 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         this.selectedTeamId!,
         channelID
       );
-      if (channel) {
+
+      if (channel && channel.members.includes(this.userId || '')) {
         this.channelList.push(channel);
-        console.log('1Channel List:', this.channelList);
+        console.log('Channel List:', this.channelList);
       }
     });
 
