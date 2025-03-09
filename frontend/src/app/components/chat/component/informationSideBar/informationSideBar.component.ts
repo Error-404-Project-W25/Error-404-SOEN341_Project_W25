@@ -21,7 +21,7 @@ import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-t
 import { DataService } from '@services/data.service';
 
 @Component({
-  selector: 'app-team-list',
+  selector: 'chat-information-sidebar',
   templateUrl: './informationSideBar.component.html',
   styleUrls: [
     './../informationSideBar.component.css',

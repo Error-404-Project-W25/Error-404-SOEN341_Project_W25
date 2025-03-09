@@ -14,9 +14,9 @@
 
 .direct-message-container {
   background-color: var(--side-bar-1-background);
-  position: absolute;
-  top: 0;
-  left: 0;
+  /* position: absolute; */
+  /* top: 0; */
+  /* left: 0; */
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -78,7 +78,7 @@
   flex-direction: column;
   height: calc(100% - 12rem);
   /*FIX*/
-  margin-top: 8.5rem;
+  /* margin-top: 8.5rem; */
   margin-bottom: 7rem;
   max-height: fit-content;
   padding-top: 0;

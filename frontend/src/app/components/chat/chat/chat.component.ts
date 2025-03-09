@@ -60,6 +60,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.loginUser = user || null;
       if (!user) {
         this.router.navigate(['/home']);
+      } else {
+        console.log('User:', user);
       }
     });
   }
@@ -79,24 +81,23 @@ export class ChatComponent implements OnInit, OnDestroy {
    * based on the window width.
    */
   handleResize() {
-    const chatBox = document.querySelector('.chat-box') as HTMLElement;
-    const teamSidebar = document.querySelector(
-      '.team-setting-sidebar'
-    ) as HTMLElement;
-    if (window.innerWidth < 1135) {
-      this.isTeamListOpen = true;
-    } else {
-      this.isTeamListOpen = false;
-    }
-
-    if (teamSidebar) {
-      if (this.isTeamListOpen) {
-        teamSidebar.style.display = 'none';
-        chatBox.style.width = 'calc(100% - 20rem)';
-      } else {
-        teamSidebar.style.display = 'flex';
-        chatBox.style.width = 'calc(100% - 40rem)';
-      }
-    }
+    // const chatBox = document.querySelector('.chat-box') as HTMLElement;
+    // const teamSidebar = document.querySelector(
+    //   '.team-setting-sidebar'
+    // ) as HTMLElement;
+    // if (window.innerWidth < 1135) {
+    //   this.isTeamListOpen = true;
+    // } else {
+    //   this.isTeamListOpen = false;
+    // }
+    // if (teamSidebar) {
+    //   if (this.isTeamListOpen) {
+    //     teamSidebar.style.display = 'none';
+    //     chatBox.style.width = 'calc(100% - 20rem)';
+    //   } else {
+    //     teamSidebar.style.display = 'flex';
+    //     chatBox.style.width = 'calc(100% - 40rem)';
+    //   }
+    // }
   }
 }

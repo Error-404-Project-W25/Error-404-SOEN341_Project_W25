@@ -12,7 +12,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-message.dialogue';
 
 @Component({
-  selector: 'app-chat-log',
+  selector: 'chat-chat-log',
   templateUrl: './chatLog.component.html',
   styleUrls: [
     './../chatLog.component.css',

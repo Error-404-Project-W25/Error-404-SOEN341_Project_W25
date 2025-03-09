@@ -17,7 +17,7 @@ import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remov
 import { DataService } from '@services/data.service';
 
 @Component({
-  selector: 'app-side-bar-channel',
+  selector: 'chat-channel-sidebar',
   templateUrl: './channelSideBar.component.html',
   styleUrls: [
     './../channelSideBar.component.css',

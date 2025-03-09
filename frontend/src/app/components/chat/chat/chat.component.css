@@ -6,11 +6,13 @@ body {
   overflow: hidden;
   padding: 0;
   width: 100vw;
+  display: flex;
 }
 
 .container {
-  background-color: var(--side-bar-1-background);
-  color: var(--side-bar-1-text);
+  background-color: red;
+  /* background-color: var(--side-bar-1-background); */
+  /* color: var(--side-bar-1-text); */
   display: flex;
   flex-direction: row;
   /* align-items: stretch; */
@@ -18,7 +20,8 @@ body {
   height: 100vh;
   margin: 0;
   padding: 0;
-  width: 100%;
+  width: 100vw;
+  border: 2px solid green;
 }
 
 .separator {

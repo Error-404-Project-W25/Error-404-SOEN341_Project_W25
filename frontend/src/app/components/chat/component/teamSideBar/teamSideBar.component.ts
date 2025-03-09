@@ -12,7 +12,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { DataService } from '@services/data.service';
 
 @Component({
-  selector: 'app-side-bar-team',
+  selector: 'chat-team-sidebar',
   templateUrl: './teamSideBar.component.html',
   styleUrls: [
     './../teamSideBar.component.css',
@@ -55,6 +55,8 @@ export class TeamSidebarComponent {
       if (!user) {
         console.error('User not found inside of the team sidebar component');
         this.router.navigate(['/login']);
+      }else{
+        this.setUp();
       }
     });
   }
