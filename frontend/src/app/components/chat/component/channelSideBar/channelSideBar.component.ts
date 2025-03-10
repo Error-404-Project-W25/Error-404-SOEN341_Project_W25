@@ -6,9 +6,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { IChannel, IConversation, ITeam, IUser } from '@shared/interfaces';
-import { UserAuthResponse } from '@shared/user-auth.types';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { IChannel, IConversation, IUser } from '@shared/interfaces';
 import { ChannelCreationDialog } from '../../dialogue/create-channel/create-channel.dialogue';
 import { AddChannelMembersDialogue } from '../../dialogue/add-member-channel/add-member-channel.dialogue';
 import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
@@ -34,7 +32,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   @Input() userId: string = '';
   selectedTeamId: string | null = null;
   isDirectMessage: boolean = false;
-  isDarkTheme: boolean = false;
 
   //variables
   teamTitle: string = '';
@@ -57,13 +54,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.userService.user$.subscribe((user) => {
-      this.loginUser = user || null;
-      if (!user) {
-        this.router.navigate(['/login']);
-      }
-    });
-
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
       if (isDirectMessage) {
@@ -74,9 +64,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         });
         this.refreshChannelList();
       }
-    });
-    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
-      this.isDarkTheme = isDarkTheme;
     });
   }
 
@@ -118,7 +105,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   openCreateChannelDialog(): void {
     const dialogRef = this.dialog.open(ChannelCreationDialog, {
-      data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
+      data: { selectedTeam: this.selectedTeamId},
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result.channel_id) {
@@ -126,7 +113,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
           data: {
             channel_id: result.channel_id,
             team_id: this.selectedTeamId,
-            theme: this.isDarkTheme,
           },
         });
         this.refreshChannelList();
@@ -140,13 +126,13 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       return;
     }
     this.dialog.open(AddTeamMemberDialog, {
-      data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
+      data: { selectedTeam: this.selectedTeamId },
     });
   }
 
   openRemoveMemberTeamDialog(): void {
     this.dialog.open(TeamMemberRemovalDialog, {
-      data: { selectedTeam: this.selectedTeamId, theme: this.isDarkTheme },
+      data: { selectedTeam: this.selectedTeamId},
     });
   }
 
@@ -155,7 +141,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       data: {
         channel_id: channel.channel_id,
         team_id: this.selectedTeamId,
-        theme: this.isDarkTheme,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -166,7 +151,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   openEditChannelDialog(channel: IChannel): void {
     const dialogRef = this.dialog.open(EditChannelDialog, {
-      data: { channel: channel, theme: this.isDarkTheme },
+      data: { channel: channel},
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.edited) {

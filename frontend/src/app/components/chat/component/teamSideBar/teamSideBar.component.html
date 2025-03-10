@@ -16,7 +16,6 @@
     </button>
     <!-- (click) create team  -->
     <button
-      *ngIf="loginUser?.role === 'admin'"
       class="add-team-button"
       (click)="openCreateTeamDialog()"
       readonly

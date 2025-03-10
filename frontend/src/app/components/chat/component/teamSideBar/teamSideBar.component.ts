@@ -1,15 +1,14 @@
 import { TeamCreationDialog } from '../../dialogue/create-team/create-team.dialogue';
 import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { BackendService } from '@services/backend.service';
-import { UserService } from '@services/user.service';
-import { IChannel, ITeam, IUser } from '@shared/interfaces';
+import { ITeam, IUser } from '@shared/interfaces';
 import { UserAuthResponse } from '@shared/user-auth.types';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BackendService } from '@services/backend.service';
 import { DataService } from '@services/data.service';
+import { UserService } from '@services/user.service';
 
 @Component({
   selector: 'chat-team-sidebar',
@@ -51,14 +50,11 @@ export class TeamSidebarComponent {
 
   // Initialize component and subscribe to user changes
   ngOnInit() {
-    this.backendService.getUserById(this.userId).then((user) => {});
     this.refreshTeamList();
   }
 
   // Clean up subscriptions or resources
-  ngOnDestroy() {
-    // Implementation for ngOnDestroy
-  }
+  ngOnDestroy() {}
 
   // Toggle between dark and light themes
   toggleTheme() {
@@ -103,7 +99,7 @@ export class TeamSidebarComponent {
     }
     // Open dialog to create a team
     const dialogRef = this.dialog.open(TeamCreationDialog, {
-      data: { theme: this.isDarkTheme },
+      data: {},
     });
     // After dialog is closed
     dialogRef.afterClosed().subscribe(async (result) => {
@@ -125,7 +121,7 @@ export class TeamSidebarComponent {
         }
 
         this.dialog.open(AddTeamMemberDialog, {
-          data: { selectedTeam: result.team_id, theme: this.isDarkTheme },
+          data: { selectedTeam: result.team_id },
         });
       }
     });

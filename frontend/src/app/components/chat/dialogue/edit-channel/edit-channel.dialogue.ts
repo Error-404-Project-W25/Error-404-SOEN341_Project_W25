@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -41,7 +41,6 @@ export class EditChannelDialog {
   /* Need backend to make the updateChannel() method */
   async updateChannel(): Promise<void> {
     console.log('Updating channel');
-    console.log('Dark theme:', this.isDarkTheme);
     // if (this.channelName && this.description) {
     //   const success = await this.backendService.updateChannel(
     //     this.data.team_id,

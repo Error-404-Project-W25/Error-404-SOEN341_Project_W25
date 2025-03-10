@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -8,9 +8,10 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
+import { IChannel, IUser } from '@shared/interfaces';
 import { BackendService } from '@services/backend.service';
+import { DataService } from '@services/data.service';
 import { UserService } from '@services/user.service';
-import { IChannel, ITeam, IUser } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-channel-dialog',
@@ -40,11 +41,14 @@ export class ChannelCreationDialog {
     private dialogRef: MatDialogRef<ChannelCreationDialog>,
     private backendService: BackendService,
     private userService: UserService,
+    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA)
     public data: { selectedTeam: string | null; theme: boolean }
   ) {
     this.selectedTeamId = data.selectedTeam;
-    this.isDarkTheme = data.theme;
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
   }
 
   // Creating the channel

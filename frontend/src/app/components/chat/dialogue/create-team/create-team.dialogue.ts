@@ -8,9 +8,10 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
+import { IUser } from '@shared/interfaces';
 import { BackendService } from '@services/backend.service';
+import { DataService } from '@services/data.service';
 import { UserService } from '@services/user.service';
-import { ITeam, IUser } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-team-dialog',
@@ -39,10 +40,13 @@ export class TeamCreationDialog {
     private dialogRef: MatDialogRef<TeamCreationDialog>,
     private backendService: BackendService,
     private userService: UserService,
+    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA)
     public data: { selectedTeam: string | null; theme: boolean }
   ) {
-    this.isDarkTheme = data.theme;
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
   }
 
   async createTeam() {

@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BackendService } from '@services/backend.service';
-import { UserService } from '@services/user.service';
 import { DataService } from '@services/data.service';
+import { UserService } from '@services/user.service';
 
 @Component({
   selector: 'app-delete-message',
@@ -40,8 +40,10 @@ export class DeleteMessageDialog {
     });
     // this.selectedTeamId = data.teamId; // Set the team ID based on the injected data
     // this.selectedChannelId = data.channelId; // Set the channel ID based on the injected data
-    this.isDarkTheme = data.theme; // Set the theme based on the injected data
     this.checkIfCreator(this.selectedTeamId, this.selectedChannelId); // Check if the user is the creator of the channel
+    this.dataService.isDarkTheme.subscribe((theme) => {
+      this.isDarkTheme = theme; // Set the theme based on the injected data
+    });
   }
 
   //checking if its the creator of the channel

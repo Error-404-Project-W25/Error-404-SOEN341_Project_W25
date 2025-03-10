@@ -4,21 +4,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { IUser } from '@shared/interfaces';
+import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-message.dialogue';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { IChannel, ITeam, IUser } from '@shared/interfaces';
-import { UserAuthResponse } from '@shared/user-auth.types';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-message.dialogue';
 import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'chat-chat-log',
   templateUrl: './chatLog.component.html',
-  styleUrls: [
-    './chatLog.component.css',
-    './../../../../../assets/theme.css',
-  ],
+  styleUrls: ['./chatLog.component.css', './../../../../../assets/theme.css'],
   standalone: true,
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
@@ -31,7 +26,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   selectedChannelId: string = '';
   selectedTeamId: string = '';
   conversationId: string = '';
-  isDarkTheme: boolean = false;
   isDirectMessage: boolean = false;
 
   userIdToName: { [userId: string]: string } = {};
@@ -43,9 +37,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     private backendService: BackendService,
     private dataService: DataService
   ) {
-    this.dataService.isDarkTheme.subscribe((theme) => {
-      this.isDarkTheme = theme;
-    });
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
     });
@@ -92,7 +83,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       data: {
         messageId,
         messageText,
-        theme: this.isDarkTheme,
         channelId: this.selectedChannelId,
         teamId: this.selectedTeamId,
       },

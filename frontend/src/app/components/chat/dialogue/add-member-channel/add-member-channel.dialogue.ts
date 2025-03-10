@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -7,9 +7,10 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor } from '@angular/common';
+import { IUser } from '@shared/interfaces';
 import { BackendService } from '@services/backend.service';
-import { IUser, IChannel, ITeam } from '@shared/interfaces';
+import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'app-add-member-channel-pop-up',
@@ -37,6 +38,7 @@ export class AddChannelMembersDialogue {
   constructor(
     private dialogRef: MatDialogRef<AddChannelMembersDialogue>,
     private backendService: BackendService,
+    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       channel_id: string;
@@ -58,7 +60,9 @@ export class AddChannelMembersDialogue {
         console.error('Team not found');
       }
     });
-    this.isDarkTheme = data.theme;
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
   }
 
   search() {

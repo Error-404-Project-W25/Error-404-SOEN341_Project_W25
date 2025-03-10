@@ -1,13 +1,10 @@
-import { BackendService } from '@services/backend.service';
 import { CommonModule } from '@angular/common';
 import {
   Component,
   OnDestroy,
   OnInit,
   CUSTOM_ELEMENTS_SCHEMA,
-  Input,
   Output,
-  EventEmitter,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
@@ -74,12 +71,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize();
     // Get user from local storage
-    this.loginUser = this.userService.getUser() || null;
+    // this.loginUser = this.userService.getUser() || null;
+    console.log('inside chat component');
     this.userService.user$.subscribe((user) => {
       this.loginUser = user || null;
       if (!user) {
         this.router.navigate(['/home']);
       } else {
+        console.log('User:', user);
+        console.log('User ID:', user.user_id);
         this.userId = user.user_id;
       }
     });
