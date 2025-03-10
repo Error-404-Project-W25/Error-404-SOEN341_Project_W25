@@ -11,7 +11,7 @@ import {
 import { AuthStatus } from '../../types/authentication.types';
 
 const firebaseConfig: FirebaseOptions = {
-  apiKey: process.env.FIREBASE_API_KEY,
+  apiKey: process.env.FIREBASE_API_KEY || "DUMMY_KEY",
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
   projectId: process.env.FIREBASE_PROJECT_ID,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,

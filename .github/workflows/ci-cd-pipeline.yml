@@ -27,10 +27,10 @@ jobs:
       # Inject environment variables (MongoDB Atlas & Firebase connections)
       - name: Create .env file
         run: |
-          echo "DB_CONN_STRING=${{ secrets.DB_CONN_STRING }}" >> .env
-          echo "DB_NAME=chatHavenDB" >> .env
-          echo "PORT=3000" >> .env
-          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
+          echo "DB_CONN_STRING=${{ secrets.DB_CONN_STRING }}" >> chathaven/.env
+          echo "DB_NAME=chatHavenDB" >> chathaven/.env
+          echo "PORT=3000" >> chathaven/.env
+          echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> chathaven/.env
       
       # Install backend dependencies
       - name: Install backend dependencies
