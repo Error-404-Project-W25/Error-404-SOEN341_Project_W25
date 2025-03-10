@@ -1,6 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IChannel, ITeam, IUser, IMessage, IConversation } from '@shared/interfaces';
+import {
+  IChannel,
+  ITeam,
+  IUser,
+  IMessage,
+  IConversation,
+} from '@shared/interfaces';
 import {
   RegistrationData,
   UserAuthResponse,
@@ -66,11 +72,11 @@ export class BackendService {
     return undefined;
   }
 
-  async getUserById(user_id: string): Promise<IUser | undefined> {
+  async getUserById(userId: string): Promise<IUser | undefined> {
     try {
       const response = await firstValueFrom(
         this.http.get<{ user?: IUser; error?: string }>(
-          `${this.backendURL}/users/${user_id}`
+          `${this.backendURL}/users/${userId}`
         )
       );
 
@@ -79,7 +85,7 @@ export class BackendService {
       } else if (response.error) {
         console.error(response.error);
       } else {
-        console.error(`User with ID ${user_id} not found`);
+        console.error(`User with ID ${userId} not found`);
       }
     } catch (error) {
       console.error('Error getting user info:', error);
@@ -112,11 +118,11 @@ export class BackendService {
   //////////////////////////// TEAMS ////////////////////////////
 
   // Get all teams of which the user is a member
-  async getUserTeams(user_id: string): Promise<ITeam[] | undefined> {
+  async getUserTeams(userId: string): Promise<ITeam[] | undefined> {
     try {
       const response = await firstValueFrom(
         this.http.get<{ teams?: ITeam[]; error?: string }>(
-          `${this.backendURL}/teams/user/${user_id}`
+          `${this.backendURL}/teams/user/${userId}`
         )
       );
 
@@ -125,7 +131,7 @@ export class BackendService {
       } else if (response.error) {
         console.error(response.error);
       } else {
-        console.error(`No teams found for user with ID ${user_id}`);
+        console.error(`No teams found for user with ID ${userId}`);
       }
     } catch (error) {
       console.error('Error getting teams for user:', error);
@@ -133,11 +139,11 @@ export class BackendService {
     return undefined;
   }
 
-  async getTeamById(team_id: string): Promise<ITeam | undefined> {
+  async getTeamById(teamId: string): Promise<ITeam | undefined> {
     try {
       const response = await firstValueFrom(
         this.http.get<{ team?: ITeam; error?: string }>(
-          `${this.backendURL}/teams/getTeamById/${team_id}`
+          `${this.backendURL}/teams/getTeamById/${teamId}`
         )
       );
 
@@ -145,7 +151,6 @@ export class BackendService {
         return response.team;
       }
       console.error(response.error);
-
     } catch (error) {
       console.error('Error getting team by id:', error);
     }
@@ -153,24 +158,24 @@ export class BackendService {
   }
 
   async createTeam(
-    user_id: string,
-    team_name: string,
+    userId: string,
+    teamName: string,
     description: string
   ): Promise<string | undefined> {
     try {
       const response = await firstValueFrom(
-        this.http.post<{ team_id?: string; error?: string; details?: string }>(
+        this.http.post<{ teamId?: string; error?: string; details?: string }>(
           `${this.backendURL}/teams/create`,
           {
-            user_id,
-            team_name,
+            userId,
+            teamName,
             description,
           }
         )
       );
 
-      if (response && response.team_id) {
-        return response.team_id;
+      if (response && response.teamId) {
+        return response.teamId;
       } else {
         console.error(response.error);
         console.error(response.details);
@@ -181,14 +186,14 @@ export class BackendService {
     return undefined;
   }
 
-  async addMemberToTeam(member_id: string, team_id: string): Promise<boolean> {
+  async addMemberToTeam(memberId: string, teamId: string): Promise<boolean> {
     try {
       const response = await firstValueFrom(
         this.http.post<{ success: boolean; error?: string; details?: string }>(
           `${this.backendURL}/teams/addMember`,
           {
-            member_id,
-            team_id,
+            memberId,
+            teamId,
           }
         )
       );
@@ -208,21 +213,21 @@ export class BackendService {
   //////////////////////////// CHANNELS ////////////////////////////
 
   async createChannel(
-    creator_id: string,
-    team_id: string,
+    creatorId: string,
+    teamId: string,
     channelName: string,
     channelDescription: string
   ): Promise<string | undefined> {
     try {
       const response = await firstValueFrom(
         this.http.post<{
-          channel_id?: string;
+          channelId?: string;
           message?: string;
           error?: string;
           details?: string;
         }>(`${this.backendURL}/channels/create`, {
-          creator_id,
-          team_id,
+          creatorId,
+          teamId,
           channelName,
           channelDescription,
         })
@@ -232,9 +237,9 @@ export class BackendService {
         if (response.error) {
           console.error(response.error);
           console.error(response.details);
-        } else if (response.channel_id) {
+        } else if (response.channelId) {
           console.log(response.message);
-          return response.channel_id;
+          return response.channelId;
         }
       } else {
         console.error('No response from backend');
@@ -247,18 +252,18 @@ export class BackendService {
 
   // Returns true on success, false on failure
   async addUserToChannel(
-    team_id: string,
-    channel_id: string,
-    user_id: string
+    teamId: string,
+    channelId: string,
+    userId: string
   ): Promise<boolean> {
     try {
       const response = await firstValueFrom(
         this.http.post<{ success: string; error?: string; details?: string }>(
           `${this.backendURL}/channels/addUser`,
           {
-            team_id,
-            channel_id,
-            user_id,
+            teamId,
+            channelId,
+            userId,
           }
         )
       );
@@ -276,8 +281,8 @@ export class BackendService {
   }
 
   async getChannelById(
-    team_id: string,
-    channel_id: string
+    teamId: string,
+    channelId: string
   ): Promise<IChannel | undefined> {
     try {
       const response = await firstValueFrom(
@@ -286,8 +291,8 @@ export class BackendService {
           error?: string;
           details?: string;
         }>(`${this.backendURL}/channels/getChannelById`, {
-          team_id,
-          channel_id,
+          teamId,
+          channelId,
         })
       );
 
@@ -303,25 +308,34 @@ export class BackendService {
     return undefined;
   }
 
+  //////////////////////////// MESSAGES ////////////////////////////
 
-//////////////////////////// MESSAGES ////////////////////////////
-
-async sendMessage(
-  content: string,
-  conversationId: string,
-  senderId: string
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    this.socket.emit('sendMessage', { content, senderId, conversationId }, (response: { success: boolean; error?: string }) => {
+  async sendMessage(
+    content: string,
+    senderId: string,
+    conversationId: string
+  ): Promise<boolean> {
+    try {
+      console.log('content', content);
+      console.log('senderid', senderId);
+      console.log('convo', conversationId);
+      const response = await firstValueFrom(
+        this.http.post<{ success: boolean; error?: string }>(
+          `${this.backendURL}/messages/send`,
+          { content, senderId, conversationId }
+        )
+      );
       if (response.success) {
-        resolve(true);
+        return true;
       } else {
-        console.error(response.error);
-        reject(false);
+        console.error('Server error:', response.error);
+        return false;
       }
-    });
-  });
-}
+    } catch (error) {
+      console.error('Error sending message:', error);
+      return false;
+    }
+  }
 
   async deleteMessage(
     conversationId: string,
@@ -346,80 +360,75 @@ async sendMessage(
       return false;
     }
   }
-//trial
+  //trial
 
-async getMessages (
-  conversationId: string)
-  : Promise<IMessage[] | undefined> {
-  try {
-    const response = await firstValueFrom(
-      this.http.get<{ messages?: IMessage[]; error?: string }>(
-        `${this.backendURL}/messages/get/${conversationId}`
-      )
-    );
+  async getMessages(conversationId: string): Promise<IMessage[] | undefined> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{ messages?: IMessage[]; error?: string }>(
+          `${this.backendURL}/messages/get/${conversationId}`
+        )
+      );
 
-    if (response.messages) {
-      return response.messages;
-    } else {
-      console.error(response.error);
+      if (response.messages) {
+        return response.messages;
+      } else {
+        console.error(response.error);
+      }
+    } catch (error) {
+      console.error('Error getting messages:', error);
     }
-  } catch (error) {
-    console.error('Error getting messages:', error);
-  } 
-  return undefined;
-}
-
-///////////// CONVERSATIONS ///
-
-async createDirectMessages(
-  conversationName: string,
-  creatorId: string,
-  addedUserId: string
-): Promise<IConversation | undefined> {
-  try {
-    const response = await firstValueFrom(
-      this.http.post<{ newConversation?: IConversation; error?: string }>(
-        `${this.backendURL}/conversations/createDirectMessages`,
-        {
-          conversationName,
-          creatorId,
-          addedUserId,
-        }
-      )
-    );
-
-    if (response.newConversation) {
-      return response.newConversation;
-    } else {
-      console.error(response.error);
-    }
-  } 
-  catch (error) {
-    console.error('Error creating direct messages:', error);
+    return undefined;
   }
-  return undefined;
-}
 
+  ///////////// CONVERSATIONS ///
 
-async getConversationById(
-  conversationId: string
-): Promise<IConversation | undefined> {
-  try {
-    const response = await firstValueFrom(
-      this.http.get<{ conversation?: IConversation; error?: string }>(
-        `${this.backendURL}/conversations/${conversationId}`
-      )
-    );
+  async createDirectMessages(
+    conversationName: string,
+    creatorId: string,
+    addedUserId: string
+  ): Promise<IConversation | undefined> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ newConversation?: IConversation; error?: string }>(
+          `${this.backendURL}/conversations/createDirectMessages`,
+          {
+            conversationName,
+            creatorId,
+            addedUserId,
+          }
+        )
+      );
 
-    if (response.conversation) {
-      return response.conversation;
-    } else {
-      console.error(response.error);
+      if (response.newConversation) {
+        return response.newConversation;
+      } else {
+        console.error(response.error);
+      }
+    } catch (error) {
+      console.error('Error creating direct messages:', error);
     }
-  } catch (error) {
-    console.error('Error getting conversation by id:', error);
+    return undefined;
   }
-  return undefined;
-}
 
+  async getConversationById(
+    conversationId: string
+  ): Promise<IConversation | undefined> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{ conversation?: IConversation; error?: string }>(
+          `${this.backendURL}/conversations/${conversationId}`
+        )
+      );
+
+      if (response.conversation) {
+        return response.conversation;
+      } else {
+        console.error(response.error);
+      }
+    } catch (error) {
+      console.error('Error getting conversation by id:', error);
+    }
+    return undefined;
+  }
 }

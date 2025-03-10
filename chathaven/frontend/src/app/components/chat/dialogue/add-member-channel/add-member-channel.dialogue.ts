@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -7,9 +7,10 @@ import {
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor } from '@angular/common';
+import { IUser } from '@shared/interfaces';
 import { BackendService } from '@services/backend.service';
-import { IUser, IChannel, ITeam } from '@shared/interfaces';
+import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'app-add-member-channel-pop-up',
@@ -21,13 +22,10 @@ import { IUser, IChannel, ITeam } from '@shared/interfaces';
     MatButtonModule,
     NgFor,
   ],
-  templateUrl: './add-member-channel-pop-up.component.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './add-member-channel-pop-up.component.css',
-  ],
+  templateUrl: './add-member-channel.dialogue.html',
+  styleUrls: ['./add-member-channel.dialogue.css'],
 })
-export class AddMemberChannelPopUpComponent {
+export class AddChannelMembersDialogue {
   isDarkTheme: boolean = false;
   searchQuery = '';
   found = '';
@@ -35,16 +33,17 @@ export class AddMemberChannelPopUpComponent {
   teamMembers: IUser[] = [];
 
   constructor(
-    private dialogRef: MatDialogRef<AddMemberChannelPopUpComponent>,
+    private dialogRef: MatDialogRef<AddChannelMembersDialogue>,
     private backendService: BackendService,
+    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
-      channel_id: string;
-      team_id: string;
+      channelId: string;
+      teamId: string;
       theme: boolean;
     }
   ) {
-    this.backendService.getTeamById(this.data.team_id).then(async (team) => {
+    this.backendService.getTeamById(this.data.teamId).then(async (team) => {
       if (team) {
         const members = await Promise.all(
           team.members.map((memberId) =>
@@ -58,7 +57,9 @@ export class AddMemberChannelPopUpComponent {
         console.error('Team not found');
       }
     });
-    this.isDarkTheme = data.theme;
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
   }
 
   search() {
@@ -85,9 +86,9 @@ export class AddMemberChannelPopUpComponent {
     const checkboxes = document.querySelectorAll(
       'input[type="checkbox"]:checked'
     );
+    console.log('Checkboxes:', checkboxes);
     checkboxes.forEach((checkbox) => {
-      // BUG: This is not the correct way to check if the checkbox is value is the user_id
-      if (checkbox instanceof HTMLInputElement && checkbox.value.length > 3) {
+      if (checkbox instanceof HTMLInputElement) {
         console.log('Checkbox:', checkbox);
         checkedValues.push(checkbox.value);
         console.log('Checked values:', checkedValues);
@@ -102,8 +103,8 @@ export class AddMemberChannelPopUpComponent {
     for (const memberId of this.memberIdsToAdd) {
       try {
         const response: boolean = await this.backendService.addUserToChannel(
-          this.data.team_id,
-          this.data.channel_id,
+          this.data.teamId,
+          this.data.channelId,
           memberId
         );
         if (response) {

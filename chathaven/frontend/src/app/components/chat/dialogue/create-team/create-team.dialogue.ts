@@ -8,17 +8,15 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
+import { IUser } from '@shared/interfaces';
 import { BackendService } from '@services/backend.service';
+import { DataService } from '@services/data.service';
 import { UserService } from '@services/user.service';
-import { ITeam, IUser } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-team-dialog',
-  templateUrl: './add-team-dialog.component.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './add-team-dialog.component.css',
-  ],
+  templateUrl: './create-team.dialogue.html',
+  styleUrls: ['./create-team.dialogue.css'],
   standalone: true,
   imports: [
     CommonModule,
@@ -28,7 +26,7 @@ import { ITeam, IUser } from '@shared/interfaces';
     MatButtonModule,
   ],
 })
-export class AddTeamDialogComponent {
+export class TeamCreationDialog {
   @Output() teamCreated = new EventEmitter<void>();
   isDarkTheme: boolean = false;
   teamName = '';
@@ -36,13 +34,16 @@ export class AddTeamDialogComponent {
   found = ' ';
 
   constructor(
-    private dialogRef: MatDialogRef<AddTeamDialogComponent>,
+    private dialogRef: MatDialogRef<TeamCreationDialog>,
     private backendService: BackendService,
     private userService: UserService,
+    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA)
     public data: { selectedTeam: string | null; theme: boolean }
   ) {
-    this.isDarkTheme = data.theme;
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
   }
 
   async createTeam() {
@@ -55,7 +56,7 @@ export class AddTeamDialogComponent {
 
     try {
       const teamId: string | undefined = await this.backendService.createTeam(
-        currentUser.user_id,
+        currentUser.userId,
         this.teamName,
         this.description
       );
@@ -73,7 +74,7 @@ export class AddTeamDialogComponent {
       // Add the new team to the user's list of teams
       currentUser.teams.push(teamId);
 
-      this.dialogRef.close({ team_id: teamId });
+      this.dialogRef.close({ teamId });
       console.log('Team created successfully');
     } catch (error) {
       console.error('Error creating team:', error);

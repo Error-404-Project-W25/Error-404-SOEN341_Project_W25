@@ -1,41 +1,41 @@
 export interface IChannel {
-  channel_id: string;
+  channelId: string;
   name: string;
   description: string;
-  team_id: string;
-  members: string[]; // user_id
-  conversationId: string; // conversation_id
+  teamId: string;
+  members: string[]; // userId
+  conversationId: string; // conversationId
 }
 
 export interface ITeam {
-  team_id: string;
-  team_name: string;
+  teamId: string;
+  teamName: string;
   description: string;
-  admin: string[]; // user_id
-  members: string[]; // user_id
-  channels: string[]; // channel_id
+  admin: string[]; // userId
+  members: string[]; // userId
+  channels: string[]; // channelId
 }
 
 export interface IUser {
-  user_id: string;
+  userId: string;
   firstName: string;
   lastName: string;
   username: string;
   email: string;
   role: 'admin' | 'user';
-  teams: string[]; // team_id
-  direct_messages: string[];
+  teams: string[]; // teamId
+  directMessages: string[];
 }
 
 export interface IMessage {
   messageId: string;
-  content: string; 
-  sender: string; // user_id
-  time: string; 
+  content: string;
+  sender: string; // userId
+  time: string;
 }
 
 export interface IConversation {
-  conversationId: string; 
-  conversationName: string; 
+  conversationId: string;
+  conversationName: string;
   messages: IMessage[];
 }

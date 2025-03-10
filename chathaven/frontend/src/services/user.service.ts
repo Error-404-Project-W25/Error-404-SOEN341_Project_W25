@@ -15,6 +15,7 @@ export class UserService {
 
   constructor(private backendService: BackendService) {
     const storedUid: string | null = localStorage.getItem('currentUserUID');
+
     if (storedUid) {
       this.loadUser(storedUid);
     }
@@ -22,7 +23,7 @@ export class UserService {
 
   setUser(user: IUser) {
     this.userSubject.next(user);
-    localStorage.setItem('currentUserUID', user.user_id);
+    localStorage.setItem('currentUserUID', user.userId);
   }
 
   getUser(): IUser | undefined {
@@ -52,9 +53,9 @@ export class UserService {
   logout() {
     this.userSubject.next(undefined);
     localStorage.removeItem('user');
-    
+
     localStorage.removeItem('teamList');
-    
+
     sessionStorage.clear();
   }
 }

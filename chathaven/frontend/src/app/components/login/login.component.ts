@@ -252,9 +252,8 @@ export class LoginComponent implements OnInit {
           const user: IUser | undefined = await this.backendService.getUserById(
             response.uid
           );
-
           if (user) {
-            this.userService.loadUser(user.user_id);
+            this.userService.setUser(user);
             this.goToChat();
           }
         } else if (response.error) {
@@ -288,8 +287,10 @@ export class LoginComponent implements OnInit {
             response.uid
           );
 
+          // TODO: loadUser() redundant?
+
           if (user) {
-            this.userService.loadUser(user.user_id);
+            this.userService.setUser(user);
             this.goToChat();
           }
         } else if (response.error) {

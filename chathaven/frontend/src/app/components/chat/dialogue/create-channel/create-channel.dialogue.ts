@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -8,17 +8,15 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
+import { IChannel, IUser } from '@shared/interfaces';
 import { BackendService } from '@services/backend.service';
+import { DataService } from '@services/data.service';
 import { UserService } from '@services/user.service';
-import { IChannel, ITeam, IUser } from '@shared/interfaces';
 
 @Component({
   selector: 'app-add-channel-dialog',
-  templateUrl: './add-channel-dialog.component.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './add-channel-dialog.component.css',
-  ],
+  templateUrl: './create-channel.dialogue.html',
+  styleUrls: ['./create-channel.dialogue.css'],
   standalone: true,
   imports: [
     MatDialogModule,
@@ -28,7 +26,7 @@ import { IChannel, ITeam, IUser } from '@shared/interfaces';
     NgIf,
   ],
 })
-export class AddChannelDialogComponent {
+export class ChannelCreationDialog {
   isDarkTheme: boolean = false;
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   channelName = '';
@@ -37,18 +35,21 @@ export class AddChannelDialogComponent {
   selectedTeamId: string | null = null; // stores the selected team ID
 
   constructor(
-    private dialogRef: MatDialogRef<AddChannelDialogComponent>,
+    private dialogRef: MatDialogRef<ChannelCreationDialog>,
     private backendService: BackendService,
     private userService: UserService,
+    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA)
     public data: { selectedTeam: string | null; theme: boolean }
   ) {
     this.selectedTeamId = data.selectedTeam;
-    this.isDarkTheme = data.theme;
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
   }
 
   // Creating the channel
-    async createChannel() {
+  async createChannel() {
     const currentUser: IUser | undefined = this.userService.getUser();
 
     if (!currentUser) {
@@ -64,7 +65,7 @@ export class AddChannelDialogComponent {
     try {
       const channelId: string | undefined =
         await this.backendService.createChannel(
-          currentUser.user_id,
+          currentUser.userId,
           this.selectedTeamId,
           this.channelName,
           this.description
@@ -90,11 +91,11 @@ export class AddChannelDialogComponent {
       currentUser.teams.forEach(async (teamId) => {
         const team = await this.backendService.getTeamById(teamId);
         if (team && teamId === this.selectedTeamId) {
-          team.channels.push(newChannel.channel_id);
+          team.channels.push(newChannel.channelId);
         }
       });
 
-      this.dialogRef.close({ channel_id: channelId });
+      this.dialogRef.close({ channelId });
     } catch (error) {
       console.error('Error creating channel', error);
     }

@@ -20,11 +20,11 @@ export const registerUser = async (req: Request, res: Response) => {
     if (result.isSignedIn) {
       const { firstName, lastName, username, email, role } =
         req.body.registrationData;
-      const user_id: string = result.uid || '';
+      const userId: string = result.uid || '';
 
       // Store user information in MongoDB
       const newUser: IUser = await new User({
-        user_id,
+        userId,
         firstName,
         lastName,
         username,
@@ -34,7 +34,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
       res.status(201).json({
         message: 'User registered and stored in MongoDB',
-        uid: newUser.user_id,
+        uid: newUser.userId,
       });
     } else {
       res.status(400).json({
@@ -100,14 +100,14 @@ export const logoutUser = async (_: Request, res: Response) => {
 ////////////////////////// USERS //////////////////////////
 
 /**
- * Get user information by user_id
- * @param req user_id
+ * Get user information by userId
+ * @param req userId
  * @param res returns an IUser object called 'user' (if found)
  */
 export const getUserById = async (req: Request, res: Response) => {
   try {
     const user: IUser | null = await User.findOne({
-      user_id: req.params.user_id,
+      userId: req.params.userId,
     });
     if (user) {
       res.status(200).json({ user });
@@ -142,14 +142,14 @@ export const getUserByUsername = async (req: Request, res: Response) => {
 
 /**
  * Delete a user from the database
- * @param req user_id 
+ * @param req userId
  * @param res returns success or error message
  */
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const { user_id } = req.params;
+    const { userId } = req.params;
 
-    const user = await User.findOne({ user_id });
+    const user = await User.findOne({ userId });
     if (!user) {
       res.status(404).json({ error: 'User not found' });
       return;
@@ -157,20 +157,19 @@ export const deleteUser = async (req: Request, res: Response) => {
 
     // remove user from all teams
     for (let i = 0; i < user.teams.length; i++) {
-      const team = await Team.findOne({ team_id: user.teams[i] });
+      const team = await Team.findOne({ teamId: user.teams[i] });
 
       if (!team) {
         res.status(404).json({ error: 'Team not found' });
         return;
       }
 
-      team.members = team.members.filter((member) => member !== user_id);
+      team.members = team.members.filter((member) => member !== userId);
     }
 
     // remove user from database
     await user.deleteOne();
     res.json({ success: true });
-
   } catch (error: any) {
     const errorMessage = error.message;
     res.status(500).json({

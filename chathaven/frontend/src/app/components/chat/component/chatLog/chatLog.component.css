@@ -1,13 +1,15 @@
 .chat-box {
-  position: relative;
+  /* position: relative; */
+  /* background-color: var(--chat-box-background); */
   background-color: var(--chat-box-background);
   color: var(--chat-box-text);
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: calc(100% - 40rem);
-  size: auto;
-  overflow-y: none;
+  width: inherit;
+  width: 100%; /* Ensure the width is 100% */
+  min-width: 0; /* Ensure the min-width does not constrain the width */
+  overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -48,7 +50,7 @@
   height: 93%;
   margin: 0;
   overflow-y: auto;
-  padding: 10px;
+  /* padding: 10px; */
   scrollbar-width: none;
   width: 100%;
   -ms-overflow-style: none;
@@ -194,6 +196,7 @@
 }
 
 .message-content:hover .delete-button-container {
+  transition: display 10s;
   display: block;
 }
 

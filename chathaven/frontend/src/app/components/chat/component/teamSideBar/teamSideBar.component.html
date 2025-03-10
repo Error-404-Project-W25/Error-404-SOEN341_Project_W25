@@ -1,0 +1,86 @@
+<div class="team-side-bar" id="side-bar-1">
+  <div class="direct-message-container">
+    <!-- (click) direct message -->
+    <button
+      class="direct-message-button"
+      (click)="selectDirectMessage()"
+      readonly
+      title="Conversations"
+    >
+      <i
+        class="far fa-comment-alt"
+        style="font-size: 24px; transition: transform 0.3s"
+        readonly
+      >
+      </i>
+    </button>
+    <!-- (click) create team  -->
+    <button
+      class="add-team-button"
+      (click)="openCreateTeamDialog()"
+      readonly
+      title="Create Team"
+    >
+      <i
+        class="fa fa-plus"
+        style="font-size: 24px; transition: transform 0.3s"
+        readonly
+      >
+      </i>
+    </button>
+  </div>
+  <div class="team-list">
+    <ul>
+      <!-- (click) select team -->
+      <li
+        *ngFor="let team of teamList"
+        (click)="selectTeam(team.teamId)"
+        readonly
+        title="Select Team"
+      >
+        <a href="#">{{ team.teamName.slice(0, 6) }}</a>
+      </li>
+    </ul>
+  </div>
+  <div class="user-menu-container">
+    <input class="menu-toggle-checkbox" type="checkbox" readonly />
+    <span class="menu-toggle-button">
+      <i class="fa fa-user-circle" style="font-size: 24px"></i>
+    </span>
+    <!-- (click) change theme -->
+    <button
+      class="menu-option-1 menu-option"
+      (click)="toggleTheme()"
+      readonly
+      title="Toggle Theme"
+    >
+      <i
+        class="fa"
+        [ngClass]="isDarkTheme ? 'fa-moon' : 'fa-sun'"
+        style="font-size: 1.5rem; transition: transform 0.3s"
+        onmouseover="this.style.transform='rotate(360deg)'"
+        onmouseout="this.style.transform='rotate(0deg)'"
+        readonly
+      ></i>
+    </button>
+    <!-- (click) user setting -->
+    <button class="menu-option-2 menu-option" readonly title="User Settings">
+      <i
+        class="fa fa-gear"
+        style="font-size: 24px; transition: transform 0.3s"
+        onmouseover="this.style.transform='rotate(90deg)'"
+        onmouseout="this.style.transform='rotate(0deg)'"
+        readonly
+      ></i>
+    </button>
+    <!-- (click) sign out -->
+    <button
+      class="menu-option-3 menu-option"
+      (click)="signOut()"
+      readonly
+      title="Sign Out"
+    >
+      <i class="fa fa-sign-out" style="font-size: 24px"></i>
+    </button>
+  </div>
+</div>

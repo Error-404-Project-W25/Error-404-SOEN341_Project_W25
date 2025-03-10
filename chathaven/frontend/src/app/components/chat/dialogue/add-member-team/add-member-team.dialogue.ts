@@ -8,16 +8,14 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
-import { BackendService } from '@services/backend.service';
 import { IUser, IChannel } from '@shared/interfaces';
+import { BackendService } from '@services/backend.service';
+import { DataService } from '@services/data.service';
 
 @Component({
   selector: 'app-add-member-team-pop-up',
-  templateUrl: './add-member-team-pop-up.component.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './add-member-team-pop-up.component.css',
-  ],
+  templateUrl: './add-member-team.dialogue.html',
+  styleUrls: ['./add-member-team.dialogue.css'],
   standalone: true,
   imports: [
     MatDialogModule,
@@ -27,7 +25,7 @@ import { IUser, IChannel } from '@shared/interfaces';
     NgIf,
   ],
 })
-export class AddMemberTeamPopUpComponent {
+export class AddTeamMemberDialog {
   isDarkTheme: boolean = false;
   searchQuery = ''; // input from 'input matInput' is stored in searchQuery
   description = '';
@@ -37,11 +35,15 @@ export class AddMemberTeamPopUpComponent {
   @Output() channelCreated = new EventEmitter<IChannel>();
 
   constructor(
-    private dialogRef: MatDialogRef<AddMemberTeamPopUpComponent>,
+    private dialogRef: MatDialogRef<AddTeamMemberDialog>,
     private backendService: BackendService,
-    @Inject(MAT_DIALOG_DATA) public data: { selectedTeam: string, theme: boolean }
+    private dataService: DataService,
+    @Inject(MAT_DIALOG_DATA)
+    public data: { selectedTeam: string; theme: boolean }
   ) {
-    this.isDarkTheme = data.theme;
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
   }
 
   // Search for members to add to the channel
@@ -54,7 +56,7 @@ export class AddMemberTeamPopUpComponent {
       if (user) {
         console.log('User found:', user); // Debugging
         this.found = 'User found';
-        this.memberIdsToAdd.push(user.user_id);
+        this.memberIdsToAdd.push(user.userId);
       } else {
         this.found = 'No user found';
       }

@@ -4,10 +4,10 @@ import { IChannel } from '../../../shared/interfaces';
 // Schema for channel
 const channelSchema = new Schema(
   {
-    channel_id: { type: String, unique: true },
+    channelId: { type: String, unique: true },
     name: { type: String, required: true },
     description: { type: String },
-    team_id: { type: String },
+    teamId: { type: String },
     members: { type: [String], default: [] },
     conversationId: { type: String, required: true },
   },

@@ -6,7 +6,7 @@ const messageSchema = new Schema(
   {
     messageId: { type: String, unique: true },
     content: { type: String, required: true },
-    sender: { type: String, required: true }, // user_id
+    sender: { type: String, required: true }, // userId
     time: { type: String, required: true },
   },
   {
