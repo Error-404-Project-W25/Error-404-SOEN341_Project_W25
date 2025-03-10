@@ -7,10 +7,7 @@ import { UserService } from '@services/user.service';
 @Component({
   selector: 'app-delete-message',
   templateUrl: './delete-message.dialogue.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './delete-message.dialogue.css',
-  ],
+  styleUrls: ['./delete-message.dialogue.css'],
 })
 export class DeleteMessageDialog {
   isDarkTheme: boolean = false; // Dark theme by default
@@ -58,14 +55,14 @@ export class DeleteMessageDialog {
     }
 
     try {
-      // Step 1: Retrieve the channel to get its team_id
+      // Step 1: Retrieve the channel to get its teamId
       const channel = await this.backendService.getChannelById(
         teamId,
         channelId
-      ); // Pass currentUser.user_id instead of teamId
+      ); // Pass currentUser.userId instead of teamId
 
       if (channel) {
-        channel.members[0] === currentUser.user_id
+        channel.members[0] === currentUser.userId
           ? (this.isCreator = true)
           : (this.isCreator = false);
       }

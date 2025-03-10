@@ -7,12 +7,12 @@ import { createGeneralChannel } from './channelsController';
 
 /**
  * Get all teams in the database
- * @param req user_id
+ * @param req userId
  * @param res returns all teams of which the user is a member
  */
 export const getUserTeams = async (req: Request, res: Response) => {
   try {
-    const userIdQuery: string = req.params.user_id;
+    const userIdQuery: string = req.params.userId;
     const teams: ITeam[] | null = await Team.find({
       members: userIdQuery,
     });
@@ -24,14 +24,14 @@ export const getUserTeams = async (req: Request, res: Response) => {
 };
 
 /**
- * Get a team by team_id
- * @param req team_id
+ * Get a team by teamId
+ * @param req teamId
  * @param res returns an ITeam object
  */
 export const getTeamById = async (req: Request, res: Response) => {
   try {
-    const team_id: string = req.params.team_id;
-    const team: ITeam | null = await Team.findOne({ team_id });
+    const teamId: string = req.params.teamId;
+    const team: ITeam | null = await Team.findOne({ teamId });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
@@ -45,42 +45,41 @@ export const getTeamById = async (req: Request, res: Response) => {
 
 /**
  * Create a new team
- * @param req user_id, team_name, description, members
+ * @param req userId, teamName, description, members
  * @param res returns the new ITeam's id
  */
 export const createTeam = async (req: Request, res: Response) => {
   try {
-    const { user_id, team_name, description } = req.body;
+    const { userId, teamName, description } = req.body;
 
-    // Generate a UUID for the team_id
-    const team_id: string = uuidv4();
+    // Generate a UUID for the teamId
+    const teamId: string = uuidv4();
 
-      // Create a general channel for the team
-      const generalChannelId = await createGeneralChannel(team_id, user_id);
-    
+    // Create a general channel for the team
+    const generalChannelId = await createGeneralChannel(teamId, userId);
+
     // Create a new team document
     const newTeam: ITeam = await new Team({
-      team_id,
-      team_name,
+      teamId,
+      teamName,
       description,
-      admin: [user_id],
-      members: [user_id],
+      admin: [userId],
+      members: [userId],
       channels: [generalChannelId],
     }).save();
 
     // Add the new team ID to the signed-in user
-    const user = await User.findOne({ user_id });
+    const user = await User.findOne({ userId: userId });
     if (user) {
       if (user.teams) {
-        user.teams.push(newTeam.team_id);
+        user.teams.push(newTeam.teamId);
       } else {
-        user.teams = [newTeam.team_id];
+        user.teams = [newTeam.teamId];
       }
       await user.save();
     }
 
-
-    res.status(201).json({ team_id });
+    res.status(201).json({ teamId });
   } catch (error) {
     const errorMessage: string = (error as Error).message;
     res
@@ -91,39 +90,39 @@ export const createTeam = async (req: Request, res: Response) => {
 };
 
 /**
- * Add a member to a team given the member_id and team_id
- * @param req member_id, team_id
+ * Add a member to a team given the memberId and teamId
+ * @param req memberId, teamId
  * @param res returns success or error message
  */
 export const addMemberToTeam = async (req: Request, res: Response) => {
   try {
-    const { member_id, team_id } = req.body;
+    const { memberId, teamId } = req.body;
 
-    // Find the team by team_id
-    const team = await Team.findOne({ team_id });
+    // Find the team by teamId
+    const team = await Team.findOne({ teamId });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
     }
 
-    if (team.members.includes(member_id)) {
+    if (team.members.includes(memberId)) {
       res.status(400).json({
-        error: `User with user_id ${member_id} is already a member of the team`,
+        error: `User with userId ${memberId} is already a member of the team`,
       });
       return;
     } else {
-      team.members.push(member_id);
+      team.members.push(memberId);
     }
 
     const updatedTeam: ITeam = await team.save();
 
-    const memberToAdd = await User.findOne({ user_id: member_id });
+    const memberToAdd = await User.findOne({ userId: memberId });
     if (!memberToAdd) {
       res.status(404).json({ error: 'User not found' });
       return;
     }
 
-    memberToAdd.teams.push(updatedTeam.team_id);
+    memberToAdd.teams.push(updatedTeam.teamId);
     await memberToAdd.save();
 
     res.json({ success: true });
@@ -139,44 +138,43 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
 };
 
 /**
- * Remove a member from a team given the member_id and team_id
- * @param req member_id, team_id
+ * Remove a member from a team given the memberId and teamId
+ * @param req memberId, teamId
  * @param res returns success or error message
  */
 export const removeMemberFromTeam = async (req: Request, res: Response) => {
   try {
-    const { member_id, team_id } = req.body;
+    const { memberId, teamId } = req.body;
 
-    const team = await Team.findOne({ team_id });
+    const team = await Team.findOne({ teamId });
 
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
-    } 
+    }
 
-    if (!team.members.includes(member_id)) {
+    if (!team.members.includes(memberId)) {
       res.status(400).json({
-        error: `User with user_id ${member_id} is not a member of the team`,
+        error: `User with userId ${memberId} is not a member of the team`,
       });
       return;
-    } else {    
-      team.members = team.members.filter((member) => member !== member_id);
-    }   
+    } else {
+      team.members = team.members.filter((member) => member !== memberId);
+    }
 
     await team.save();
 
-    // Remove the team ID from the user's teams 
-    const user = await User.findOne({ user_id: member_id });
+    // Remove the team ID from the user's teams
+    const user = await User.findOne({ userId: memberId });
     if (!user) {
       res.status(404).json({ error: 'User not found' });
       return;
-    } else {    
-      user.teams = user.teams.filter((team) => team !== team_id);
-    }   
+    } else {
+      user.teams = user.teams.filter((team) => team !== teamId);
+    }
 
     await user.save();
     res.json({ success: true });
-
   } catch (error) {
     const errorMessage = (error as Error).message;
     res.status(500).json({
@@ -186,41 +184,39 @@ export const removeMemberFromTeam = async (req: Request, res: Response) => {
     });
     console.error('Failed to remove member from team', errorMessage);
   }
-
 };
 
 /**
  * Delete a team from the database
- * @param req team_name
+ * @param req teamName
  * @param res returns success or error message
  */
 export const deleteTeam = async (req: Request, res: Response) => {
   try {
-    const { team_name } = req.body;
+    const { teamName } = req.body;
 
-    const team = await Team.findOne({ team_name });
+    const team = await Team.findOne({ teamName });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
-    }   
+    }
 
     // remove the team from all its members teams
     for (const member of team.members) {
-      const user = await User.findOne({ user_id: member });
+      const user = await User.findOne({ userId: member });
       if (!user) {
         res.status(404).json({ error: 'User not found' });
         return;
       }
-        
-      user.teams = user.teams.filter((team) => team !== team_name.team_id);
-      
+
+      user.teams = user.teams.filter((team) => team !== teamName.teamId);
+
       await user.save();
     }
 
     // delete the team from the database
     await team.deleteOne();
     res.json({ success: true });
-
   } catch (error) {
     const errorMessage = (error as Error).message;
     res.status(500).json({
@@ -230,4 +226,4 @@ export const deleteTeam = async (req: Request, res: Response) => {
     });
     console.error('Failed to delete team:', errorMessage);
   }
-}
+};

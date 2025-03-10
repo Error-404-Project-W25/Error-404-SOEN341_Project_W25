@@ -13,10 +13,7 @@ import { DataService } from '@services/data.service';
 @Component({
   selector: 'app-edit-channel-pop-up',
   templateUrl: './edit-channel.dialogue.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './edit-channel.dialogue.css',
-  ],
+  styleUrls: ['./edit-channel.dialogue.css'],
   standalone: true,
   imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule],
 })

@@ -13,7 +13,7 @@ import { DataService } from '@services/data.service';
 @Component({
   selector: 'chat-chat-log',
   templateUrl: './chatLog.component.html',
-  styleUrls: ['./chatLog.component.css', './../../../../../assets/theme.css'],
+  styleUrls: ['./chatLog.component.css'],
   standalone: true,
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
@@ -151,7 +151,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
         const success = await this.backendService.sendMessage(
           this.newMessage,
           this.conversationId,
-          sender.user_id
+          sender.userId
         );
         this.newMessage = '';
         if (success) {

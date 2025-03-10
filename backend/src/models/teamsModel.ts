@@ -4,13 +4,13 @@ import { ITeam } from '../../../shared/interfaces';
 // Schema for team
 const teamSchema = new Schema(
   {
-    team_id: { type: String, unique: true },
-    team_name: { type: String, required: true },
+    teamId: { type: String, unique: true },
+    teamName: { type: String, required: true },
     description: { type: String },
     admin: { type: [String], required: true },
     members: { type: [String], default: [] },
     channels: { type: [String], required: true }, // List of channel IDs
-    created_at: { type: Date, default: Date.now },
+    createdAt: { type: Date, default: Date.now },
   },
   {
     timestamps: false,

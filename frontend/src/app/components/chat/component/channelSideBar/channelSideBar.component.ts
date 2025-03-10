@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
 import { IChannel, IConversation, IUser } from '@shared/interfaces';
@@ -17,10 +16,7 @@ import { DataService } from '@services/data.service';
 @Component({
   selector: 'chat-channel-sidebar',
   templateUrl: './channelSideBar.component.html',
-  styleUrls: [
-    './channelSideBar.component.css',
-    './../../../../../assets/theme.css',
-  ],
+  styleUrls: ['./channelSideBar.component.css'],
   standalone: true,
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
@@ -36,17 +32,16 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   //variables
   teamTitle: string = '';
 
-  selectedChannelID: string | null = null;
+  selectedChannelId: string | null = null;
   channelList: IChannel[] = [];
 
-  selectedDirectMessageID: string | null = null;
+  selectedDirectMessageId: string | null = null;
   directMessageList: IConversation[] = [];
 
   //output
   conversationId: string | null = null;
 
   constructor(
-    private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
     private backendService: BackendService,
@@ -73,13 +68,13 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     let selectedTeam = this.selectedTeamId
       ? await this.backendService.getTeamById(this.selectedTeamId)
       : null;
-    this.teamTitle = selectedTeam?.team_name || '';
-    let channelListID = selectedTeam?.channels || [];
+    this.teamTitle = selectedTeam?.teamName || '';
+    let channelListId = selectedTeam?.channels || [];
     this.channelList = [];
-    channelListID.forEach(async (channelID) => {
+    channelListId.forEach(async (channelId) => {
       const channel = await this.backendService.getChannelById(
         this.selectedTeamId!,
-        channelID
+        channelId
       );
 
       if (channel && channel.members.includes(this.userId || '')) {
@@ -90,11 +85,11 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   refreshDirectMessageList() {
     this.loginUser = this.userService.getUser() || null;
-    let directMessageListId = this.loginUser?.direct_messages || [];
+    let directMessageListId = this.loginUser?.directMessages || [];
     this.directMessageList = [];
-    directMessageListId.forEach(async (directMessageID) => {
+    directMessageListId.forEach(async (directMessageId) => {
       const directMessage = await this.backendService.getConversationById(
-        directMessageID
+        directMessageId
       );
       if (directMessage) {
         this.directMessageList.push(directMessage);
@@ -105,14 +100,14 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   openCreateChannelDialog(): void {
     const dialogRef = this.dialog.open(ChannelCreationDialog, {
-      data: { selectedTeam: this.selectedTeamId},
+      data: { selectedTeam: this.selectedTeamId },
     });
     dialogRef.afterClosed().subscribe((result) => {
-      if (result && result.channel_id) {
+      if (result && result.channelId) {
         this.dialog.open(AddChannelMembersDialogue, {
           data: {
-            channel_id: result.channel_id,
-            team_id: this.selectedTeamId,
+            channelId: result.channelId,
+            teamId: this.selectedTeamId,
           },
         });
         this.refreshChannelList();
@@ -132,15 +127,15 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   openRemoveMemberTeamDialog(): void {
     this.dialog.open(TeamMemberRemovalDialog, {
-      data: { selectedTeam: this.selectedTeamId},
+      data: { selectedTeam: this.selectedTeamId },
     });
   }
 
   openAddMemberChannelDialog(channel: IChannel): void {
     const dialogRef = this.dialog.open(AddChannelMembersDialogue, {
       data: {
-        channel_id: channel.channel_id,
-        team_id: this.selectedTeamId,
+        channelId: channel.channelId,
+        teamId: this.selectedTeamId,
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
@@ -151,7 +146,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   openEditChannelDialog(channel: IChannel): void {
     const dialogRef = this.dialog.open(EditChannelDialog, {
-      data: { channel: channel},
+      data: { channel: channel },
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.edited) {
@@ -165,8 +160,8 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       .getChannelById(this.selectedTeamId!, channelId)
       .then((channel) => {
         if (channel) {
-          this.selectedChannelID = channel.channel_id;
-          this.dataService.selectChannel(channel.channel_id);
+          this.selectedChannelId = channel.channelId;
+          this.dataService.selectChannel(this.selectedChannelId);
           this.dataService.selectConversation(channel.conversationId);
         }
       });

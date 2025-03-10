@@ -14,10 +14,7 @@ import { DataService } from '@services/data.service';
 @Component({
   selector: 'app-add-member-team-pop-up',
   templateUrl: './remove-member-team.dialogue.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './remove-member-team.dialogue.css',
-  ],
+  styleUrls: ['./remove-member-team.dialogue.css'],
   standalone: true,
   imports: [MatDialogModule, MatInputModule, FormsModule, MatButtonModule],
 })

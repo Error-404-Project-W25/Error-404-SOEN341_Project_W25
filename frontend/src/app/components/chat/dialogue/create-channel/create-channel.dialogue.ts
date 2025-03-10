@@ -16,10 +16,7 @@ import { UserService } from '@services/user.service';
 @Component({
   selector: 'app-add-channel-dialog',
   templateUrl: './create-channel.dialogue.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './create-channel.dialogue.css',
-  ],
+  styleUrls: ['./create-channel.dialogue.css'],
   standalone: true,
   imports: [
     MatDialogModule,
@@ -68,7 +65,7 @@ export class ChannelCreationDialog {
     try {
       const channelId: string | undefined =
         await this.backendService.createChannel(
-          currentUser.user_id,
+          currentUser.userId,
           this.selectedTeamId,
           this.channelName,
           this.description
@@ -94,11 +91,11 @@ export class ChannelCreationDialog {
       currentUser.teams.forEach(async (teamId) => {
         const team = await this.backendService.getTeamById(teamId);
         if (team && teamId === this.selectedTeamId) {
-          team.channels.push(newChannel.channel_id);
+          team.channels.push(newChannel.channelId);
         }
       });
 
-      this.dialogRef.close({ channel_id: channelId });
+      this.dialogRef.close({ channelId });
     } catch (error) {
       console.error('Error creating channel', error);
     }

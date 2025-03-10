@@ -5,13 +5,13 @@ import {
   createTeam,
   addMemberToTeam,
   removeMemberFromTeam,
-  deleteTeam
+  deleteTeam,
 } from '../controllers/teamsController';
 
 const router: Router = Router();
 
-router.get('/user/:user_id', getUserTeams);
-router.get('/getTeamById/:team_id', getTeamById);
+router.get('/user/:userId', getUserTeams);
+router.get('/getTeamById/:teamId', getTeamById);
 router.post('/create', createTeam);
 router.post('/addMember', addMemberToTeam);
 router.post('/removeMember', removeMemberFromTeam);

@@ -4,11 +4,11 @@ import { IUser } from '../../../shared/interfaces';
 // User Schema
 const userSchema: Schema = new Schema(
   {
-    user_id: { type: String, unique: true, required: true },
+    userId: { type: String, unique: true, required: true },
     firstName: { type: String },
     lastName: { type: String },
     username: { type: String, unique: true },
-    email: { type: String, },
+    email: { type: String },
     role: {
       type: String,
       enum: ['admin', 'user'],
@@ -16,7 +16,7 @@ const userSchema: Schema = new Schema(
       required: true,
     },
     teams: { type: [String], default: [] }, // List of team IDs
-    direct_messages: { type: [String], default: [] },
+    directMessages: { type: [String], default: [] },
   },
   {
     collection: 'Users',

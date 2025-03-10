@@ -16,10 +16,7 @@ import { UserService } from '@services/user.service';
 @Component({
   selector: 'app-add-team-dialog',
   templateUrl: './create-team.dialogue.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './create-team.dialogue.css',
-  ],
+  styleUrls: ['./create-team.dialogue.css'],
   standalone: true,
   imports: [
     CommonModule,
@@ -59,7 +56,7 @@ export class TeamCreationDialog {
 
     try {
       const teamId: string | undefined = await this.backendService.createTeam(
-        currentUser.user_id,
+        currentUser.userId,
         this.teamName,
         this.description
       );
@@ -77,7 +74,7 @@ export class TeamCreationDialog {
       // Add the new team to the user's list of teams
       currentUser.teams.push(teamId);
 
-      this.dialogRef.close({ team_id: teamId });
+      this.dialogRef.close({ teamId });
       console.log('Team created successfully');
     } catch (error) {
       console.error('Error creating team:', error);

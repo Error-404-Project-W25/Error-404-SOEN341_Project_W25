@@ -13,10 +13,7 @@ import { UserService } from '@services/user.service';
 @Component({
   selector: 'chat-team-sidebar',
   templateUrl: './teamSideBar.component.html',
-  styleUrls: [
-    './teamSideBar.component.css',
-    './../../../../../assets/theme.css',
-  ],
+  styleUrls: ['./teamSideBar.component.css'],
   standalone: true,
   imports: [CommonModule], // Add CommonModule to imports
 })
@@ -103,16 +100,16 @@ export class TeamSidebarComponent {
     });
     // After dialog is closed
     dialogRef.afterClosed().subscribe(async (result) => {
-      if (result && result.team_id) {
+      if (result && result.teamId) {
         if (this.loginUser) {
           const updatedUser = await this.backendService.getUserById(
-            this.loginUser.user_id
+            this.loginUser.userId
           );
           if (updatedUser) {
             this.userService.updateUser(updatedUser);
 
             const newTeam = await this.backendService.getTeamById(
-              result.team_id
+              result.teamId
             );
             if (newTeam) {
               this.teamList.push(newTeam);
@@ -121,7 +118,7 @@ export class TeamSidebarComponent {
         }
 
         this.dialog.open(AddTeamMemberDialog, {
-          data: { selectedTeam: result.team_id },
+          data: { selectedTeam: result.teamId },
         });
       }
     });

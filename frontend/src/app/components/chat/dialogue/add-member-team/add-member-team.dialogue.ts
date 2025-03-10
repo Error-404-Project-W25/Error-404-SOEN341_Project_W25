@@ -15,10 +15,7 @@ import { DataService } from '@services/data.service';
 @Component({
   selector: 'app-add-member-team-pop-up',
   templateUrl: './add-member-team.dialogue.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './add-member-team.dialogue.css',
-  ],
+  styleUrls: ['./add-member-team.dialogue.css'],
   standalone: true,
   imports: [
     MatDialogModule,
@@ -59,7 +56,7 @@ export class AddTeamMemberDialog {
       if (user) {
         console.log('User found:', user); // Debugging
         this.found = 'User found';
-        this.memberIdsToAdd.push(user.user_id);
+        this.memberIdsToAdd.push(user.userId);
       } else {
         this.found = 'No user found';
       }

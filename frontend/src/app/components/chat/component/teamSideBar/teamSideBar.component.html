@@ -34,11 +34,11 @@
       <!-- (click) select team -->
       <li
         *ngFor="let team of teamList"
-        (click)="selectTeam(team.team_id)"
+        (click)="selectTeam(team.teamId)"
         readonly
         title="Select Team"
       >
-        <a href="#">{{ team.team_name.slice(0, 6) }}</a>
+        <a href="#">{{ team.teamName.slice(0, 6) }}</a>
       </li>
     </ul>
   </div>
@@ -64,11 +64,7 @@
       ></i>
     </button>
     <!-- (click) user setting -->
-    <button
-      class="menu-option-2 menu-option"
-      readonly
-      title="User Settings"
-    >
+    <button class="menu-option-2 menu-option" readonly title="User Settings">
       <i
         class="fa fa-gear"
         style="font-size: 24px; transition: transform 0.3s"

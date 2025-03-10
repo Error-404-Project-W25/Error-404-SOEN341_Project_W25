@@ -23,7 +23,7 @@ import { InformationSidebarComponent } from './component/informationSideBar/info
   selector: 'app-chat',
   standalone: true,
   templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css', './../../../assets/theme.css'],
+  styleUrls: ['./chat.component.css'],
   imports: [
     CommonModule, // Add CommonModule to imports
     TeamSidebarComponent,
@@ -79,8 +79,8 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.router.navigate(['/home']);
       } else {
         console.log('User:', user);
-        console.log('User ID:', user.user_id);
-        this.userId = user.user_id;
+        console.log('User ID:', user.userId);
+        this.userId = user.userId;
       }
     });
   }

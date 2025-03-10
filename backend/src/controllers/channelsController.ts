@@ -5,28 +5,28 @@ import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
 import { Conversation } from '../models/conversationsModel';
-import { io } from '../app'; 
+import { io } from '../app';
 
 /**
  * Create a channel
- * @param req creator_id, team_id, channelName, channelDescription
- * @param res channel_id of the created channel
+ * @param req creatorId, teamId, channelName, channelDescription
+ * @param res channelId of the created channel
  */
 export const createChannel = async (req: Request, res: Response) => {
-  const { creator_id, team_id, channelName, channelDescription } = req.body;
+  const { creatorId, teamId, channelName, channelDescription } = req.body;
 
   try {
-    const team = await Team.findOne({ team_id }); // returns the team object
+    const team = await Team.findOne({ teamId }); // returns the team object
     if (!team) {
       // if not found
       res.status(404).json({ error: 'Team not found' });
       return;
     }
 
-    const channel_id = uuidv4();
+    const channelId = uuidv4();
     const conversationId = uuidv4(); // Create a new conversationId
 
-    const isUserInTeam: boolean = team.members.includes(creator_id);
+    const isUserInTeam: boolean = team.members.includes(creatorId);
 
     if (!isUserInTeam) {
       res.status(400).json({
@@ -36,41 +36,41 @@ export const createChannel = async (req: Request, res: Response) => {
     }
 
     const newChannel = new Channel({
-      channel_id: channel_id,
+      channelId: channelId,
       name: channelName,
       description: channelDescription,
-      team_id: team_id, // associated team
-      members: [creator_id], // creator of the channel
+      teamId: teamId, // associated team
+      members: [creatorId], // creator of the channel
       conversationId: conversationId, // Store conversationId
     });
 
     // If the creator is not an admin, add them to the admin list
-    if (!team.admin.includes(creator_id)) {
+    if (!team.admin.includes(creatorId)) {
       newChannel.members.push(...team.admin);
     }
 
     const savedChannel: IChannel = await newChannel.save();
 
     // Add the channel to the team
-    team.channels.push(savedChannel.channel_id);
+    team.channels.push(savedChannel.channelId);
     await team.save();
 
-    const user = await User.findOne({ user_id: creator_id });
-    if (user && user.teams){
-      // Find the team by team_id
-      const teamIndex: number = user.teams.findIndex((team) => team === team_id);
+    const user = await User.findOne({ userId: creatorId });
+    if (user && user.teams) {
+      // Find the team by teamId
+      const teamIndex: number = user.teams.findIndex((team) => team === teamId);
 
       if (teamIndex === -1) {
         res.status(404).json({ error: 'Team not found' });
         return;
       }
-      
+
       // Add the channel ID to the user's team
-      user.teams[teamIndex] = team_id;
+      user.teams[teamIndex] = teamId;
 
       await user.save();
     }
-    
+
     // Create a new conversation for the channel
     await new Conversation({
       conversationId: conversationId,
@@ -78,11 +78,11 @@ export const createChannel = async (req: Request, res: Response) => {
       messages: [],
     }).save();
 
-    io.to(creator_id).emit('joinRoom', { conversationId });
+    io.to(creatorId).emit('joinRoom', { conversationId });
 
     res.status(201).json({
       message: 'The channel and conversation has been created successfully',
-      channel_id: savedChannel.channel_id,
+      channelId: savedChannel.channelId,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -99,29 +99,32 @@ export const createChannel = async (req: Request, res: Response) => {
 
 /**
  * Create a general channel for a team
- * @param team_id, creator_id
- * @returns channel_id of the created channel
+ * @param teamId, creatorId
+ * @returns channelId of the created channel
  */
-export const createGeneralChannel = async (team_id: string, creator_id: string): Promise<string | null> => {
+export const createGeneralChannel = async (
+  teamId: string,
+  creatorId: string
+): Promise<string | null> => {
   try {
-    const channel_id = uuidv4();
+    const channelId = uuidv4();
     const conversationId = uuidv4(); // Create a new conversationId
 
     const newChannel = new Channel({
-      channel_id: channel_id,
+      channelId: channelId,
       name: 'General',
       description: 'This is the default channel',
-      team_id: team_id, // associated team
-      members: [creator_id], // creator of the channel
+      teamId: teamId, // associated team
+      members: [creatorId], // creator of the channel
       conversationId: conversationId, // Store conversationId
     });
 
     const savedChannel: IChannel = await newChannel.save();
 
     // Add the channel to the team
-    const team = await Team.findOne({ team_id });
+    const team = await Team.findOne({ teamId });
     if (team) {
-      team.channels.push(savedChannel.channel_id);
+      team.channels.push(savedChannel.channelId);
       await team.save();
     }
 
@@ -132,9 +135,9 @@ export const createGeneralChannel = async (team_id: string, creator_id: string):
       messages: [],
     }).save();
 
-    io.to(creator_id).emit('joinRoom', { conversationId });
+    io.to(creatorId).emit('joinRoom', { conversationId });
 
-    return savedChannel.channel_id;
+    return savedChannel.channelId;
   } catch (error: unknown) {
     console.error('Failed to create general channel:', error);
     return null;
@@ -143,30 +146,30 @@ export const createGeneralChannel = async (team_id: string, creator_id: string):
 
 /**
  * Add a user to a channel
- * @param req team_id, channel_id, user_id
+ * @param req teamId, channelId, userId
  * @param res success message or error message
  */
 export const addUserToChannel = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { team_id, channel_id, user_id } = req.body;
+  const { teamId, channelId, userId } = req.body;
 
   try {
-    const channel = await Channel.findOne({ channel_id }); // get the channel by id
+    const channel = await Channel.findOne({ channelId }); // get the channel by id
     if (!channel) {
       res.status(404).json({ error: 'Channel not found' });
       return;
     }
 
-    const team = await Team.findOne({ team_id }); // get the team by team_id
+    const team = await Team.findOne({ teamId }); // get the team by teamId
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
     }
 
     // Check if the user is part of the team
-    const isUserInTeam: boolean = team.members.includes(user_id);
+    const isUserInTeam: boolean = team.members.includes(userId);
     if (!isUserInTeam) {
       res
         .status(400)
@@ -175,7 +178,7 @@ export const addUserToChannel = async (
     }
 
     // Check if the user is part of the channel
-    const isUserInChannel: boolean = channel.members.includes(user_id);
+    const isUserInChannel: boolean = channel.members.includes(userId);
     if (isUserInChannel) {
       res
         .status(400)
@@ -184,17 +187,18 @@ export const addUserToChannel = async (
     }
 
     // Otherwise, add the user to the members of the channel
-    channel.members.push(user_id);
+    channel.members.push(userId);
 
     // Save the channel
     const savedChannel: IChannel = await channel.save();
 
     // Add the user to the conversation room
-    io.to(user_id).emit('joinRoom', { conversationId: channel.conversationId });
+    io.to(userId).emit('joinRoom', { conversationId: channel.conversationId });
 
     res.status(201).json({
       success: true,
-      message: 'The user has been added to the channel and conversation successfully',
+      message:
+        'The user has been added to the channel and conversation successfully',
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -215,23 +219,25 @@ export const addUserToChannel = async (
 
 /**
  * Get a channel by its ID
- * @param req team_id, channel_id
+ * @param req teamId, channelId
  * @param res IChannel object
  */
 export const getChannelById = async (req: Request, res: Response) => {
-  const { team_id, channel_id } = req.body;
-  if (!team_id || !channel_id) {
+  const { teamId, channelId } = req.body;
+  if (!teamId || !channelId) {
     res.status(400).json({ error: 'Missing required fields' });
     return;
   }
   try {
-    const team = await Team.findOne({ team_id });
+    const team = await Team.findOne({ teamId });
     if (!team) {
       res.status(404).json({ error: 'Team not found' });
       return;
     }
 
-    const channel: IChannel | null | undefined = await Channel.findOne({ channel_id });
+    const channel: IChannel | null | undefined = await Channel.findOne({
+      channelId,
+    });
 
     if (!channel) {
       res.status(404).json({ error: 'Channel not found' });

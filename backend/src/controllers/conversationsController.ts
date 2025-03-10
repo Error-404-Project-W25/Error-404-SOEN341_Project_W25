@@ -5,7 +5,7 @@ import { User } from '../models/userModel';
 import { io } from '../app';
 
 /**
- * create a new conversation 
+ * create a new conversation
  * @param req conversationName, messages[]
  * @param res returns the new conversation
  */
@@ -26,10 +26,10 @@ export const createConversation = async (req: Request, res: Response) => {
     console.error('Error creating conversation:', error);
     res.status(500).json({ error: 'Error creating conversation' });
   }
-}
+};
 
 /**
- * create a new direct message conversation 
+ * create a new direct message conversation
  * @param req conversationName, creatorId, addedUserId
  * @param res returns the new conversation
  */
@@ -45,13 +45,13 @@ export const createDirectMessages = async (req: Request, res: Response) => {
     }).save();
 
     // Fetch the users
-    const creator = await User.findOne({ user_id: creatorId });
-    const addedUser = await User.findOne({ user_id: addedUserId });
+    const creator = await User.findOne({ userId: creatorId });
+    const addedUser = await User.findOne({ userId: addedUserId });
 
     if (creator && addedUser) {
-      // Add conversationId to the direct_messages array of both users
-      creator.direct_messages.push(conversationId);
-      addedUser.direct_messages.push(conversationId);
+      // Add conversationId to the directMessages array of both users
+      creator.directMessages.push(conversationId);
+      addedUser.directMessages.push(conversationId);
 
       // Save the updated user documents
       await creator.save();
@@ -65,10 +65,10 @@ export const createDirectMessages = async (req: Request, res: Response) => {
     console.error('Error creating direct messages:', error);
     res.status(500).json({ error: 'Error creating direct messages' });
   }
-}
+};
 
 /**
- * Getting the conversation with its id 
+ * Getting the conversation with its id
  * @param req conversationId
  * @param res returns the conversation
  */
@@ -85,4 +85,4 @@ export const getConversationById = async (req: Request, res: Response) => {
     console.error('Error fetching conversation:', error);
     res.status(500).json({ error: 'Error fetching conversation' });
   }
-}
+};

@@ -12,10 +12,7 @@ import { DataService } from '@services/data.service';
 @Component({
   selector: 'chat-information-sidebar',
   templateUrl: './informationSideBar.component.html',
-  styleUrls: [
-    './informationSideBar.component.css',
-    './../../../../../assets/theme.css',
-  ],
+  styleUrls: ['./informationSideBar.component.css'],
   standalone: true,
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
@@ -125,11 +122,11 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     const sender = this.userService.getUser();
     const receiver = await this.backendService.getUserById(memberId);
     const conversationName = `${sender?.username}, ${receiver?.username}`;
-    if (sender && receiver?.user_id) {
+    if (sender && receiver?.userId) {
       await this.backendService.createDirectMessages(
         conversationName,
-        sender.user_id,
-        receiver.user_id
+        sender.userId,
+        receiver.userId
       );
     }
   }

@@ -254,7 +254,7 @@ export class LoginComponent implements OnInit {
           );
 
           if (user) {
-            this.userService.loadUser(user.user_id);
+            this.userService.loadUser(user.userId);
             this.goToChat();
           }
         } else if (response.error) {
@@ -289,7 +289,7 @@ export class LoginComponent implements OnInit {
           );
 
           if (user) {
-            this.userService.loadUser(user.user_id);
+            this.userService.loadUser(user.userId);
             this.goToChat();
           }
         } else if (response.error) {

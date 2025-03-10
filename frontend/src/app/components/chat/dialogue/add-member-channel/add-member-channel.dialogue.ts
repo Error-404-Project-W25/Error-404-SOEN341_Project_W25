@@ -23,10 +23,7 @@ import { DataService } from '@services/data.service';
     NgFor,
   ],
   templateUrl: './add-member-channel.dialogue.html',
-  styleUrls: [
-    './../../../../../assets/theme.css',
-    './add-member-channel.dialogue.css',
-  ],
+  styleUrls: ['./add-member-channel.dialogue.css'],
 })
 export class AddChannelMembersDialogue {
   isDarkTheme: boolean = false;
@@ -41,12 +38,12 @@ export class AddChannelMembersDialogue {
     private dataService: DataService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
-      channel_id: string;
-      team_id: string;
+      channelId: string;
+      teamId: string;
       theme: boolean;
     }
   ) {
-    this.backendService.getTeamById(this.data.team_id).then(async (team) => {
+    this.backendService.getTeamById(this.data.teamId).then(async (team) => {
       if (team) {
         const members = await Promise.all(
           team.members.map((memberId) =>
@@ -106,8 +103,8 @@ export class AddChannelMembersDialogue {
     for (const memberId of this.memberIdsToAdd) {
       try {
         const response: boolean = await this.backendService.addUserToChannel(
-          this.data.team_id,
-          this.data.channel_id,
+          this.data.teamId,
+          this.data.channelId,
           memberId
         );
         if (response) {

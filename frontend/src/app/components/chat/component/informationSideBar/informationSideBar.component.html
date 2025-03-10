@@ -1,57 +1,54 @@
-<div
-class="team-setting-sidebar"
-id="team-setting-sidebar"
->
-<div class="member-list-title-container">
-  <div class="member-list-title">Information</div>
-</div>
+<div class="team-setting-sidebar" id="team-setting-sidebar">
+  <div class="member-list-title-container">
+    <div class="member-list-title">Information</div>
+  </div>
 
-<div class="tabs">
-  <div class="tab-2" >
-    <label for="tab2-1">Team Member</label>
-    <input
-      id="tab2-1"
-      name="tabs-two"
-      type="radio"
-      checked="checked"
-      readonly
-    />
-    <div class="tab-container">
-      <div class="member-list">
-        <ul>
-          <li *ngFor="let member of teamMemberList" readonly>
-            <div class="member-name">{{ member.username }}</div>
-            <!-- (click) create conversation or menu ??-->
-            <button
-              (click)="createCoversation(member.user_id)"
-              class="member-button"
-              readonly
-              title="Start Conversation"
-            >
-              <i class="far fa-comment-alt" style="font-size: 1rem"></i>
-            </button>
-          </li>
-        </ul>
+  <div class="tabs">
+    <div class="tab-2">
+      <label for="tab2-1">Team Member</label>
+      <input
+        id="tab2-1"
+        name="tabs-two"
+        type="radio"
+        checked="checked"
+        readonly
+      />
+      <div class="tab-container">
+        <div class="member-list">
+          <ul>
+            <li *ngFor="let member of teamMemberList" readonly>
+              <div class="member-name">{{ member.username }}</div>
+              <!-- (click) create conversation or menu ??-->
+              <button
+                (click)="createCoversation(member.userId)"
+                class="member-button"
+                readonly
+                title="Start Conversation"
+              >
+                <i class="far fa-comment-alt" style="font-size: 1rem"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="tab-2">
-    <label for="tab2-2">Chat Member</label>
-    <input id="tab2-2" name="tabs-two" type="radio" readonly />
-    <div class="tab-container">
-      <div class="member-list">
-        <ul>
-          <li *ngFor="let member of chatMemberList" readonly>
-            <div class="member-name">{{ member.username }}</div>
-            <!-- <button> -->
-            <!-- (click) create conversation or menu ??-->
-            <!-- <button class="member-button">
+    <div class="tab-2">
+      <label for="tab2-2">Chat Member</label>
+      <input id="tab2-2" name="tabs-two" type="radio" readonly />
+      <div class="tab-container">
+        <div class="member-list">
+          <ul>
+            <li *ngFor="let member of chatMemberList" readonly>
+              <div class="member-name">{{ member.username }}</div>
+              <!-- <button> -->
+              <!-- (click) create conversation or menu ??-->
+              <!-- <button class="member-button">
           <i class="far fa-comment-alt" style="font-size: 1rem"></i>
         </button> -->
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-</div>
 </div>
