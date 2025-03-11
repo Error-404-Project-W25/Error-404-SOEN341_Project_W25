@@ -22,11 +22,15 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   selectedConversationId: string | null = null;
 
   teamTitle: string = '';
+  chatTitle: string = '';
   isDirectMessage: boolean = false;
   teamMemberList: IUser[] = [];
   chatMemberList: IUser[] = [];
   requestMemberList: IUser[] = [];
-  activeTab: string = 'team';
+
+  teamDescription: string = '';
+  chatDescription: string = '';
+  activeTab: string = 'chat';
 
   constructor(
     private router: Router,
@@ -41,6 +45,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         try {
           const team = await this.backendService.getTeamById(teamId);
           if (team) {
+            this.teamTitle = ' :' + team.teamName;
+            this.teamDescription = team.description;
             this.teamMemberList = [];
             for (const memberId of team.members) {
               const user = await this.backendService.getUserById(memberId);
@@ -90,9 +96,12 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         .getConversationById(this.selectedConversationId)
         .then((conversation) => {
           if (conversation) {
+            this.chatTitle = '';
             const memberNames = conversation.conversationName
               .split(',')
               .map((name) => name.trim());
+            this.chatDescription =
+              'Conversation between ' + memberNames.join(', ');
             this.chatMemberList = [];
             for (const name of memberNames) {
               this.backendService.getUserByUsername(name).then((user) => {
@@ -114,6 +123,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
           .getChannelById(this.selectedTeamId!, this.selectedChannelId!)
           .then((channel) => {
             if (channel) {
+              this.chatTitle = ' :' + channel.name;
+              this.chatDescription = channel.description;
               this.chatMemberList = [];
               for (const memberId of channel.members) {
                 this.backendService.getUserById(memberId).then((user) => {
@@ -132,7 +143,11 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     this.activeTab = tab;
   }
 
-  acceptRequest(requestId: string) {}
+  acceptRequest(userId: string) {
+    console.log('Accepting request from:', userId);
+  }
 
-  declineRequest(requestId: string) {}
+  declineRequest(userId: string) {
+    console.log('Declining request from:', userId);
+  }
 }

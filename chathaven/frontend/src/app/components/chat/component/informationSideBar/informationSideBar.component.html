@@ -5,7 +5,7 @@
 
   <div class="tab-container">
     <div class="radio-inputs">
-      <label class="radio">
+      <label class="radio" *ngIf="!isDirectMessage">
         <input
           type="radio"
           name="radio"
@@ -23,7 +23,7 @@
         />
         <span class="name">Chat</span>
       </label>
-      <label class="radio">
+      <label class="radio" *ngIf="isDirectMessage">
         <input
           type="radio"
           name="radio"
@@ -32,7 +32,7 @@
         />
         <span class="name">Invite</span>
       </label>
-      <label class="radio">
+      <label class="radio" *ngIf="!isDirectMessage">
         <input
           type="radio"
           name="radio"
@@ -43,9 +43,13 @@
       </label>
     </div>
 
-    <div class="tab-content" *ngIf="activeTab === 'team'">
-      <h3 style="margin-bottom: 5px">Team Information</h3>
+    <div
+      class="tab-content"
+      *ngIf="activeTab === 'team' && isDirectMessage === false"
+    >
+      <h3 style="margin-bottom: 5px">Team Information{{ teamTitle }}</h3>
       <h4 style="margin-bottom: 5px">Description</h4>
+      <p>{{ teamDescription }}</p>
       <h4 style="margin-bottom: 5px">Members</h4>
       <div class="member-list">
         <ul>
@@ -68,8 +72,9 @@
     </div>
 
     <div class="tab-content" *ngIf="activeTab === 'chat'">
-      <h3 style="margin-bottom: 5px">Channel Information</h3>
+      <h3 style="margin-bottom: 5px">Chat Information{{ chatTitle }}</h3>
       <h4 style="margin-bottom: 5px">Description</h4>
+      {{ chatDescription }}
       <h4 style="margin-bottom: 5px">Members</h4>
       <div class="member-list">
         <ul>
@@ -83,11 +88,14 @@
       </div>
     </div>
 
-    <div class="tab-content" *ngIf="activeTab === 'invite'">
+    <div class="tab-content" *ngIf="activeTab === 'invite' && isDirectMessage">
       <!-- Invite content here -->
     </div>
 
-    <div class="tab-content" *ngIf="activeTab === 'request'">
+    <div
+      class="tab-content"
+      *ngIf="activeTab === 'request' && !isDirectMessage"
+    >
       <h3 style="margin-bottom: 5px">Request to Join Channel</h3>
       <h4 style="margin-bottom: 5px">Request</h4>
       <div class="member-list">

@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
-
+import { exec } from 'child_process';
 import cors from 'cors';
 import express, { Application, Request, Response } from 'express';
 import mongoose from 'mongoose';
@@ -107,8 +107,34 @@ const startServer = async () => {
 
     const PORT: number = Number(process.env.PORT) || 3000;
 
-    if (process.env.NODE_ENV !== 'test'){
-      httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    if (process.env.NODE_ENV !== 'test') {
+      httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+        .on('error', (err: NodeJS.ErrnoException) => {
+          if (err.code === 'EADDRINUSE') {
+            console.error(`Port ${PORT} is already in use. Trying to close the port...`);
+            // Find and kill the process using the port
+            exec(`netstat -ano | findstr :${PORT}`, (err, stdout, stderr) => {
+              if (err) {
+                console.error(`Error finding process using port ${PORT}:`, err);
+                return;
+              }
+              const pid = stdout.split('\n')[0].trim().split(/\s+/).pop();
+              if (pid) {
+                exec(`taskkill /PID ${pid} /F`, (err, stdout, stderr) => {
+                  if (err) {
+                    console.error(`Error killing process ${pid}:`, err);
+                    return;
+                  }
+                  console.log(`Process ${pid} killed. Trying to restart the server...`);
+                  httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+                });
+              }
+            });
+          } else {
+            console.error('Server error:', err);
+            process.exit(1);
+          }
+        });
     }
 
     // Uncomment the line below to run the authentication tests

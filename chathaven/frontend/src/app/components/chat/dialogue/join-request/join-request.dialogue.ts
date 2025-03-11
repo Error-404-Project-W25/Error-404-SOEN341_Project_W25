@@ -27,6 +27,7 @@ export class JoinRequestDialog {
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
     });
+    this.selectedChannelId = this.data.channelId; // Set the selected channel ID
     this.dataService.isDarkTheme.subscribe((theme) => {
       this.isDarkTheme = theme; // Set the theme based on the injected data
       console.log('Theme: ', this.isDarkTheme);
@@ -35,12 +36,19 @@ export class JoinRequestDialog {
 
   // Close the dialog without performing any action (Cancel)
   onCancel() {
+    console.log('Cancel');
     this.dialogRef.close();
   }
 
   // Confirm deletion, close the dialog, and pass the message ID back for removal
   onConfirm() {
-    /*create a request */
-    this.dialogRef.close();
+    this.backendService
+      .getChannelById(this.selectedTeamId, this.selectedChannelId)
+      .then((channel) => {
+        if (channel) {
+          console.log('Channel: ', channel);
+          console.log('Channel Admins: ', channel.members[0]);
+        }
+      });
   }
 }

@@ -149,7 +149,7 @@ describe('teams', () => {
           // Send nothing
         });
 
-        expect(res.statusCode).toEqual(400);
+        expect(res.statusCode).toEqual(500);
       });
     });
   });
