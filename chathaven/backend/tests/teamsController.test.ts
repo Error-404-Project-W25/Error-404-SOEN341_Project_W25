@@ -144,7 +144,7 @@ describe('teams', () => {
             The expected result is a 500 status.
         */
     describe('given the team is not created successfully', () => {
-      it('should return a 400', async () => {
+      it('should return a 500', async () => {
         const res = await request(server).post('/teams/create').send({
           // Send nothing
         });
