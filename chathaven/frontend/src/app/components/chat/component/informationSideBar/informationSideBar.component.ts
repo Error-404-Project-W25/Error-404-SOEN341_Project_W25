@@ -19,6 +19,7 @@ import { DataService } from '@services/data.service';
 export class InformationSidebarComponent implements OnInit, OnDestroy {
   selectedTeamId: string | null = null;
   selectedChannelId: string | null = null;
+  selectedConversationId: string | null = null;
 
   teamTitle: string = '';
   isDirectMessage: boolean = false;
@@ -54,62 +55,10 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
 
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
-      if (isDirectMessage) {
-        this.teamMemberList = [];
-        this.dataService.currentConversationId.subscribe(
-          async (conversationId) => {
-            if (conversationId !== '') {
-              try {
-                const conversation =
-                  await this.backendService.getConversationById(conversationId);
-                if (conversation) {
-                  const conversationName = conversation.conversationName;
-                  if (conversationName.includes(',')) {
-                    const memberName = conversationName
-                      .split(',')
-                      .map((name) => name.trim());
-                    this.chatMemberList = [];
-                    for (const name of memberName) {
-                      const user = await this.backendService.getUserByUsername(
-                        name
-                      );
-                      if (user) {
-                        this.chatMemberList.push(user);
-                      }
-                    }
-                  }
-                }
-              } catch (error) {
-                console.error(
-                  'Error refreshing conversation member list:',
-                  error
-                );
-              }
-            }
-          }
-        );
+      if (this.isDirectMessage) {
+        this.handleDirectMessage();
       } else {
-        this.dataService.currentChannelId.subscribe(async (channelId) => {
-          if (channelId !== '') {
-            try {
-              const channel = await this.backendService.getChannelById(
-                this.selectedTeamId!,
-                channelId
-              );
-              if (channel) {
-                this.chatMemberList = [];
-                for (const memberId of channel.members) {
-                  const user = await this.backendService.getUserById(memberId);
-                  if (user) {
-                    this.chatMemberList.push(user);
-                  }
-                }
-              }
-            } catch (error) {
-              console.error('Error refreshing channel member list:', error);
-            }
-          }
-        });
+        this.handleChannelMessage();
       }
     });
   }
@@ -128,7 +77,52 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         sender.userId,
         receiver.userId
       );
-      alert('Direct Messages succesfully created');
+      alert('Direct Messages successfully created');
     }
+  }
+
+  private handleDirectMessage() {
+    this.dataService.currentConversationId.subscribe((conversationId) => {
+      this.selectedConversationId = conversationId;
+      this.backendService
+        .getConversationById(this.selectedConversationId)
+        .then((conversation) => {
+          if (conversation) {
+            const memberNames = conversation.conversationName
+              .split(',')
+              .map((name) => name.trim());
+            this.chatMemberList = [];
+            for (const name of memberNames) {
+              this.backendService.getUserByUsername(name).then((user) => {
+                if (user) {
+                  this.chatMemberList.push(user);
+                }
+              });
+            }
+          }
+        });
+    });
+  }
+
+  private handleChannelMessage() {
+    this.dataService.currentChannelId.subscribe((channel) => {
+      this.selectedChannelId = channel;
+      if (this.selectedChannelId) {
+        this.backendService
+          .getChannelById(this.selectedTeamId!, this.selectedChannelId!)
+          .then((channel) => {
+            if (channel) {
+              this.chatMemberList = [];
+              for (const memberId of channel.members) {
+                this.backendService.getUserById(memberId).then((user) => {
+                  if (user) {
+                    this.chatMemberList.push(user);
+                  }
+                });
+              }
+            }
+          });
+      }
+    });
   }
 }

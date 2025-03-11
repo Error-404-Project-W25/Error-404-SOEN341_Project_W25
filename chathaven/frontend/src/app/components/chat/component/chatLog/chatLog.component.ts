@@ -40,33 +40,14 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
     });
-
     dataService.isDirectMessage.subscribe((isDirectMessage) => {
+      this.chatTitle = '';
+      this.conversationId = '';
       this.isDirectMessage = isDirectMessage;
       if (this.isDirectMessage) {
-        this.dataService.currentConversationId.subscribe((conversationId) => {
-          this.conversationId = conversationId;
-          this.backendService
-            .getConversationById(this.conversationId)
-            .then((name) => {
-              this.chatTitle =
-                'Direct Message: ' + name?.conversationName || '';
-            });
-          this.loadMessages();
-        });
+        this.handleDirectMessage();
       } else {
-        this.dataService.currentChannelId.subscribe((channel) => {
-          this.selectedChannelId = channel;
-          if (this.selectedChannelId) {
-            this.selectedChannelId = channel;
-            this.backendService
-              .getChannelById(this.selectedTeamId, this.selectedChannelId)
-              .then((channel) => {
-                this.chatTitle = channel?.name || '';
-                this.conversationId = channel?.conversationId || '';
-              });
-          }
-        });
+        this.handleChannelMessage();
       }
     });
   }
@@ -175,5 +156,35 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     //Implementation for toggInformationSidebar
     console.log('Toggling Information Sidebar');
     // this.isTeamListOpen = !this.isTeamListOpen;
+  }
+
+  private handleDirectMessage() {
+    console.log('Direct Message');
+    this.dataService.currentConversationId.subscribe((conversationId) => {
+      this.conversationId = conversationId;
+      this.backendService
+        .getConversationById(this.conversationId)
+        .then((name) => {
+          this.chatTitle = 'Direct Message: ' + name?.conversationName || '';
+        });
+      this.loadMessages();
+    });
+  }
+
+  private handleChannelMessage() {
+    console.log('Channel Message');
+    this.dataService.currentChannelId.subscribe((channel) => {
+      this.selectedChannelId = channel;
+      if (this.selectedChannelId) {
+        this.backendService
+          .getChannelById(this.selectedTeamId, this.selectedChannelId)
+          .then((channel) => {
+            console.log('Channel:', channel);
+            this.chatTitle = channel?.name || '';
+            this.conversationId = channel?.conversationId || '';
+            this.loadMessages();
+          });
+      }
+    });
   }
 }
