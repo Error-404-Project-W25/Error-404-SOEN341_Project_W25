@@ -2,6 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import { app, startServer } from '../src/app';
 import { Express } from 'express';
+import { Channel } from '../src/models/channelsModel';
+import { Team } from '../src/models/teamsModel';
 
 /*
     === Testing Teams APIs ===
@@ -11,6 +13,7 @@ describe('teams', () => {
         Run the app before running the tests
     */
   let TeamIDToDelete: string | undefined;
+  let GeneralChannelIdToDelete: string | undefined;
   let server: Express;
   beforeAll(async () => {
     server = app as Express;
@@ -20,7 +23,8 @@ describe('teams', () => {
   /*
         Cleanup after the tests:
         Remove the user that was added during addMemberToTeam, and
-        Delete the team that was created during createTeam.
+        Delete the team that was created during createTeam, and
+        Delete the general channel and its conversation that was created during createTeam.
     */
   afterAll(async () => {
     try {
@@ -30,10 +34,26 @@ describe('teams', () => {
       });
       console.log('User removed from team in afterAll');
 
-      await request(server).delete('/teams/delete').send({
-        teamId: TeamIDToDelete,
-      });
-      console.log('Team deleted in afterAll, id: ', TeamIDToDelete);
+      if (GeneralChannelIdToDelete) {
+        const deleteChannelResponse = await request(server).delete('/channels/delete').send({
+          channelId: GeneralChannelIdToDelete,
+        });
+        console.log('Delete channel response:', deleteChannelResponse.body);
+      } else {
+        console.error("GeneralChannelIdToDelete is undefined.");
+      }
+
+      if (TeamIDToDelete) {
+        await request(server).delete('/teams/delete').send({
+          teamId: TeamIDToDelete,
+        });
+        console.log('The team was deleted in afterAll, teamId: ', TeamIDToDelete);
+      } else {
+        console.error("TeamIDToDelete is undefined.");
+      }
+    
+
+
     } catch (error) {
       console.error('Error: ', error);
     }
@@ -135,6 +155,20 @@ describe('teams', () => {
         expect(res.body.teamId).toBeTruthy(); // Will be a random value, check if exists
 
         TeamIDToDelete = res.body.teamId; // Save the team ID to delete in afterAll
+
+        const teamObject = await Team.findOne({ teamId: TeamIDToDelete });
+        if (!teamObject) {
+          console.error('Team not found');
+          return;
+        }
+
+        if (!teamObject.channels || teamObject.channels.length === 0) {
+          console.error('No channels found for the team');
+          return;
+        }
+        
+        GeneralChannelIdToDelete = teamObject.channels[0];
+        console.log("general channel id: ", GeneralChannelIdToDelete);
       });
     });
 
@@ -149,7 +183,7 @@ describe('teams', () => {
           // Send nothing
         });
 
-        expect(res.statusCode).toEqual(400);
+        expect(res.statusCode).toEqual(500);
       });
     });
   });

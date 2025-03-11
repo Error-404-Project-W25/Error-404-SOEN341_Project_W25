@@ -20,7 +20,7 @@ describe('channels', () => {
   /*
         Cleanup after the tests:
         Remove the user that was added during addUserToChannel, and
-        Delete the team that was created during createChannel.
+        Delete the channel and conversation that was created during createChannel.
     */
   afterAll(async () => {
     try {
@@ -30,10 +30,15 @@ describe('channels', () => {
       });
       console.log('User removed from channel in afterAll');
 
-      await request(server).delete('/channels/delete').send({
-        channelId: ChannelIdToDelete,
-      });
-      console.log('Channel deleted in afterAll, id: ', ChannelIdToDelete);
+      if (ChannelIdToDelete) {
+              const deleteChannelResponse = await request(server).delete('/channels/delete').send({
+                channelId: ChannelIdToDelete,
+              });
+              console.log('Channel and conversation deleted in afterAll, channelId: ', ChannelIdToDelete);
+            } else {
+              console.error("ChannelIdToDelete is undefined.");
+            }
+    
     } catch (error) {
       console.error('Error: ', error);
     }

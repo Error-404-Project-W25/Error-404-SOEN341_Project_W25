@@ -86,3 +86,29 @@ export const getConversationById = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Error fetching conversation' });
   }
 };
+
+/**
+ * Delete the conversation with its id
+ * @param req conversationId
+ * @param res returns boolean (true or false)
+ */
+export const deleteConversation = async (conversationId: string): Promise<boolean> => {
+  try {
+    //const { conversationId } = req.body;
+
+    const conversation = await Conversation.findOne({ conversationId });
+    if (!conversation) {
+      console.error({ error: 'Conversation not found' });
+      return false;
+    }
+
+    // delete the conversation from the database
+    await conversation.deleteOne();
+    return true;
+
+  } catch (error) {
+    const errorMessage = (error as Error).message;
+    console.error('Failed to delete conversation:', errorMessage);
+    return false;
+  }
+};
