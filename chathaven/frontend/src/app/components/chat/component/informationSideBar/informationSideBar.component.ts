@@ -25,6 +25,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   isDirectMessage: boolean = false;
   teamMemberList: IUser[] = [];
   chatMemberList: IUser[] = [];
+  requestMemberList: IUser[] = [];
+  activeTab: string = 'team';
 
   constructor(
     private router: Router,
@@ -125,4 +127,12 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  changeTab(tab: string) {
+    this.activeTab = tab;
+  }
+
+  acceptRequest(requestId: string) {}
+
+  declineRequest(requestId: string) {}
 }

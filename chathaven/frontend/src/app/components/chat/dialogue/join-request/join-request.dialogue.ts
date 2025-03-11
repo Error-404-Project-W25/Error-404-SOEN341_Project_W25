@@ -1,0 +1,46 @@
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { BackendService } from '@services/backend.service';
+import { DataService } from '@services/data.service';
+import { UserService } from '@services/user.service';
+
+@Component({
+  selector: 'app-join-request',
+  templateUrl: './join-request.dialogue.html',
+  styleUrls: ['./join-request.dialogue.css', '../../../../../assets/theme.css'],
+})
+export class JoinRequestDialog {
+  isDarkTheme: boolean = false; // Dark theme by default
+  selectedTeamId: string = ''; // Selected team ID
+  selectedChannelId: string = ''; // Selected channel ID
+
+  constructor(
+    public dialogRef: MatDialogRef<JoinRequestDialog>, // Dialog reference
+    @Inject(MAT_DIALOG_DATA)
+    public data: {
+      channelId: string;
+    }, // Injected data (message info)
+    private userService: UserService,
+    private backendService: BackendService,
+    private dataService: DataService
+  ) {
+    this.dataService.currentTeamId.subscribe((teamId) => {
+      this.selectedTeamId = teamId;
+    });
+    this.dataService.isDarkTheme.subscribe((theme) => {
+      this.isDarkTheme = theme; // Set the theme based on the injected data
+      console.log('Theme: ', this.isDarkTheme);
+    });
+  }
+
+  // Close the dialog without performing any action (Cancel)
+  onCancel() {
+    this.dialogRef.close();
+  }
+
+  // Confirm deletion, close the dialog, and pass the message ID back for removal
+  onConfirm() {
+    /*create a request */
+    this.dialogRef.close();
+  }
+}

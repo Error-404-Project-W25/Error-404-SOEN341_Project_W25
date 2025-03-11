@@ -3,51 +3,120 @@
     <div class="member-list-title">Information</div>
   </div>
 
-  <div class="tabs">
-    <div class="tab-2">
-      <label for="tab2-1">Team Member</label>
-      <input
-        id="tab2-1"
-        name="tabs-two"
-        type="radio"
-        checked="checked"
-        readonly
-      />
-      <div class="tab-container">
-        <div class="member-list">
-          <ul>
-            <li *ngFor="let member of teamMemberList" readonly>
+  <div class="tab-container">
+    <div class="radio-inputs">
+      <label class="radio">
+        <input
+          type="radio"
+          name="radio"
+          (click)="changeTab('team')"
+          [checked]="activeTab === 'team'"
+        />
+        <span class="name">Team</span>
+      </label>
+      <label class="radio">
+        <input
+          type="radio"
+          name="radio"
+          (click)="changeTab('chat')"
+          [checked]="activeTab === 'chat'"
+        />
+        <span class="name">Chat</span>
+      </label>
+      <label class="radio">
+        <input
+          type="radio"
+          name="radio"
+          (click)="changeTab('invite')"
+          [checked]="activeTab === 'invite'"
+        />
+        <span class="name">Invite</span>
+      </label>
+      <label class="radio">
+        <input
+          type="radio"
+          name="radio"
+          (click)="changeTab('request')"
+          [checked]="activeTab === 'request'"
+        />
+        <span class="name">Request</span>
+      </label>
+    </div>
+
+    <div class="tab-content" *ngIf="activeTab === 'team'">
+      <h3 style="margin-bottom: 5px">Team Information</h3>
+      <h4 style="margin-bottom: 5px">Description</h4>
+      <h4 style="margin-bottom: 5px">Members</h4>
+      <div class="member-list">
+        <ul>
+          <li *ngFor="let member of teamMemberList" readonly>
+            <div class="user-information">
+              <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">{{ member.username }}</div>
-              <!-- (click) create conversation or menu ??-->
-              <button
-                (click)="createCoversation(member.userId)"
-                class="member-button"
-                readonly
-                title="Start Conversation"
-              >
-                <i class="far fa-comment-alt" style="font-size: 1rem"></i>
-              </button>
-            </li>
-          </ul>
-        </div>
+            </div>
+            <button
+              (click)="createCoversation(member.userId)"
+              class="member-button"
+              readonly
+              title="Start Conversation"
+            >
+              <i class="far fa-comment-alt" style="font-size: 1rem"></i>
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
-    <div class="tab-2">
-      <label for="tab2-2">Chat Member</label>
-      <input id="tab2-2" name="tabs-two" type="radio" readonly />
-      <div class="tab-container">
-        <div class="member-list">
-          <ul>
-            <li *ngFor="let member of chatMemberList" readonly>
+
+    <div class="tab-content" *ngIf="activeTab === 'chat'">
+      <h3 style="margin-bottom: 5px">Channel Information</h3>
+      <h4 style="margin-bottom: 5px">Description</h4>
+      <h4 style="margin-bottom: 5px">Members</h4>
+      <div class="member-list">
+        <ul>
+          <li *ngFor="let member of chatMemberList" readonly>
+            <div class="user-information">
+              <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">{{ member.username }}</div>
-              <!-- <button> -->
-              <!-- (click) create conversation or menu ??-->
-              <!-- <button class="member-button">
-          <i class="far fa-comment-alt" style="font-size: 1rem"></i>
-        </button> -->
-            </li>
-          </ul>
-        </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tab-content" *ngIf="activeTab === 'invite'">
+      <!-- Invite content here -->
+    </div>
+
+    <div class="tab-content" *ngIf="activeTab === 'request'">
+      <h3 style="margin-bottom: 5px">Request to Join Channel</h3>
+      <h4 style="margin-bottom: 5px">Request</h4>
+      <div class="member-list">
+        <ul>
+          <li *ngFor="let member of teamMemberList" readonly>
+            <div class="user-information">
+              <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
+              <div class="member-name">{{ member.username }}</div>
+            </div>
+            <div class="demande-container">
+              <button
+                (click)="acceptRequest(member.userId)"
+                class="accept-button"
+                readonly
+                title="Accept"
+              >
+                <i class="fas fa-check" style="font-size: 1rem"></i> Accept
+              </button>
+              <button
+                (click)="declineRequest(member.userId)"
+                class="decline-button"
+                readonly
+                title="Decline"
+              >
+                <i class="fas fa-times" style="font-size: 1rem"></i> Decline
+              </button>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

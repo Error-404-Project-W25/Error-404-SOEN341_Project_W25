@@ -12,6 +12,7 @@ import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-t
 import { EditChannelDialog } from '../../dialogue/edit-channel/edit-channel.dialogue';
 import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remove-member-team.dialogue';
 import { DataService } from '@services/data.service';
+import { JoinRequestDialog } from '../../dialogue/join-request/join-request.dialogue';
 
 @Component({
   selector: 'chat-channel-sidebar',
@@ -77,7 +78,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         channelId
       );
 
-      if (channel && channel.members.includes(this.userId || '')) {
+      if (channel) {
         this.channelList.push(channel);
       }
     });
@@ -159,10 +160,15 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     this.backendService
       .getChannelById(this.selectedTeamId!, channelId)
       .then((channel) => {
-        if (channel) {
+        if (channel && channel.members.includes(this.userId || '')) {
           this.selectedChannelId = channel.channelId;
           this.dataService.selectChannel(this.selectedChannelId);
           this.dataService.selectConversation(channel.conversationId);
+        } else {
+          // alert('You are not a member of this channel');
+          this.dialog.open(JoinRequestDialog, {
+            data: { channelId: channelId, teamId: this.selectedTeamId },
+          });
         }
       });
   }
