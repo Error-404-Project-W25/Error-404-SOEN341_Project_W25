@@ -56,7 +56,16 @@
       (click)="selectChannel(channel.channelId)"
       readonly
     >
-      <div class="channel-name-container">{{ channel.name }}</div>
+      <div class="channel-name-container">
+        <i
+          class="fa"
+          [ngClass]="
+            channel.members.includes(userId) ? 'fa-hashtag' : 'fa-lock'
+          "
+          style="font-size: 16px; margin-right: 8px"
+        ></i
+        >{{ channel.name }}
+      </div>
       <div class="channel-actions">
         <!--(click) add member to channel-->
         <button
