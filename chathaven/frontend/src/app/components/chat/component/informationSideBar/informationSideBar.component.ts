@@ -80,11 +80,17 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     const receiver = await this.backendService.getUserById(memberId);
     const conversationName = `${sender?.username}, ${receiver?.username}`;
     if (sender && receiver?.userId) {
-      await this.backendService.createDirectMessages(
+      const conversationId = await this.backendService.createDirectMessages(
         conversationName,
         sender.userId,
         receiver.userId
       );
+      this.dataService.selectTeam('');
+      this.dataService.selectChannel('');
+      if (conversationId) {
+        this.dataService.selectConversation(conversationId.conversationId);
+      }
+      this.dataService.toggleIsDirectMessage(true);
       alert('Direct Messages successfully created');
     }
   }

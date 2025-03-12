@@ -53,6 +53,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
       if (isDirectMessage) {
+        console.log('refreshing direct message list');
         this.refreshDirectMessageList();
       } else {
         this.dataService.currentTeamId.subscribe((teamId) => {
@@ -93,6 +94,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         directMessageId
       );
       if (directMessage) {
+        console.log('direct message:', directMessage);
         this.directMessageList.push(directMessage);
       }
     });
