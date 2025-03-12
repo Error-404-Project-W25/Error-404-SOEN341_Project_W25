@@ -13,6 +13,7 @@ export class JoinRequestDialog {
   isDarkTheme: boolean = false; // Dark theme by default
   selectedTeamId: string = ''; // Selected team ID
   selectedChannelId: string = ''; // Selected channel ID
+  channelTitle: string = ''; // Channel title
 
   constructor(
     public dialogRef: MatDialogRef<JoinRequestDialog>, // Dialog reference
@@ -30,8 +31,14 @@ export class JoinRequestDialog {
     this.selectedChannelId = this.data.channelId; // Set the selected channel ID
     this.dataService.isDarkTheme.subscribe((theme) => {
       this.isDarkTheme = theme; // Set the theme based on the injected data
-      console.log('Theme: ', this.isDarkTheme);
     });
+    this.backendService
+      .getChannelById(this.selectedTeamId, this.selectedChannelId)
+      .then((channel) => {
+        if (channel) {
+          this.channelTitle = channel.name; // Set the channel title
+        }
+      });
   }
 
   // Close the dialog without performing any action (Cancel)

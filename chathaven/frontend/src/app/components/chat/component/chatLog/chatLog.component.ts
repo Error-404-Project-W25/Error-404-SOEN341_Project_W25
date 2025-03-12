@@ -133,6 +133,11 @@ export class ChatLogComponent implements OnInit, OnDestroy {
         console.error('No sender found');
         return;
       }
+      if (!this.conversationId) {
+        console.error('No conversation ID found');
+        alert('No conversation ID selected');
+        return;
+      }
 
       console.log('Sending message:', this.newMessage);
       console.log('convo', this.conversationId);
