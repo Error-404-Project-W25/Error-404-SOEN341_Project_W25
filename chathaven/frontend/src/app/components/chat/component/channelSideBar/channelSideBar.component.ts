@@ -71,16 +71,19 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     this.teamTitle = selectedTeam?.teamName || '';
     let channelListId = selectedTeam?.channels || [];
     this.channelList = [];
-    channelListId.forEach(async (channelId) => {
+
+    // Fetch all channels without filtering by membership
+    for (const channelId of channelListId) {
       const channel = await this.backendService.getChannelById(
         this.selectedTeamId!,
         channelId
       );
 
-      if (channel && channel.members.includes(this.userId || '')) {
+      if (channel) {
+        // Add all channels to the list, regardless of membership
         this.channelList.push(channel);
       }
-    });
+    }
   }
 
   refreshDirectMessageList() {
@@ -170,4 +173,24 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   selectDirectMessage(directMessageId: string): void {
     this.dataService.selectConversation(directMessageId);
   }
+
+  isChannelMember(channel: IChannel): boolean {
+    return channel.members.includes(this.userId || '');
+  }
+
+  isPrivateChannel(channel: IChannel): boolean {
+    // Implement your logic to determine if a channel is private
+    // For example, check the channel name or another property
+    return channel.name.toLowerCase().includes('private');
+  }
+
+  handleChannelSelection(channel: IChannel): void {
+    if (this.isPrivateChannel(channel) && !this.isChannelMember(channel)) {
+      // Maybe show a tooltip/message that this is a private channel
+      return;
+    }
+
+    this.selectChannel(channel.channelId);
+  }
 }
+
