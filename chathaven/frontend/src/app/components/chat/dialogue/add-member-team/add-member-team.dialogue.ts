@@ -79,6 +79,18 @@ export class AddTeamMemberDialog {
           memberId,
           this.data.selectedTeam
         );
+        const team = await this.backendService.getTeamById(
+          this.data.selectedTeam
+        );
+        if (team && team.channels && team.channels.length > 0) {
+          const firstChannelId = team.channels[0];
+          await this.backendService.addUserToChannel(
+            this.data.selectedTeam,
+            firstChannelId,
+            memberId
+          );
+        }
+        // this.backendService.addMembertoChannel(memberId, this.data.selectedTeam);
         if (response) {
           console.log('Added member:', memberId);
         } else {
