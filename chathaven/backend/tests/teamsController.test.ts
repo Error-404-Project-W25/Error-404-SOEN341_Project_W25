@@ -10,10 +10,10 @@ import { Team } from '../src/models/teamsModel';
 */
 describe('teams', () => {
   /*
-        Run the app before running the tests
-    */
-  let TeamIDToDelete: string | undefined;
-  let GeneralChannelIdToDelete: string | undefined;
+      Run the app before running the tests
+  */
+  let teamIDToDelete: string | undefined;
+  let generalChannelIdToDelete: string | undefined;
   let server: Express;
   beforeAll(async () => {
     server = app as Express;
@@ -21,41 +21,55 @@ describe('teams', () => {
   });
 
   /*
-        Cleanup after the tests:
-        Remove the user that was added during addMemberToTeam, and
-        Delete the team that was created during createTeam, and
-        Delete the general channel and its conversation that was created during createTeam.
-    */
+      Cleanup after the tests:
+      Remove the user that was added during addMemberToTeam, and
+      Delete the general channel and its conversation that was created during createTeam, and
+      Delete the team that was created during createTeam.
+  */
   afterAll(async () => {
     try {
-      await request(server).post('/teams/removeMember').send({
+
+      // Remove the user 
+      const removeResponse = await request(server).post('/teams/removeMember').send({
         teamId: 'JEST-TESTTEAMID-123',
         memberId: 'JEST-TESTUSERID-456',
       });
-      console.log('User removed from team in afterAll');
-
-      if (GeneralChannelIdToDelete) {
-        const deleteChannelResponse = await request(server).delete('/channels/delete').send({
-          channelId: GeneralChannelIdToDelete,
-        });
-        console.log('Delete channel response:', deleteChannelResponse.body);
+      if (removeResponse.body.success === true) {
+        console.log('User removed from team in afterAll');
       } else {
-        console.error("GeneralChannelIdToDelete is undefined.");
+        console.error("User could not removed during afterAll");
       }
 
-      if (TeamIDToDelete) {
-        await request(server).delete('/teams/delete').send({
-          teamId: TeamIDToDelete,
+      // Delete the general channel and conversation
+      if (generalChannelIdToDelete) {
+        const deleteChannelResponse = await request(server).delete('/channels/delete').send({
+        channelId: generalChannelIdToDelete,
         });
-        console.log('The team was deleted in afterAll, teamId: ', TeamIDToDelete);
+        if (deleteChannelResponse.body.success === true) {
+          console.log(`General channel ${generalChannelIdToDelete} has been deleted in afterAll`);
+        } else {
+          console.error(`General channel ${generalChannelIdToDelete} could not be deleted in afterAll`);
+        }
+      } else {
+        console.error(`GeneralChannelIdToDelete (${generalChannelIdToDelete}) is undefined`);
+      }
+
+      // Delete the team
+      if (teamIDToDelete) {
+        const deleteTeamResponse = await request(server).delete('/teams/delete').send({
+          teamId: teamIDToDelete,
+        });
+        if (deleteTeamResponse.body.success === true) {
+          console.log(`The team ${teamIDToDelete} was deleted in afterAll`);
+        } else {
+          console.error(`Team ${teamIDToDelete} could not be deleted in afterAll`);
+        }
       } else {
         console.error("TeamIDToDelete is undefined.");
       }
-    
-
 
     } catch (error) {
-      console.error('Error: ', error);
+      console.error('afterAll error: ', error);
     }
   });
 
@@ -98,10 +112,10 @@ describe('teams', () => {
     */
   describe('getTeamById', () => {
     /*
-            Test Case 1: The team ID does not exist
-            The team ID used is a random one that does not exist in the database.
-            The expected result is a 404 status.
-        */
+        Test Case 1: The team ID does not exist
+        The team ID used is a random one that does not exist in the database.
+        The expected result is a 404 status.
+    */
     describe('given the team does not exist', () => {
       it('should return a 404', async () => {
         const teamId = 'teamId-doesnotexist-123';
@@ -112,10 +126,10 @@ describe('teams', () => {
     });
 
     /*
-            Test Case 2: The team ID exists
-            The team ID used is one that exists in the database & used exclusively for testing.
-            The expected result is a 200 status and the team object.
-        */
+        Test Case 2: The team ID exists
+        The team ID used is one that exists in the database & used exclusively for testing.
+        The expected result is a 200 status and the team object.
+    */
     describe('given the team does exist', () => {
       it('should return a 200 status and the team object', async () => {
         const teamId = 'JEST-TESTTEAMID-123';
@@ -129,14 +143,14 @@ describe('teams', () => {
   });
 
   /*
-        === Test createTeam() ===
-    */
+      === Test createTeam() ===
+  */
   describe('createTeam', () => {
     /*
-            Test Case 1: The team is created successfully
-            The team name, description, and user ID are provided.
-            The expected result is a 201 status and the new team's ID.
-        */
+        Test Case 1: The team is created successfully
+        The team name, description, and user ID are provided.
+        The expected result is a 201 status and the new team's ID.
+    */
     describe('given the team is created successfully', () => {
       it("should return the new ITeam's id", async () => {
         const teamName = 'jest-create-team';
@@ -154,9 +168,9 @@ describe('teams', () => {
         expect(res.statusCode).toEqual(201);
         expect(res.body.teamId).toBeTruthy(); // Will be a random value, check if exists
 
-        TeamIDToDelete = res.body.teamId; // Save the team ID to delete in afterAll
+        teamIDToDelete = res.body.teamId; // Save the team ID to delete in afterAll
 
-        const teamObject = await Team.findOne({ teamId: TeamIDToDelete });
+        const teamObject = await Team.findOne({ teamId: teamIDToDelete });
         if (!teamObject) {
           console.error('Team not found');
           return;
@@ -167,16 +181,16 @@ describe('teams', () => {
           return;
         }
         
-        GeneralChannelIdToDelete = teamObject.channels[0];
-        console.log("general channel id: ", GeneralChannelIdToDelete);
+        generalChannelIdToDelete = teamObject.channels[0];
+        console.log("general channel id: ", generalChannelIdToDelete);
       });
     });
 
     /*
-            Test Case 2: The team is not created successfully
-            No inputs are provided.
-            The expected result is a 500 status.
-        */
+        Test Case 2: The team is not created successfully
+        No inputs are provided.
+        The expected result is a 500 status.
+    */
     describe('given the team is not created successfully', () => {
       it('should return a 500', async () => {
         const res = await request(server).post('/teams/create').send({
@@ -189,14 +203,14 @@ describe('teams', () => {
   });
 
   /*
-        === Test addMemberToTeam() ===
-    */
+      === Test addMemberToTeam() ===
+  */
   describe('addMemberToTeam', () => {
     /*
-                Test Case 1: The member is added successfully
-                The team ID and member ID are provided, both exist in the DB aand are exclusively for testing.
-                The expected result is a success message.
-            */
+        Test Case 1: The member is added successfully
+        The team ID and member ID are provided, both exist in the DB aand are exclusively for testing.
+        The expected result is a success message.
+    */
     describe('given the member is added successfully', () => {
       it('should return a success message', async () => {
         const teamId = 'JEST-TESTTEAMID-123';
@@ -212,10 +226,10 @@ describe('teams', () => {
     });
 
     /*
-                Test Case 2: The member is not added successfully
-                No inputs are provided.
-                The expected result is a 404 status.
-            */
+        Test Case 2: The member is not added successfully
+        No inputs are provided.
+        The expected result is a 404 status.
+    */
     describe('given the member is not added successfully', () => {
       it('should return a 500', async () => {
         const res = await request(server).post('/teams/addMember').send({

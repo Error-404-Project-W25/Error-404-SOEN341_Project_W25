@@ -303,7 +303,7 @@ export const removeMemberFromChannel = async (req: Request, res: Response) => {
 /**
  * Delete a channel from the database
  * @param req channelId
- * @param res success message or error message
+ * @param res success or error
  */
 export const deleteChannel = async (req: Request, res: Response) => {
   try {
@@ -342,11 +342,7 @@ export const deleteChannel = async (req: Request, res: Response) => {
     // delete the channel from the database
     await channel.deleteOne();
 
-    res.status(201).json({
-      message: 'The channel and conversation have been deleted successfully',
-      channelId: channelId,
-      conversationId: conversation
-    });
+    res.json({ success: true });
 
   } catch (error) {
     const errorMessage = (error as Error).message;
