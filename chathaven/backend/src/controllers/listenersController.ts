@@ -2,104 +2,76 @@ import { Request, Response } from 'express';
 import { Channel } from '../models/channelsModel';
 import { Team } from '../models/teamsModel';
 import { createSession } from 'better-sse';
-import { IChannel, ITeam } from '@shared/interfaces';
 import { User } from '../models/userModel';
+import { SSEUpdatePayload, SSEUpdateCategory } from '@shared/sse-updates.types';
+
+type WatchPipeline = {
+  model: typeof Team | typeof Channel | typeof User;
+  category: SSEUpdateCategory;
+  match: Record<string, string>;
+};
 
 /**
- * Watch for user being added to new Team in the database
- * Send the new ITeam to the client via SSE
+ * Watch for changes in Team, Channel, and User collections in the database
+ * Send updates to the client via SSE when the user is involved in the changes
  *
  * @param req userId
  */
-export const addedToTeamListener = async (req: Request, res: Response) => {
+export const watchChanges = async (req: Request, res: Response) => {
   try {
     const userId: string = req.body.userId;
     const session = await createSession(req, res);
 
-    const pipeline = [{ $match: { 'fullDocument.members': userId } }]; // Look for the userId in the members array
+    const pipelines: WatchPipeline[] = [
+      {
+        model: Team,
+        category: 'team',
+        match: { 'fullDocument.members': userId },
+      },
+      {
+        model: Channel,
+        category: 'channel',
+        match: { 'fullDocument.members': userId },
+      },
+      {
+        model: User,
+        category: 'user',
+        match: { 'fullDocument.userId': userId },
+      },
+    ];
 
-    Team.watch(pipeline, { fullDocument: 'updateLookup' }).on(
-      'change',
-      (data) => {
-        const teamData: ITeam = data.fullDocument as ITeam;
-        session.push({
-          newTeam: JSON.stringify(teamData),
+    pipelines.forEach(({ model, category, match }) => {
+      const pipeline = [
+        { $match: match },
+        { $project: { 'updateDescription.updatedFields': 1, fullDocument: 1 } },
+      ];
+
+      // Based on the structure of the update, extract the type and id of the updated object
+      model
+        .watch(pipeline, { fullDocument: 'updateLookup' })
+        .on('change', (data) => {
+          const updateObject = Object.entries(
+            data.updateDescription?.updatedFields || {}
+          )
+            .filter(([key]) => /\.\d+$/.test(key))
+            .map(([field, id]) => ({
+              field: field.split('.')[0],
+              id: id as string,
+            }))[0];
+
+          if (!updateObject) return; // Skip if no valid updates are found
+
+          session.push({
+            updateCategory: category,
+            updatedField: updateObject.field,
+            updatedObjectId: updateObject.id,
+          } as SSEUpdatePayload);
         });
-      }
-    );
+    });
   } catch (error) {
-    const errorMessage = (error as Error).message;
     res.status(500).json({
-      error: 'Failed to listen to Team changes',
-      details: errorMessage,
+      error: 'Failed to listen to changes',
+      details: (error as Error).message,
     });
   }
 };
-
-/**
- * Watch for changes to the user's Channels in the database
- * Send the new IChannel to the client via SSE
- *
- * @param req userId
- */
-export const addedToChannelListener = async (req: Request, res: Response) => {
-  try {
-    const userId: string = req.body.userId;
-    const session = await createSession(req, res);
-
-    const pipeline = [{ $match: { 'fullDocument.members': userId } }];
-
-    Channel.watch(pipeline, { fullDocument: 'updateLookup' }).on(
-      'change',
-      (data) => {
-        const channelData: IChannel = data.fullDocument as IChannel;
-        session.push({
-          newChannel: JSON.stringify(channelData),
-        });
-      }
-    );
-  } catch (error) {
-    const errorMessage = (error as Error).message;
-    res.status(500).json({
-      error: 'Failed to listen to Channel changes',
-      details: errorMessage,
-    });
-  }
-};
-
-/**
- * Watch for user being added to a direct message Conversation in the database
- * Send the changes to the client via SSE
- *
- * @param req userId
- */
-export const addedToDirectMessageListener = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-    const userId: string = req.body.userId;
-    const session = await createSession(req, res);
-
-    const pipeline = [{ $match: { 'fullDocument.userId': userId } }];
-
-    User.watch(pipeline, { fullDocument: 'updateLookup' }).on(
-      'change',
-      (data) => {
-        const directMessageIds: string[] = data.fullDocument.directMessages;
-        const newDirectMessageId =
-          directMessageIds[directMessageIds.length - 1];
-
-        session.push({ newDirectMessageId: newDirectMessageId }); // Can get the Conversation from the newDirectMessageId
-      }
-    );
-  } catch (error) {
-    const errorMessage = (error as Error).message;
-    res.status(500).json({
-      error: 'Failed to listen to Conversation changes',
-      details: errorMessage,
-    });
-  }
-};
-
-// TODO: add listeners for changes (such as other members joining or other channels being created) to Teams / Channels that the user is a member of
