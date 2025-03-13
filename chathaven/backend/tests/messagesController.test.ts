@@ -45,12 +45,10 @@ describe('messages', () => {
     await Conversation.deleteOne({ conversationId: 'JEST-TESTCONVERSATIONID-123' });
     console.log('Conversation deleted: JEST-TESTCONVERSATIONID-123');
 
-    await Messages.deleteOne({ messageId: 'JEST-TESTMESSAGEID-123' });
-    console.log('Message deleted: JEST-TESTMESSAGEID-123');
   });
 
 //getMessages
-  
+
   /*
       === Test sendMessage() ===
   */
@@ -75,13 +73,13 @@ describe('messages', () => {
           .post('/messages/send')
           .send({
             content: "Hello",
-            sender: "User1",
+            senderId: "User1",
             conversationId: "JEST-TESTCONVERSATIONID-123"
           });
 
         expect(res.status).toEqual(200);
         expect(res.body.success).toBe(true);
-        console.log('Message sent successfully:', res.body);
+        console.log('Message sent successfully:', res.body.success);
       });
     });
 
@@ -92,13 +90,64 @@ describe('messages', () => {
           .post('/messages/send')
           .send({
             content: "Hello",
-            sender: "User1",
+            senderId: "User1",
             conversationId: "nonexistent-conversation"
           });
 
         expect(res.status).toEqual(200);  // Success even if the conversation doesn't exist
         expect(res.body.success).toBe(true);
         console.log('Attempted to send message to nonexistent conversation');
+      });
+    });
+  });
+
+  /*
+       === Test getMessages() ===
+   */
+  describe('getMessages', () => {
+
+    // Test case for missing conversation Id
+    describe('given missing conversation Id', () => {
+      it("should return a 400 error when conversationId is missing", async () => {
+        const res = await request(server)
+          .get('/messages/get/undefined'); // This will match your route but pass an empty parameter.
+
+        expect(res.status).toEqual(400);
+        expect(res.body.error).toBe('Missing conversationId');
+      });
+    });
+
+    // Test case for conversation not found
+    describe('given conversation not found', () => {
+      it("should return a 404 error", async () => {
+        const nonExistentId = "conversationId-doesnotexit-123";
+        const res = await request(server)
+          .get(`/messages/get/${nonExistentId}`);
+
+        expect(res.status).toEqual(404);
+        expect(res.body.error).toBe('Conversation not found');
+      });
+    });
+
+    // Test case for successfully finding a conversation
+    describe('given the conversation id is found', () => {
+      it("should return the list of messages in the conversation", async () => {
+        const res = await request(server)
+          .get(`/messages/get/JEST-TESTCONVERSATIONID-123`);
+
+        expect(res.status).toEqual(200);
+        expect(res.body).toHaveProperty('messages');
+        expect(Array.isArray(res.body.messages)).toBe(true);
+
+        // Verify the test message is included in the response
+        const testMessage = res.body.messages.find(
+          (msg: { messageId: string }) => msg.messageId === 'JEST-TESTMESSAGEID-123'
+        );
+        expect(testMessage).toBeDefined();
+        expect(testMessage.content).toBe('Test message');
+        expect(testMessage.sender).toBe('User1');
+
+        console.log('Messages retrieved successfully:', res.body.messages);
       });
     });
   });
