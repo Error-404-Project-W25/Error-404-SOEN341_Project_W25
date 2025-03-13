@@ -52,6 +52,7 @@
   <div class="channel-list" id="channel-list" *ngIf="!isDirectMessage">
     <div
       class="channelList-dropdown-content-container"
+      [ngStyle]="{ opacity: channel.members.includes(userId) ? 1 : 0.5 }"
       *ngFor="let channel of channelList"
       (click)="selectChannel(channel.channelId)"
       readonly
@@ -70,6 +71,7 @@
         <!--(click) add member to channel-->
         <button
           class="channel-button"
+          [disabled]="!channel.members.includes(userId)"
           (click)="
             openAddMemberChannelDialog(channel); $event.stopPropagation()
           "
@@ -81,6 +83,7 @@
         <!-- (click) open channel setting -->
         <button
           class="channel-button"
+          [disabled]="!channel.members.includes(userId)"
           (click)="openEditChannelDialog(channel)"
           readonly
           title="Channel Settings"
