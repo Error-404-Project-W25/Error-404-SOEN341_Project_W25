@@ -9,8 +9,8 @@
   height: 100%;
   justify-content: horizontal;
   margin: 0;
-  max-width: 15rem;
-  min-width: 15rem;
+  max-width: 20rem;
+  min-width: 20rem;
   padding-bottom: 10px;
   padding-top: 7px;
   width: auto;
@@ -194,13 +194,13 @@
   color: var(--channel-list-text);
   cursor: pointer;
   display: flex;
-  margin: 1px 0;
+  margin: 0 0;
   max-height: 3rem;
   max-width: 95%;
   min-height: 3rem;
   min-width: 95%;
   overflow: hidden;
-  padding: 5px;
+  padding: 2px;
   text-align: center;
   text-decoration: none;
   white-space: nowrap;
@@ -235,7 +235,8 @@
   color: var(--add-team-button-hover);
 }
 .channel-name-container {
-  width: 60%;
+  gap: 5px;
+  width: 75%;
   display: flex;
   flex-direction: row;
   /* align-items: center; */
@@ -249,4 +250,36 @@
 .channel-actions {
   display: flex;
   /* gap: 2px; */
+}
+
+.notification {
+  /* position: absolute; */
+  position: relative;
+  top: 0;
+  right: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.75rem;
+  height: 0.75rem;
+  width: 0.75rem;
+  display: flex;
+  padding: 0;
+  margin: 0;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+  color: white;
+  border: 2px solid red;
+  border-radius: 50%;
+  background-color: red;
+  animation: 1.5s pulse infinite ease-in-out;
+}
+.notification-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-width: 1rem;
+  min-height: 1rem;
+  background-color: inherit;
 }

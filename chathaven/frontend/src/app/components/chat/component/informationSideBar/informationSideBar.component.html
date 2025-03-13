@@ -32,8 +32,8 @@
         />
         <span class="name"
           >Invite
-          <!-- replace "chatMemberList" by request list -->
-          <!-- <div *ngIf="chatMemberList.length" class="notification">{{chatMemberList.length + 1}}</div> -->
+          <!-- replace "chatMemberList" by invite list -->
+          <div *ngIf="chatMemberList.length" class="notification">{{chatMemberList.length + 1}}</div>
         </span>
       </label>
       <label class="radio" *ngIf="!isDirectMessage">
