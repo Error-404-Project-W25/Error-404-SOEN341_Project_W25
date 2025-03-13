@@ -431,4 +431,57 @@ export class BackendService {
     }
     return undefined;
   }
+
+
+////////////////////// INBOX //////////////////////
+async response (
+  userIdInboxBelongsTo: string,
+  inboxId: string,
+  decision: string // accept or decline
+): Promise<boolean> {
+  try {
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean; error?: string }>(
+        `${this.backendURL}/inbox/response`,
+        { userIdInboxBelongsTo, inboxId, decision }
+      )
+    );
+
+    if (response.success) {
+      return true;
+    } else {
+      console.error('Server error:', response.error);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error responding to inbox entry:', error);
+    return false;
+  }
+}
+
+async requestToJoin (
+  type: string,
+  userIdThatYouWantToAdd: string,
+  channelId: string
+): Promise<string | undefined> {
+  try {
+    const response = await firstValueFrom(
+      this.http.post<{ message?: string; inboxId?: string; error?: string; details?: string }>(
+        `${this.backendURL}/inbox/request`,
+        { type, userIdThatYouWantToAdd, channelId }
+      )
+    );
+
+    if (response.inboxId) {
+      return response.inboxId;
+    } else {
+      console.error('Server error:', response.error);
+      console.error('Server error details:', response.details);
+      return undefined;
+    }
+  } catch (error) {
+    console.error('Error requesting to join:', error);
+    return undefined;
+  }
+}
 }

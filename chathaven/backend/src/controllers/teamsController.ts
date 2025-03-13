@@ -4,6 +4,7 @@ import { ITeam } from '@shared/interfaces';
 import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
 import { createGeneralChannel } from './channelsController';
+import { Channel } from '../models/channelsModel';
 
 /**
  * Get all teams in the database
@@ -112,6 +113,13 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
       return;
     } else {
       team.members.push(memberId);
+      const generalChannel = await Channel.findOne({ channelId: team.channels[0] });
+      if (!generalChannel) {
+        res.status(404).json({ error: 'General channel not found' });
+        return;
+      }
+      generalChannel.members.push(memberId);
+      await generalChannel.save();
     }
 
     const updatedTeam: ITeam = await team.save();
@@ -124,6 +132,7 @@ export const addMemberToTeam = async (req: Request, res: Response) => {
 
     memberToAdd.teams.push(updatedTeam.teamId);
     await memberToAdd.save();
+     
 
     res.json({ success: true });
   } catch (error) {
