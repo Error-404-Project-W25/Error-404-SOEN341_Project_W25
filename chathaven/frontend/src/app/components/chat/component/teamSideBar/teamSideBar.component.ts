@@ -28,6 +28,7 @@ export class TeamSidebarComponent {
   isDarkTheme = true;
   isDirectMessage = false;
   selectedTeamId: string = '';
+  inviteMemberList: IUser[] = [];
 
   constructor(
     private router: Router,
@@ -46,7 +47,16 @@ export class TeamSidebarComponent {
   }
 
   // Initialize component and subscribe to user changes
-  ngOnInit() {
+  async ngOnInit() {
+    const user = this.userService.getUser();
+    if (user) {
+      const invites = await Promise.all(
+      user.inbox
+        .filter(inbox => inbox.type === 'invite')
+        .map(inbox => this.backendService.getUserById(inbox.userIdThatYouWantToAdd))
+      );
+      this.inviteMemberList = invites.filter(userToAdd => userToAdd !== null) as IUser[];
+    }
     this.refreshTeamList();
   }
 

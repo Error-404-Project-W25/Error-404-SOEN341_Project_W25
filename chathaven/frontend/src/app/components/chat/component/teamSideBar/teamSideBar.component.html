@@ -13,7 +13,7 @@
         readonly
       >
       </i>
-      <div class="notification">0</div>
+      <div *ngIf="inviteMemberList.length > 0" class="notification">{{ inviteMemberList.length }}</div>
     </button>
     <!-- (click) create team  -->
     <button

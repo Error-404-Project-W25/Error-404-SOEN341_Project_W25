@@ -269,7 +269,7 @@
   justify-items: center;
   text-align: center;
   color: white;
-  border: 2px solid red;
+  border: 2px solid darkred;
   border-radius: 50%;
   background-color: red;
   animation: 1.5s pulse infinite ease-in-out;

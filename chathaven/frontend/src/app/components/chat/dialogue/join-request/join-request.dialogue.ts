@@ -49,13 +49,17 @@ export class JoinRequestDialog {
 
   // Confirm deletion, close the dialog, and pass the message ID back for removal
   onConfirm() {
-    this.backendService
-      .getChannelById(this.selectedTeamId, this.selectedChannelId)
-      .then((channel) => {
-        if (channel) {
-          console.log('Channel: ', channel);
-          console.log('Channel Admins: ', channel.members[0]);
-        }
-      });
+    console.log('Confirm');
+    const user = this.userService.getUser(); // Get the current user ID
+    if (user?.userId) {
+      this.backendService.requestToJoin(
+        'request',
+        user.userId,
+        this.selectedChannelId
+      );
+    } else {
+      console.error('User ID is undefined');
+    }
+    this.dialogRef.close(this.data.channelId);
   }
 }

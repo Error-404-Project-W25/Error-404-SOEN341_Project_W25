@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -6,7 +6,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { IUser } from '@shared/interfaces';
+import { IUser, IInbox } from '@shared/interfaces';
 import { DataService } from '@services/data.service';
 
 @Component({
@@ -17,6 +17,8 @@ import { DataService } from '@services/data.service';
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
 export class InformationSidebarComponent implements OnInit, OnDestroy {
+  @Input() userId: string = '';
+
   selectedTeamId: string | null = null;
   selectedChannelId: string | null = null;
   selectedConversationId: string | null = null;
@@ -26,8 +28,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   isDirectMessage: boolean = false;
   teamMemberList: IUser[] = [];
   chatMemberList: IUser[] = [];
-  requestMemberList: IUser[] = [];
-  testList: IUser[] = [];
+  requestList: IInbox[] = [];
+  inviteList: IInbox[] = [];
 
   teamDescription: string = '';
   chatDescription: string = '';
@@ -72,7 +74,22 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const user = this.userService.getUser();
+    if (user) {
+      user.inbox.forEach(async (inbox) => {
+        if (inbox.type === 'request') {
+          this.requestList.push(inbox);
+          console.log('Request list: ', this.requestList);
+        } else if (inbox.type === 'invite') {
+          this.inviteList.push(inbox);
+          console.log('Invite List: ', this.inviteList);
+        }
+      });
+        console.log('Request list: ', this.requestList);
+        console.log('Invite List: ', this.inviteList);
+    }
+  }
 
   ngOnDestroy() {}
 
@@ -150,11 +167,31 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     this.activeTab = tab;
   }
 
-  acceptRequest(userId: string) {
-    console.log('Accepting request from:', userId);
+  acceptRequest(request: IInbox) {
+    console.log('Accepting request: ', request);
+    this.backendService.response(this.userId, request.inboxId, 'accept');
   }
 
-  declineRequest(userId: string) {
-    console.log('Declining request from:', userId);
+  declineRequest(request: IInbox) {
+    console.log('Declining request:', request);
+    this.backendService.response(this.userId, request.inboxId, 'decline');
+  }
+
+  acceptInvite(invite: IInbox) {
+    console.log('Accepting invite: ', invite);
+    this.backendService.response(
+      invite.userIdThatYouWantToAdd,
+      invite.inboxId,
+      'accept'
+    );
+  }
+
+  declineInvite(invite: IInbox) {
+    console.log('Declining invite:', invite);
+    this.backendService.response(
+      invite.userIdThatYouWantToAdd,
+      invite.inboxId,
+      'decline'
+    );
   }
 }

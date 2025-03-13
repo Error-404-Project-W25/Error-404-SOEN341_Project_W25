@@ -223,12 +223,23 @@ h3 h4 {
   border-bottom-right-radius: 0.5rem;
 }
 
-.user-information {
+.user-information  {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+
+.inbox-information {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 15rem;
+  overflow: hidden;
+  text-align: left;
 }
 
 .accept-button {
@@ -265,7 +276,7 @@ h3 h4 {
   gap: 10px;
 }
 
-.notification{
+.notification {
   position: absolute;
   top: 0;
   right: 0;
@@ -281,7 +292,7 @@ h3 h4 {
   justify-items: center;
   text-align: center;
   color: white;
-  border: 2px solid red;
+  border: 3px solid red;
   border-radius: 50%;
   background-color: red;
   animation: 1.5s pulse infinite ease-in-out;
