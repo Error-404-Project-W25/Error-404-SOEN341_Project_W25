@@ -39,3 +39,10 @@ export interface IConversation {
   conversationName: string;
   messages: IMessage[];
 }
+
+export interface IInbox {
+  inboxId: string;
+  type: string;
+  channelId: string;
+  userThatYouWantToAdd: string;
+}
