@@ -458,4 +458,30 @@ async response (
     return false;
   }
 }
+
+async requestToJoin (
+  type: string,
+  userIdThatYouWantToAdd: string,
+  channelId: string
+): Promise<string | undefined> {
+  try {
+    const response = await firstValueFrom(
+      this.http.post<{ message?: string; inboxId?: string; error?: string; details?: string }>(
+        `${this.backendURL}/inbox/request`,
+        { type, userIdThatYouWantToAdd, channelId }
+      )
+    );
+
+    if (response.inboxId) {
+      return response.inboxId;
+    } else {
+      console.error('Server error:', response.error);
+      console.error('Server error details:', response.details);
+      return undefined;
+    }
+  } catch (error) {
+    console.error('Error requesting to join:', error);
+    return undefined;
+  }
+}
 }
