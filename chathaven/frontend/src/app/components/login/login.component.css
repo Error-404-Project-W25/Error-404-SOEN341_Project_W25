@@ -421,9 +421,14 @@ nav {
 }
 
 use{
-  animation:move-forever 16s linear infinite;
-  &:nth-child(2){ animation-duration:20s; animation-delay:-12s; }
-  &:nth-child(1){ animation-duration:40s}
+  animation: move-forever 32s linear infinite;
+  &:nth-child(2) {
+    animation-duration: 40s;
+    animation-delay: -24s;
+  }
+  &:nth-child(1) {
+    animation-duration: 80s;
+  }
 }
 
 @keyframes move-forever{
@@ -434,7 +439,7 @@ use{
 
 /* layout only*/
 svg {
-  width: 100vw;
+  width: 2500px;
   height: 100vh;
   z-index: -1;
 }
