@@ -25,6 +25,7 @@ export interface IUser {
   role: 'admin' | 'user';
   teams: string[]; // teamId
   directMessages: string[];
+  inbox: IInbox[];
 }
 
 export interface IMessage {
@@ -44,5 +45,5 @@ export interface IInbox {
   inboxId: string;
   type: string;
   channelId: string;
-  userThatYouWantToAdd: string;
+  userIdThatYouWantToAdd: string;
 }

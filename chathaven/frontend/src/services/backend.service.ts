@@ -431,4 +431,31 @@ export class BackendService {
     }
     return undefined;
   }
+
+
+////////////////////// INBOX //////////////////////
+async response (
+  userIdInboxBelongsTo: string,
+  inboxId: string,
+  decision: string // accept or decline
+): Promise<boolean> {
+  try {
+    const response = await firstValueFrom(
+      this.http.post<{ success: boolean; error?: string }>(
+        `${this.backendURL}/inbox/response`,
+        { userIdInboxBelongsTo, inboxId, decision }
+      )
+    );
+
+    if (response.success) {
+      return true;
+    } else {
+      console.error('Server error:', response.error);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error responding to inbox entry:', error);
+    return false;
+  }
+}
 }

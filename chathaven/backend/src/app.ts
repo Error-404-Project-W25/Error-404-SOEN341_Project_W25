@@ -12,6 +12,7 @@ import teamsRoutes from './routes/teamsRoutes';
 import userRoutes from './routes/userRoutes';
 import conversationsRoutes from './routes/conversationsRoutes';
 import messagesRoutes from './routes/messagesRoutes';
+import inboxRoutes from './routes/inboxRoutes';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { sendMessage, getMessages } from './controllers/messagesController';
@@ -104,6 +105,7 @@ const startServer = async () => {
     app.use('/users', userRoutes);
     app.use('/conversations', conversationsRoutes);
     app.use('/messages', messagesRoutes);
+    app.use('/inbox', inboxRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
 
