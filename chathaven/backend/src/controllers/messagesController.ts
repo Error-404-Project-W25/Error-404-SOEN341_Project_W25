@@ -78,7 +78,9 @@ export const deleteMessage = async (req: Request, res: Response) => {
 export const getMessages = async (req: Request, res: Response) => {
   try {
     const { conversationId } = req.params;
-    if (!conversationId) {
+    console.log('Received conversationId:', conversationId);  // Debugging line
+
+    if (!conversationId || conversationId === 'undefined') {
       res.status(400).json({ error: 'Missing conversationId' });
       return;
     }
