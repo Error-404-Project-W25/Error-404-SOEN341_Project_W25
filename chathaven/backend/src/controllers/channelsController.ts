@@ -6,6 +6,7 @@ import { Team } from '../models/teamsModel';
 import { User } from '../models/userModel';
 import { Conversation } from '../models/conversationsModel';
 import { io } from '../app';
+import { deleteConversation } from './conversationsController';
 
 /**
  * Create a channel
@@ -83,6 +84,7 @@ export const createChannel = async (req: Request, res: Response) => {
     res.status(201).json({
       message: 'The channel and conversation has been created successfully',
       channelId: savedChannel.channelId,
+      conversationId: savedChannel.conversationId
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -301,7 +303,7 @@ export const removeMemberFromChannel = async (req: Request, res: Response) => {
 /**
  * Delete a channel from the database
  * @param req channelId
- * @param res success message or error message
+ * @param res success or error
  */
 export const deleteChannel = async (req: Request, res: Response) => {
   try {
@@ -323,10 +325,25 @@ export const deleteChannel = async (req: Request, res: Response) => {
       t.channels = t.channels.filter((c) => c !== channelId);
       await t.save();
     }
+ 
+    // delete the conversation object that was created with the channel
+    const conversation = channel.conversationId;
+    if (!conversation) {
+      res.status(404).json({ error: "Conversation not found "});
+      return;
+    } else {
+      const deletedConversation = await deleteConversation(conversation);
+      if (!deletedConversation) {
+        res.status(404).json({ error: "Conversation could not be deleted" });
+        return;
+      }
+    }
 
     // delete the channel from the database
     await channel.deleteOne();
+
     res.json({ success: true });
+
   } catch (error) {
     const errorMessage = (error as Error).message;
     res.status(500).json({
