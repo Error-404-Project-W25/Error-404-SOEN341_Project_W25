@@ -5,7 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "start": "nodemon --exec ts-node src/app.ts",
-    "test": "jest --runInBand tests/teamsController.test.ts tests/channelsController.test.ts tests/usersController.test.ts",
+    "test": "jest --runInBand tests/teamsController.test.ts tests/channelsController.test.ts tests/usersController.test.ts tests/messagesController.test.ts",
     "lint": "eslint . --config eslint.config.mjs"
   },
   "author": "",
