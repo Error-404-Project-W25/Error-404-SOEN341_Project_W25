@@ -8,6 +8,7 @@ import express, { Application, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes';
 import channelsRoutes from './routes/channelsRoutes';
+import listenerRoutes from './routes/listenerRoutes';
 import teamsRoutes from './routes/teamsRoutes';
 import userRoutes from './routes/userRoutes';
 import conversationsRoutes from './routes/conversationsRoutes';
@@ -15,19 +16,18 @@ import messagesRoutes from './routes/messagesRoutes';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { sendMessage, getMessages } from './controllers/messagesController';
-// import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:4200",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type'],
+    credentials: true,
   },
-  transports: ['websocket', 'polling']
+  transports: ['websocket', 'polling'],
 });
 
 io.on('connection', (socket) => {
@@ -73,7 +73,6 @@ io.on('connection', (socket) => {
   });
 });
 
-
 // Connect to database
 const DB_CONN_STRING = process.env.DB_CONN_STRING || '';
 const DB_NAME = process.env.DB_NAME || '';
@@ -104,15 +103,15 @@ const startServer = async () => {
     app.use('/users', userRoutes);
     app.use('/conversations', conversationsRoutes);
     app.use('/messages', messagesRoutes);
+    app.use('/listeners', listenerRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
 
-    if (process.env.NODE_ENV !== 'test'){
-      httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    if (process.env.NODE_ENV !== 'test') {
+      httpServer.listen(PORT, () =>
+        console.log(`Server running on port ${PORT}`)
+      );
     }
-
-    // Uncomment the line below to run the authentication tests
-    // runAuthTests();
   } catch (error) {
     console.error('Failed to connect to the database', error);
     process.exit(1); // Exit the process with failure
@@ -120,5 +119,5 @@ const startServer = async () => {
 };
 
 startServer();
-export { app, io, connectDB, startServer };
 
+export { io };
