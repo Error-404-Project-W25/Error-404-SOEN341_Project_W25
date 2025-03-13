@@ -30,7 +30,11 @@
           (click)="changeTab('invite')"
           [checked]="activeTab === 'invite'"
         />
-        <span class="name">Invite</span>
+        <span class="name"
+          >Invite
+          <!-- replace "chatMemberList" by request list -->
+          <!-- <div *ngIf="chatMemberList.length" class="notification">{{chatMemberList.length + 1}}</div> -->
+        </span>
       </label>
       <label class="radio" *ngIf="!isDirectMessage">
         <input
@@ -39,7 +43,11 @@
           (click)="changeTab('request')"
           [checked]="activeTab === 'request'"
         />
-        <span class="name">Request</span>
+        <span class="name"
+          >Request
+          <!-- replace "chatMemberList" by request list -->
+          <div *ngIf="chatMemberList.length" class="notification">{{chatMemberList.length}}</div>
+        </span>
       </label>
     </div>
 
@@ -100,7 +108,8 @@
       <h4 style="margin-bottom: 5px">Request</h4>
       <div class="member-list">
         <ul>
-          <li *ngFor="let member of teamMemberList" readonly>
+          <!-- replace "chatMemberList" by request list -->
+          <li *ngFor="let member of chatMemberList" readonly>
             <div class="user-information">
               <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">{{ member.username }}</div>

@@ -27,6 +27,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   teamMemberList: IUser[] = [];
   chatMemberList: IUser[] = [];
   requestMemberList: IUser[] = [];
+  testList: IUser[] = [];
 
   teamDescription: string = '';
   chatDescription: string = '';
