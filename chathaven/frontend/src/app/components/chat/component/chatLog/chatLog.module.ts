@@ -1,13 +1,16 @@
 import { NgModule } from '@angular/core';
-import { DataService } from '../../../services/data.service'; // Import DataService
+
+import { ChatLogComponent } from './chatLog.component';
+import { DataService } from '../../../../../services/data.service'; // Import DataService
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 
 @NgModule({
-  declarations: [],
   imports: [
     PickerModule, // Import PickerModule
+    ChatLogComponent, // Import ChatLogComponent
   ],
+  // bootstrap: [ChatLogComponent],
   providers: [
     DataService, // Add DataService to providers
   ],

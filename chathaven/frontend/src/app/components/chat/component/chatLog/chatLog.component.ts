@@ -9,7 +9,8 @@ import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-messag
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
 import { DataService } from '@services/data.service';
-// import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
+
 @Component({
   selector: 'chat-chat-log',
   templateUrl: './chatLog.component.html',
@@ -20,6 +21,7 @@ import { DataService } from '@services/data.service';
     FormsModule,
     MatButtonModule,
     MatDialogModule,
+    PickerModule,
   ],
 })
 export class ChatLogComponent implements OnInit, OnDestroy {
@@ -46,6 +48,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private backendService: BackendService,
     private dataService: DataService,
+    private pickerModule: PickerModule
   ) {
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
