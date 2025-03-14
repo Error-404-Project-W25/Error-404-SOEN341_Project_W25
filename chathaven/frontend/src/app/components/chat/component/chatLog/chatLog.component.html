@@ -65,5 +65,9 @@
     >
       <i class="fa-solid fa-arrow-right" style="font-size: 24px"></i>
     </button>
+    <button (click)="toggleEmojiPicker()" title="Toggle Emoji Picker">
+      <i class="fa fa-smile-o" style="font-size: 24px"></i>
+    </button>
+    <emoji-mart class="emoji-mart" [set]="set" *ngIf="showEmojiPicker" (emojiSelect)="addEmoji($event)" title="Pick your emoji…"></emoji-mart>
   </div>
 </div>

@@ -9,15 +9,25 @@ import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-messag
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
 import { DataService } from '@services/data.service';
-
+// import { PickerModule } from '@ctrl/ngx-emoji-mart';
 @Component({
   selector: 'chat-chat-log',
   templateUrl: './chatLog.component.html',
   styleUrls: ['./chatLog.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+  ],
 })
 export class ChatLogComponent implements OnInit, OnDestroy {
+  /*Emoji */
+
+  showEmojiPicker = false;
+  set: 'apple' | 'google' | 'twitter' | 'facebook' = 'twitter';
+
   isTeamListOpen: boolean = false;
   newMessage: string = '';
   loginUser: IUser | null = null;
@@ -35,7 +45,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private userService: UserService,
     private backendService: BackendService,
-    private dataService: DataService
+    private dataService: DataService,
   ) {
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
@@ -191,5 +201,29 @@ export class ChatLogComponent implements OnInit, OnDestroy {
           });
       }
     });
+  }
+
+  toggleEmojiPicker() {
+    console.log(this.showEmojiPicker);
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  addEmoji(event: { emoji: { native: string } }): void {
+    console.log(this.newMessage);
+    const { newMessage } = this;
+    console.log(newMessage);
+    console.log(`${event.emoji.native}`);
+    const text = `${newMessage}${event.emoji.native}`;
+
+    this.newMessage = text;
+    // this.showEmojiPicker = false;
+  }
+
+  onFocus() {
+    console.log('focus');
+    this.showEmojiPicker = false;
+  }
+  onBlur() {
+    console.log('onblur');
   }
 }

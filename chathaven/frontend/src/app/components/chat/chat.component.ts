@@ -19,6 +19,7 @@ import { ChannelSidebarComponent } from './component/channelSideBar/channelSideB
 import { ChatLogComponent } from './component/chatLog/chatLog.component';
 import { InformationSidebarComponent } from './component/informationSideBar/informationSideBar.component';
 
+
 @Component({
   selector: 'app-chat',
   standalone: true,
