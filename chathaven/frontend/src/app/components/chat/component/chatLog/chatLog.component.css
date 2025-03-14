@@ -1,5 +1,13 @@
 /* @import '~@ctrl/ngx-emoji-mart/picker'; */
 
+emoji-mart {
+  position: fixed; /* Change to fixed to ensure it stays within the viewport */
+  bottom: 50px; /* Adjust bottom position */
+  right: 325px; /* Adjust right position */
+  /* display: none; */
+  z-index: 1000; /* Ensure the emoji-mart is above all other elements */
+}
+
 .chat-box {
   /* position: relative; */
   /* background-color: var(--chat-box-background); */
