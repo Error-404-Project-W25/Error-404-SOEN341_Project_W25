@@ -19,7 +19,7 @@ type WatchPipeline = {
  */
 export const watchChanges = async (req: Request, res: Response) => {
   try {
-    const userId: string = req.body.userId;
+    const userId: string = req.params.userId;
     const session = await createSession(req, res);
 
     const pipelines: WatchPipeline[] = [

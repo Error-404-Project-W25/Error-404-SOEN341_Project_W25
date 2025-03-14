@@ -12,7 +12,8 @@ import {
   UserAuthResponse,
   UserSignInData,
 } from '@shared/user-auth.types';
-import { firstValueFrom } from 'rxjs';
+import { SSEUpdatePayload } from '@shared/sse-updates.types'; // Ensure this path is correct
+import { firstValueFrom, Observable, Subscriber } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 
 @Injectable({
@@ -430,5 +431,31 @@ export class BackendService {
       console.error('Error getting conversation by id:', error);
     }
     return undefined;
+  }
+
+  //////////////////////////// SSE ////////////////////////////
+
+  // Get updates related to the user via SSE
+  async getUserRelatedUpdates(
+    userId: string
+  ): Promise<Observable<SSEUpdatePayload>> {
+    return new Observable<SSEUpdatePayload>(
+      (observer: Subscriber<SSEUpdatePayload>) => {
+        const eventSource: EventSource = new EventSource(
+          `${this.backendURL}/listeners/changes/${userId}`
+        );
+
+        eventSource.onmessage = (event) => {
+          const data: SSEUpdatePayload = JSON.parse(
+            event.data
+          ) as SSEUpdatePayload;
+          observer.next(data);
+        };
+
+        return () => {
+          eventSource.close();
+        };
+      }
+    );
   }
 }
