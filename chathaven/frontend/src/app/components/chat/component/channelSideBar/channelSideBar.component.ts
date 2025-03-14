@@ -14,6 +14,7 @@ import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remov
 import { DataService } from '@services/data.service';
 import { JoinRequestDialog } from '../../dialogue/join-request/join-request.dialogue';
 
+
 @Component({
   selector: 'chat-channel-sidebar',
   templateUrl: './channelSideBar.component.html',
@@ -177,5 +178,20 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   selectDirectMessage(directMessageId: string): void {
     this.dataService.selectConversation(directMessageId);
+  }
+  async getConversationLastMessage(
+    conversationId: string
+  ): Promise<string | null> {
+    console.log('conversationId:', conversationId);
+    try {
+      const conversation = await this.backendService.getConversationById(
+        conversationId || ''
+      );
+      console.log('conversation:', conversation);
+      return conversation?.messages[0].content || null;
+    } catch (error) {
+      console.log('error:', error);
+      return null;
+    }
   }
 }

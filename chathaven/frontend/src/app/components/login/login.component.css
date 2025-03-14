@@ -26,7 +26,7 @@ body {
   overflow: hidden;
   display: flex;
   /* flex-direction: column; */
-  /* position: relative; */
+  position: relative;
 }
 
 .ani {
@@ -420,7 +420,7 @@ nav {
   }
 }
 
-use{
+use {
   animation: move-forever 32s linear infinite;
   &:nth-child(2) {
     animation-duration: 40s;
@@ -431,15 +431,21 @@ use{
   }
 }
 
-@keyframes move-forever{
-   0%{transform: translate(-2px , 0)}
- 100%{transform: translate( 0px , 0)}
+@keyframes move-forever {
+  0% {
+    transform: translate(-2px, 0);
+  }
+  100% {
+    transform: translate(0px, 0);
+  }
 }
-
 
 /* layout only*/
 svg {
-  width: 2500px;
+  position: absolute;
+  bottom: 0;
+  width: 100vw;
+  min-width: 2500px;
   height: 100vh;
   z-index: -1;
 }

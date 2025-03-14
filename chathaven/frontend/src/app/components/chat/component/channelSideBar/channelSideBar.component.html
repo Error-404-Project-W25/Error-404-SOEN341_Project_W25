@@ -51,18 +51,19 @@
   </div>
   <div class="channel-list" id="channel-list" *ngIf="!isDirectMessage">
     <div
-      class="channelList-dropdown-content-container"
+      class="channel-container"
       [ngStyle]="{ opacity: channel.members.includes(userId) ? 1 : 0.5 }"
       *ngFor="let channel of channelList"
       (click)="selectChannel(channel.channelId)"
       readonly
     >
-      <div class="channel-name-container">
+      <div class="channel-information-container">
         <div class="notification-container">
           <!-- need to find a way to put notification in the channel parameter -->
-          <!-- <div class="notification"></div> -->
+          <div class="notification"></div>
         </div>
         <i
+          style="display: flex; justify-content: center; align-items: center"
           class="fa"
           [ngClass]="
             channel.members.includes(userId) ? 'fa-hashtag' : 'fa-lock'
@@ -70,7 +71,10 @@
           style="font-size: 16px; margin-right: 8px"
         >
         </i>
-        {{ channel.name }}
+        <div class="channel-text-information">
+          <div class="channel-name">{{ channel.name }}</div>
+          <div class="channel-last-message">{{ channel.conversationId }}</div>
+        </div>
       </div>
       <div class="channel-actions">
         <!--(click) add member to channel-->
@@ -100,13 +104,24 @@
   </div>
   <div class="channel-list" id="conversation-list" *ngIf="isDirectMessage">
     <div
-      class="channelList-dropdown-content-container"
+      class="channel-container"
       *ngFor="let directMessage of directMessageList"
       (click)="selectDirectMessage(directMessage.conversationId)"
       readonly
     >
-      <div class="channel-name-container">
-        {{ directMessage.conversationName }}
+      <div class="channel-information-container">
+        <div class="notification-container">
+          <!-- need to find a way to put notification in the channel parameter -->
+          <div class="notification"></div>
+        </div>
+        <i class="fa fa-hashtag" style="font-size: 16px; margin-right: 8px">
+        </i>
+        <div class="channel-text-information">
+          <div class="channel-name">{{ directMessage.conversationName }}</div>
+          <div class="channel-last-message">
+            {{ directMessage.messages[0].content }} - {{ directMessage.messages[0].time | date:'shortTime' }}
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -75,26 +75,42 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const user = this.userService.getUser();
-    if (user) {
-      user.inbox.forEach(async (inbox) => {
-        if (inbox.type === 'request') {
-          this.requestList.push(inbox);
-          console.log('Request list: ', this.requestList);
-        } else if (inbox.type === 'invite') {
-          this.inviteList.push(inbox);
-          console.log('Invite List: ', this.inviteList);
-        }
-      });
+    this.refreshList();
+  }
+  refreshList() {
+    this.backendService.getUserById(this.userId).then((user) => {
+      if (user) {
+        const requestUserIds = new Set(this.requestList.map(req => req.userIdThatYouWantToAdd));
+        const inviteUserIds = new Set(this.inviteList.map(inv => inv.userIdThatYouWantToAdd));
+        requestUserIds.forEach(userId => {
+          if (inviteUserIds.has(userId)) {
+            const request = this.requestList.find(req => req.userIdThatYouWantToAdd === userId);
+            const invite = this.inviteList.find(inv => inv.userIdThatYouWantToAdd === userId);
+            if (request && invite) {
+              this.acceptRequest(request);
+              this.declineInvite(invite);
+            }
+          }
+        });
+        user.inbox.forEach(async (inbox) => {
+          if (inbox.type === 'request') {
+            this.requestList.push(inbox);
+            console.log('Request list: ', this.requestList);
+          } else if (inbox.type === 'invite') {
+            this.inviteList.push(inbox);
+            console.log('Invite List: ', this.inviteList);
+          }
+        });
         console.log('Request list: ', this.requestList);
         console.log('Invite List: ', this.inviteList);
-    }
+      }
+    });
   }
 
   ngOnDestroy() {}
 
   async createCoversation(memberId: string) {
-    const sender = this.userService.getUser();
+    const sender = await this.backendService.getUserById(this.userId);
     const receiver = await this.backendService.getUserById(memberId);
     const conversationName = `${sender?.username}, ${receiver?.username}`;
     if (sender && receiver?.userId) {
@@ -170,11 +186,13 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   acceptRequest(request: IInbox) {
     console.log('Accepting request: ', request);
     this.backendService.response(this.userId, request.inboxId, 'accept');
+    this.refreshList();
   }
 
   declineRequest(request: IInbox) {
     console.log('Declining request:', request);
     this.backendService.response(this.userId, request.inboxId, 'decline');
+    this.refreshList();
   }
 
   acceptInvite(invite: IInbox) {
@@ -184,6 +202,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       invite.inboxId,
       'accept'
     );
+    this.refreshList();
   }
 
   declineInvite(invite: IInbox) {
@@ -193,5 +212,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       invite.inboxId,
       'decline'
     );
+    this.refreshList();
   }
 }

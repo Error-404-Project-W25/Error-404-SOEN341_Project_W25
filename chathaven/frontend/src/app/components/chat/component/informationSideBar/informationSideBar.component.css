@@ -19,7 +19,7 @@ h3 h4 {
   margin-bottom: 5px;
 }
 
-.member-list-title-container {
+.title-container {
   align-items: center;
   background-color: var(--side-bar-2-background);
   /* border-bottom: 2px solid var(--separator-color); */
@@ -33,7 +33,7 @@ h3 h4 {
   border-bottom: 2px solid var(--side-bar-1-background);
 }
 
-.member-list-title {
+.title {
   align-items: center;
   background-color: var(--side-bar-2-background);
   color: var(--side-bar-2-title-text);
@@ -49,7 +49,7 @@ h3 h4 {
   width: 90%;
 }
 
-.member-list {
+.list {
   width: 100%;
   height: calc(100% - 3rem);
   position: relative;
@@ -58,7 +58,7 @@ h3 h4 {
   overflow-y: auto;
 }
 
-.member-list ul {
+.list ul {
   border-radius: 12px;
   background-color: var(--tab-background);
   align-items: center;
@@ -73,7 +73,7 @@ h3 h4 {
   -ms-overflow-style: none;
 }
 
-.member-list li {
+.list li {
   /* align-items: center; */
   align-items: center;
   background-color: var(--channel-list-background);
@@ -96,7 +96,7 @@ h3 h4 {
   gap: 5px;
 }
 
-.member-list li:hover {
+.list li:hover {
   background-color: var(--channel-list-backround-hover);
   color: var(--channel-list-text-hover);
 }

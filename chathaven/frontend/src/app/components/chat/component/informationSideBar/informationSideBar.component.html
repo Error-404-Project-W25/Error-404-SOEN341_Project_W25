@@ -1,7 +1,7 @@
 <div class="team-setting-sidebar" id="team-setting-sidebar">
-  <div class="member-list-title-container">
-    <div class="member-list-title">Information</div>
-  </div>
+  <header class="title-container">
+    <title class="title">Information</title>
+  </header>
 
   <div class="tab-container">
     <div class="radio-inputs">
@@ -61,7 +61,7 @@
       <h4 style="margin-bottom: 5px">Description</h4>
       <p>{{ teamDescription }}</p>
       <h4 style="margin-bottom: 5px">Members</h4>
-      <div class="member-list">
+      <div class="list">
         <ul>
           <li *ngFor="let member of teamMemberList" readonly>
             <div class="user-information">
@@ -86,7 +86,7 @@
       <h4 style="margin-bottom: 5px">Description</h4>
       {{ chatDescription }}
       <h4 style="margin-bottom: 5px">Members</h4>
-      <div class="member-list">
+      <div class="list">
         <ul>
           <li *ngFor="let member of chatMemberList" readonly>
             <div class="user-information">
@@ -101,7 +101,7 @@
     <div class="tab-content" *ngIf="activeTab === 'invite' && isDirectMessage">
       <h3 style="margin-bottom: 5px">Invite to Join Channel</h3>
       <h4 style="margin-bottom: 5px">Invite</h4>
-      <div class="member-list">
+      <div class="list">
         <ul>
           <li *ngFor="let invite of inviteList" readonly>
             <div class="inbox-information">
@@ -136,7 +136,7 @@
     >
       <h3 style="margin-bottom: 5px">Request to Join Channel</h3>
       <h4 style="margin-bottom: 5px">Request</h4>
-      <div class="member-list">
+      <div class="list">
         <ul>
           <li *ngFor="let request of requestList" readonly>
             <div class="inbox-information">

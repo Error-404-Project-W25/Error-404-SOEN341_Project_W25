@@ -279,12 +279,12 @@
   z-index: 1;
 }
 
-/* @keyframes pulse {
+@keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 red;
   }
 
   100% {
     box-shadow: 0 0 0 14px #69ffa800;
-  } */
-/* } */
+  }
+}
