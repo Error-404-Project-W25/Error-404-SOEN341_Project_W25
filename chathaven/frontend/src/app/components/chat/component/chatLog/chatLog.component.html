@@ -73,6 +73,7 @@
     <emoji-mart
       class="emoji-mart"
       [set]="set"
+      [darkMode]="isDarkTheme"
       *ngIf="showEmojiPicker"
       (emojiSelect)="addEmoji($event)"
       title="Pick your emoji…"

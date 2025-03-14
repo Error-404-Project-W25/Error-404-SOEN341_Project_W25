@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +29,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
     MatDialogModule,
     PickerModule,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ChatLogComponent implements OnInit, OnDestroy {
   /*Emoji */
@@ -30,6 +37,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   showEmojiPicker = false;
   set: 'apple' | 'google' | 'twitter' | 'facebook' = 'twitter';
 
+  isDarkTheme: boolean = true;
   isTeamListOpen: boolean = false;
   newMessage: string = '';
   loginUser: IUser | null = null;
@@ -62,6 +70,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       } else {
         this.handleChannelMessage();
       }
+    });
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
     });
   }
 
