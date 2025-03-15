@@ -19,6 +19,7 @@ import { ChannelSidebarComponent } from './component/channelSideBar/channelSideB
 import { ChatLogComponent } from './component/chatLog/chatLog.component';
 import { InformationSidebarComponent } from './component/informationSideBar/informationSideBar.component';
 
+
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -36,6 +37,8 @@ import { InformationSidebarComponent } from './component/informationSideBar/info
 export class ChatComponent implements OnInit, OnDestroy {
   title = 'chatHaven';
   @Output() userId!: string;
+  @Output() invite!: string;
+  @Output() request!: string;
 
   loginUser: IUser | null = null;
 
@@ -63,6 +66,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
+    });
+    this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
+      this.isDirectMessage = isDirectMessage;
     });
   }
 

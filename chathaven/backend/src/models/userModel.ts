@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { IUser } from '../../../shared/interfaces';
+import { inboxSchema } from './inboxModel';
 
 // User Schema
 const userSchema: Schema = new Schema(
@@ -17,6 +18,7 @@ const userSchema: Schema = new Schema(
     },
     teams: { type: [String], default: [] }, // List of team IDs
     directMessages: { type: [String], default: [] },
+    inbox: { type: [inboxSchema], default: [] }, // Set default to an empty object
   },
   {
     collection: 'Users',

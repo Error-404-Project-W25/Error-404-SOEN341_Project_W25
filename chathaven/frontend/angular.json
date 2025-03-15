@@ -27,7 +27,8 @@
             "styles": [
               "src/styles.css",
               "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css",
-              "src/assets/theme.css"
+              "src/assets/theme.css",
+              "node_modules/@ctrl/ngx-emoji-mart/picker.css"
             ],
             "scripts": []
           },

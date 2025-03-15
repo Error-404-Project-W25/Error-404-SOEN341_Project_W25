@@ -51,23 +51,51 @@
   </div>
   <div class="channel-list" id="channel-list" *ngIf="!isDirectMessage">
     <div
-      class="channelList-dropdown-content-container"
+      class="channel-container"
+      [ngStyle]="{ opacity: channel.members.includes(userId) ? 1 : 0.5 }"
       *ngFor="let channel of channelList"
       [class.disabled-channel]="isPrivateChannel(channel) && !isChannelMember(channel)"
       (click)="handleChannelSelection(channel)"
       readonly
     >
+<<<<<<< HEAD
       <div class="channel-name-container" [class.faded-text]="isPrivateChannel(channel) && !isChannelMember(channel)">
         <!-- Lock icon for private channels where user is not a member -->
         <i *ngIf="isPrivateChannel(channel) && !isChannelMember(channel)"
            class="fa fa-lock"
            style="font-size: 14px; margin-right: 5px;"></i>
         {{ channel.name }}
+=======
+      <div class="channel-information-container">
+        <div class="notification-container">
+          <!-- need to find a way to put notification in the channel parameter -->
+          <div
+            *ngIf="isChannelInbox(channel.channelId)"
+            class="notification"
+          ></div>
+        </div>
+        <i
+          style="display: flex; justify-content: center; align-items: center"
+          class="fa"
+          [ngClass]="
+            channel.members.includes(userId) ? 'fa-hashtag' : 'fa-lock'
+          "
+          style="font-size: 16px; margin-right: 8px"
+        >
+        </i>
+        <div class="channel-text-information">
+          <div class="channel-name">{{ channel.name }}</div>
+          <div class="channel-last-message">
+            {{ getChannelLastMessage(channel.channelId) }}
+          </div>
+        </div>
+>>>>>>> bd19b71089253c1f44849c065c257d09125a18ae
       </div>
       <div class="channel-actions">
         <!-- Rest of your buttons -->
         <button
           class="channel-button"
+          [disabled]="!channel.members.includes(userId)"
           (click)="
           openAddMemberChannelDialog(channel); $event.stopPropagation()
         "
@@ -80,7 +108,8 @@
         <!-- Channel settings button -->
         <button
           class="channel-button"
-          (click)="openEditChannelDialog(channel); $event.stopPropagation()"
+          [disabled]="!channel.members.includes(userId)"
+          (click)="openEditChannelDialog(channel)"
           readonly
           title="Channel Settings"
           [disabled]="isPrivateChannel(channel) && !isChannelMember(channel)"
@@ -92,13 +121,25 @@
   </div>
   <div class="channel-list" id="conversation-list" *ngIf="isDirectMessage">
     <div
-      class="channelList-dropdown-content-container"
+      class="channel-container"
       *ngFor="let directMessage of directMessageList"
       (click)="selectDirectMessage(directMessage.conversationId)"
       readonly
     >
-      <div class="channel-name-container">
-        {{ directMessage.conversationName }}
+      <div class="channel-information-container">
+        <div class="notification-container">
+          <!-- need to find a way to put notification in the channel parameter -->
+          <!-- <div class="notification"></div> -->
+        </div>
+        <i class="fa fa-hashtag" style="font-size: 16px; margin-right: 8px">
+        </i>
+        <div class="channel-text-information">
+          <div class="channel-name">{{ directMessage.conversationName }}</div>
+          <div class="channel-last-message">
+            {{ directMessage.messages[0].content }} -
+            {{ directMessage.messages[0].time | date : "shortTime" }}
+          </div>
+        </div>
       </div>
     </div>
   </div>

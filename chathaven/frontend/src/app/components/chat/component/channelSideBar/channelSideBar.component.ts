@@ -5,13 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { IChannel, IConversation, IUser } from '@shared/interfaces';
+import { IChannel, IConversation, IUser, IInbox } from '@shared/interfaces';
 import { ChannelCreationDialog } from '../../dialogue/create-channel/create-channel.dialogue';
 import { AddChannelMembersDialogue } from '../../dialogue/add-member-channel/add-member-channel.dialogue';
 import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
 import { EditChannelDialog } from '../../dialogue/edit-channel/edit-channel.dialogue';
 import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remove-member-team.dialogue';
 import { DataService } from '@services/data.service';
+import { JoinRequestDialog } from '../../dialogue/join-request/join-request.dialogue';
 
 @Component({
   selector: 'chat-channel-sidebar',
@@ -34,9 +35,14 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   selectedChannelId: string | null = null;
   channelList: IChannel[] = [];
+  requestList: IInbox[] = [];
 
   selectedDirectMessageId: string | null = null;
   directMessageList: IConversation[] = [];
+  inviteList: IInbox[] = [];
+
+  channels: IChannel[] = [];
+  channelIdToLastMessage: { [channelId: string]: string } = {};
 
   //output
   conversationId: string | null = null;
@@ -52,6 +58,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
       if (isDirectMessage) {
+        console.log('refreshing direct message list');
         this.refreshDirectMessageList();
       } else {
         this.dataService.currentTeamId.subscribe((teamId) => {
@@ -60,9 +67,28 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         this.refreshChannelList();
       }
     });
+    this.backendService.getUserById(this.userId).then((user) => {
+      if (user) {
+        if (user.inbox) {
+          this.requestList = user.inbox.filter(
+            (inbox) => inbox.type === 'request'
+          );
+          this.inviteList = user.inbox.filter(
+            (inbox) => inbox.type === 'invite'
+          );
+        }
+      }
+    });
+  }
+  ngOnDestroy() {}
+
+  isChannelInbox(channelId: string): boolean {
+    return this.requestList.some((inbox) => inbox.channelId === channelId);
   }
 
-  ngOnDestroy() {}
+  getChannelLastMessage(channelId: string): string {
+    return this.channelIdToLastMessage[channelId] || ' ';
+  }
 
   async refreshChannelList() {
     let selectedTeam = this.selectedTeamId
@@ -80,8 +106,12 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       );
 
       if (channel) {
-        // Add all channels to the list, regardless of membership
         this.channelList.push(channel);
+        const lastMessage = await this.getConversationLastMessage(
+          channel.conversationId
+        );
+        this.channelIdToLastMessage[channel.channelId] = lastMessage || '';
+        console.log('channelIdToLastMessage:', this.channelIdToLastMessage);
       }
     }
   }
@@ -95,6 +125,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         directMessageId
       );
       if (directMessage) {
+        console.log('direct message:', directMessage);
         this.directMessageList.push(directMessage);
       }
     });
@@ -162,10 +193,15 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     this.backendService
       .getChannelById(this.selectedTeamId!, channelId)
       .then((channel) => {
-        if (channel) {
+        if (channel && channel.members.includes(this.userId || '')) {
           this.selectedChannelId = channel.channelId;
           this.dataService.selectChannel(this.selectedChannelId);
           this.dataService.selectConversation(channel.conversationId);
+        } else {
+          // alert('You are not a member of this channel');
+          this.dialog.open(JoinRequestDialog, {
+            data: { channelId: channelId, teamId: this.selectedTeamId },
+          });
         }
       });
   }
@@ -192,5 +228,21 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
     this.selectChannel(channel.channelId);
   }
+  async getConversationLastMessage(
+    conversationId: string
+    // channel: IChannel
+  ): Promise<string | null> {
+    try {
+      const conversation = await this.backendService.getConversationById(
+        conversationId || ''
+      );
+      return (
+        conversation?.messages[conversation?.messages.length - 1].content ||
+        null
+      );
+    } catch (error) {
+      console.log('error:', error);
+      return null;
+    }
+  }
 }
-

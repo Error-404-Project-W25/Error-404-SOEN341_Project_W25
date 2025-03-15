@@ -6,22 +6,30 @@
   <div class="container">
     <chat-team-sidebar [userId]="userId"></chat-team-sidebar>
     <chat-channel-sidebar
-      *ngIf="selectedTeamId"
+      *ngIf="selectedTeamId || isDirectMessage"
       [userId]="userId"
     ></chat-channel-sidebar>
     <div
       class="card-container"
       id="card-container"
-      *ngIf="selectedConversationId === '' || selectedTeamId === ''"
+      *ngIf="selectedConversationId === ''"
     >
       <div class="card">
-        <h2 *ngIf="selectedTeamId === ''">Please choose a team to continue</h2>
-        <h2 *ngIf="selectedConversationId === '' && selectedTeamId !== ''">
+        <h2 *ngIf="selectedTeamId === '' && !isDirectMessage">
+          Please choose a team or go to direct message to continue
+        </h2>
+        <h2 *ngIf="isDirectMessage && selectedConversationId === ''">
+          Please choose a conversation to continue
+        </h2>
+        <h2 *ngIf="!isDirectMessage && selectedTeamId !== ''">
           Please choose a channel to continue
         </h2>
       </div>
     </div>
-    <chat-chat-log *ngIf="selectedConversationId" [userId]="userId"></chat-chat-log>
+    <chat-chat-log
+      *ngIf="selectedConversationId"
+      [userId]="userId"
+    ></chat-chat-log>
     <chat-information-sidebar *ngIf="selectedConversationId" [userId]="userId">
     </chat-information-sidebar>
   </div>
