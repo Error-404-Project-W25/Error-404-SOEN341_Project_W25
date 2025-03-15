@@ -49,92 +49,93 @@
       </section>
     </label>
   </div>
+
   <div class="channel-list" id="channel-list" *ngIf="!isDirectMessage">
-    <div
-      class="channel-container"
-      [ngStyle]="{ opacity: channel.members.includes(userId) ? 1 : 0.5 }"
-      *ngFor="let channel of channelList"
-      (click)="selectChannel(channel.channelId)"
-      readonly
-    >
-      <div class="channel-information-container">
-        <div class="notification-container">
-          <!-- need to find a way to put notification in the channel parameter -->
-          <div
-            *ngIf="isChannelInbox(channel.channelId)"
-            class="notification"
-          ></div>
-        </div>
-        <i
-          style="display: flex; justify-content: center; align-items: center"
-          class="fa"
-          [ngClass]="
-            channel.members.includes(userId) ? 'fa-hashtag' : 'fa-lock'
-          "
-          style="font-size: 16px; margin-right: 8px"
-        >
-        </i>
-        <div class="channel-text-information">
-          <div class="channel-name">{{ channel.name }}</div>
-          <div class="channel-last-message">
-            {{ getChannelLastMessage(channel.channelId) }}
-          </div>
-        </div>
-      </div>
-      <div class="channel-actions">
-        <!--(click) add member to channel-->
-        <button
-          class="channel-button"
-          [disabled]="!channel.members.includes(userId)"
-          (click)="
-            openAddMemberChannelDialog(channel); $event.stopPropagation()
-          "
-          readonly
-          title="Add Member to Channel"
-        >
-          <i class="fa fa-user-plus" style="font-size: 16px"> </i>
-        </button>
-        <!-- (click) open channel setting -->
-        <button
-          class="channel-button"
-          [disabled]="!channel.members.includes(userId)"
-          (click)="openEditChannelDialog(channel)"
-          readonly
-          title="Channel Settings"
-        >
-          <i class="fa fa-gear" style="font-size: 16px"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="channel-list" id="conversation-list" *ngIf="isDirectMessage">
-    <div
-      class="channel-container"
-      *ngFor="let directMessage of directMessageList"
-      (click)="selectDirectMessage(directMessage.conversationId)"
-      readonly
-    >
-      <div class="channel-information-container">
-        <div class="notification-container">
-          <!-- need to find a way to put notification in the channel parameter -->
-          <!-- <div class="notification"></div> -->
-        </div>
-        <i class="fa fa-hashtag" style="font-size: 16px; margin-right: 8px">
-        </i>
-        <div class="channel-text-information">
-          <div class="channel-name">{{ directMessage.conversationName }}</div>
-          <div class="channel-last-message">
+    <ul>
+      <li
+        class="channel-container"
+        [ngStyle]="{ opacity: channel.members.includes(userId) ? 1 : 0.5 }"
+        *ngFor="let channel of channelList"
+        (click)="selectChannel(channel.channelId)"
+        readonly
+      >
+        <div class="channel-information-container">
+          <div class="notification-container">
             <div
-              *ngIf="
-                directMessage.messages[0] && directMessage.messages[0].content
-              "
-            >
-              {{ directMessage.messages[0].content }} -
-              {{ directMessage.messages[0].time | date : "shortTime" }}
+              *ngIf="isChannelInbox(channel.channelId)"
+              class="notification"
+            ></div>
+          </div>
+          <i
+            style="display: flex; justify-content: center; align-items: center"
+            class="fa"
+            [ngClass]="
+              channel.members.includes(userId) ? 'fa-hashtag' : 'fa-lock'
+            "
+            style="font-size: 16px; margin-right: 8px"
+          >
+          </i>
+          <div class="channel-text-information">
+            <div class="channel-name">{{ channel.name }}</div>
+            <div class="channel-last-message">
+              {{ getChannelLastMessage(channel.channelId) }}
             </div>
           </div>
         </div>
-      </div>
-    </div>
+        <div class="channel-actions">
+          <!--(click) add member to channel-->
+          <button
+            class="channel-button"
+            [disabled]="!channel.members.includes(userId)"
+            (click)="
+              openAddMemberChannelDialog(channel); $event.stopPropagation()
+            "
+            readonly
+            title="Add Member to Channel"
+          >
+            <i class="fa fa-user-plus" style="font-size: 16px"> </i>
+          </button>
+          <!-- (click) open channel setting -->
+          <button
+            class="channel-button"
+            [disabled]="!channel.members.includes(userId)"
+            (click)="openEditChannelDialog(channel)"
+            readonly
+            title="Channel Settings"
+          >
+            <i class="fa fa-gear" style="font-size: 16px"></i>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="channel-list" id="dm-list" *ngIf="isDirectMessage">
+    <ul>
+      <li
+        class="channel-container"
+        *ngFor="let dm of directMessageList"
+        (click)="selectDirectMessage(dm.conversationId)"
+        readonly
+      >
+        <div class="channel-information-container">
+          <div class="notification-container">
+            <!-- <div *ngIf="isChannelInbox(dm.channelId)" class="notification"></div> -->
+          </div>
+          <i
+            style="display: flex; justify-content: center; align-items: center"
+            class="fa fa-hashtag"
+            style="font-size: 16px; margin-right: 8px"
+          >
+          </i>
+          <div class="channel-text-information">
+            <div class="channel-name">{{ dm.conversationName }}</div>
+            <div class="channel-last-message">
+              {{ dm.messages[dm.messages.length - 1] }}
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
   </div>
 </div>

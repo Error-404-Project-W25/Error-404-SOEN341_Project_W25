@@ -91,6 +91,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   async refreshChannelList() {
+    const list: IChannel[] = [];
     let selectedTeam = this.selectedTeamId
       ? await this.backendService.getTeamById(this.selectedTeamId)
       : null;
@@ -104,17 +105,18 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       );
 
       if (channel) {
-        this.channelList.push(channel);
+        list.push(channel);
         const lastMessage = await this.getConversationLastMessage(
           channel.conversationId
         );
         this.channelIdToLastMessage[channel.channelId] = lastMessage || '';
-        console.log('channelIdToLastMessage:', this.channelIdToLastMessage);
       }
     });
+    this.channelList = list;
   }
 
   refreshDirectMessageList() {
+    const list: IConversation[] = [];
     this.loginUser = this.userService.getUser() || null;
     let directMessageListId = this.loginUser?.directMessages || [];
     this.directMessageList = [];
@@ -123,10 +125,10 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         directMessageId
       );
       if (directMessage) {
-        console.log('direct message:', directMessage);
-        this.directMessageList.push(directMessage);
+        list.push(directMessage);
       }
     });
+    this.directMessageList = list;
     this.teamTitle = 'Direct Messages';
   }
 
@@ -209,16 +211,22 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
   async getConversationLastMessage(
     conversationId: string
-    // channel: IChannel
   ): Promise<string | null> {
     try {
       const conversation = await this.backendService.getConversationById(
         conversationId || ''
       );
-      return (
-        conversation?.messages[conversation?.messages.length - 1].content ||
-        null
-      );
+      if (
+        conversation &&
+        conversation.messages &&
+        conversation.messages.length > 0
+      ) {
+        return (
+          conversation.messages[conversation.messages.length - 1].content ||
+          null
+        );
+      }
+      return null;
     } catch (error) {
       console.log('error:', error);
       return null;
