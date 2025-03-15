@@ -80,28 +80,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       }
     });
   }
-  // async loadLastMessage(): Promise<void> {
-  //   const channelIdToLastMessage: { [channelId: string]: string } = {};
-
-  //   const uniqueChannelIds = [
-  //     ...new Set(this.channels.map((channel) => channel.channelId)),
-  //   ];
-  //   console.log('uniqueChannelIds:', uniqueChannelIds);
-  //   for (const channelId of uniqueChannelIds) {
-  //     console.log('channelId:', channelId);
-  //     const conversation = await this.backendService.getConversationById(
-  //       channelId
-  //     );
-  //     if (conversation) {
-  //       channelIdToLastMessage[channelId] =
-  //         conversation.messages[0]?.content || '';
-  //       console.log('conversation:', conversation);
-  //     }
-  //   }
-
-  //   console.log('channelIdToLastMessage:', channelIdToLastMessage);
-  //   this.channelIdToLastMessage = channelIdToLastMessage;
-  // }
   ngOnDestroy() {}
 
   isChannelInbox(channelId: string): boolean {
@@ -128,15 +106,12 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       if (channel) {
         this.channelList.push(channel);
         const lastMessage = await this.getConversationLastMessage(
-          // channel.conversationId
-          channel
+          channel.conversationId
         );
-        // console.log('last message:', lastMessage);
         this.channelIdToLastMessage[channel.channelId] = lastMessage || '';
         console.log('channelIdToLastMessage:', this.channelIdToLastMessage);
       }
     });
-    // await this.loadLastMessage();
   }
 
   refreshDirectMessageList() {
@@ -233,23 +208,17 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     this.dataService.selectConversation(directMessageId);
   }
   async getConversationLastMessage(
-    // conversationId: string
-    channel: IChannel
+    conversationId: string
+    // channel: IChannel
   ): Promise<string | null> {
-    // console.log('conversationId:', conversationId);
     try {
-      // console.log('channel:', channel);
       const conversation = await this.backendService.getConversationById(
-        channel.conversationId || ''
+        conversationId || ''
       );
-      // console.log('conversation:', conversation);
-      console.log(
-        'conversation',
-        conversation?.conversationId,
-        ' last message:',
-        conversation?.messages[0]
+      return (
+        conversation?.messages[conversation?.messages.length - 1].content ||
+        null
       );
-      return conversation?.messages?.[0]?.content || null;
     } catch (error) {
       console.log('error:', error);
       return null;
