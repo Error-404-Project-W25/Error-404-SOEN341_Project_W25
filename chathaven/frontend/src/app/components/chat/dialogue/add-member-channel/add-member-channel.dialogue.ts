@@ -101,20 +101,11 @@ export class AddChannelMembersDialogue {
     this.getCheckedValues();
     console.log('1Adding members:', this.memberIdsToAdd);
     for (const memberId of this.memberIdsToAdd) {
-      try {
-        const response: boolean = await this.backendService.addUserToChannel(
-          this.data.teamId,
-          this.data.channelId,
-          memberId
-        );
-        if (response) {
-          console.log('Added member:', memberId);
-        } else {
-          console.error('Failed to add member:', memberId);
-        }
-      } catch (error) {
-        console.error('Error adding member:', error);
-      }
+      this.backendService.requestToJoin(
+        'invite',
+        memberId,
+        this.data.channelId
+      );
     }
     this.dialogRef.close();
   }

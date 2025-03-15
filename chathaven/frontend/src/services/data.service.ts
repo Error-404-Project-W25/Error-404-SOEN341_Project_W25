@@ -35,6 +35,7 @@ export class DataService {
 
   toggleIsDirectMessage(isDirectMessage: boolean) {
     this.isDirectMessageSelected.next(isDirectMessage);
+    this.conversationId.next('');
   }
 
   toggleDarkMode(isDarkTheme: boolean) {

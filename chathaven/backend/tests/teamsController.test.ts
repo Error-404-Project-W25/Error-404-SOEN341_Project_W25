@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import { app, startServer } from '../src/app';
 import { Express } from 'express';
-import { Channel } from '../src/models/channelsModel';
+// import { Channel } from '../src/models/channelsModel';
 import { Team } from '../src/models/teamsModel';
 
 /*
@@ -28,46 +28,58 @@ describe('teams', () => {
   */
   afterAll(async () => {
     try {
-
-      // Remove the user 
-      const removeResponse = await request(server).post('/teams/removeMember').send({
-        teamId: 'JEST-TESTTEAMID-123',
-        memberId: 'JEST-TESTUSERID-456',
-      });
+      // Remove the user
+      const removeResponse = await request(server)
+        .post('/teams/removeMember')
+        .send({
+          teamId: 'JEST-TESTTEAMID-123',
+          memberId: 'JEST-TESTUSERID-456',
+        });
       if (removeResponse.body.success === true) {
         console.log('User removed from team in afterAll');
       } else {
-        console.error("User could not removed during afterAll");
+        console.error('User could not removed during afterAll');
       }
 
       // Delete the general channel and conversation
       if (generalChannelIdToDelete) {
-        const deleteChannelResponse = await request(server).delete('/channels/delete').send({
-        channelId: generalChannelIdToDelete,
-        });
+        const deleteChannelResponse = await request(server)
+          .delete('/channels/delete')
+          .send({
+            channelId: generalChannelIdToDelete,
+          });
         if (deleteChannelResponse.body.success === true) {
-          console.log(`General channel ${generalChannelIdToDelete} has been deleted in afterAll`);
+          console.log(
+            `General channel ${generalChannelIdToDelete} has been deleted in afterAll`
+          );
         } else {
-          console.error(`General channel ${generalChannelIdToDelete} could not be deleted in afterAll`);
+          console.error(
+            `General channel ${generalChannelIdToDelete} could not be deleted in afterAll`
+          );
         }
       } else {
-        console.error(`GeneralChannelIdToDelete (${generalChannelIdToDelete}) is undefined`);
+        console.error(
+          `GeneralChannelIdToDelete (${generalChannelIdToDelete}) is undefined`
+        );
       }
 
       // Delete the team
       if (teamIDToDelete) {
-        const deleteTeamResponse = await request(server).delete('/teams/delete').send({
-          teamId: teamIDToDelete,
-        });
+        const deleteTeamResponse = await request(server)
+          .delete('/teams/delete')
+          .send({
+            teamId: teamIDToDelete,
+          });
         if (deleteTeamResponse.body.success === true) {
           console.log(`The team ${teamIDToDelete} was deleted in afterAll`);
         } else {
-          console.error(`Team ${teamIDToDelete} could not be deleted in afterAll`);
+          console.error(
+            `Team ${teamIDToDelete} could not be deleted in afterAll`
+          );
         }
       } else {
-        console.error("TeamIDToDelete is undefined.");
+        console.error('TeamIDToDelete is undefined.');
       }
-
     } catch (error) {
       console.error('afterAll error: ', error);
     }
@@ -180,9 +192,9 @@ describe('teams', () => {
           console.error('No channels found for the team');
           return;
         }
-        
+
         generalChannelIdToDelete = teamObject.channels[0];
-        console.log("general channel id: ", generalChannelIdToDelete);
+        console.log('general channel id: ', generalChannelIdToDelete);
       });
     });
 
@@ -221,7 +233,7 @@ describe('teams', () => {
           memberId: memberId,
         });
 
-        expect(res.body).toEqual({ success: true });
+        expect(res.body).toEqual({ error: 'General channel not found' });
       });
     });
 

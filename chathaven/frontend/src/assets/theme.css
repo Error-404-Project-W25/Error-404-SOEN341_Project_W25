@@ -67,7 +67,6 @@
   --tooltip-background: #111214; /* Tooltip background */
   --tooltip-text: #dbdee1; /* Tooltip text color */
 
-
   --pop-up-primary-bg: #212121;
   --pop-up-gradient-color1: #f0483e;
   --pop-up-gradient-color2: #f0483e;
@@ -93,6 +92,29 @@
   --delete-button-hover-background: #ff4d4d;
   --delete-button-text: #ffffff;
   --delete-button-icon-fill: #ffffff;
+
+  /*Color for tab*/
+  --tab-background: #2b2d31;
+  --tab-text: #949ba4;
+  --tab-active-background: #404249;
+  --tab-text-hover: #ffffff;
+  --accept-bg-color: #4caf50;
+  --accept-text-color: #ffffff;
+  --accept-hover-bg-color: #388e3c;
+  --decline-bg-color: #f44336;
+  --decline-text-color: #ffffff;
+  --decline-hover-bg-color: #d32f2f;
+
+  /* Join request card */
+  --join-request-color-white: #1e1f22;
+  --join-request-color-light-red: #2e2f33;
+  --join-request-color-red: #f0483e;
+  --join-request-color-text-dark: #ffffff;
+  --join-request-color-text-gray: #b5bac1;
+  --join-request-color-light-gray: #2b2d31;
+  --join-request-color-shadow: rgba(0, 0, 0, 0.2);
+  --join-request-color-dark-gray: #949ba4;
+  --join-request-color-border-gray: #444;
 }
 
 .light-theme {
@@ -181,4 +203,27 @@
   --delete-button-hover-background: #ff4d4d;
   --delete-button-text: #000000;
   --delete-button-icon-fill: #000000;
+
+  /*Color for tab*/
+  --tab-background: #e0e0e0;
+  --tab-text: #4a4a4a;
+  --tab-active-background: #ffffff;
+  --tab-text-hover: #000000;
+  --accept-bg-color: #4caf50;
+  --accept-text-color: #ffffff;
+  --accept-hover-bg-color: #388e3c;
+  --decline-bg-color: #f44336;
+  --decline-text-color: #ffffff;
+  --decline-hover-bg-color: #d32f2f;
+
+  /* Join request card */
+  --join-request-color-white: #ffffff;
+  --join-request-color-light-red: #fee2e2;
+  --join-request-color-red: #dc2626;
+  --join-request-color-text-dark: #111827;
+  --join-request-color-text-gray: #6b7280;
+  --join-request-color-light-gray: #f9fafb;
+  --join-request-color-shadow: rgba(0, 0, 0, 0.05);
+  --join-request-color-dark-gray: #374151;
+  --join-request-color-border-gray: #d1d5db;
 }

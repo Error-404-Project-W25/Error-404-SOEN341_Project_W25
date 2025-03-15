@@ -1,27 +1,47 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { IUser } from '@shared/interfaces';
+import { IUser,IMessage } from '@shared/interfaces';
 import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-message.dialogue';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
 import { DataService } from '@services/data.service';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 @Component({
   selector: 'chat-chat-log',
   templateUrl: './chatLog.component.html',
   styleUrls: ['./chatLog.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    PickerModule,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ChatLogComponent implements OnInit, OnDestroy {
+  /*Emoji */
+
+  showEmojiPicker = false;
+  set: 'apple' | 'google' | 'twitter' | 'facebook' = 'twitter';
+
+  isDarkTheme: boolean = true;
   isTeamListOpen: boolean = false;
   newMessage: string = '';
   loginUser: IUser | null = null;
-  messages: any[] = [];
+  messages: IMessage[] = [];
   chatTitle: string = '';
   selectedChannelId: string = '';
   selectedTeamId: string = '';
@@ -35,39 +55,24 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private userService: UserService,
     private backendService: BackendService,
-    private dataService: DataService
+    private dataService: DataService,
+    private pickerModule: PickerModule
   ) {
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
     });
-
     dataService.isDirectMessage.subscribe((isDirectMessage) => {
+      this.chatTitle = '';
+      this.conversationId = '';
       this.isDirectMessage = isDirectMessage;
       if (this.isDirectMessage) {
-        this.dataService.currentConversationId.subscribe((conversationId) => {
-          this.conversationId = conversationId;
-          this.backendService
-            .getConversationById(this.conversationId)
-            .then((name) => {
-              this.chatTitle =
-                'Direct Message: ' + name?.conversationName || '';
-            });
-          this.loadMessages();
-        });
+        this.handleDirectMessage();
       } else {
-        this.dataService.currentChannelId.subscribe((channel) => {
-          this.selectedChannelId = channel;
-          if (this.selectedChannelId) {
-            this.selectedChannelId = channel;
-            this.backendService
-              .getChannelById(this.selectedTeamId, this.selectedChannelId)
-              .then((channel) => {
-                this.chatTitle = channel?.name || '';
-                this.conversationId = channel?.conversationId || '';
-              });
-          }
-        });
+        this.handleChannelMessage();
       }
+    });
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
     });
   }
 
@@ -152,6 +157,11 @@ export class ChatLogComponent implements OnInit, OnDestroy {
         console.error('No sender found');
         return;
       }
+      if (!this.conversationId) {
+        console.error('No conversation ID found');
+        alert('No conversation ID selected');
+        return;
+      }
 
       console.log('Sending message:', this.newMessage);
       console.log('convo', this.conversationId);
@@ -175,5 +185,59 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     //Implementation for toggInformationSidebar
     console.log('Toggling Information Sidebar');
     // this.isTeamListOpen = !this.isTeamListOpen;
+  }
+
+  private handleDirectMessage() {
+    console.log('Direct Message');
+    this.dataService.currentConversationId.subscribe((conversationId) => {
+      this.conversationId = conversationId;
+      this.backendService
+        .getConversationById(this.conversationId)
+        .then((name) => {
+          this.chatTitle = 'Direct Message: ' + name?.conversationName || '';
+        });
+      this.loadMessages();
+    });
+  }
+
+  private handleChannelMessage() {
+    console.log('Channel Message');
+    this.dataService.currentChannelId.subscribe((channel) => {
+      this.selectedChannelId = channel;
+      if (this.selectedChannelId) {
+        this.backendService
+          .getChannelById(this.selectedTeamId, this.selectedChannelId)
+          .then((channel) => {
+            console.log('Channel:', channel);
+            this.chatTitle = channel?.name || '';
+            this.conversationId = channel?.conversationId || '';
+            this.loadMessages();
+          });
+      }
+    });
+  }
+
+  toggleEmojiPicker() {
+    console.log(this.showEmojiPicker);
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  addEmoji(event: { emoji: { native: string } }): void {
+    console.log(this.newMessage);
+    const { newMessage } = this;
+    console.log(newMessage);
+    console.log(`${event.emoji.native}`);
+    const text = `${newMessage}${event.emoji.native}`;
+
+    this.newMessage = text;
+    // this.showEmojiPicker = false;
+  }
+
+  onFocus() {
+    console.log('focus');
+    this.showEmojiPicker = false;
+  }
+  onBlur() {
+    console.log('onblur');
   }
 }
