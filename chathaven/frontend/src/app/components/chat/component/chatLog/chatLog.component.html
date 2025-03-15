@@ -56,19 +56,17 @@
       (keyup.enter)="sendMessage()"
       placeholder="Type your message here..."
     />
-    <button
-      class="input-container"
-      (click)="sendMessage()"
-      title="Send Message"
-    >
-      <i class="fa-solid fa-arrow-right" style="font-size: 24px"></i>
-    </button>
+
     <button
       class="input-container"
       (click)="toggleEmojiPicker()"
       title="Toggle Emoji Picker"
     >
-      <i class="fa-solid fa-smile" style="font-size: 24px" title="Toggle Emoji Picker"></i>
+      <i
+        class="fa-solid fa-smile"
+        style="font-size: 24px"
+        title="Toggle Emoji Picker"
+      ></i>
     </button>
     <emoji-mart
       class="emoji-mart"
@@ -78,5 +76,12 @@
       (emojiSelect)="addEmoji($event)"
       title="Pick your emoji…"
     ></emoji-mart>
+    <button
+      class="input-container"
+      (click)="sendMessage()"
+      title="Send Message"
+    >
+      <i class="fa-solid fa-arrow-right" style="font-size: 24px"></i>
+    </button>
   </div>
 </div>

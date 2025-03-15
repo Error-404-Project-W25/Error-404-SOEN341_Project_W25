@@ -1,18 +1,18 @@
 on:
   # Elements that trigger the workflow
   push:
-    branches: 
+    branches:
       - '*' # Runs on all branches
-  pull_request: 
-    branches: 
+  pull_request:
+    branches:
       - '*' # Runs on all branches
 
 jobs:
   # Define a job "build"
   build:
     runs-on: ubuntu-latest
-    
-          
+
+
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout code
@@ -31,7 +31,7 @@ jobs:
           echo "DB_NAME=chatHavenDB" >> chathaven/.env
           echo "PORT=3000" >> chathaven/.env
           echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> chathaven/.env
-      
+
       # Install backend dependencies
       - name: Install backend dependencies
         working-directory: ./chathaven/backend
@@ -41,9 +41,9 @@ jobs:
       - name: Install frontend dependencies
         working-directory: ./chathaven/frontend
         run: npm ci
-       
+
       # # Run backend tests
       - name: Run Jest Unit Tests
         working-directory: ./chathaven/backend
-        run: npm test
-      
+        run: npm test -- --runInBand
+
