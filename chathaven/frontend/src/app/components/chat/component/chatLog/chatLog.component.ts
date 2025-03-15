@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { IUser } from '@shared/interfaces';
+import { IUser,IMessage } from '@shared/interfaces';
 import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-message.dialogue';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
@@ -21,7 +21,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   isTeamListOpen: boolean = false;
   newMessage: string = '';
   loginUser: IUser | null = null;
-  messages: any[] = [];
+  messages: IMessage[] = [];
   chatTitle: string = '';
   selectedChannelId: string = '';
   selectedTeamId: string = '';

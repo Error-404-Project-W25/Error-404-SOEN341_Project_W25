@@ -9,8 +9,8 @@
   height: 100%;
   justify-content: horizontal;
   margin: 0;
-  max-width: 20rem;
-  min-width: 20rem;
+  max-width: 17.5rem;
+  min-width: 17.5rem;
   padding-bottom: 10px;
   padding-top: 7px;
   width: auto;
@@ -154,6 +154,7 @@
 .channel-container {
   justify-content: space-between;
   align-items: center;
+  justify-content: center;
   background-color: var(--channel-list-background);
   border: none;
   border-radius: 10px;
@@ -231,6 +232,7 @@
   align-items: flex-start;
   gap: 5px;
   overflow: hidden;
+  height: 2.75rem;
 }
 
 .channel-actions {

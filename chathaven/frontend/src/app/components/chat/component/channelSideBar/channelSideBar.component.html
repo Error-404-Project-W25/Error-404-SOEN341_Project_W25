@@ -60,7 +60,10 @@
       <div class="channel-information-container">
         <div class="notification-container">
           <!-- need to find a way to put notification in the channel parameter -->
-          <div class="notification"></div>
+          <div
+            *ngIf="isChannelInbox(channel.channelId)"
+            class="notification"
+          ></div>
         </div>
         <i
           style="display: flex; justify-content: center; align-items: center"
@@ -73,7 +76,9 @@
         </i>
         <div class="channel-text-information">
           <div class="channel-name">{{ channel.name }}</div>
-          <div class="channel-last-message">{{ channel.conversationId }}</div>
+          <div class="channel-last-message">
+            {{ getChannelLastMessage(channel.channelId) }}
+          </div>
         </div>
       </div>
       <div class="channel-actions">
@@ -112,14 +117,15 @@
       <div class="channel-information-container">
         <div class="notification-container">
           <!-- need to find a way to put notification in the channel parameter -->
-          <div class="notification"></div>
+          <!-- <div class="notification"></div> -->
         </div>
         <i class="fa fa-hashtag" style="font-size: 16px; margin-right: 8px">
         </i>
         <div class="channel-text-information">
           <div class="channel-name">{{ directMessage.conversationName }}</div>
           <div class="channel-last-message">
-            {{ directMessage.messages[0].content }} - {{ directMessage.messages[0].time | date:'shortTime' }}
+            {{ directMessage.messages[0].content }} -
+            {{ directMessage.messages[0].time | date : "shortTime" }}
           </div>
         </div>
       </div>

@@ -55,7 +55,7 @@
 
     <div
       class="tab-content"
-      *ngIf="activeTab === 'team' && isDirectMessage === false"
+      *ngIf="activeTab === 'team' && !isDirectMessage"
     >
       <h3 style="margin-bottom: 5px">Team Information{{ teamTitle }}</h3>
       <h4 style="margin-bottom: 5px">Description</h4>

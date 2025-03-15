@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { IChannel, IConversation, IUser } from '@shared/interfaces';
+import { IChannel, IConversation, IUser, IInbox } from '@shared/interfaces';
 import { ChannelCreationDialog } from '../../dialogue/create-channel/create-channel.dialogue';
 import { AddChannelMembersDialogue } from '../../dialogue/add-member-channel/add-member-channel.dialogue';
 import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
@@ -13,7 +13,6 @@ import { EditChannelDialog } from '../../dialogue/edit-channel/edit-channel.dial
 import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remove-member-team.dialogue';
 import { DataService } from '@services/data.service';
 import { JoinRequestDialog } from '../../dialogue/join-request/join-request.dialogue';
-
 
 @Component({
   selector: 'chat-channel-sidebar',
@@ -36,9 +35,14 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   selectedChannelId: string | null = null;
   channelList: IChannel[] = [];
+  requestList: IInbox[] = [];
 
   selectedDirectMessageId: string | null = null;
   directMessageList: IConversation[] = [];
+  inviteList: IInbox[] = [];
+
+  channels: IChannel[] = [];
+  channelIdToLastMessage: { [channelId: string]: string } = {};
 
   //output
   conversationId: string | null = null;
@@ -63,9 +67,50 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         this.refreshChannelList();
       }
     });
+    this.backendService.getUserById(this.userId).then((user) => {
+      if (user) {
+        if (user.inbox) {
+          this.requestList = user.inbox.filter(
+            (inbox) => inbox.type === 'request'
+          );
+          this.inviteList = user.inbox.filter(
+            (inbox) => inbox.type === 'invite'
+          );
+        }
+      }
+    });
+  }
+  // async loadLastMessage(): Promise<void> {
+  //   const channelIdToLastMessage: { [channelId: string]: string } = {};
+
+  //   const uniqueChannelIds = [
+  //     ...new Set(this.channels.map((channel) => channel.channelId)),
+  //   ];
+  //   console.log('uniqueChannelIds:', uniqueChannelIds);
+  //   for (const channelId of uniqueChannelIds) {
+  //     console.log('channelId:', channelId);
+  //     const conversation = await this.backendService.getConversationById(
+  //       channelId
+  //     );
+  //     if (conversation) {
+  //       channelIdToLastMessage[channelId] =
+  //         conversation.messages[0]?.content || '';
+  //       console.log('conversation:', conversation);
+  //     }
+  //   }
+
+  //   console.log('channelIdToLastMessage:', channelIdToLastMessage);
+  //   this.channelIdToLastMessage = channelIdToLastMessage;
+  // }
+  ngOnDestroy() {}
+
+  isChannelInbox(channelId: string): boolean {
+    return this.requestList.some((inbox) => inbox.channelId === channelId);
   }
 
-  ngOnDestroy() {}
+  getChannelLastMessage(channelId: string): string {
+    return this.channelIdToLastMessage[channelId] || ' ';
+  }
 
   async refreshChannelList() {
     let selectedTeam = this.selectedTeamId
@@ -82,8 +127,16 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
       if (channel) {
         this.channelList.push(channel);
+        const lastMessage = await this.getConversationLastMessage(
+          // channel.conversationId
+          channel
+        );
+        // console.log('last message:', lastMessage);
+        this.channelIdToLastMessage[channel.channelId] = lastMessage || '';
+        console.log('channelIdToLastMessage:', this.channelIdToLastMessage);
       }
     });
+    // await this.loadLastMessage();
   }
 
   refreshDirectMessageList() {
@@ -180,15 +233,23 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     this.dataService.selectConversation(directMessageId);
   }
   async getConversationLastMessage(
-    conversationId: string
+    // conversationId: string
+    channel: IChannel
   ): Promise<string | null> {
-    console.log('conversationId:', conversationId);
+    // console.log('conversationId:', conversationId);
     try {
+      // console.log('channel:', channel);
       const conversation = await this.backendService.getConversationById(
-        conversationId || ''
+        channel.conversationId || ''
       );
-      console.log('conversation:', conversation);
-      return conversation?.messages[0].content || null;
+      // console.log('conversation:', conversation);
+      console.log(
+        'conversation',
+        conversation?.conversationId,
+        ' last message:',
+        conversation?.messages[0]
+      );
+      return conversation?.messages?.[0]?.content || null;
     } catch (error) {
       console.log('error:', error);
       return null;
