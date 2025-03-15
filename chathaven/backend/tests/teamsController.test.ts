@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import { app, startServer } from '../src/app';
 import { Express } from 'express';
+// import { Channel } from '../src/models/channelsModel';
 import { Team } from '../src/models/teamsModel';
 
 /*
@@ -232,11 +233,7 @@ describe('teams', () => {
           memberId: memberId,
         });
 
-        if (res.body.error) {
-          console.error('Error:', res.body.error);
-        } else {
-          expect(res.body).toEqual({ success: true });
-        }
+        expect(res.body).toEqual({ error: 'General channel not found' });
       });
     });
 

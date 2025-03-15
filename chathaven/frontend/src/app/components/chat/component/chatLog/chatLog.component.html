@@ -38,9 +38,7 @@
           </button>
         </div>
         <div class="message-header">
-          <span class="message-author">{{
-            getUserName(message.sender)
-          }}</span>
+          <span class="message-author">{{ getUserName(message.sender) }}</span>
           <span class="message-date">{{
             message.time | date : "yyyy-MM-dd HH:mm"
           }}</span>
@@ -58,6 +56,26 @@
       (keyup.enter)="sendMessage()"
       placeholder="Type your message here..."
     />
+
+    <button
+      class="input-container"
+      (click)="toggleEmojiPicker()"
+      title="Toggle Emoji Picker"
+    >
+      <i
+        class="fa-solid fa-smile"
+        style="font-size: 24px"
+        title="Toggle Emoji Picker"
+      ></i>
+    </button>
+    <emoji-mart
+      class="emoji-mart"
+      [set]="set"
+      [darkMode]="isDarkTheme"
+      *ngIf="showEmojiPicker"
+      (emojiSelect)="addEmoji($event)"
+      title="Pick your emoji…"
+    ></emoji-mart>
     <button
       class="input-container"
       (click)="sendMessage()"

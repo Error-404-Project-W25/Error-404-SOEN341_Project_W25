@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -9,15 +15,29 @@ import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-messag
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
 import { DataService } from '@services/data.service';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 @Component({
   selector: 'chat-chat-log',
   templateUrl: './chatLog.component.html',
   styleUrls: ['./chatLog.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    PickerModule,
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ChatLogComponent implements OnInit, OnDestroy {
+  /*Emoji */
+
+  showEmojiPicker = false;
+  set: 'apple' | 'google' | 'twitter' | 'facebook' = 'twitter';
+
+  isDarkTheme: boolean = true;
   isTeamListOpen: boolean = false;
   newMessage: string = '';
   loginUser: IUser | null = null;
@@ -35,7 +55,8 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private userService: UserService,
     private backendService: BackendService,
-    private dataService: DataService
+    private dataService: DataService,
+    private pickerModule: PickerModule
   ) {
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
@@ -49,6 +70,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       } else {
         this.handleChannelMessage();
       }
+    });
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
     });
   }
 
@@ -191,5 +215,29 @@ export class ChatLogComponent implements OnInit, OnDestroy {
           });
       }
     });
+  }
+
+  toggleEmojiPicker() {
+    console.log(this.showEmojiPicker);
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  addEmoji(event: { emoji: { native: string } }): void {
+    console.log(this.newMessage);
+    const { newMessage } = this;
+    console.log(newMessage);
+    console.log(`${event.emoji.native}`);
+    const text = `${newMessage}${event.emoji.native}`;
+
+    this.newMessage = text;
+    // this.showEmojiPicker = false;
+  }
+
+  onFocus() {
+    console.log('focus');
+    this.showEmojiPicker = false;
+  }
+  onBlur() {
+    console.log('onblur');
   }
 }
