@@ -2,6 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import { app, startServer } from '../src/app';
 import { Express } from 'express';
+import { Channel } from '../src/models/channelsModel';
+import { Conversation } from '../src/models/conversationsModel';
 
 /*
     === Testing Channels APIs ===
@@ -15,6 +17,17 @@ describe('channels', () => {
   beforeAll(async () => {
     server = app as Express;
     await startServer();
+
+    // Create channel for testing
+    const channel = await Channel.create({
+      channelId: 'JEST-TESTCHANNELID-123',
+      name: 'JEST CHANNEL',
+      description: 'JEST CHANNEL DESCRIPTION',
+      teamId: 'JEST-TESTTEAMID-123',
+      members: [],
+      conversationId: 'JEST-TESTCHANNEL-CONVERSATIONID-123'
+    })
+    console.log('Test channel created:', channel.channelId);
   });
 
   /*
@@ -49,6 +62,13 @@ describe('channels', () => {
       } else {
         console.error("ChannelIdToDelete is undefined.");
       }
+
+      // quick fix:
+      await Channel.deleteMany({ members: ['JEST-TESTUSERID-456'] });
+      await Channel.deleteMany({ members: [ null ] });
+      await Channel.deleteOne({ channelId: 'JEST-TESTCHANNELID-123' });
+      await Channel.deleteMany({ name: 'jest-create-channel' })
+      await Conversation.deleteMany({ conversationName: 'jest-create-channel' })
     
     } catch (error) {
       console.error('Error: ', error);
