@@ -42,6 +42,9 @@ describe('messages', () => {
 
   // Cleanup after tests by removing the conversation and messages
   afterAll(async () => {
+    await Messages.deleteMany({ sender: 'User1' }); 
+    console.log('Messages sent by User1 deleted');
+    
     await Conversation.deleteOne({ conversationId: 'JEST-TESTCONVERSATIONID-123' });
     console.log('Conversation deleted: JEST-TESTCONVERSATIONID-123');
 
