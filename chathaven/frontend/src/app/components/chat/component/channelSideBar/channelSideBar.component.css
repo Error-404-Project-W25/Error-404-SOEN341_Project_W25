@@ -154,7 +154,6 @@
 .channel-container {
   justify-content: space-between;
   align-items: center;
-  justify-content: center;
   background-color: var(--channel-list-background);
   border: none;
   border-radius: 10px;
@@ -165,7 +164,7 @@
   max-height: 3rem;
   max-width: 95%;
   min-height: 3rem;
-  min-width: 95%;
+  min-width: max-content;
   overflow: hidden;
   padding: 2px;
   text-align: center;
@@ -199,7 +198,7 @@
 }
 .channel-information-container {
   gap: 5px;
-  width: 75%;
+  width: max-content;
   display: flex;
   flex-direction: row;
   align-items: center;

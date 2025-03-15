@@ -63,7 +63,7 @@
       <h4 style="margin-bottom: 5px">Members</h4>
       <div class="list">
         <ul>
-          <li *ngFor="let member of teamMemberList" readonly>
+          <li *ngFor="let member of teamMemberList" >
             <div class="user-information">
               <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">{{ member.username }}</div>
@@ -71,7 +71,7 @@
             <button
               (click)="createCoversation(member.userId)"
               class="member-button"
-              readonly
+
               title="Start Conversation"
             >
               <i class="far fa-comment-alt" style="font-size: 1rem"></i>
@@ -88,7 +88,7 @@
       <h4 style="margin-bottom: 5px">Members</h4>
       <div class="list">
         <ul>
-          <li *ngFor="let member of chatMemberList" readonly>
+          <li *ngFor="let member of chatMemberList" >
             <div class="user-information">
               <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">{{ member.username }}</div>
@@ -103,7 +103,7 @@
       <h4 style="margin-bottom: 5px">Invite</h4>
       <div class="list">
         <ul>
-          <li *ngFor="let invite of inviteList" readonly>
+          <li *ngFor="let invite of inviteList" >
             <div class="inbox-information">
               <div class="member-name">{{ invite.channelId }}</div>
             </div>
@@ -111,7 +111,7 @@
               <button
                 (click)="acceptRequest(invite)"
                 class="accept-button"
-                readonly
+
                 title="Accept"
               >
                 <i class="fas fa-check" style="font-size: 1rem"></i> Accept
@@ -119,7 +119,7 @@
               <button
                 (click)="declineRequest(invite)"
                 class="decline-button"
-                readonly
+
                 title="Decline"
               >
                 <i class="fas fa-times" style="font-size: 1rem"></i> Decline
@@ -138,7 +138,7 @@
       <h4 style="margin-bottom: 5px">Request</h4>
       <div class="list">
         <ul>
-          <li *ngFor="let request of requestList" readonly>
+          <li *ngFor="let request of requestList" >
             <div class="inbox-information">
               <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">
@@ -149,7 +149,7 @@
               <button
                 (click)="acceptRequest(request)"
                 class="accept-button"
-                readonly
+
                 title="Accept"
               >
                 <i class="fas fa-check" style="font-size: 1rem"></i> Accept
@@ -157,7 +157,7 @@
               <button
                 (click)="declineRequest(request)"
                 class="decline-button"
-                readonly
+
                 title="Decline"
               >
                 <i class="fas fa-times" style="font-size: 1rem"></i> Decline

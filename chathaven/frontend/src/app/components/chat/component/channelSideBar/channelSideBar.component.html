@@ -124,8 +124,14 @@
         <div class="channel-text-information">
           <div class="channel-name">{{ directMessage.conversationName }}</div>
           <div class="channel-last-message">
-            {{ directMessage.messages[0].content }} -
-            {{ directMessage.messages[0].time | date : "shortTime" }}
+            <div
+              *ngIf="
+                directMessage.messages[0] && directMessage.messages[0].content
+              "
+            >
+              {{ directMessage.messages[0].content }} -
+              {{ directMessage.messages[0].time | date : "shortTime" }}
+            </div>
           </div>
         </div>
       </div>
