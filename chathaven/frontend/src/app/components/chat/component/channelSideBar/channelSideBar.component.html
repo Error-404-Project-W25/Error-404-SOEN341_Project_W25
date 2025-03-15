@@ -54,9 +54,18 @@
       class="channel-container"
       [ngStyle]="{ opacity: channel.members.includes(userId) ? 1 : 0.5 }"
       *ngFor="let channel of channelList"
-      (click)="selectChannel(channel.channelId)"
+      [class.disabled-channel]="isPrivateChannel(channel) && !isChannelMember(channel)"
+      (click)="handleChannelSelection(channel)"
       readonly
     >
+<<<<<<< HEAD
+      <div class="channel-name-container" [class.faded-text]="isPrivateChannel(channel) && !isChannelMember(channel)">
+        <!-- Lock icon for private channels where user is not a member -->
+        <i *ngIf="isPrivateChannel(channel) && !isChannelMember(channel)"
+           class="fa fa-lock"
+           style="font-size: 14px; margin-right: 5px;"></i>
+        {{ channel.name }}
+=======
       <div class="channel-information-container">
         <div class="notification-container">
           <!-- need to find a way to put notification in the channel parameter -->
@@ -80,27 +89,30 @@
             {{ getChannelLastMessage(channel.channelId) }}
           </div>
         </div>
+>>>>>>> bd19b71089253c1f44849c065c257d09125a18ae
       </div>
       <div class="channel-actions">
-        <!--(click) add member to channel-->
+        <!-- Rest of your buttons -->
         <button
           class="channel-button"
           [disabled]="!channel.members.includes(userId)"
           (click)="
-            openAddMemberChannelDialog(channel); $event.stopPropagation()
-          "
+          openAddMemberChannelDialog(channel); $event.stopPropagation()
+        "
           readonly
           title="Add Member to Channel"
+          [disabled]="isPrivateChannel(channel) && !isChannelMember(channel)"
         >
           <i class="fa fa-user-plus" style="font-size: 16px"> </i>
         </button>
-        <!-- (click) open channel setting -->
+        <!-- Channel settings button -->
         <button
           class="channel-button"
           [disabled]="!channel.members.includes(userId)"
           (click)="openEditChannelDialog(channel)"
           readonly
           title="Channel Settings"
+          [disabled]="isPrivateChannel(channel) && !isChannelMember(channel)"
         >
           <i class="fa fa-gear" style="font-size: 16px"></i>
         </button>
