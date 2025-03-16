@@ -47,10 +47,10 @@
 
 .direct-message-button {
   align-items: center;
-  background-color: var(--user-button-background);
-  border: none;
+  background-color: var(--add-team-button-background);
+  border: 2px solid var(--user-button-background);
   border-radius: 50%;
-  color: var(--user-button-text);
+  color: var(--add-team-button-text);
   cursor: pointer;
   justify-content: center;
   margin: 5px;
@@ -99,6 +99,7 @@
 }
 
 .team-list li {
+  font-weight: bold;
   align-items: center;
   background-color: var(--team-button-background);
   border: none;

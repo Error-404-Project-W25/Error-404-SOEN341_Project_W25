@@ -5,14 +5,15 @@
       class="direct-message-button"
       (click)="selectDirectMessage()"
       readonly
-      title="Conversations"
+      title="Direct Message"
     >
-      <i
+      <!-- <i
         class="far fa-comment-alt"
         style="font-size: 24px; transition: transform 0.3s"
         readonly
       >
-      </i>
+      </i> -->
+      <img src="../../../../../favicon.ico" alt="Direct Message Icon" style="width: 1.25rem; height: 1.25rem; transition: transform 0.3s" />
       <!-- <div *ngIf="inviteMemberList.length > 0" class="notification">{{ inviteMemberList.length }}</div> -->
       <div *ngIf="inviteMemberList.length > 0" class="notification">{{ inviteMemberList.length }}</div>
     </button>
@@ -38,9 +39,9 @@
         *ngFor="let team of teamList"
         (click)="selectTeam(team.teamId)"
         readonly
-        title="Select Team"
+        title="Select team {{ team.teamName }}"
       >
-        <a href="#">{{ team.teamName.slice(0, 6) }}</a>
+        <a href="#">{{ team.teamName.charAt(0) }}</a>
       </li>
     </ul>
   </div>
