@@ -198,23 +198,29 @@ emoji-mart {
   color: var(--send-button-hover-stroke);
 }
 
-.delete-button-container {
+.button-container {
   display: none;
+
   position: absolute;
   right: 0;
   top: 0;
 }
 
-.message-content:hover .delete-button-container {
+.message-content:hover .button-container {
   transition: display 10s;
-  display: block;
+  border: 1px solid var(--message-background-hover);
+  background-color: var(--delete-button-background);
+  border-radius: 25%;
+  display: flex;
+  flex-direction: row;
 }
 
 .delete-button {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 25%;
   background-color: var(--delete-button-background);
+  color: var(--chat-box-text);
   border: none;
   font-weight: 600;
   display: flex;
@@ -226,49 +232,10 @@ emoji-mart {
   position: relative;
 }
 
-.delete-svgIcon {
-  width: 15px;
-  transition-duration: 0.3s;
-}
-
-.delete-svgIcon path {
-  fill: var(--delete-button-icon-fill);
-}
-
 .delete-button:hover {
-  width: fit-content;
-  border-radius: 50px;
   transition-duration: 0.3s;
   background-color: var(--delete-button-hover-background);
   align-items: center;
-}
-
-.delete-button:hover .delete-svgIcon {
-  width: 20px;
-  transition-duration: 0.3s;
-  transform: translateY(60%);
-  -webkit-transform: rotate(360deg);
-  -moz-transform: rotate(360deg);
-  -o-transform: rotate(360deg);
-  -ms-transform: rotate(360deg);
-  transform: rotate(360deg);
-}
-
-.delete-button::before {
-  display: none;
-  content: "Delete Message";
-  color: var(--delete-button-text);
-  transition-duration: 0.3s;
-  font-size: 2px;
-}
-
-.delete-button:hover::before {
-  display: block;
-  padding-right: 10px;
-  font-size: 13px;
-  opacity: 1;
-  transform: translateY(0px);
-  transition-duration: 0.3s;
 }
 
 .team-setting-button-container {
@@ -291,4 +258,22 @@ emoji-mart {
   padding: 5px;
   width: 2rem;
   z-index: 2;
+}
+ul {
+  align-items: center;
+  justify-content: center;
+  list-style-type: none;
+  padding: 2px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.welcome-message {
+  max-width: 95%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 1rem 2rem 1rem 2rem;
 }

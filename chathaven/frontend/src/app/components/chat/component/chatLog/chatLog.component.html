@@ -1,48 +1,51 @@
 <div class="chat-box" id="chat-box">
   <div class="channel-title-container">
     <div class="team-setting-button-container">
-      <button
-        class="team-setting-button"
-        (click)="channelBack()"
-        title="Back"
-      >
+      <button class="team-setting-button" (click)="channelBack()" title="Back">
         <i class="fa fa-angle-left" style="font-size: 24px"></i>
       </button>
     </div>
     <div class="channel-title">{{ chatTitle }}</div>
   </div>
   <div class="chat-log">
-    <div class="message" *ngFor="let message of messages" readonly>
-      <div class="message-profile-picture">
-        <i class="far fa-user-circle" style="font-size: 3rem"></i>
-      </div>
-      <div class="message-content">
-        <!-- make sure only channel admin or sender can delete message -->
-        <div class="delete-button-container">
-          <button
-            class="delete-button"
-            (click)="openDeleteDialog(message.messageId, message.content)"
-            readonly
-            title="Delete Message"
-          >
-            <svg class="delete-svgIcon" viewBox="0 0 448 512">
-              <path
-                d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"
-              ></path>
-            </svg>
-          </button>
+    <ul>
+      <li class="welcome-message">
+        <i class="fa fa-hashtag" style="font-size: 3rem"></i>
+        <h1>Welcome to "{{ chatTitle }}"</h1>
+        <p>This is the start of "{{ chatTitle }}"</p>
+      </li>
+      <li class="message" *ngFor="let message of messages" readonly>
+        <div class="message-profile-picture">
+          <i class="far fa-user-circle" style="font-size: 3rem"></i>
         </div>
-        <div class="message-header">
-          <span class="message-author">{{ getUserName(message.sender) }}</span>
-          <span class="message-date">{{
-            message.time | date : "yyyy-MM-dd HH:mm"
-          }}</span>
+        <div class="message-content">
+          <!-- make sure only channel admin or sender can delete message -->
+          <div class="button-container">
+            <button class="delete-button" readonly title="Reply Message">
+              <i class="fa fa-reply" style="font-size: 1rem"></i></button
+            ><button
+              class="delete-button"
+              (click)="openDeleteDialog(message.messageId, message.content)"
+              readonly
+              title="Delete Message"
+            >
+              <i class="fa fa-trash" style="font-size: 1rem"></i>
+            </button>
+          </div>
+          <div class="message-header">
+            <span class="message-author">{{
+              getUserName(message.sender)
+            }}</span>
+            <span class="message-date">{{
+              message.time | date : "yyyy-MM-dd HH:mm"
+            }}</span>
+          </div>
+          <article class="message-text" readonly>
+            {{ message.content }}
+          </article>
         </div>
-        <article class="message-text" readonly>
-          {{ message.content }}
-        </article>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
   <div class="input-container">
     <input

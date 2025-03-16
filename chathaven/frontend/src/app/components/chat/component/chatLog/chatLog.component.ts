@@ -131,9 +131,10 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   async loadMessages(): Promise<void> {
+    this.messages = [];
     const messages = await this.backendService.getMessages(this.conversationId);
     if (messages) {
-      this.messages = messages;
+      this.messages = messages.reverse();
       await this.loadUserNames();
     }
     this.messages.reverse();
