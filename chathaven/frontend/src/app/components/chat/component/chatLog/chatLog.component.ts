@@ -237,4 +237,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   onBlur() {
     console.log('onblur');
   }
+
+  channelBack() {
+    this.dataService.selectChannel('');
+    this.dataService.selectConversation('');
+  }
 }
