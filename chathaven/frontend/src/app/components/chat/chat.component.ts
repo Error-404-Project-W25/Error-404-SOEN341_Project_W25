@@ -19,7 +19,6 @@ import { ChannelSidebarComponent } from './component/channelSideBar/channelSideB
 import { ChatLogComponent } from './component/chatLog/chatLog.component';
 import { InformationSidebarComponent } from './component/informationSideBar/informationSideBar.component';
 
-
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -43,7 +42,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   loginUser: IUser | null = null;
 
   isDarkTheme = true;
-  isTeamListOpen = true;
+  isInformationOpen = true;
   isDirectMessage = false;
 
   selectedConversationId: string | null = null;
@@ -69,6 +68,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
+    });
+    this.dataService.isInformationOpen.subscribe((isInformationOpen) => {
+      this.isInformationOpen = isInformationOpen;
+      this.handleInformatonBar();
     });
   }
 
@@ -96,8 +99,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
-  toggleTheme() {
-    this.isDarkTheme = !this.isDarkTheme;
+  toggleInformationBar() {
+    this.isInformationOpen = !this.isInformationOpen;
+    this.dataService.toggleIsInformationOpen(this.isInformationOpen);
   }
 
   /*
@@ -106,23 +110,25 @@ export class ChatComponent implements OnInit, OnDestroy {
    * based on the window width.
    */
   handleResize() {
-    // const chatBox = document.querySelector('.chat-box') as HTMLElement;
-    // const teamSidebar = document.querySelector(
-    //   '.team-setting-sidebar'
-    // ) as HTMLElement;
-    // if (window.innerWidth < 1135) {
-    //   this.isTeamListOpen = true;
-    // } else {
-    //   this.isTeamListOpen = false;
-    // }
-    // if (teamSidebar) {
-    //   if (this.isTeamListOpen) {
-    //     teamSidebar.style.display = 'none';
-    //     chatBox.style.width = 'calc(100% - 20rem)';
-    //   } else {
-    //     teamSidebar.style.display = 'flex';
-    //     chatBox.style.width = 'calc(100% - 40rem)';
-    //   }
-    // }
+    if (window.innerWidth > 1135) {
+    } else {
+      console.log('window.innerWidth:', window.innerWidth);
+      this.dataService.toggleIsInformationOpen(false);
+    }
+    this.handleInformatonBar();
+  }
+
+  handleInformatonBar() {
+    const teamSidebar = document.querySelector(
+      '.team-setting-sidebar'
+    ) as HTMLElement;
+    if (teamSidebar) {
+      console.log('isTeamListOpen:', this.isInformationOpen);
+      if (this.isInformationOpen) {
+        teamSidebar.style.display = 'flex';
+      } else {
+        teamSidebar.style.display = 'none';
+      }
+    }
   }
 }

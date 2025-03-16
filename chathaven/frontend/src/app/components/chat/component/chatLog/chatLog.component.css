@@ -277,7 +277,7 @@ emoji-mart {
   background-color: var(--team-setting-button-background);
 }
 
-.team-list-toggle-button {
+.team-setting-button {
   background-color: var(--team-list-toggle-button-background);
   border: none;
   border-radius: 10px;
@@ -290,4 +290,5 @@ emoji-mart {
   outline: none;
   padding: 5px;
   width: 2rem;
+  z-index: 2;
 }

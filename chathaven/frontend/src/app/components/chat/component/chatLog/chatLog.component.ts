@@ -74,6 +74,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
       this.isDarkTheme = isDarkTheme;
     });
+    this.dataService.isInformationOpen.subscribe((isInformationOpen) => {
+      this.isTeamListOpen = isInformationOpen;
+    });
   }
 
   ngOnInit() {
@@ -179,12 +182,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   getUserName(userId: string): string {
     return this.userIdToName[userId] || userId;
-  }
-
-  toggInformationSidebar() {
-    //Implementation for toggInformationSidebar
-    console.log('Toggling Information Sidebar');
-    // this.isTeamListOpen = !this.isTeamListOpen;
   }
 
   private handleDirectMessage() {
