@@ -13,9 +13,15 @@
         readonly
       >
       </i> -->
-      <img src="../../../../../favicon.ico" alt="Direct Message Icon" style="width: 1.25rem; height: 1.25rem; transition: transform 0.3s" />
+      <img
+        src="../../../../../favicon.ico"
+        alt="Direct Message Icon"
+        style="width: 1.25rem; height: 1.25rem; transition: transform 0.3s"
+      />
       <!-- <div *ngIf="inviteMemberList.length > 0" class="notification">{{ inviteMemberList.length }}</div> -->
-      <div *ngIf="inviteMemberList.length > 0" class="notification">{{ inviteMemberList.length }}</div>
+      <div *ngIf="inviteMemberList.length > 0" class="notification">
+        {{ inviteMemberList.length }}
+      </div>
     </button>
     <!-- (click) create team  -->
     <button
@@ -33,6 +39,9 @@
     </button>
   </div>
   <div class="team-list">
+    <ul *ngIf="teamList.length === 0">
+      <li class="loading" *ngFor="let _ of [].constructor(13)"></li>
+    </ul>
     <ul>
       <!-- (click) select team -->
       <li

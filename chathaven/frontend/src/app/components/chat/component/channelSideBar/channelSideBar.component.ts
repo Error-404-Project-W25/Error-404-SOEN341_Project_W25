@@ -52,9 +52,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private backendService: BackendService,
     private dataService: DataService
-  ) {}
-
-  ngOnInit() {
+  ) {
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
       if (isDirectMessage) {
@@ -80,6 +78,8 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  ngOnInit() {}
   ngOnDestroy() {}
 
   isChannelInbox(channelId: string): boolean {
@@ -91,13 +91,13 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   async refreshChannelList() {
+    this.channelList = [];
     const list: IChannel[] = [];
     let selectedTeam = this.selectedTeamId
       ? await this.backendService.getTeamById(this.selectedTeamId)
       : null;
     this.teamTitle = selectedTeam?.teamName || '';
     let channelListId = selectedTeam?.channels || [];
-    this.channelList = [];
 
     // Fetch all channels without filtering by membership
     for (const channelId of channelListId) {
@@ -118,10 +118,10 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   refreshDirectMessageList() {
+    this.directMessageList = [];
     const list: IConversation[] = [];
     this.loginUser = this.userService.getUser() || null;
     let directMessageListId = this.loginUser?.directMessages || [];
-    this.directMessageList = [];
     directMessageListId.forEach(async (directMessageId) => {
       const directMessage = await this.backendService.getConversationById(
         directMessageId

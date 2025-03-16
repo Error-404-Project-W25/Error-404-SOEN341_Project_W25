@@ -51,7 +51,8 @@
   </div>
 
   <div class="channel-list" id="channel-list" *ngIf="!isDirectMessage">
-    <ul>
+    <div *ngIf="channelList.length <= 0" class="loading"> Loading Channel ...</div>
+    <ul >
       <li
         class="channel-container"
         [ngStyle]="{ opacity: channel.members.includes(userId) ? 1 : 0.5 }"
@@ -111,6 +112,11 @@
   </div>
 
   <div class="channel-list" id="dm-list" *ngIf="isDirectMessage">
+    <div *ngIf="directMessageList.length <= 0" class="loading"> Loading DM ...</div>
+
+    <ul *ngIf="directMessageList.length <= 0">
+      <li class="loading" *ngFor="let _ of [].constructor(17)"></li>
+    </ul>
     <ul>
       <li
         class="channel-container"

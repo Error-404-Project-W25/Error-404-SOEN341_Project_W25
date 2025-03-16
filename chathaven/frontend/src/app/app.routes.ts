@@ -7,8 +7,5 @@ export const routes: Routes = [
   { path: '', component: HomeComponent }, // Default route (loads home page)
   { path: 'home', component: HomeComponent }, // Explicit home route
   { path: 'login', component: LoginComponent }, // Login page route
-  {
-    path: 'chat',
-    component: ChatComponent,
-  },
+  { path: 'chat', component: ChatComponent }, // Chat page route
 ];
