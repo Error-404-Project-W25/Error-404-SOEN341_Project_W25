@@ -122,12 +122,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     const teamSidebar = document.querySelector(
       '.team-setting-sidebar'
     ) as HTMLElement;
+    const emojiMartElement = document.querySelector('.emoji-mart') as HTMLElement;
     if (teamSidebar) {
       console.log('isTeamListOpen:', this.isInformationOpen);
       if (this.isInformationOpen) {
         teamSidebar.style.display = 'flex';
+        emojiMartElement.style.right = '325px';
       } else {
         teamSidebar.style.display = 'none';
+        emojiMartElement.style.right = '0';
       }
     }
   }
