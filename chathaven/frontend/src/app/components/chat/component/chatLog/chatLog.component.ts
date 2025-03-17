@@ -45,8 +45,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   chatTitle: string = '';
   selectedChannelId: string = '';
   selectedTeamId: string = '';
-  conversationId: string = '';
+  selectedConversationId: string = '';
   isDirectMessage: boolean = false;
+  isMessageLoading: boolean = false;
 
   userIdToName: { [userId: string]: string } = {};
 
@@ -63,7 +64,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     });
     dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.chatTitle = '';
-      this.conversationId = '';
+      this.selectedConversationId = '';
       this.isDirectMessage = isDirectMessage;
       if (this.isDirectMessage) {
         this.handleDirectMessage();
@@ -77,6 +78,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.dataService.isInformationOpen.subscribe((isInformationOpen) => {
       this.isTeamListOpen = isInformationOpen;
     });
+
   }
 
   ngOnInit() {
@@ -102,15 +104,15 @@ export class ChatLogComponent implements OnInit, OnDestroy {
         // Get the appropriate conversation ID
         // const conversationId = this.selectedChannelObject?.conversationId || this.selectedConversationId;
 
-        if (this.conversationId) {
+        if (this.selectedConversationId) {
           console.log(
             'Deleting message:',
             result,
             'from conversation:',
-            this.conversationId
+            this.selectedConversationId
           );
           const success = await this.backendService.deleteMessage(
-            this.conversationId,
+            this.selectedConversationId,
             result
           );
 
@@ -131,13 +133,16 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   async loadMessages(): Promise<void> {
+    let list: IMessage[] = [];
     this.messages = [];
-    const messages = await this.backendService.getMessages(this.conversationId);
+    this.isMessageLoading = true;
+    const messages = await this.backendService.getMessages(this.selectedConversationId);
     if (messages) {
-      this.messages = messages.reverse();
+      list = messages;
       await this.loadUserNames();
     }
-    this.messages.reverse();
+    this.messages = list.reverse();
+    this.isMessageLoading = false;
   }
 
   async loadUserNames(): Promise<void> {
@@ -161,18 +166,18 @@ export class ChatLogComponent implements OnInit, OnDestroy {
         console.error('No sender found');
         return;
       }
-      if (!this.conversationId) {
+      if (!this.selectedConversationId) {
         console.error('No conversation ID found');
         alert('No conversation ID selected');
         return;
       }
 
       console.log('Sending message:', this.newMessage);
-      console.log('convo', this.conversationId);
+      console.log('convo', this.selectedConversationId);
       const success = await this.backendService.sendMessage(
         this.newMessage,
         sender.userId,
-        this.conversationId
+        this.selectedConversationId
       );
       this.newMessage = '';
       if (success) {
@@ -188,9 +193,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   private handleDirectMessage() {
     console.log('Direct Message');
     this.dataService.currentConversationId.subscribe((conversationId) => {
-      this.conversationId = conversationId;
+      this.selectedConversationId = conversationId;
       this.backendService
-        .getConversationById(this.conversationId)
+        .getConversationById(this.selectedConversationId)
         .then((name) => {
           this.chatTitle = 'Direct Message: ' + name?.conversationName || '';
         });
@@ -208,7 +213,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
           .then((channel) => {
             console.log('Channel:', channel);
             this.chatTitle = channel?.name || '';
-            this.conversationId = channel?.conversationId || '';
+            this.selectedConversationId = channel?.conversationId || '';
             this.loadMessages();
           });
       }
