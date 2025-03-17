@@ -18,7 +18,7 @@ export class DataService {
   private isDarkThemeSelected = new BehaviorSubject<boolean>(true);
   isDarkTheme = this.isDarkThemeSelected.asObservable();
 
-  private isInformationSelected = new BehaviorSubject<boolean>(false);
+  private isInformationSelected = new BehaviorSubject<boolean>(true);
   isInformationOpen = this.isInformationSelected.asObservable();
 
   selectTeam(selectedTeamId: string) {

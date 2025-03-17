@@ -154,7 +154,6 @@
 .channel-container {
   justify-content: space-between;
   align-items: center;
-  justify-content: center;
   background-color: var(--channel-list-background);
   border: none;
   border-radius: 10px;
@@ -163,9 +162,9 @@
   display: flex;
   margin: 0 0;
   max-height: 3rem;
-  max-width: 95%;
+  max-width: 100%;
   min-height: 3rem;
-  min-width: 95%;
+  min-width: 100%;
   overflow: hidden;
   padding: 2px;
   text-align: center;
@@ -199,7 +198,8 @@
 }
 .channel-information-container {
   gap: 5px;
-  width: 75%;
+  width: min-content;
+  max-width: 95%;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -207,7 +207,7 @@
   padding: 5px;
   /* padding-left: 15px; */
   text-align: left;
-  overflow: clip;
+  overflow: hidden;
 }
 .channel-name {
   color: var(--message-username);
@@ -287,5 +287,56 @@
 
   100% {
     box-shadow: 0 0 0 14px #69ffa800;
+  }
+}
+
+ul {
+  align-items: center;
+  justify-content: center;
+  list-style-type: none;
+  padding: 2px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.loading {
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--channel-list-hover);
+  border-radius: 10px;
+  font-weight: bold;
+  color: var(--channel-list-text);
+  cursor: pointer;
+  display: flex;
+  margin: 0 0;
+  max-height: 3rem;
+  max-width: 100%;
+  min-height: 3rem;
+  min-width: 100%;
+  overflow: hidden;
+  padding: 2px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition: background-color 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  animation: pulse-bg 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-bg {
+  0% {
+    color: var(--channel-list-text);
+    opacity: 1;
+  }
+  50% {
+    color: var(--channel-list-text);
+    opacity: 0.5;
+  }
+  100% {
+    color: var(--channel-list-text);
+    opacity: 1;
   }
 }

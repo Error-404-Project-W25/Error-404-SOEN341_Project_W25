@@ -32,5 +32,16 @@
     ></chat-chat-log>
     <chat-information-sidebar *ngIf="selectedConversationId" [userId]="userId">
     </chat-information-sidebar>
+    <div class="button-container" *ngIf="selectedConversationId">
+      <!-- (click) teamlist toggle -->
+      <button class="team-list-toggle-button" title="Toggle Team List">
+      <i
+        class="fa"
+        (click)="toggleInformationBar()"
+        [ngClass]="isInformationOpen ? 'fa-times' : 'fa-bars'"
+        style="font-size: 24px"
+      ></i>
+      </button>
+    </div>
   </div>
 </body>

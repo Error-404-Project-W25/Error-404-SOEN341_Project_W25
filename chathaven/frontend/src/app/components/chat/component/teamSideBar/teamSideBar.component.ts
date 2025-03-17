@@ -83,6 +83,7 @@ export class TeamSidebarComponent {
 
   // Refresh the team list by fetching updated user data
   async refreshTeamList(): Promise<void> {
+    const list: ITeam[] = [];
     this.teamList = []; // Clear the team list to avoid duplicates
     const user = await this.backendService.getUserById(this.userId);
     this.loginUser = user ? user : null;
@@ -91,9 +92,10 @@ export class TeamSidebarComponent {
       for (const teamId of this.loginUser.teams) {
         const team = await this.backendService.getTeamById(teamId);
         if (team) {
-          this.teamList.push(team);
+          list.push(team);
         }
       }
+      this.teamList = list;
     }
   }
 
