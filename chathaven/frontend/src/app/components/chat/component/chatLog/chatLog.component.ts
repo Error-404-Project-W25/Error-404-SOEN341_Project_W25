@@ -143,7 +143,17 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     }
     this.messages = list;
     this.isMessageLoading = false;
+
+    // Automatically scroll to the bottom of the chat log after loading messages
+    setTimeout(() => this.scrollToBottom(), 100);
   }
+
+  private scrollToBottom(): void {
+    const chatLog = document.querySelector('.chat-log');
+    if (chatLog) {
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+  }  
 
   async loadUserNames(): Promise<void> {
     const uniqueSenderIds = [
@@ -182,6 +192,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       this.newMessage = '';
       if (success) {
         await this.loadMessages();
+        this.scrollToBottom();
       }
     }
   }
