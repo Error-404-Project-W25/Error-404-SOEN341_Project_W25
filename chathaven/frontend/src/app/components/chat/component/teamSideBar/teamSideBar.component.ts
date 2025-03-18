@@ -5,7 +5,6 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ITeam, IUser } from '@shared/interfaces';
-import { UserAuthResponse } from '@shared/user-auth.types';
 import { BackendService } from '@services/backend.service';
 import { DataService } from '@services/data.service';
 import { UserService } from '@services/user.service';
@@ -18,11 +17,8 @@ import { UserService } from '@services/user.service';
   imports: [CommonModule], // Add CommonModule to imports
 })
 export class TeamSidebarComponent {
-  @Input() userId: string = '';
-
   //variables
   teamList: ITeam[] = [];
-  loginUser: IUser | null = null;
 
   //output
   isDarkTheme = true;
@@ -51,11 +47,15 @@ export class TeamSidebarComponent {
     const user = this.userService.getUser();
     if (user) {
       const invites = await Promise.all(
-      user.inbox
-        .filter(inbox => inbox.type === 'invite')
-        .map(inbox => this.backendService.getUserById(inbox.userIdThatYouWantToAdd))
+        user.inbox
+          .filter((inbox) => inbox.type === 'invite')
+          .map((inbox) =>
+            this.backendService.getUserById(inbox.userIdThatYouWantToAdd)
+          )
       );
-      this.inviteMemberList = invites.filter(userToAdd => userToAdd !== null) as IUser[];
+      this.inviteMemberList = invites.filter(
+        (userToAdd) => userToAdd !== null
+      ) as IUser[];
     }
     this.refreshTeamList();
   }
@@ -85,11 +85,17 @@ export class TeamSidebarComponent {
   async refreshTeamList(): Promise<void> {
     const list: ITeam[] = [];
     this.teamList = []; // Clear the team list to avoid duplicates
-    const user = await this.backendService.getUserById(this.userId);
-    this.loginUser = user ? user : null;
+    if (await this.userService.checkIfLoggedIn()) {
+      const currUserId = this.userService.getUser()!.userId;
 
-    if (this.loginUser) {
-      for (const teamId of this.loginUser.teams) {
+      const updatedUser: IUser | undefined =
+        await this.backendService.getUserById(currUserId);
+
+      if (!updatedUser) {
+        return;
+      }
+
+      for (const teamId of updatedUser.teams) {
         const team = await this.backendService.getTeamById(teamId);
         if (team) {
           list.push(team);
@@ -102,7 +108,7 @@ export class TeamSidebarComponent {
   // Open a dialog to create a new team
   openCreateTeamDialog(): void {
     // Check if user is an admin
-    if (this.loginUser?.role !== 'admin') {
+    if (this.userService.getUser()?.role !== 'admin') {
       alert('You do not have the necessary permissions to create a team.');
       return;
     }
@@ -113,19 +119,20 @@ export class TeamSidebarComponent {
     // After dialog is closed
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result && result.teamId) {
-        if (this.loginUser) {
-          const updatedUser = await this.backendService.getUserById(
-            this.loginUser.userId
-          );
-          if (updatedUser) {
-            this.userService.updateUser(updatedUser);
+        const currUser = this.userService.getUser();
+        if (!currUser) {
+          return;
+        }
 
-            const newTeam = await this.backendService.getTeamById(
-              result.teamId
-            );
-            if (newTeam) {
-              this.teamList.push(newTeam);
-            }
+        const updatedUser = await this.backendService.getUserById(
+          currUser.userId
+        );
+        if (updatedUser) {
+          this.userService.updateUser(updatedUser);
+
+          const newTeam = await this.backendService.getTeamById(result.teamId);
+          if (newTeam) {
+            this.teamList.push(newTeam);
           }
         }
 
@@ -137,16 +144,8 @@ export class TeamSidebarComponent {
   }
 
   // Sign out the user and navigate to the home page
-  async signOut() {
-    this.loginUser = null;
-    const response: UserAuthResponse | undefined =
-      await this.backendService.logoutUser();
-    if (response && !response.error) {
-      this.userService.clearUser();
-      this.router.navigate(['/']);
-    } else if (response) {
-    } else {
-    }
-    window.location.reload();
+  signOut() {
+    this.userService.logout();
+    this.router.navigate(['/home']);
   }
 }
