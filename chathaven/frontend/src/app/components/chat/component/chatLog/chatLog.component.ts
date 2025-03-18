@@ -133,12 +133,12 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   async loadMessages(): Promise<void> {
-    let list: IMessage[] = [];
-    this.messages = [];
-    this.isMessageLoading = true;
+    if (!this.messages.length) {
+      this.isMessageLoading = true;
+    }
+    
     const messages = await this.backendService.getMessages(this.selectedConversationId);
     if (messages) {
-      list = messages;
       const uniqueSenderIds = [...new Set(messages.map(msg => msg.sender))];
       for (const userId of uniqueSenderIds) {
         if (!this.userIdToName[userId]) {
@@ -148,12 +148,11 @@ export class ChatLogComponent implements OnInit, OnDestroy {
           }
         }
       }
+      this.messages = messages;
     }
-    this.messages = list;
+    
     this.isMessageLoading = false;
-
-    // Automatically scroll to the bottom of the chat log after loading messages
-    setTimeout(() => this.scrollToBottom(), 100);
+    setTimeout(() => this.scrollToBottom(), 50);
   }
 
   private scrollToBottom(): void {
@@ -180,28 +179,52 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     if (this.newMessage) {
       const sender = this.userService.getUser();
 
-      if (!sender) {
-        console.error('No sender found');
-        return;
-      }
-      if (!this.selectedConversationId) {
-        console.error('No conversation ID found');
-        alert('No conversation ID selected');
+      if (!sender || !this.selectedConversationId) {
+        console.error('No sender or conversation ID found');
+        if (!this.selectedConversationId) alert('No conversation ID selected');
         return;
       }
 
-      console.log('Sending message:', this.newMessage);
-      console.log('convo', this.selectedConversationId);
+      const messageContent = this.newMessage;
+      this.newMessage = '';
+
       const success = await this.backendService.sendMessage(
-        this.newMessage,
+        messageContent,
         sender.userId,
         this.selectedConversationId
       );
-      this.newMessage = '';
+
       if (success) {
-        await this.loadMessages();
-        this.scrollToBottom();
+        const newMessage: IMessage = {
+            messageId: Date.now().toString(),
+            content: messageContent,
+          sender: sender.userId,
+          time: new Date().toISOString(),
+        };
+        
+        this.messages.push(newMessage);
+        this.userIdToName[sender.userId] = sender.username;
+        
+        setTimeout(() => this.scrollToBottom(), 0);
+        
+        this.refreshMessages();
       }
+    }
+  }
+
+  private async refreshMessages(): Promise<void> {
+    const messages = await this.backendService.getMessages(this.selectedConversationId);
+    if (messages) {
+      const uniqueSenderIds = [...new Set(messages.map(msg => msg.sender))];
+      for (const userId of uniqueSenderIds) {
+        if (!this.userIdToName[userId]) {
+          const user = await this.backendService.getUserById(userId);
+          if (user) {
+            this.userIdToName[userId] = user.username;
+          }
+        }
+      }
+      this.messages = messages;
     }
   }
 
