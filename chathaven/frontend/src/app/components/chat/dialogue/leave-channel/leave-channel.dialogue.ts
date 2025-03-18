@@ -2,6 +2,8 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
 import { BackendService } from '@services/backend.service';
+import { DataService } from '@services/data.service';
+
 
 @Component({
     selector: 'app-leave-channel',
@@ -18,8 +20,13 @@ export class RemoveMemberDialogComponent {
   constructor(
     private dialogRef: MatDialogRef<RemoveMemberDialogComponent>,
     private backendService: BackendService,
+    private dataService: DataService,
     @Inject(MAT_DIALOG_DATA) public data: { channelId: string; memberId: string }
-  ) {}
+  ) {
+    this.dataService.isDarkTheme.subscribe(isDarkTheme => {
+      this.isDarkTheme = isDarkTheme;
+  });
+  }
 
   async onConfirm(): Promise<void> {
     const success = await this.backendService.removeMemberFromChannel(
