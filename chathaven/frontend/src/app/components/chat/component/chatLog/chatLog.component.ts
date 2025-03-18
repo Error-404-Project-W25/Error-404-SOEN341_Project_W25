@@ -141,7 +141,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       list = messages;
       await this.loadUserNames();
     }
-    this.messages = list.reverse();
+    this.messages = list;
     this.isMessageLoading = false;
   }
 
