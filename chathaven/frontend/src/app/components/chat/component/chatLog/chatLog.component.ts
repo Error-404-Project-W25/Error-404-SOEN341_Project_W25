@@ -139,7 +139,15 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     const messages = await this.backendService.getMessages(this.selectedConversationId);
     if (messages) {
       list = messages;
-      await this.loadUserNames();
+      const uniqueSenderIds = [...new Set(messages.map(msg => msg.sender))];
+      for (const userId of uniqueSenderIds) {
+        if (!this.userIdToName[userId]) {
+          const user = await this.backendService.getUserById(userId);
+          if (user) {
+            this.userIdToName[userId] = user.username;
+          }
+        }
+      }
     }
     this.messages = list;
     this.isMessageLoading = false;
