@@ -76,6 +76,12 @@ export class LoginComponent implements OnInit {
       }
     });
 
+    this.userService.checkIfLoggedIn().then((isLoggedIn) => {
+      if (isLoggedIn) {
+        this.goToChat();
+      }
+    });
+
     this.cdr.detectChanges(); // Ensure UI updates correctly
   }
 
@@ -257,7 +263,7 @@ export class LoginComponent implements OnInit {
             this.goToChat();
           }
         } else if (response.error) {
-          // TODO: make error div
+          alert(response.error); // TODO: make this a div
           console.log('Error:', response.error);
           console.log('Details:', response.details);
         }
@@ -287,14 +293,12 @@ export class LoginComponent implements OnInit {
             response.uid
           );
 
-          // TODO: loadUser() redundant?
-
           if (user) {
             this.userService.setUser(user);
             this.goToChat();
           }
         } else if (response.error) {
-          // TODO: make error div
+          alert(response.error); // TODO: make this a div
           console.log('Error:', response.error);
           console.log('Details:', response.details);
         }

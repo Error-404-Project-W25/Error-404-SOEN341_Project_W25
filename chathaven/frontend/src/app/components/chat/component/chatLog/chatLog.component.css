@@ -5,6 +5,9 @@ emoji-mart {
   bottom: 50px; /* Adjust bottom position */
   right: 325px; /* Adjust right position */
   /* display: none; */
+  border: none;
+  scrollbar-color: var(--chat-log-scrollbar-thumb) var(--chat-log-scrollbar-track);
+  scrollbar-width: thin;
   z-index: 1000; /* Ensure the emoji-mart is above all other elements */
 }
 
@@ -79,11 +82,11 @@ emoji-mart {
 .message {
   border-radius: 10px;
   width: calc(100% - 10px);
-  margin: 5px auto;
-  padding: 5px;
+  /* margin: 5px auto; */
+  /* padding: 5px; */
   display: flex;
-  flex-direction: row;
-  gap: 15px;
+  flex-direction: column;
+  /* gap: 15px; */
   padding: 0;
   margin: 0;
 }
@@ -357,4 +360,67 @@ ul {
     background-color: var(--side-bar-1-background);
     opacity: 1;
   }
+}
+
+.quote-container {
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 10px;
+  width: calc(100% - 10px);
+  background-color: var(--quote-container-background);
+}
+.quote-container button {
+  background-color: var(--quote-button-background);
+  border: none;
+  border-radius: 10px;
+  color: var(--quote-button-text);
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  height: 2rem;
+  justify-content: center;
+  outline: none;
+  padding: 5px;
+  width: 2rem;
+}
+
+.quote-message {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: var(--quote-container-message-text);
+}
+
+.quote-container button:hover {
+  background-color: var(--quote-button-hover-background);
+  color: var(--quote-button-hover-text);
+}
+
+.quote-user {
+  color: var(--quote-container-user-text);
+  font-weight: bold;
+}
+
+.quote-content {
+  color: var(--quote-container-message-text);
+}
+
+.message-container{
+  display: flex;
+  flex-direction: row;
+}
+
+.quoting{
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  padding: 0 1.5rem;
+  border-radius: 10px;
+  width: calc(100% - 10px);
+  background-color: var(--quote-container-background);
 }

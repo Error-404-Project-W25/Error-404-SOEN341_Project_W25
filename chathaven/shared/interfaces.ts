@@ -30,6 +30,7 @@ export interface IUser {
 
 export interface IMessage {
   messageId: string;
+  quotedMessageId?: string;
   content: string;
   sender: string; // userId
   time: string;

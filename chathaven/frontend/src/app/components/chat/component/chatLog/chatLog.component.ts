@@ -10,12 +10,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { IUser,IMessage } from '@shared/interfaces';
+import { IUser, IMessage } from '@shared/interfaces';
 import { DeleteMessageDialog } from '../../dialogue/delete-message/delete-message.dialogue';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
 import { DataService } from '@services/data.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'chat-chat-log',
@@ -28,6 +29,7 @@ import { PickerModule } from '@ctrl/ngx-emoji-mart';
     MatButtonModule,
     MatDialogModule,
     PickerModule,
+    MatIconModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -40,6 +42,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   isDarkTheme: boolean = true;
   isTeamListOpen: boolean = false;
   newMessage: string = '';
+  quoteMessage: IMessage | null = null;
   loginUser: IUser | null = null;
   messages: IMessage[] = [];
   chatTitle: string = '';
@@ -48,6 +51,8 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   selectedConversationId: string = '';
   isDirectMessage: boolean = false;
   isMessageLoading: boolean = false;
+
+  testMessages: IMessage | null = null;
 
   userIdToName: { [userId: string]: string } = {};
 
@@ -78,10 +83,15 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.dataService.isInformationOpen.subscribe((isInformationOpen) => {
       this.isTeamListOpen = isInformationOpen;
     });
-
   }
 
   ngOnInit() {
+    this.testMessages = {
+      messageId: '1',
+      content: 'This is a test message',
+      sender: 'testUser',
+      time: new Date().toISOString(),
+    };
     // Implementation for ngOnInit
   }
 
@@ -136,10 +146,12 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     if (!this.messages.length) {
       this.isMessageLoading = true;
     }
-    
-    const messages = await this.backendService.getMessages(this.selectedConversationId);
+
+    const messages = await this.backendService.getMessages(
+      this.selectedConversationId
+    );
     if (messages) {
-      const uniqueSenderIds = [...new Set(messages.map(msg => msg.sender))];
+      const uniqueSenderIds = [...new Set(messages.map((msg) => msg.sender))];
       for (const userId of uniqueSenderIds) {
         if (!this.userIdToName[userId]) {
           const user = await this.backendService.getUserById(userId);
@@ -150,7 +162,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       }
       this.messages = messages;
     }
-    
+
     this.isMessageLoading = false;
     setTimeout(() => this.scrollToBottom(), 50);
   }
@@ -160,7 +172,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     if (chatLog) {
       chatLog.scrollTop = chatLog.scrollHeight;
     }
-  }  
+  }
 
   async loadUserNames(): Promise<void> {
     const uniqueSenderIds = [
@@ -187,35 +199,51 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
       const messageContent = this.newMessage;
       this.newMessage = '';
-
-      const success = await this.backendService.sendMessage(
+      // Log the data being sent
+      console.log('Sending message:', {
         messageContent,
-        sender.userId,
-        this.selectedConversationId
-      );
+        senderId: sender.userId,
+        conversationId: this.selectedConversationId,
+        quoteMessageId: this.quoteMessage?.messageId,
+      });
 
-      if (success) {
-        const newMessage: IMessage = {
+      try {
+        const success = await this.backendService.sendMessage(
+          messageContent,
+          sender.userId,
+          this.selectedConversationId,
+          this.quoteMessage?.messageId
+        );
+
+        if (success) {
+          const newMessage: IMessage = {
             messageId: Date.now().toString(),
             content: messageContent,
-          sender: sender.userId,
-          time: new Date().toISOString(),
-        };
-        
-        this.messages.push(newMessage);
-        this.userIdToName[sender.userId] = sender.username;
-        
-        setTimeout(() => this.scrollToBottom(), 0);
-        
-        this.refreshMessages();
+            sender: sender.userId,
+            time: new Date().toISOString(),
+          };
+
+          this.messages.push(newMessage);
+          this.userIdToName[sender.userId] = sender.username;
+
+          setTimeout(() => this.scrollToBottom(), 0);
+
+          this.refreshMessages();
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+        alert('Failed to send message. Please try again.');
       }
+      this.quoteMessage = null;
     }
   }
 
   private async refreshMessages(): Promise<void> {
-    const messages = await this.backendService.getMessages(this.selectedConversationId);
+    const messages = await this.backendService.getMessages(
+      this.selectedConversationId
+    );
     if (messages) {
-      const uniqueSenderIds = [...new Set(messages.map(msg => msg.sender))];
+      const uniqueSenderIds = [...new Set(messages.map((msg) => msg.sender))];
       for (const userId of uniqueSenderIds) {
         if (!this.userIdToName[userId]) {
           const user = await this.backendService.getUserById(userId);
@@ -289,5 +317,18 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   channelBack() {
     this.dataService.selectChannel('');
     this.dataService.selectConversation('');
+  }
+
+  quotingMessage(messageId: IMessage): void {
+    console.log('Message ID:', messageId);
+    this.quoteMessage = messageId;
+  }
+
+  cancelquote(): void {
+    this.quoteMessage = null;
+  }
+
+  getMessageById(messageId: string): IMessage | null {
+    return this.messages.find((msg) => msg.messageId === messageId) || null;
   }
 }
