@@ -370,8 +370,6 @@ export class BackendService {
         quotedMessageId: quotedMessageId || '',
       };
 
-      console.log('Sending payload:', payload);
-
       const response = await firstValueFrom(
         this.http.post<{ success: boolean; error?: string }>(
           `${this.backendURL}/messages/send`,
@@ -415,7 +413,6 @@ export class BackendService {
       return false;
     }
   }
-  //trial
 
   async getMessages(conversationId: string): Promise<IMessage[] | undefined> {
     try {
