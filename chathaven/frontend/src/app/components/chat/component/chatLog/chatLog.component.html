@@ -25,10 +25,25 @@
         <p>This is the start of "{{ chatTitle }}"</p>
       </li>
       <li class="message" *ngFor="let message of messages" readonly>
-        <div *ngIf="message.quotedMessageId" class="quoting">
-          <mat-icon style="transform: rotate(90deg);">subdirectory_arrow_right</mat-icon>
-          <div class="quote-user">{{ getUserName(getMessageById(message.quotedMessageId)?.sender || '') }}</div>:
-          <div class="quote-message">{{ getMessageById(message.quotedMessageId)?.content }}</div>
+        <div
+          *ngIf="
+            message.quotedMessageId &&
+            getMessageById(message.quotedMessageId)?.content
+          "
+          class="quoting"
+        >
+          <mat-icon style="transform: rotate(90deg)"
+            >subdirectory_arrow_right</mat-icon
+          >
+          <div class="quote-user">
+            {{
+              getUserName(getMessageById(message.quotedMessageId)?.sender || "")
+            }}
+          </div>
+          :
+          <div class="quote-message">
+            {{ getMessageById(message.quotedMessageId)?.content }}
+          </div>
         </div>
         <div class="message-container">
           <div class="message-profile-picture">
