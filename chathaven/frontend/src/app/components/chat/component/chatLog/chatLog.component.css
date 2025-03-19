@@ -5,6 +5,9 @@ emoji-mart {
   bottom: 50px; /* Adjust bottom position */
   right: 325px; /* Adjust right position */
   /* display: none; */
+  border: none;
+  scrollbar-color: var(--chat-log-scrollbar-thumb) var(--chat-log-scrollbar-track);
+  scrollbar-width: thin;
   z-index: 1000; /* Ensure the emoji-mart is above all other elements */
 }
 
@@ -79,11 +82,11 @@ emoji-mart {
 .message {
   border-radius: 10px;
   width: calc(100% - 10px);
-  margin: 5px auto;
-  padding: 5px;
+  /* margin: 5px auto; */
+  /* padding: 5px; */
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  /* gap: 15px; */
   padding: 0;
   margin: 0;
 }
@@ -416,6 +419,7 @@ ul {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  padding: 0 1.5rem;
   border-radius: 10px;
   width: calc(100% - 10px);
   background-color: var(--reply-container-background);

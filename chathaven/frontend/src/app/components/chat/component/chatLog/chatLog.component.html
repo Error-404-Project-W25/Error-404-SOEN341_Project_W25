@@ -25,10 +25,10 @@
         <p>This is the start of "{{ chatTitle }}"</p>
       </li>
       <li class="message" *ngFor="let message of messages" readonly>
-        <div class="replying">
+        <div *ngIf="message.quotedMessageId" class="replying">
           <mat-icon style="transform: rotate(90deg);">subdirectory_arrow_right</mat-icon>
-          <div class="reply-user">{{ testMessages?.sender }}</div>:
-          <div class="reply-message">{{ testMessages?.content }}</div>
+          <div class="reply-user">{{ getUserName(getMessageById(message.quotedMessageId)?.sender || '') }}</div>:
+          <div class="reply-message">{{ getMessageById(message.quotedMessageId)?.content }}</div>
         </div>
         <div class="message-container">
           <div class="message-profile-picture">
@@ -58,7 +58,7 @@
                 getUserName(message.sender)
               }}</span>
               <span class="message-date">{{
-                message.time | date : "yyyy-MM-dd HH:mm"
+                message.time | date : "yyyy/MM/dd,HH:mm"
               }}</span>
             </div>
             <article class="message-text" readonly>

@@ -16,8 +16,7 @@ import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
 import { DataService } from '@services/data.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
-import {MatIconModule} from '@angular/material/icon';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'chat-chat-log',
@@ -87,7 +86,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     this.testMessages = {
       messageId: '1',
       content: 'This is a test message',
@@ -201,28 +199,42 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
       const messageContent = this.newMessage;
       this.newMessage = '';
+      console.log('replyMessage:', this.replyMessage);
 
-      //send message should need also a messageId if replying if not replying ''
-      const success = await this.backendService.sendMessage(
+      // Log the data being sent
+      console.log('Sending message:', {
         messageContent,
-        sender.userId,
-        this.selectedConversationId
-      );
+        senderId: sender.userId,
+        conversationId: this.selectedConversationId,
+        replyMessageId: this.replyMessage?.messageId,
+      });
 
-      if (success) {
-        const newMessage: IMessage = {
-          messageId: Date.now().toString(),
-          content: messageContent,
-          sender: sender.userId,
-          time: new Date().toISOString(),
-        };
+      try {
+        const success = await this.backendService.sendMessage(
+          messageContent,
+          sender.userId,
+          this.selectedConversationId,
+          this.replyMessage?.messageId
+        );
 
-        this.messages.push(newMessage);
-        this.userIdToName[sender.userId] = sender.username;
+        if (success) {
+          const newMessage: IMessage = {
+            messageId: Date.now().toString(),
+            content: messageContent,
+            sender: sender.userId,
+            time: new Date().toISOString(),
+          };
 
-        setTimeout(() => this.scrollToBottom(), 0);
+          this.messages.push(newMessage);
+          this.userIdToName[sender.userId] = sender.username;
 
-        this.refreshMessages();
+          setTimeout(() => this.scrollToBottom(), 0);
+
+          this.refreshMessages();
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+        alert('Failed to send message. Please try again.');
       }
     }
   }
@@ -315,5 +327,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   cancelReply(): void {
     this.replyMessage = null;
+  }
+
+  getMessageById(messageId: string): IMessage | null {
+    return this.messages.find((msg) => msg.messageId === messageId) || null;
   }
 }
