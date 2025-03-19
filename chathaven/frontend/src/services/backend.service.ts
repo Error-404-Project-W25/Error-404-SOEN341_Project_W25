@@ -359,16 +359,19 @@ export class BackendService {
   async sendMessage(
     content: string,
     senderId: string,
-    conversationId: string
+    conversationId: string,
+    quotedMessageId?: string
   ): Promise<boolean> {
     try {
-      console.log('content', content);
-      console.log('senderid', senderId);
-      console.log('convo', conversationId);
+      const payload: any = { content, senderId, conversationId };
+      if (quotedMessageId) {
+        payload.quotedMessageId = quotedMessageId;
+      }
+
       const response = await firstValueFrom(
         this.http.post<{ success: boolean; error?: string }>(
           `${this.backendURL}/messages/send`,
-          { content, senderId, conversationId }
+          { payload }
         )
       );
       if (response.success) {

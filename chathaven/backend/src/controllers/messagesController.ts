@@ -12,7 +12,8 @@ import { io } from '../app';
  */
 export const sendMessage = async (req: Request, res: Response) => {
   try {
-    const { content, senderId, conversationId } = req.body;
+    const { content, senderId, conversationId, quotedMessageId } = req.body;
+
     if (!content || !conversationId || !senderId) {
       res.status(400).json({ error: 'Missing required fields' });
       return;
@@ -21,18 +22,24 @@ export const sendMessage = async (req: Request, res: Response) => {
     const messageId: string = uuidv4();
     const time: string = new Date().toISOString();
 
-    const newMessage: IMessage = await new Messages({
+    const newMessage = new Messages({
       messageId: messageId,
       content: content,
       sender: senderId,
       time: time,
-    }).save();
+    });
+
+    if (quotedMessageId) {
+      newMessage.quotedMessageId = quotedMessageId;
+    }
+
+    await newMessage.save();
 
     const conversation = await Conversation.findOne({ conversationId });
     if (conversation) {
-      conversation.messages.push(newMessage);
+      conversation.messages.push(newMessage as IMessage);
       await conversation.save();
-      io.to(conversationId).emit('sendMessage', newMessage);
+      io.to(conversationId).emit('sendMessage', newMessage as IMessage);
     }
     res.status(200).json({ success: true });
   } catch (error) {
@@ -78,7 +85,6 @@ export const deleteMessage = async (req: Request, res: Response) => {
 export const getMessages = async (req: Request, res: Response) => {
   try {
     const { conversationId } = req.params;
-    console.log('Received conversationId:', conversationId);  // Debugging line
 
     if (!conversationId || conversationId === 'undefined') {
       res.status(400).json({ error: 'Missing conversationId' });
