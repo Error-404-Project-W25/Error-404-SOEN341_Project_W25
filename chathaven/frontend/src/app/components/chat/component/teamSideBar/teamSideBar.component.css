@@ -387,7 +387,8 @@
 }
 
 .status-option:hover {
-  background: var(--menu-hover);
+  background-color: var(--team-setting-list-element-background-hover);
+  color: var(--channel-list-text-hover);
   border-radius: 4px;
 }
 
