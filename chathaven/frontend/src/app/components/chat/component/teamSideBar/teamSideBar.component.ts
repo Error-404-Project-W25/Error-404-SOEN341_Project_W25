@@ -192,4 +192,18 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     this.userService.logout();
     this.router.navigate(['/home']);
   }
+
+  async closeAllMenus() {
+    // Clear the main menu checkbox
+    const menuToggle = document.querySelector('.menu-toggle-checkbox') as HTMLInputElement;
+    if (menuToggle) {
+      menuToggle.checked = false;
+    }
+
+    // Clear the status menu checkbox
+    const statusToggle = document.querySelector('.status-toggle-checkbox') as HTMLInputElement;
+    if (statusToggle) {
+      statusToggle.checked = false;
+    }
+  }
 }

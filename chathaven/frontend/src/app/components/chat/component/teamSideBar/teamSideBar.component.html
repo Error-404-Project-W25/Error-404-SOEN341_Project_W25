@@ -87,15 +87,15 @@
         ></i>
       </label>
       <div class="status-options">
-        <button class="status-option" (click)="setStatus('online')">
+        <button class="status-option" (click)="setStatus('online'); closeAllMenus()">
           <div class="status-indicator status-online"></div>
           <span>Online</span>
         </button>
-        <button class="status-option" (click)="setStatus('away')">
+        <button class="status-option" (click)="setStatus('away'); closeAllMenus()">
           <div class="status-indicator status-away"></div>
           <span>Away</span>
         </button>
-        <button class="status-option" (click)="setStatus('offline')">
+        <button class="status-option" (click)="setStatus('offline'); closeAllMenus()">
           <div class="status-indicator status-offline"></div>
           <span>Offline</span>
         </button>
