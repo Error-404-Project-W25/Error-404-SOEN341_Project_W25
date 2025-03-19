@@ -39,8 +39,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   @Output() invite!: string;
   @Output() request!: string;
 
-  loginUser: IUser | null = null;
-
   isDarkTheme = true;
   isInformationOpen = true;
   isDirectMessage = false;
@@ -79,16 +77,15 @@ export class ChatComponent implements OnInit, OnDestroy {
     // Add event listener for window resize
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize();
-    // Get user from local storage
-    // this.loginUser = this.userService.getUser() || null;
-    console.log('inside chat component');
+
+    this.userService.checkIfLoggedIn().then((isLoggedIn) => {
+      if (!isLoggedIn) {
+        this.router.navigate(['/login']);
+      }
+    });
+
     this.userService.user$.subscribe((user) => {
-      this.loginUser = user || null;
-      if (!user) {
-        this.router.navigate(['/home']);
-      } else {
-        console.log('User:', user);
-        console.log('User ID:', user.userId);
+      if (user) {
         this.userId = user.userId;
       }
     });
@@ -122,7 +119,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     const teamSidebar = document.querySelector(
       '.team-setting-sidebar'
     ) as HTMLElement;
-    const emojiMartElement = document.querySelector('.emoji-mart') as HTMLElement;
+    const emojiMartElement = document.querySelector(
+      '.emoji-mart'
+    ) as HTMLElement;
     if (teamSidebar) {
       console.log('isTeamListOpen:', this.isInformationOpen);
       if (this.isInformationOpen) {

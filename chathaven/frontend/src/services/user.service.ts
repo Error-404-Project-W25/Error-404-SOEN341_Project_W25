@@ -1,6 +1,3 @@
-/**
- * Storage of signed in IUser
- */
 import { Injectable } from '@angular/core';
 import { IUser } from '@shared/interfaces';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -13,13 +10,7 @@ export class UserService {
   private userSubject = new BehaviorSubject<IUser | undefined>(undefined);
   user$: Observable<IUser | undefined> = this.userSubject.asObservable();
 
-  constructor(private backendService: BackendService) {
-    const storedUid: string | null = localStorage.getItem('currentUserUID');
-
-    if (storedUid) {
-      this.loadUser(storedUid);
-    }
-  }
+  constructor(private backendService: BackendService) {}
 
   setUser(user: IUser) {
     this.userSubject.next(user);
@@ -30,32 +21,30 @@ export class UserService {
     return this.userSubject.value;
   }
 
-  async loadUser(userId: string) {
-    const user: IUser | undefined = await this.backendService.getUserById(
-      userId
-    );
+  async checkIfLoggedIn(): Promise<boolean> {
+    const userId = localStorage.getItem('currentUserUID');
+    if (!userId) return false;
 
-    if (user) {
+    if (!this.getUser()) {
+      const user = await this.backendService.getUserById(userId);
+      if (!user) {
+        localStorage.removeItem('currentUserUID');
+        return false;
+      }
       this.setUser(user);
     }
-  }
-
-  clearUser() {
-    this.userSubject.next(undefined);
-    localStorage.removeItem('currentUserUID');
+    return true;
   }
 
   updateUser(user: IUser): void {
+    // TODO: get rid of this
     this.userSubject.next(user);
     localStorage.setItem('user', JSON.stringify(user));
   }
 
   logout() {
     this.userSubject.next(undefined);
-    localStorage.removeItem('user');
-
-    localStorage.removeItem('teamList');
-
-    sessionStorage.clear();
+    localStorage.clear();
+    this.backendService.logoutUser();
   }
 }
