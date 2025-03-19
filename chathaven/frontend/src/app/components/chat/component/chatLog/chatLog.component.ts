@@ -42,7 +42,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   isDarkTheme: boolean = true;
   isTeamListOpen: boolean = false;
   newMessage: string = '';
-  replyMessage: IMessage | null = null;
+  quoteMessage: IMessage | null = null;
   loginUser: IUser | null = null;
   messages: IMessage[] = [];
   chatTitle: string = '';
@@ -199,14 +199,12 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
       const messageContent = this.newMessage;
       this.newMessage = '';
-      console.log('replyMessage:', this.replyMessage);
-
       // Log the data being sent
       console.log('Sending message:', {
         messageContent,
         senderId: sender.userId,
         conversationId: this.selectedConversationId,
-        replyMessageId: this.replyMessage?.messageId,
+        quoteMessageId: this.quoteMessage?.messageId,
       });
 
       try {
@@ -214,7 +212,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
           messageContent,
           sender.userId,
           this.selectedConversationId,
-          this.replyMessage?.messageId
+          this.quoteMessage?.messageId
         );
 
         if (success) {
@@ -236,6 +234,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
         console.error('Error sending message:', error);
         alert('Failed to send message. Please try again.');
       }
+      this.quoteMessage = null;
     }
   }
 
@@ -320,13 +319,13 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.dataService.selectConversation('');
   }
 
-  replyingMessage(messageId: IMessage): void {
+  quotingMessage(messageId: IMessage): void {
     console.log('Message ID:', messageId);
-    this.replyMessage = messageId;
+    this.quoteMessage = messageId;
   }
 
-  cancelReply(): void {
-    this.replyMessage = null;
+  cancelquote(): void {
+    this.quoteMessage = null;
   }
 
   getMessageById(messageId: string): IMessage | null {

@@ -25,10 +25,10 @@
         <p>This is the start of "{{ chatTitle }}"</p>
       </li>
       <li class="message" *ngFor="let message of messages" readonly>
-        <div *ngIf="message.quotedMessageId" class="replying">
+        <div *ngIf="message.quotedMessageId" class="quoting">
           <mat-icon style="transform: rotate(90deg);">subdirectory_arrow_right</mat-icon>
-          <div class="reply-user">{{ getUserName(getMessageById(message.quotedMessageId)?.sender || '') }}</div>:
-          <div class="reply-message">{{ getMessageById(message.quotedMessageId)?.content }}</div>
+          <div class="quote-user">{{ getUserName(getMessageById(message.quotedMessageId)?.sender || '') }}</div>:
+          <div class="quote-message">{{ getMessageById(message.quotedMessageId)?.content }}</div>
         </div>
         <div class="message-container">
           <div class="message-profile-picture">
@@ -38,9 +38,9 @@
             <div class="button-container">
               <button
                 class="delete-button"
-                (click)="replyingMessage(message)"
+                (click)="quotingMessage(message)"
                 readonly
-                title="Reply Message"
+                title="Quote Message"
               >
                 <i class="fa fa-reply" style="font-size: 1rem"></i>
               </button>
@@ -69,13 +69,13 @@
       </li>
     </ul>
   </div>
-  <div *ngIf="replyMessage" class="reply-container">
-    <div class="reply-message">
-      Replying:
-      <div class="reply-user">{{ getUserName(replyMessage.sender) }}</div>
-      <div class="reply-message">{{ replyMessage.content }}</div>
+  <div *ngIf="quoteMessage" class="quote-container">
+    <div class="quote-message">
+      quoting:
+      <div class="quote-user">{{ getUserName(quoteMessage.sender) }}</div>
+      <div class="quote-message">{{ quoteMessage.content }}</div>
     </div>
-    <button (click)="cancelReply()" class="cancel-reply-button">
+    <button (click)="cancelquote()" class="cancel-quote-button">
       <i class="fa fa-times" style="font-size: 24px"></i>
     </button>
   </div>

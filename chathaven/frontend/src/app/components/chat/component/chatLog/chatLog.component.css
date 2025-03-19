@@ -362,7 +362,7 @@ ul {
   }
 }
 
-.reply-container {
+.quote-container {
   justify-content: space-between;
   display: flex;
   flex-direction: row;
@@ -371,13 +371,13 @@ ul {
   margin: 5px;
   border-radius: 10px;
   width: calc(100% - 10px);
-  background-color: var(--reply-container-background);
+  background-color: var(--quote-container-background);
 }
-.reply-container button {
-  background-color: var(--reply-button-background);
+.quote-container button {
+  background-color: var(--quote-button-background);
   border: none;
   border-radius: 10px;
-  color: var(--reply-button-text);
+  color: var(--quote-button-text);
   cursor: pointer;
   display: flex;
   font-size: 16px;
@@ -388,26 +388,26 @@ ul {
   width: 2rem;
 }
 
-.reply-message {
+.quote-message {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  color: var(--reply-container-message-text);
+  color: var(--quote-container-message-text);
 }
 
-.reply-container button:hover {
-  background-color: var(--reply-button-hover-background);
-  color: var(--reply-button-hover-text);
+.quote-container button:hover {
+  background-color: var(--quote-button-hover-background);
+  color: var(--quote-button-hover-text);
 }
 
-.reply-user {
-  color: var(--reply-container-user-text);
+.quote-user {
+  color: var(--quote-container-user-text);
   font-weight: bold;
 }
 
-.reply-content {
-  color: var(--reply-container-message-text);
+.quote-content {
+  color: var(--quote-container-message-text);
 }
 
 .message-container{
@@ -415,12 +415,12 @@ ul {
   flex-direction: row;
 }
 
-.replying{
+.quoting{
   display: flex;
   flex-direction: row;
   gap: 5px;
   padding: 0 1.5rem;
   border-radius: 10px;
   width: calc(100% - 10px);
-  background-color: var(--reply-container-background);
+  background-color: var(--quote-container-background);
 }
