@@ -75,16 +75,32 @@
         readonly
       ></i>
     </button>
-    <!-- (click) user setting -->
-    <button class="menu-option-2 menu-option" readonly title="User Settings">
-      <i
-        class="fa fa-gear"
-        style="font-size: 24px; transition: transform 0.3s"
-        onmouseover="this.style.transform='rotate(90deg)'"
-        onmouseout="this.style.transform='rotate(0deg)'"
-        readonly
-      ></i>
-    </button>
+    <!-- User settings with status menu -->
+    <div class="status-menu-container">
+      <input type="checkbox" id="status-toggle" class="status-toggle-checkbox" />
+      <label for="status-toggle" class="menu-option-2 menu-option" title="User Settings">
+        <i
+          class="fa fa-gear"
+          style="font-size: 24px; transition: transform 0.3s"
+          onmouseover="this.style.transform='rotate(90deg)'"
+          onmouseout="this.style.transform='rotate(0deg)'"
+        ></i>
+      </label>
+      <div class="status-options">
+        <button class="status-option" (click)="setStatus('online')">
+          <div class="status-indicator status-online"></div>
+          <span>Online</span>
+        </button>
+        <button class="status-option" (click)="setStatus('away')">
+          <div class="status-indicator status-away"></div>
+          <span>Away</span>
+        </button>
+        <button class="status-option" (click)="setStatus('offline')">
+          <div class="status-indicator status-offline"></div>
+          <span>Offline</span>
+        </button>
+      </div>
+    </div>
     <!-- (click) sign out -->
     <button
       class="menu-option-3 menu-option"
