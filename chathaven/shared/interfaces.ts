@@ -26,6 +26,8 @@ export interface IUser {
   teams: string[]; // teamId
   directMessages: string[];
   inbox: IInbox[];
+  status: string;
+  lastSeen: Date;
 }
 
 export interface IMessage {

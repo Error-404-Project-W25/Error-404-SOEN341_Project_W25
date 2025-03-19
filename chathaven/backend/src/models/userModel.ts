@@ -19,6 +19,8 @@ const userSchema: Schema = new Schema(
     teams: { type: [String], default: [] }, // List of team IDs
     directMessages: { type: [String], default: [] },
     inbox: { type: [inboxSchema], default: [] }, // Set default to an empty object
+    status: { type: String, default: "online" }, // online, offline, away
+    lastSeen: { type: Date, default: Date.now },
   },
   {
     collection: 'Users',
