@@ -208,10 +208,13 @@
   -webkit-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
   -moz-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
   box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .menu-toggle-checkbox:checked ~ .menu-option {
-  z-index: 15; /* Bring options above button when checked */
+  z-index: 15;
 }
 .menu-toggle-checkbox:hover ~ .menu-toggle-button,
 .menu-toggle-checkbox:checked ~ .menu-toggle-button {
@@ -250,6 +253,13 @@
 .menu-toggle-checkbox:checked ~ .menu-option-2 {
   transition-delay: 0.2s;
   transform: translateY(-65px) translateX(65px);
+}
+
+.menu-toggle-checkbox:checked ~ .status-menu-container {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.2s;
+  transform: translateY(-90px) translateX(40px);
 }
 
 .menu-toggle-checkbox:checked ~ .menu-option-3 {
@@ -330,6 +340,10 @@
 .status-menu-container {
   position: absolute;
   display: inline-block;
+  opacity: 0;  
+  visibility: hidden;  
+
+  transition: opacity 0.3s, visibility 0.3s, transform 0.3s;  
 }
 
 .status-toggle-checkbox {
@@ -349,7 +363,7 @@
   z-index: 30;
   width: 120px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(10%), translateY(-25%);
 }
 
 .status-toggle-checkbox:checked ~ .status-options {
@@ -396,7 +410,3 @@
   background-color: #808080;
 }
 
-.menu-toggle-checkbox:checked ~ .status-menu-container {
-  transition-delay: 0.2s;
-  transform: translateY(-65px) translateX(65px);
-}
