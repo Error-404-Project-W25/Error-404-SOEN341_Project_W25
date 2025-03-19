@@ -363,7 +363,10 @@
   z-index: 30;
   width: 120px;
   left: 50%;
-  transform: translateX(10%), translateY(-25%);
+  transform: translateX(50%), translateY(-25%);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+
 }
 
 .status-toggle-checkbox:checked ~ .status-options {
@@ -390,6 +393,8 @@
 
 .status-option span {
   font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500; 
 }
 
 .status-indicator {
@@ -403,7 +408,7 @@
 }
 
 .status-away {
-  background-color: #ffa600;
+  background-color: #ffa600da;
 }
 
 .status-offline {
