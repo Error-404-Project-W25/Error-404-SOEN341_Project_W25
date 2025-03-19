@@ -10,8 +10,8 @@ body {
 }
 
 .container {
-  background-color: var(--side-bar-1-background);
-  color: var(--side-bar-1-text);
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
   display: flex;
   flex-direction: row;
   /* align-items: stretch; */
@@ -24,12 +24,12 @@ body {
 
 .separator {
   align-self: center;
-  background-color: var(--separator-color);
-  border-bottom: var(--separator-color);
-  border-left: var(--separator-color);
-  border-right: var(--separator-color);
-  border-top: var(--separator-color);
-  color: var(--separator-color);
+  background-color: var(--border-color);
+  border-bottom: var(--border-color);
+  border-left: var(--border-color);
+  border-right: var(--border-color);
+  border-top: var(--border-color);
+  color: var(--border-color);
   height: 2px;
   margin: 0 auto;
   padding: 0;
@@ -39,8 +39,8 @@ body {
 chat-team-side-bar {
   width: fit-content;
   flex: 0 0 auto;
-  background-color: var(--side-bar-1-background);
-  color: var(--side-bar-1-text);
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -49,8 +49,8 @@ chat-team-side-bar {
 chat-channel-side-bar {
   width: fit-content;
   flex: 0 0 auto;
-  background-color: var(--side-bar-2-background);
-  color: var(--side-bar-2-text);
+  background-color: var(--dark-muted-color);
+  color: var(--primary-text-color);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -59,8 +59,8 @@ chat-channel-side-bar {
 chat-chat-log {
   width: fit-content;
   flex-grow: 1;
-  background-color: var(--chat-box-background);
-  color: var(--chat-box-text);
+  background-color: var(--secondary-color);
+  color: var(--primary-text-color);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -69,8 +69,8 @@ chat-chat-log {
 chat-informartion-side-bar {
   width: fit-content;
   flex: 0 0 auto;
-  background-color: var(--team-list-background);
-  color: var(--team-list-text);
+  background-color: var(--background-color);
+  color: var(--primary-text-color);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -92,7 +92,7 @@ chat-informartion-side-bar {
 .card {
   width: 50%;
   height: 50%;
-  background: var(--chat-box-background);
+  background: var(--secondary-color);
   position: relative;
   display: flex;
   place-content: center;
@@ -104,7 +104,7 @@ chat-informartion-side-bar {
 .card h2 {
   text-align: center;
   z-index: 1;
-  color: var(--chat-box-text);
+  color: var(--primary-text-color);
   font-size: fit-content;
 }
 
@@ -131,7 +131,7 @@ chat-informartion-side-bar {
 .card::after {
   content: "";
   position: absolute;
-  background: var(--chat-box-background);
+  background: var(--secondary-color);
   inset: 5px;
   border-radius: 15px;
 }
@@ -140,17 +140,17 @@ chat-informartion-side-bar {
   position: absolute;
   display: block;
   margin: 5px;
-  background-color: var(--team-setting-button-background);
+  background-color: var(--dark-muted-color);
   z-index: 2;
   top: 0;
   right: 0;
 }
 
 .team-list-toggle-button {
-  background-color: var(--team-list-toggle-button-background);
+  background-color: var(--secondary-color);
   border: none;
   border-radius: 10px;
-  color: var(--team-list-toggle-button-text);
+  color: var(--primary-text-color);
   cursor: pointer;
   display: flex;
   font-size: 16px;

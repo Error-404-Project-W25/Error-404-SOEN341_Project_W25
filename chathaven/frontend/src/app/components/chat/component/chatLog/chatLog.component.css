@@ -6,7 +6,8 @@ emoji-mart {
   right: 325px; /* Adjust right position */
   /* display: none; */
   border: none;
-  scrollbar-color: var(--chat-log-scrollbar-thumb) var(--chat-log-scrollbar-track);
+  scrollbar-color: var(--chat-log-scrollbar-thumb)
+    var(--chat-log-scrollbar-track);
   scrollbar-width: thin;
   z-index: 1000; /* Ensure the emoji-mart is above all other elements */
 }
@@ -14,8 +15,8 @@ emoji-mart {
 .chat-box {
   /* position: relative; */
   /* background-color: var(--chat-box-background); */
-  background-color: var(--chat-box-background);
-  color: var(--chat-box-text);
+  background-color: var(--secondary-color); /* Chat box background */
+  color: var(--primary-text-color); /* Chat box text color */
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -30,7 +31,7 @@ emoji-mart {
 .channel-title-container {
   position: absolute;
   align-items: center;
-  background-color: var(--side-bar-2-background);
+  background-color: var(--dark-muted-color); /* Sidebar background */
   border-bottom: 2px solid var(--separator-color);
   display: flex;
   flex-shrink: 0;
@@ -43,8 +44,8 @@ emoji-mart {
 
 .channel-title {
   align-items: center;
-  background-color: var(--side-bar-2-background);
-  color: var(--side-bar-2-title-text);
+  background-color: var(--dark-muted-color); /* Sidebar background */
+  color: var(--primary-text-color); /* Sidebar text color */
   display: flex;
   flex-direction: row;
   font-size: 20px;
@@ -92,14 +93,14 @@ emoji-mart {
 }
 
 .message:hover {
-  background-color: var(--message-background-hover);
+  background-color: var(--hover-color); /* Message hover background */
 }
 
 .message-profile-picture {
   align-items: center;
-  background-color: var(--profile-picture-background);
+  background-color: var(--primary-color); /* Profile picture background */
   border-radius: 50%;
-  color: var(--chat-box-background);
+  color: var(--dark-muted-color); /* Profile picture text color */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -135,6 +136,7 @@ emoji-mart {
 
 .message-author {
   align-items: flex-start;
+  font-weight: bold;
   color: var(--message-username);
   display: flex;
   flex-direction: column;
@@ -145,7 +147,7 @@ emoji-mart {
 
 .message-date {
   align-items: flex-start;
-  color: var(--message-date);
+  color: var(--secondary-text-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -164,9 +166,9 @@ emoji-mart {
   border-radius: 10px;
   border: 1 px solid var(--input-container-border);
   bottom: 0;
-  background-color: var(--input-container-background);
+  background-color: var(--dark-background); /* Input container background */
   box-sizing: border-box;
-  color: var(--input-container-text);
+  color: var(--light-muted-color); /* Input container text color */
   display: flex;
   flex-direction: row;
   gap: 5px;
@@ -204,20 +206,20 @@ emoji-mart {
 }
 
 .input-container button:hover {
-  background-color: var(--send-button-hover-fill);
-  color: var(--send-button-hover-stroke);
+  background-color: var(--light-muted-color); /* Send button background */
+  color: var(--light-background); /* Send button text color */
 }
 
 .button-container {
   display: none;
-
   position: absolute;
   right: 0;
   top: 0;
+  background-color: var(--secondary-color); /* Delete button background */
 }
 
 .message-content:hover .button-container {
-  transition: display 10s;
+  transition: display 0.3s;
   border: 1px solid var(--message-background-hover);
   background-color: var(--delete-button-background);
   border-radius: 25%;
@@ -228,9 +230,11 @@ emoji-mart {
 .delete-button {
   width: 2rem;
   height: 2rem;
-  border-radius: 25%;
-  background-color: var(--delete-button-background);
-  color: var(--chat-box-text);
+  border-radius: 50%;
+  background-color: var(
+    --delete-button-background
+  ); /* Delete button background */
+  color: var(--delete-button-text); /* Delete button text */
   border: none;
   font-weight: 600;
   display: flex;
@@ -244,21 +248,27 @@ emoji-mart {
 
 .delete-button:hover {
   transition-duration: 0.3s;
-  background-color: var(--delete-button-hover-background);
+  background-color: var(
+    --delete-button-hover-background
+  ); /* Delete button hover background */
   align-items: center;
 }
 
 .team-setting-button-container {
   display: block;
   margin: 5px;
-  background-color: var(--team-setting-button-background);
+  background-color: var(
+    --dark-muted-color
+  ); /* Team setting button background */
 }
 
 .team-setting-button {
-  background-color: var(--team-list-toggle-button-background);
+  background-color: var(
+    --secondary-color
+  ); /* Team list toggle button background */
   border: none;
   border-radius: 10px;
-  color: var(--team-list-toggle-button-text);
+  color: var(--primary-text-color); /* Team list toggle button text */
   cursor: pointer;
   display: flex;
   font-size: 16px;
@@ -306,7 +316,7 @@ ul {
 }
 
 /* *ngIf="messages.length === 0" */
-.loading{
+.loading {
   border-radius: 10px;
   width: calc(100% - 10px);
   margin: 5px auto;
@@ -371,13 +381,13 @@ ul {
   margin: 5px;
   border-radius: 10px;
   width: calc(100% - 10px);
-  background-color: var(--quote-container-background);
+  background-color: var(--dark-muted-color); /* Quote container background */
 }
 .quote-container button {
-  background-color: var(--quote-button-background);
+  background-color: var(--primary-color); /* Quote button background */
   border: none;
   border-radius: 10px;
-  color: var(--quote-button-text);
+  color: var(--primary-text-color); /* Quote button text */
   cursor: pointer;
   display: flex;
   font-size: 16px;
@@ -397,30 +407,31 @@ ul {
 }
 
 .quote-container button:hover {
-  background-color: var(--quote-button-hover-background);
-  color: var(--quote-button-hover-text);
+  background-color: var(--accent-color); /* Quote button hover background */
+  color: var(--primary-text-color); /* Quote button hover text */
 }
 
 .quote-user {
-  color: var(--quote-container-user-text);
+  color: var(--primary-text-color); /* Quote container user text */
   font-weight: bold;
 }
 
 .quote-content {
-  color: var(--quote-container-message-text);
+  color: var(--primary-text-color); /* Quote container message text */
 }
 
-.message-container{
+.message-container {
   display: flex;
   flex-direction: row;
 }
 
-.quoting{
+.quoting {
   display: flex;
   flex-direction: row;
   gap: 5px;
   padding: 0 1.5rem;
   border-radius: 10px;
   width: calc(100% - 10px);
-  background-color: var(--quote-container-background);
+  background-color: inherit; /* Quote container background */
+  opacity: 0.8;
 }
