@@ -82,7 +82,7 @@ emoji-mart {
   margin: 5px auto;
   padding: 5px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 15px;
   padding: 0;
   margin: 0;
@@ -357,4 +357,66 @@ ul {
     background-color: var(--side-bar-1-background);
     opacity: 1;
   }
+}
+
+.reply-container {
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 10px;
+  width: calc(100% - 10px);
+  background-color: var(--reply-container-background);
+}
+.reply-container button {
+  background-color: var(--reply-button-background);
+  border: none;
+  border-radius: 10px;
+  color: var(--reply-button-text);
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  height: 2rem;
+  justify-content: center;
+  outline: none;
+  padding: 5px;
+  width: 2rem;
+}
+
+.reply-message {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: var(--reply-container-message-text);
+}
+
+.reply-container button:hover {
+  background-color: var(--reply-button-hover-background);
+  color: var(--reply-button-hover-text);
+}
+
+.reply-user {
+  color: var(--reply-container-user-text);
+  font-weight: bold;
+}
+
+.reply-content {
+  color: var(--reply-container-message-text);
+}
+
+.message-container{
+  display: flex;
+  flex-direction: row;
+}
+
+.replying{
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  border-radius: 10px;
+  width: calc(100% - 10px);
+  background-color: var(--reply-container-background);
 }

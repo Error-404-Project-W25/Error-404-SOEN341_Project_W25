@@ -8,7 +8,7 @@
     <div class="channel-title">{{ chatTitle }}</div>
   </div>
   <div class="chat-log">
-    <ul *ngIf="isMessageLoading" >
+    <ul *ngIf="isMessageLoading">
       <li class="loading" *ngFor="let _ of [].constructor(15)" readonly>
         <div class="loading-picture"></div>
         <div class="message-content">
@@ -25,37 +25,59 @@
         <p>This is the start of "{{ chatTitle }}"</p>
       </li>
       <li class="message" *ngFor="let message of messages" readonly>
-        <div class="message-profile-picture">
-          <i class="far fa-user-circle" style="font-size: 3rem"></i>
+        <div class="replying">
+          <mat-icon style="transform: rotate(90deg);">subdirectory_arrow_right</mat-icon>
+          <div class="reply-user">{{ testMessages?.sender }}</div>:
+          <div class="reply-message">{{ testMessages?.content }}</div>
         </div>
-        <div class="message-content">
-          <div class="button-container">
-            <button class="delete-button" readonly title="Reply Message">
-              <i class="fa fa-reply" style="font-size: 1rem"></i></button
-            ><button
-              class="delete-button"
-              (click)="openDeleteDialog(message.messageId, message.content)"
-              readonly
-              title="Delete Message"
-            >
-              <i class="fa fa-trash" style="font-size: 1rem"></i>
-            </button>
+        <div class="message-container">
+          <div class="message-profile-picture">
+            <i class="far fa-user-circle" style="font-size: 3rem"></i>
           </div>
-          <div class="message-header">
-            <span class="message-author">{{
-              getUserName(message.sender)
-            }}</span>
-            <span class="message-date">{{
-              message.time | date : "yyyy-MM-dd HH:mm"
-            }}</span>
+          <div class="message-content">
+            <div class="button-container">
+              <button
+                class="delete-button"
+                (click)="replyingMessage(message)"
+                readonly
+                title="Reply Message"
+              >
+                <i class="fa fa-reply" style="font-size: 1rem"></i>
+              </button>
+              <button
+                class="delete-button"
+                (click)="openDeleteDialog(message.messageId, message.content)"
+                readonly
+                title="Delete Message"
+              >
+                <i class="fa fa-trash" style="font-size: 1rem"></i>
+              </button>
+            </div>
+            <div class="message-header">
+              <span class="message-author">{{
+                getUserName(message.sender)
+              }}</span>
+              <span class="message-date">{{
+                message.time | date : "yyyy-MM-dd HH:mm"
+              }}</span>
+            </div>
+            <article class="message-text" readonly>
+              {{ message.content }}
+            </article>
           </div>
-          <article class="message-text" readonly>
-            {{ message.content }}
-          </article>
         </div>
       </li>
     </ul>
-
+  </div>
+  <div *ngIf="replyMessage" class="reply-container">
+    <div class="reply-message">
+      Replying:
+      <div class="reply-user">{{ getUserName(replyMessage.sender) }}</div>
+      <div class="reply-message">{{ replyMessage.content }}</div>
+    </div>
+    <button (click)="cancelReply()" class="cancel-reply-button">
+      <i class="fa fa-times" style="font-size: 24px"></i>
+    </button>
   </div>
   <div class="input-container">
     <input
