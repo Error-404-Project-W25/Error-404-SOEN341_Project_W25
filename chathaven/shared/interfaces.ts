@@ -26,7 +26,7 @@ export interface IUser {
   teams: string[]; // teamId
   directMessages: string[];
   inbox: IInbox[];
-  status: string;
+  status: 'online' | 'away' | 'offline';
   lastSeen: Date;
 }
 

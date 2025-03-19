@@ -65,6 +65,7 @@
         <ul>
           <li *ngFor="let member of teamMemberList" >
             <div class="user-information">
+              <div class="status-indicator" [ngClass]="'status-' + member.status"></div>
               <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">{{ member.username }}</div>
             </div>
@@ -90,6 +91,7 @@
         <ul>
           <li *ngFor="let member of chatMemberList" >
             <div class="user-information">
+              <div class="status-indicator" [ngClass]="'status-' + member.status"></div>
               <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">{{ member.username }}</div>
             </div>

@@ -1,7 +1,7 @@
 import { TeamCreationDialog } from '../../dialogue/create-team/create-team.dialogue';
 import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ITeam, IUser } from '@shared/interfaces';
@@ -16,7 +16,7 @@ import { UserService } from '@services/user.service';
   standalone: true,
   imports: [CommonModule], // Add CommonModule to imports
 })
-export class TeamSidebarComponent {
+export class TeamSidebarComponent implements OnInit, OnDestroy {
   //variables
   teamList: ITeam[] = [];
 
@@ -25,6 +25,9 @@ export class TeamSidebarComponent {
   isDirectMessage = false;
   selectedTeamId: string = '';
   inviteMemberList: IUser[] = [];
+  private activityTimeout: any;
+  private readonly IDLE_TIMEOUT = 300000; // 5 minutes in milliseconds for time out
+  currentStatus: string = 'online';
 
   constructor(
     private router: Router,
@@ -40,6 +43,42 @@ export class TeamSidebarComponent {
     this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
       this.isDarkTheme = isDarkTheme;
     });
+
+    this.setupActivityMonitoring();
+  }
+
+  private setupActivityMonitoring() {
+    const resetTimer = () => {
+      if (this.activityTimeout) {
+        clearTimeout(this.activityTimeout);
+      }
+      // Only set to online if user hasn't manually set status to away or offline
+      if (this.currentStatus !== 'away' && this.currentStatus !== 'offline') {
+        this.setStatus('online');
+      }
+      this.activityTimeout = setTimeout(() => {
+        // Only set to away if user is currently online
+        if (this.currentStatus === 'online') {
+          this.setStatus('away');
+        }
+      }, this.IDLE_TIMEOUT);
+    };
+
+    // Monitor user activity
+    ['mousemove', 'keypress', 'click', 'scroll'].forEach(event => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    // Initial status
+    resetTimer();
+  }
+
+  async setStatus(status: 'online' | 'away' | 'offline') {
+    this.currentStatus = status;
+    const user = this.userService.getUser();
+    if (user) {
+      await this.backendService.updateStatus(user.userId, status);
+    }
   }
 
   // Initialize component and subscribe to user changes
@@ -61,7 +100,12 @@ export class TeamSidebarComponent {
   }
 
   // Clean up subscriptions or resources
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    if (this.activityTimeout) {
+      clearTimeout(this.activityTimeout);
+    }
+    this.setStatus('offline');
+  }
 
   // Toggle between dark and light themes
   toggleTheme() {
