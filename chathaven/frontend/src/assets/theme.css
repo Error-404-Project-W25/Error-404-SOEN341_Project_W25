@@ -115,6 +115,16 @@
   --join-request-color-shadow: rgba(0, 0, 0, 0.2);
   --join-request-color-dark-gray: #949ba4;
   --join-request-color-border-gray: #444;
+
+  /* Emoji picker */
+  --emoji-picker-background: #2b2d31;
+  --emoji-picker-text: #ffffff;
+  --emoji-picker-hover-background: #404249;
+  --emoji-picker-hover-text: #ffffff;
+
+  /* Scrollbar */
+  --chat-log-scrollbar-thumb: #404249;
+  --chat-log-scrollbar-track: #2b2d31;
 }
 
 .light-theme {

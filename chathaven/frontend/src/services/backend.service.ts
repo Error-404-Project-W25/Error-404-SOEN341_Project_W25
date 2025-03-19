@@ -359,19 +359,26 @@ export class BackendService {
   async sendMessage(
     content: string,
     senderId: string,
-    conversationId: string
+    conversationId: string,
+    quotedMessageId?: string
   ): Promise<boolean> {
     try {
-      console.log('content', content);
-      console.log('senderid', senderId);
-      console.log('convo', conversationId);
+      const payload = {
+        content,
+        senderId,
+        conversationId,
+        quotedMessageId: quotedMessageId || '',
+      };
+
       const response = await firstValueFrom(
         this.http.post<{ success: boolean; error?: string }>(
           `${this.backendURL}/messages/send`,
-          { content, senderId, conversationId }
+          payload
         )
       );
+
       if (response.success) {
+        console.log('Message sent successfully:', response);
         return true;
       } else {
         console.error('Server error:', response.error);
@@ -406,7 +413,6 @@ export class BackendService {
       return false;
     }
   }
-  //trial
 
   async getMessages(conversationId: string): Promise<IMessage[] | undefined> {
     try {
