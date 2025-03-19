@@ -61,6 +61,14 @@ export const deleteMessage = async (req: Request, res: Response) => {
       conversation.messages = conversation.messages.filter(
         (message) => message.messageId !== messageId
       );
+
+      // Remove quotedMessageId field from messages that quote the deleted message
+      conversation.messages.forEach((message) => {
+        if (message.quotedMessageId === messageId) {
+          message.quotedMessageId = '';
+        }
+      });
+
       await conversation.save();
       io.to(conversationId).emit('deleteMessage', messageId);
     }
@@ -68,6 +76,16 @@ export const deleteMessage = async (req: Request, res: Response) => {
     const message = await Messages.findOne({ messageId });
     if (message) {
       await message.deleteOne();
+    }
+
+    // Search for any messages that quote the deleted message
+    const messages = await Messages.find({ quotedMessageId: messageId });
+    if (messages) {
+      messages.forEach(async (message) => {
+        // Remove quotedMessageId field
+        delete message.quotedMessageId;
+        await message.save();
+      });
     }
 
     res.status(200).json({ success: true });
