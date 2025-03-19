@@ -13,6 +13,7 @@ import { EditChannelDialog } from '../../dialogue/edit-channel/edit-channel.dial
 import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remove-member-team.dialogue';
 import { DataService } from '@services/data.service';
 import { JoinRequestDialog } from '../../dialogue/join-request/join-request.dialogue';
+import { RemoveMemberDialogComponent } from '../../dialogue/leave-channel/leave-channel.dialogue';
 
 @Component({
   selector: 'chat-channel-sidebar',
@@ -187,6 +188,25 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.edited) {
         this.refreshChannelList();
+      }
+    });
+  }
+
+  openLeaveChannelDialog(channel: IChannel): void {
+    const dialogRef = this.dialog.open(RemoveMemberDialogComponent, {
+      data: { 
+        channelId: channel.channelId,
+        memberId: this.userId
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(success => {
+      if (success) {
+        this.refreshChannelList();
+        if (this.selectedChannelId === channel.channelId) {
+          this.dataService.selectChannel('');
+          this.dataService.selectConversation('');
+        }
       }
     });
   }

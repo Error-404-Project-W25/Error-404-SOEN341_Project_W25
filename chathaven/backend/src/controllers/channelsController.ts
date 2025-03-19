@@ -84,7 +84,7 @@ export const createChannel = async (req: Request, res: Response) => {
     res.status(201).json({
       message: 'The channel and conversation has been created successfully',
       channelId: savedChannel.channelId,
-      conversationId: savedChannel.conversationId
+      conversationId: savedChannel.conversationId,
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -307,7 +307,7 @@ export const removeMemberFromChannel = async (req: Request, res: Response) => {
  */
 export const deleteChannel = async (req: Request, res: Response) => {
   try {
-    const { channelId } = req.body;
+    const { channelId } = req.params;
 
     const channel = await Channel.findOne({ channelId });
 
@@ -325,16 +325,16 @@ export const deleteChannel = async (req: Request, res: Response) => {
       t.channels = t.channels.filter((c) => c !== channelId);
       await t.save();
     }
- 
+
     // delete the conversation object that was created with the channel
     const conversation = channel.conversationId;
     if (!conversation) {
-      res.status(404).json({ error: "Conversation not found "});
+      res.status(404).json({ error: 'Conversation not found ' });
       return;
     } else {
       const deletedConversation = await deleteConversation(conversation);
       if (!deletedConversation) {
-        res.status(404).json({ error: "Conversation could not be deleted" });
+        res.status(404).json({ error: 'Conversation could not be deleted' });
         return;
       }
     }
@@ -343,7 +343,6 @@ export const deleteChannel = async (req: Request, res: Response) => {
     await channel.deleteOne();
 
     res.json({ success: true });
-
   } catch (error) {
     const errorMessage = (error as Error).message;
     res.status(500).json({
