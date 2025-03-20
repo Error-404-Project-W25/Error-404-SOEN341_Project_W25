@@ -9,6 +9,9 @@ import { BackendService } from './backend.service';
 export class UserService {
   private userSubject = new BehaviorSubject<IUser | undefined>(undefined);
   user$: Observable<IUser | undefined> = this.userSubject.asObservable();
+  
+  private userStatusSubject = new BehaviorSubject<string>('online');
+  userStatus$ = this.userStatusSubject.asObservable();
 
   constructor(private backendService: BackendService) {}
 
@@ -40,6 +43,15 @@ export class UserService {
     // TODO: get rid of this
     this.userSubject.next(user);
     localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  async updateUserStatus(status: 'online' | 'away' | 'offline') {
+    const currentUser = this.getUser();
+    if (currentUser) {
+      currentUser.status = status;
+      this.userSubject.next(currentUser);
+      this.userStatusSubject.next(status);
+    }
   }
 
   logout() {

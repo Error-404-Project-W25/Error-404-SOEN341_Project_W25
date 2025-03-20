@@ -77,7 +77,10 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     this.currentStatus = status;
     const user = this.userService.getUser();
     if (user) {
-      await this.backendService.updateStatus(user.userId, status);
+      const success = await this.backendService.updateStatus(user.userId, status);
+      if (success) {
+        await this.userService.updateUserStatus(status);
+      }
     }
   }
 
