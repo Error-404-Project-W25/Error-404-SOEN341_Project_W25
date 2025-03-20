@@ -47,6 +47,22 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     });
 
     this.setupActivityMonitoring();
+
+    window.addEventListener('beforeunload', () => {
+      this.setStatus('offline', true);
+    });
+
+    window.addEventListener('online', () => {
+      if (this.userService.getUser()) {
+        this.setStatus('online', true);
+      }
+    });
+
+    window.addEventListener('offline', () => {
+      if (this.userService.getUser()) {
+        this.setStatus('offline', true);
+      }
+    });
   }
 
   private setupActivityMonitoring() {
@@ -100,6 +116,10 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     const user = this.userService.getUser();
     if (user) {
+      this.currentStatus = user.status;
+      this.manuallySetAway = (user.status === 'away');
+      this.manuallySetOffline = (user.status === 'offline');
+      
       const invites = await Promise.all(
         user.inbox
           .filter((inbox) => inbox.type === 'invite')
@@ -114,13 +134,21 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     this.refreshTeamList();
   }
 
-  // Clean up subscriptions or resources
+
   ngOnDestroy() {
     if (this.activityTimeout) {
       clearTimeout(this.activityTimeout);
     }
-    // Set offline status when component is destroyed
-    this.setStatus('offline', true);
+
+    window.removeEventListener('beforeunload', () => {
+      this.setStatus('offline', true);
+    });
+    window.removeEventListener('online', () => {
+      this.setStatus('online', true);
+    });
+    window.removeEventListener('offline', () => {
+      this.setStatus('offline', true);
+    });
   }
 
   // Toggle between dark and light themes
@@ -204,8 +232,8 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   }
 
   // Sign out the user and navigate to the home page
-  signOut() {
-    this.userService.logout();
+  async signOut() {
+    await this.userService.logout();
     this.router.navigate(['/home']);
   }
 
