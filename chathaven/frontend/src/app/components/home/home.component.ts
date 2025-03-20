@@ -55,7 +55,7 @@ export class HomeComponent {
       this.geminiService.generateText(this.userMessage).subscribe({
         next: (response) => {
           console.log('API Response:', response);
-          const aiResponse = response.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received';
+          const aiResponse = response.candidates?.[0]?.content?.parts?.[0]?.text || "I'm here to assist with ChatHaven-related questions only.";
           this.messages.push({ type: 'incoming', content: aiResponse });
         },
         error: (err) => {
