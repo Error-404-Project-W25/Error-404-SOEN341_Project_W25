@@ -4,7 +4,8 @@ import { Request, Response } from 'express';
 import { User } from '../models/userModel';
 import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
 import { Team } from '../models/teamsModel';
-import { Channel } from '../models/channelsModel';
+import { io } from '../app';
+import moment from 'moment';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
 
@@ -213,5 +214,70 @@ export const updateStatus = async (req: Request, res: Response) => {
       details: errorMessage,
     });
     console.error('Failed to update status', errorMessage);
+  }
+};
+
+export const ping = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.body;
+
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Check if user has an active socket connection
+    const isConnected = io.sockets.sockets.has(userId);
+
+    if (isConnected) {
+      user.lastSeen = new Date();
+      await user.save();
+    }
+
+    res.json({
+      success: true,
+      message: isConnected ? 'User is active' : 'User is disconnected',
+      lastSeen: user.lastSeen,
+    });
+  } catch (error: any) {
+    console.error('Failed to ping user', error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to ping user',
+      details: error.message,
+    });
+  }
+};
+
+/**
+ * Get the last seen time of a user
+ * @param req userId
+ * @param res returns the last seen time as a string -- Last Seen: 2 minutes ago
+ */
+
+export const getLastSeenString = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.body;
+
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Format last seen time
+    const lastSeenTime = user.lastSeen;
+    const lastSeenAgo = moment(lastSeenTime).fromNow(); // e.g., "2 minutes ago"
+
+    res.json({
+      success: true,
+      lastSeenString: "Last Seen: ", lastSeenAgo,
+    });
+  } catch (error: any) {
+    console.error('Failed to get last seen', error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get last seen',
+      details: error.message,
+    });
   }
 };
