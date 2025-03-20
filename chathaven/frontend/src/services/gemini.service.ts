@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class GeminiService {
-  private apiKey: string = 'GEMINI_API_KEY';
+  private apiKey: string = 'AIzaSyA8gGNcSwRWQzy2z_U4UUy_YBacYChLV7M';
   private apiUrl: string = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
 
   constructor(private http: HttpClient) {}
