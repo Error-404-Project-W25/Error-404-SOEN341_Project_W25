@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { ChatService } from 'src/services/chat.service';
+import { GeminiService } from '@services/gemini.service';
 import { CommonModule } from '@angular/common'; // Add this import
 import { FormsModule } from '@angular/forms'; // Add this import
 import { UserService } from '@services/user.service';
@@ -14,12 +14,16 @@ import { UserService } from '@services/user.service';
   imports: [CommonModule, FormsModule], // Add this line
 })
 export class HomeComponent {
-
   isChatCardVisible: boolean = true; // Toggle chat visibility
   userMessage: string = ''; // Stores user input
   messages: { type: 'incoming' | 'outgoing'; content: string }[] = [];
   isLoading: boolean = false; // Show loading while waiting for GPT response
-  constructor(private router: Router, private userService: UserService, private chatService: ChatService) {}
+
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private geminiService: GeminiService
+  ) {}
 
   // On load / reload, check if user is logged in and go to chat if necessary
   ngOnInit() {
@@ -44,41 +48,26 @@ export class HomeComponent {
     }
   }
 
-  async sendMessage() {
-    console.log(this.userMessage);
-    if (!this.userMessage.trim()) return; // Prevent empty messages
+  sendMessage() {
+    if (this.userMessage.trim()) {
+      this.messages.push({ type: 'outgoing', content: this.userMessage });
 
-    // Add user's message to chat
-    this.messages.push({ type: 'outgoing', content: this.userMessage });
-
-    // Clear input field
-    const userInput = this.userMessage;
-    this.userMessage = '';
-    this.isLoading = true;
-
-    try {
-      // Get GPT response
-      this.chatService.chat(userInput).subscribe(
-        (response: string) => {
-          this.messages.push({ type: 'incoming', content: response });
+      this.geminiService.generateText(this.userMessage).subscribe({
+        next: (response) => {
+          console.log('API Response:', response);
+          const aiResponse = response.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received';
+          this.messages.push({ type: 'incoming', content: aiResponse });
         },
-        (error) => {
-          this.messages.push({
-            type: 'incoming',
-            content: 'Error getting response.',
-          });
-        },
-        () => {
-          this.isLoading = false;
+        error: (err) => {
+          console.error('API Error:', err);
+          console.error('Error Details:', err.error); // Log more details
+          this.messages.push({ type: 'incoming', content: '⚠️ API Error: Unable to fetch response' });
         }
-      );
-    } catch (error) {
-      this.messages.push({
-        type: 'incoming',
-        content: 'Error getting response.',
       });
-    } finally {
-      this.isLoading = false;
+
+      this.userMessage = '';
     }
   }
+
+
 }
