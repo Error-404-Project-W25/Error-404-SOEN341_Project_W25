@@ -26,7 +26,7 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   selectedTeamId: string = '';
   inviteMemberList: IUser[] = [];
   private activityTimeout: any;
-  private readonly IDLE_TIMEOUT = 300000; // 5 minutes in milliseconds for time out
+  private readonly IDLE_TIMEOUT = 300000; // 5 minutes in milliseconds for time out (idle)
   currentStatus: string = 'online';
   private manuallySetAway: boolean = false;
   private manuallySetOffline: boolean = false;
@@ -47,6 +47,22 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     });
 
     this.setupActivityMonitoring();
+
+    window.addEventListener('beforeunload', () => {
+      this.setStatus('offline', true);
+    });
+
+    window.addEventListener('online', () => {
+      if (this.userService.getUser()) {
+        this.setStatus('online', true);
+      }
+    });
+
+    window.addEventListener('offline', () => {
+      if (this.userService.getUser()) {
+        this.setStatus('offline', true);
+      }
+    });
   }
 
   private setupActivityMonitoring() {
@@ -55,17 +71,17 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
         clearTimeout(this.activityTimeout);
       }
 
-      // Only change to online if current status is automatically set to away
+      // If status was automatically set to away (not manually set), change back to online
       if (this.currentStatus === 'away' && !this.manuallySetAway) {
-        this.setStatus('online');
+        this.setStatus('online', false);
       }
 
-      this.activityTimeout = setTimeout(() => {
-        // Only set to away if user is online and not manually set to away/offline
-        if (this.currentStatus === 'online' && !this.manuallySetAway && !this.manuallySetOffline) {
+      // Only set up idle timeout if currently online and not manually set to away or offline
+      if (this.currentStatus === 'online' && !this.manuallySetAway && !this.manuallySetOffline) {
+        this.activityTimeout = setTimeout(() => {
           this.setStatus('away', false); // Automatically set to away
-        }
-      }, this.IDLE_TIMEOUT);
+        }, this.IDLE_TIMEOUT);
+      }
     };
 
     ['mousemove', 'keypress', 'click', 'scroll'].forEach(event => {
@@ -76,16 +92,26 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   }
 
   async setStatus(status: 'online' | 'away' | 'offline', isManual: boolean = true) {
-    // Update manual flags
+    console.log(`Setting status to ${status}, manual: ${isManual}`);
+    
+    // Update manual flags FIRST, before changing currentStatus
     if (isManual) {
+      console.log(`Manual status change: ${status}`);
       this.manuallySetAway = (status === 'away');
       this.manuallySetOffline = (status === 'offline');
+    } else if (status === 'online') {
+      // If auto-changing to online, don't touch manual flags
+      console.log('Auto status change to online');
     } else {
-      // If it's an automatic change to away
+      // If it's an automatic change to away, then set the automatic away flag
+      console.log('Auto status change to away');
       this.manuallySetAway = false;
       this.manuallySetOffline = false;
     }
-
+    
+    console.log(`manuallySetAway: ${this.manuallySetAway}`);
+    console.log(`manuallySetOffline: ${this.manuallySetOffline}`);
+    
     this.currentStatus = status;
     const user = this.userService.getUser();
     if (user) {
@@ -100,6 +126,10 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     const user = this.userService.getUser();
     if (user) {
+      this.currentStatus = user.status;
+      this.manuallySetAway = (user.status === 'away');
+      this.manuallySetOffline = (user.status === 'offline');
+      
       const invites = await Promise.all(
         user.inbox
           .filter((inbox) => inbox.type === 'invite')
@@ -110,25 +140,25 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
       this.inviteMemberList = invites.filter(
         (userToAdd) => userToAdd !== null
       ) as IUser[];
-      this.currentStatus = user.status || 'offline'; // Set initial status
     }
-
-    // Subscribe to status changes
-    this.userService.userStatus$.subscribe(status => {
-      if (status === 'online' || status === 'away' || status === 'offline') {
-        this.currentStatus = status;
-      }
-    });
     this.refreshTeamList();
   }
 
-  // Clean up subscriptions or resources
+
   ngOnDestroy() {
     if (this.activityTimeout) {
       clearTimeout(this.activityTimeout);
     }
-    // Set offline status when component is destroyed
-    this.setStatus('offline', true);
+
+    window.removeEventListener('beforeunload', () => {
+      this.setStatus('offline', true);
+    });
+    window.removeEventListener('online', () => {
+      this.setStatus('online', true);
+    });
+    window.removeEventListener('offline', () => {
+      this.setStatus('offline', true);
+    });
   }
 
   // Toggle between dark and light themes
@@ -212,8 +242,8 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   }
 
   // Sign out the user and navigate to the home page
-  signOut() {
-    this.userService.logout();
+  async signOut() {
+    await this.userService.logout();
     this.router.navigate(['/home']);
   }
 
@@ -236,7 +266,7 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     // Don't close if clicking within the menu containers
     const userMenuContainer = document.querySelector('.user-menu-container');
     const statusMenuContainer = document.querySelector('.status-menu-container');
-
+    
     if (userMenuContainer && !userMenuContainer.contains(event.target as Node) &&
         statusMenuContainer && !statusMenuContainer.contains(event.target as Node)) {
       this.closeAllMenus();

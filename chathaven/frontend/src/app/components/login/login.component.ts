@@ -294,7 +294,7 @@ export class LoginComponent implements OnInit {
           );
 
           if (user) {
-            this.userService.setUser(user);
+            await this.userService.setUser(user);
             this.goToChat();
           }
         } else if (response.error) {

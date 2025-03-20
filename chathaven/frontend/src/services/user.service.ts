@@ -15,9 +15,17 @@ export class UserService {
 
   constructor(private backendService: BackendService) {}
 
-  setUser(user: IUser) {
-    this.userSubject.next(user);
+  async setUser(user: IUser) {
+
     localStorage.setItem('currentUserUID', user.userId);
+
+    const success = await this.backendService.updateStatus(user.userId, 'online');
+    if (success) {
+      user.status = 'online';
+    }
+    
+    this.userSubject.next(user);
+    this.userStatusSubject.next('online');
   }
 
   getUser(): IUser | undefined {
@@ -34,7 +42,8 @@ export class UserService {
         localStorage.removeItem('currentUserUID');
         return false;
       }
-      this.setUser(user);
+
+      await this.setUser(user);
     }
     return true;
   }
@@ -54,9 +63,15 @@ export class UserService {
     }
   }
 
-  logout() {
+  async logout() {
+    const currentUser = this.getUser();
+    if (currentUser) {
+      await this.backendService.updateStatus(currentUser.userId, 'offline');
+      await this.updateUserStatus('offline');
+    }
+    
     this.userSubject.next(undefined);
     localStorage.clear();
-    this.backendService.logoutUser();
+    await this.backendService.logoutUser();
   }
 }
