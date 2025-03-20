@@ -1,7 +1,7 @@
 <div class="chat-box" id="chat-box">
   <div class="channel-title-container">
-    <div class="team-setting-button-container">
-      <button class="team-setting-button" (click)="channelBack()" title="Back">
+    <div class="back-btn-container">
+      <button class="back-btn" (click)="channelBack()" title="Back">
         <i class="fa fa-angle-left" style="font-size: 24px"></i>
       </button>
     </div>
@@ -86,7 +86,7 @@
   </div>
   <div *ngIf="quoteMessage" class="quote-container">
     <div class="quote-message">
-      quoting:
+      <p>Quoting: </p>
       <div class="quote-user">{{ getUserName(quoteMessage.sender) }}</div>
       <div class="quote-message">{{ quoteMessage.content }}</div>
     </div>

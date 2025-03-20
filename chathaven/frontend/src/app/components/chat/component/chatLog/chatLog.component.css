@@ -6,8 +6,7 @@ emoji-mart {
   right: 325px; /* Adjust right position */
   /* display: none; */
   border: none;
-  scrollbar-color: var(--chat-log-scrollbar-thumb)
-    var(--chat-log-scrollbar-track);
+  scrollbar-color: var(--background-color) var(--secondary-color);
   scrollbar-width: thin;
   z-index: 1000; /* Ensure the emoji-mart is above all other elements */
 }
@@ -32,7 +31,7 @@ emoji-mart {
   position: absolute;
   align-items: center;
   background-color: var(--dark-muted-color); /* Sidebar background */
-  border-bottom: 2px solid var(--separator-color);
+  border-bottom: 2px solid var(--border-color); /* Sidebar border */
   display: flex;
   flex-shrink: 0;
   height: 3rem;
@@ -137,7 +136,7 @@ emoji-mart {
 .message-author {
   align-items: flex-start;
   font-weight: bold;
-  color: var(--message-username);
+  color: var(--primary-text-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -147,6 +146,8 @@ emoji-mart {
 
 .message-date {
   align-items: flex-start;
+  font-size: 12px;
+  bottom: 0;
   color: var(--secondary-text-color);
   display: flex;
   flex-direction: column;
@@ -164,11 +165,10 @@ emoji-mart {
 
 .input-container {
   border-radius: 10px;
-  border: 1 px solid var(--input-container-border);
+  border: 1px solid var(--border-color);
   bottom: 0;
-  background-color: var(--dark-background); /* Input container background */
+  background-color: inherit;
   box-sizing: border-box;
-  color: var(--light-muted-color); /* Input container text color */
   display: flex;
   flex-direction: row;
   gap: 5px;
@@ -179,9 +179,9 @@ emoji-mart {
 
 .input-container input {
   right: 0;
-  background-color: var(--input-container-background);
+  background-color: inherit;
   border: none;
-  color: var(--input-container-text);
+  color: inherit;
   font-size: 16px;
   height: 2rem;
   padding: 5px;
@@ -191,10 +191,10 @@ emoji-mart {
 .input-container button {
   right: 0;
   align-items: center;
-  background-color: var(--input-container-background);
+  background-color: inherit;
   border: none;
   border-radius: 10px;
-  color: var(--input-container-text);
+  color: inherit;
   cursor: pointer;
   display: flex;
   font-size: 16px;
@@ -202,12 +202,11 @@ emoji-mart {
   justify-content: center;
   outline: none;
   padding: 5px;
-  width: 3rem;
+  width: 2rem;
 }
 
 .input-container button:hover {
-  background-color: var(--light-muted-color); /* Send button background */
-  color: var(--light-background); /* Send button text color */
+  color: var(--primary-color);
 }
 
 .button-container {
@@ -230,11 +229,9 @@ emoji-mart {
 .delete-button {
   width: 2rem;
   height: 2rem;
-  border-radius: 50%;
-  background-color: var(
-    --delete-button-background
-  ); /* Delete button background */
-  color: var(--delete-button-text); /* Delete button text */
+  border-radius: 30%;
+  background-color: inherit;
+  color: var(--primary-text-color); /* Delete button text */
   border: none;
   font-weight: 600;
   display: flex;
@@ -248,24 +245,18 @@ emoji-mart {
 
 .delete-button:hover {
   transition-duration: 0.3s;
-  background-color: var(
-    --delete-button-hover-background
-  ); /* Delete button hover background */
+  background-color: var(--primary-color); /* Delete button hover background */
   align-items: center;
 }
 
-.team-setting-button-container {
+.back-btn-container {
   display: block;
   margin: 5px;
-  background-color: var(
-    --dark-muted-color
-  ); /* Team setting button background */
+  background-color: inherit;
 }
 
-.team-setting-button {
-  background-color: var(
-    --secondary-color
-  ); /* Team list toggle button background */
+.back-btn {
+  background-color: inherit;
   border: none;
   border-radius: 10px;
   color: var(--primary-text-color); /* Team list toggle button text */
@@ -279,6 +270,10 @@ emoji-mart {
   width: 2rem;
   z-index: 2;
 }
+.back-btn:hover {
+  color: var(--primary-color); /* Team list toggle button hover text */
+}
+
 ul {
   align-items: center;
   justify-content: center;
@@ -408,7 +403,7 @@ ul {
 
 .quote-container button:hover {
   background-color: var(--accent-color); /* Quote button hover background */
-  color: var(--primary-text-color); /* Quote button hover text */
+  color: var(---text-color); /* Quote button hover text */
 }
 
 .quote-user {
@@ -433,5 +428,5 @@ ul {
   border-radius: 10px;
   width: calc(100% - 10px);
   background-color: inherit; /* Quote container background */
-  opacity: 0.8;
+  opacity: 0.5;
 }
