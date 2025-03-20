@@ -335,3 +335,9 @@ h3 h4 {
   will-change: transform;
   transform: translateZ(0);
 }
+
+.member-last-seen {
+  font-size: 0.8rem;
+  color: #888;
+  margin-left: 5px;
+}
