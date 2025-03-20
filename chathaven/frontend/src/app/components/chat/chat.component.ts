@@ -20,7 +20,6 @@ import { ChatLogComponent } from './component/chatLog/chatLog.component';
 import { InformationSidebarComponent } from './component/informationSideBar/informationSideBar.component';
 
 import { HostListener } from '@angular/core';
-import { UserActivityService } from '@services/user-activity.service';
 
 @Component({
   selector: 'app-chat',
@@ -55,7 +54,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     public dialog: MatDialog,
     private userService: UserService,
     private dataService: DataService,
-    private userActivityService: UserActivityService
   ) {
     this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
       this.isDarkTheme = isDarkTheme;
@@ -74,11 +72,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.handleInformatonBar();
     });
   }
-  @HostListener('window:mousemove')
-  @HostListener('window:keydown')
-  handleUserActivity() {
-    this.userActivityService.userActivityDetected();
-  }
   ngOnInit() {
     // Add event listener for window resize
     window.addEventListener('resize', this.handleResize.bind(this));
@@ -93,13 +86,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userService.user$.subscribe((user) => {
       if (user) {
         this.userId = user.userId;
-        this.userActivityService.startTracking();
       }
     });
   }
 
   ngOnDestroy() {
-    this.userActivityService.stopTracking(); // Set status to Offline
     // Remove event listener for window resize
     window.removeEventListener('resize', this.handleResize.bind(this));
   }
