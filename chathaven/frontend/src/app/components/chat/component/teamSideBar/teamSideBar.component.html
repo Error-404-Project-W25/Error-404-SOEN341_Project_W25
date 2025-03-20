@@ -77,8 +77,8 @@
     </button>
     <!-- User settings with status menu -->
     <div class="status-menu-container">
-      <input type="checkbox" id="status-toggle" class="status-toggle-checkbox" />
-      <label for="status-toggle" class="menu-option-2 menu-option" title="User Settings">
+      <input type="checkbox" id="status-toggle" class="status-toggle-checkbox" (click)="$event.stopPropagation()" />
+      <label for="status-toggle" class="menu-option-2 menu-option" title="User Settings" (click)="$event.stopPropagation()">
         <i
           class="fa fa-gear"
           style="font-size: 24px; transition: transform 0.3s"
@@ -87,15 +87,15 @@
         ></i>
       </label>
       <div class="status-options">
-        <button class="status-option" (click)="setStatus('online'); closeAllMenus()">
+        <button class="status-option" (click)="setStatus('online'); closeAllMenus(); $event.stopPropagation()">
           <div class="status-indicator status-online"></div>
           <span>Online</span>
         </button>
-        <button class="status-option" (click)="setStatus('away'); closeAllMenus()">
+        <button class="status-option" (click)="setStatus('away'); closeAllMenus(); $event.stopPropagation()">
           <div class="status-indicator status-away"></div>
           <span>Away</span>
         </button>
-        <button class="status-option" (click)="setStatus('offline'); closeAllMenus()">
+        <button class="status-option" (click)="setStatus('offline'); closeAllMenus(); $event.stopPropagation()">
           <div class="status-indicator status-offline"></div>
           <span>Offline</span>
         </button>

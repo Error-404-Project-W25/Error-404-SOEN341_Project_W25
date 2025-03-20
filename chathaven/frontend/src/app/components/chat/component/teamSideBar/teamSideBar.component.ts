@@ -1,7 +1,7 @@
 import { TeamCreationDialog } from '../../dialogue/create-team/create-team.dialogue';
 import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ITeam, IUser } from '@shared/interfaces';
@@ -204,6 +204,18 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     const statusToggle = document.querySelector('.status-toggle-checkbox') as HTMLInputElement;
     if (statusToggle) {
       statusToggle.checked = false;
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleDocumentClick(event: MouseEvent): void {
+    // Don't close if clicking within the menu containers
+    const userMenuContainer = document.querySelector('.user-menu-container');
+    const statusMenuContainer = document.querySelector('.status-menu-container');
+    
+    if (userMenuContainer && !userMenuContainer.contains(event.target as Node) &&
+        statusMenuContainer && !statusMenuContainer.contains(event.target as Node)) {
+      this.closeAllMenus();
     }
   }
 }
