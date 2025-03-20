@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { User } from '../models/userModel';
 import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
 import { Team } from '../models/teamsModel';
-import { io } from '../app';
+import { connectedUsers } from '../app';
 import moment from 'moment';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
@@ -221,34 +221,43 @@ export const ping = async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
 
-    const user = await User.findOne({ userId });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    
-    // Check if user has an active socket connection
-    const isConnected = io.sockets.sockets.has(userId);
+    // Check if the userId exists in the connected users map
+    if (connectedUsers.has(userId)) {
+      // User is connected, update the lastSeen timestamp
+      const isConnected = true;
+      const user = await User.findOne({ userId });
 
-    if (isConnected) {
+      if (!user) {
+        res.status(404).json({ error: 'User not found' });
+        return;
+      }
+
+      // Update the lastSeen timestamp
       user.lastSeen = new Date();
       await user.save();
+
+      res.json({
+        success: true,
+        message: isConnected ? 'User is active' : 'User is disconnected',
+        lastSeen: user.lastSeen,
+      });
     }
-
-    res.json({
-      success: true,
-      message: isConnected ? 'User is active' : 'User is disconnected',
-      lastSeen: user.lastSeen,
-    });
-  } catch (error: any) {
-    console.error('Failed to ping user', error.message);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to ping user',
-      details: error.message,
-    });
-  }
-};
-
+    else {
+      // User is not connected
+      res.json({
+        success: true,
+        message: 'User is disconnected',
+      });
+    }
+    } catch (error: any) {
+      console.error('Failed to ping user', error.message);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to ping user',
+        details: error.message,
+      });
+    }
+  };
 /**
  * Get the last seen time of a user
  * @param req userId
@@ -261,7 +270,8 @@ export const getLastSeenString = async (req: Request, res: Response) => {
 
     const user = await User.findOne({ userId });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      res.status(404).json({ error: 'User not found' });
+      return;
     }
 
     // Format last seen time
@@ -270,7 +280,7 @@ export const getLastSeenString = async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      lastSeenString: "Last Seen: ", lastSeenAgo,
+      lastSeenString: ("Last seen " + lastSeenAgo)
     });
   } catch (error: any) {
     console.error('Failed to get last seen', error.message);

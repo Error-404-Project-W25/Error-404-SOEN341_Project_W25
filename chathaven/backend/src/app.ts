@@ -31,8 +31,33 @@ const io = new Server(httpServer, {
   transports: ['websocket', 'polling']
 });
 
+const connectedUsers = new Map<string, string>(); // Key: userId, Value: socketId
+
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  const userId = socket.handshake.query.userId as string;
+
+  if (userId) {
+    connectedUsers.set(userId, socket.id); // Map the userId to their socketId
+    console.log(`User ${userId} connected with socket id: ${socket.id}`);
+  } else {
+    console.log(`User connected without an ID: ${socket.id}`);
+  }
+
+  // Handle custom disconnect event
+  socket.on('disconnectUser', ({ userId }) => {
+    if (userId) {
+      connectedUsers.delete(userId); // Remove userId from the Map
+      console.log(`User ${userId} disconnected via sign-out`);
+    }
+  });
+
+  // Handle automatic disconnection
+  socket.on('disconnect', () => {
+    if (userId) {
+      connectedUsers.delete(userId); // Remove userId from the Map
+      console.log(`User ${userId} disconnected`);
+    }
+  });
 
   socket.on('joinRoom', ({ conversationId }) => {
     socket.join(conversationId);
@@ -67,10 +92,6 @@ io.on('connection', (socket) => {
     } as Response;
 
     await getMessages(req, res);
-  });
-
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
   });
 });
 
@@ -148,5 +169,5 @@ const startServer = async () => {
 };
 
 startServer();
-export { app, io, connectDB, startServer };
+export { app, io, connectDB, startServer, connectedUsers };
 

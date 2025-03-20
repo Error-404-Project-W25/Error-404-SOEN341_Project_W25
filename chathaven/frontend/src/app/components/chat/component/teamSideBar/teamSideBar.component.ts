@@ -8,6 +8,7 @@ import { ITeam, IUser } from '@shared/interfaces';
 import { BackendService } from '@services/backend.service';
 import { DataService } from '@services/data.service';
 import { UserService } from '@services/user.service';
+import { io } from 'socket.io-client';
 
 @Component({
   selector: 'chat-team-sidebar',
@@ -145,6 +146,15 @@ export class TeamSidebarComponent {
 
   // Sign out the user and navigate to the home page
   signOut() {
+    const user = this.userService.getUser();
+    const userId = user?.userId;
+
+    const socket = io('http://localhost:3000', {
+      query: { userId },
+    });
+
+    socket.emit('disconnectUser', { userId }); 
+
     this.userService.logout();
     this.router.navigate(['/home']);
   }
