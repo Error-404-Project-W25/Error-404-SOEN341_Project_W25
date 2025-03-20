@@ -411,6 +411,21 @@
   border-radius: 50%;
 }
 
+.profile-status-indicator {
+  position: absolute;
+  width: 10px; /* Adjust size */
+  height: 10px;
+  background-color: green;
+  border-radius: 50%;
+  border: 1px solid white; /* Optional */
+
+  /* Adjust positioning relative to icon */
+  bottom: 0;
+  right: 0;
+  transform: translate(10%, 10%);
+}
+
+
 .status-online {
   background-color: #44b700;
 }
