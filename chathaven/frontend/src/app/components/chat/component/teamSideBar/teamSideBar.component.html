@@ -58,6 +58,7 @@
     <input class="menu-toggle-checkbox" type="checkbox" readonly />
     <span class="menu-toggle-button">
       <i class="fa fa-user-circle" style="font-size: 24px"></i>
+      <div class="profile-status-indicator" [ngClass]="'status-' + currentStatus"></div>
     </span>
     <!-- (click) change theme -->
     <button

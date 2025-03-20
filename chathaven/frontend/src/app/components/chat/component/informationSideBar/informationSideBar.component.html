@@ -65,9 +65,19 @@
         <ul>
           <li *ngFor="let member of teamMemberList" >
             <div class="user-information">
-              <div class="status-indicator" [ngClass]="'status-' + member.status"></div>
-              <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
-              <div class="member-name">{{ member.username }}</div>
+              <div class="user-details">
+                <div class="user-header">
+                  <div class="status-indicator" [ngClass]="'status-' + member.status"></div>
+                  <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
+                  <div class="member-name">{{ member.username }}</div>
+                </div>
+                <div class="member-last-seen" *ngIf="member.status !== 'online'">
+                  Last seen: {{ member.lastSeen | date:'short' }}
+                </div>
+                <div class="member-last-seen" *ngIf="member.status == 'online'">
+                  Online
+                </div>
+              </div>
             </div>
             <button
               (click)="createCoversation(member.userId)"
@@ -91,9 +101,19 @@
         <ul>
           <li *ngFor="let member of chatMemberList" >
             <div class="user-information">
-              <div class="status-indicator" [ngClass]="'status-' + member.status"></div>
-              <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
-              <div class="member-name">{{ member.username }}</div>
+              <div class="user-details">
+                <div class="user-header">
+                  <div class="status-indicator" [ngClass]="'status-' + member.status"></div>
+                  <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
+                  <div class="member-name">{{ member.username }}</div>
+                </div>
+                <div class="member-last-seen" *ngIf="member.status !== 'online'">
+                  Last seen: {{ member.lastSeen | date:'short' }}
+                </div>
+                <div class="member-last-seen" *ngIf="member.status == 'online'">
+                Online
+              </div>
+              </div>
             </div>
           </li>
         </ul>
