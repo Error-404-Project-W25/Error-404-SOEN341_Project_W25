@@ -26,7 +26,7 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   selectedTeamId: string = '';
   inviteMemberList: IUser[] = [];
   private activityTimeout: any;
-  private readonly IDLE_TIMEOUT = 300000; // 5 minutes in milliseconds for time out
+  private readonly IDLE_TIMEOUT = 300000; // 5 minutes in milliseconds for time out (idle)
   currentStatus: string = 'online';
   private manuallySetAway: boolean = false;
   private manuallySetOffline: boolean = false;
@@ -71,17 +71,17 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
         clearTimeout(this.activityTimeout);
       }
 
-      // Only change to online if current status is automatically set to away
+      // If status was automatically set to away (not manually set), change back to online
       if (this.currentStatus === 'away' && !this.manuallySetAway) {
-        this.setStatus('online');
+        this.setStatus('online', false);
       }
 
-      this.activityTimeout = setTimeout(() => {
-        // Only set to away if user is online and not manually set to away/offline
-        if (this.currentStatus === 'online' && !this.manuallySetAway && !this.manuallySetOffline) {
+      // Only set up idle timeout if currently online and not manually set to away or offline
+      if (this.currentStatus === 'online' && !this.manuallySetAway && !this.manuallySetOffline) {
+        this.activityTimeout = setTimeout(() => {
           this.setStatus('away', false); // Automatically set to away
-        }
-      }, this.IDLE_TIMEOUT);
+        }, this.IDLE_TIMEOUT);
+      }
     };
 
     ['mousemove', 'keypress', 'click', 'scroll'].forEach(event => {
@@ -92,15 +92,25 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   }
 
   async setStatus(status: 'online' | 'away' | 'offline', isManual: boolean = true) {
-    // Update manual flags
+    console.log(`Setting status to ${status}, manual: ${isManual}`);
+    
+    // Update manual flags FIRST, before changing currentStatus
     if (isManual) {
+      console.log(`Manual status change: ${status}`);
       this.manuallySetAway = (status === 'away');
       this.manuallySetOffline = (status === 'offline');
+    } else if (status === 'online') {
+      // If auto-changing to online, don't touch manual flags
+      console.log('Auto status change to online');
     } else {
-      // If it's an automatic change to away
+      // If it's an automatic change to away, then set the automatic away flag
+      console.log('Auto status change to away');
       this.manuallySetAway = false;
       this.manuallySetOffline = false;
     }
+    
+    console.log(`manuallySetAway: ${this.manuallySetAway}`);
+    console.log(`manuallySetOffline: ${this.manuallySetOffline}`);
     
     this.currentStatus = status;
     const user = this.userService.getUser();
