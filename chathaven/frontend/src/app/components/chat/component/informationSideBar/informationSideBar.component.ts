@@ -78,6 +78,11 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     this.refreshList();
   }
   refreshList() {
+    setTimeout(() => {
+      console.log('Waited for 5 seconds');
+    }, 5000);
+    this.requestList = [];
+    this.inviteList = [];
     this.backendService.getUserById(this.userId).then((user) => {
       if (user) {
         const requestUserIds = new Set(this.requestList.map(req => req.userIdThatYouWantToAdd));

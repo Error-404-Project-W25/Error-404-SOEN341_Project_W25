@@ -145,6 +145,9 @@ export class TeamSidebarComponent {
 
   // Sign out the user and navigate to the home page
   signOut() {
+    this.dataService.selectTeam('');
+    this.dataService.selectChannel('');
+    this.dataService.selectConversation('');
     this.userService.logout();
     this.router.navigate(['/home']);
   }
