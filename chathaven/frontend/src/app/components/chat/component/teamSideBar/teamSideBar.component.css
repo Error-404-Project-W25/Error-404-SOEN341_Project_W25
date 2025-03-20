@@ -208,10 +208,14 @@
   -webkit-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
   -moz-box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
   box-shadow: 3px 3px 10px 0px rgba(16, 16, 16, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-out;
 }
 
 .menu-toggle-checkbox:checked ~ .menu-option {
-  z-index: 15; /* Bring options above button when checked */
+  z-index: 15;
 }
 .menu-toggle-checkbox:hover ~ .menu-toggle-button,
 .menu-toggle-checkbox:checked ~ .menu-toggle-button {
@@ -250,6 +254,13 @@
 .menu-toggle-checkbox:checked ~ .menu-option-2 {
   transition-delay: 0.2s;
   transform: translateY(-65px) translateX(65px);
+}
+
+.menu-toggle-checkbox:checked ~ .status-menu-container {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0.2s;
+  transform: translateY(-90px) translateX(40px);
 }
 
 .menu-toggle-checkbox:checked ~ .menu-option-3 {
@@ -326,3 +337,89 @@
     opacity: 1;
   }
 }
+
+.status-menu-container {
+  position: absolute;
+  display: inline-block;
+  opacity: 0;  
+  visibility: hidden;  
+  transition: opacity 0.3s, visibility 0.3s, transform 0.3s;  
+  z-index: 25; /* Increase z-index to make sure it stays above other elements */
+}
+
+.status-toggle-checkbox {
+  display: none;
+}
+
+.status-options {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  background: var(--menu-background);
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 8px;
+  z-index: 30;
+  width: 120px;
+  left: 50%;
+  transform: translateX(50%), translateY(-25%);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  transition: display 0.3s ease-out;
+}
+
+.status-toggle-checkbox:checked ~ .status-options {
+  display: block;
+}
+
+/* Add this to ensure the status menu stays visible independent of main menu */
+.menu-toggle-checkbox:not(:checked) ~ .status-menu-container {
+  /* Only control position, not visibility */
+  transform: translateY(0) translateX(40px);
+}
+
+.status-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  width: 100%;
+  border: none;
+  background: none;
+  color: var(--menu-text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.status-option:hover {
+  background-color: var(--team-setting-list-element-background-hover);
+  color: var(--channel-list-text-hover);
+  border-radius: 4px;
+}
+
+.status-option span {
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500; 
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-online {
+  background-color: #44b700;
+}
+
+.status-away {
+  background-color: #ffa600da;
+}
+
+.status-offline {
+  background-color: #808080;
+}
+

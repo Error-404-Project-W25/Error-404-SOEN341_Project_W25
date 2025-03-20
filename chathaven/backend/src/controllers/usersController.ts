@@ -180,3 +180,38 @@ export const deleteUser = async (req: Request, res: Response) => {
     console.error('Failed to delete user', errorMessage);
   }
 };
+
+/**
+ * Update the user's status
+ * @param req userId, status
+ * @param res returns success or error message
+ */
+export const updateStatus = async (req: Request, res: Response) => {
+  try {
+    const { userId, status } = req.body;
+
+    const user = await User.findOne({ userId });
+    if (!user) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    user.status = status;
+    await user.save();
+
+    res.json({ 
+      success: true ,
+      message:
+        `The user status has been updated successfully to ${status}`,
+    });
+
+  } catch (error: any) {
+    const errorMessage = error.message;
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update status',
+      details: errorMessage,
+    });
+    console.error('Failed to update status', errorMessage);
+  }
+};
