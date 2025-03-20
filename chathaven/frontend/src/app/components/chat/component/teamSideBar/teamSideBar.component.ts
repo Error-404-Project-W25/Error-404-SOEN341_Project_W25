@@ -28,6 +28,8 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   private activityTimeout: any;
   private readonly IDLE_TIMEOUT = 300000; // 5 minutes in milliseconds for time out
   currentStatus: string = 'online';
+  private manuallySetAway: boolean = false;
+  private manuallySetOffline: boolean = false;
 
   constructor(
     private router: Router,
@@ -52,28 +54,38 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
       if (this.activityTimeout) {
         clearTimeout(this.activityTimeout);
       }
-      // Only set to online if user hasn't manually set status to away or offline
-      if (this.currentStatus !== 'away' && this.currentStatus !== 'offline') {
+
+      // Only change to online if current status is automatically set to away
+      if (this.currentStatus === 'away' && !this.manuallySetAway) {
         this.setStatus('online');
       }
+
       this.activityTimeout = setTimeout(() => {
-        // Only set to away if user is currently online
-        if (this.currentStatus === 'online') {
-          this.setStatus('away');
+        // Only set to away if user is online and not manually set to away/offline
+        if (this.currentStatus === 'online' && !this.manuallySetAway && !this.manuallySetOffline) {
+          this.setStatus('away', false); // Automatically set to away
         }
       }, this.IDLE_TIMEOUT);
     };
 
-    // Monitor user activity
     ['mousemove', 'keypress', 'click', 'scroll'].forEach(event => {
       window.addEventListener(event, resetTimer);
     });
 
-    // Initial status
     resetTimer();
   }
 
-  async setStatus(status: 'online' | 'away' | 'offline') {
+  async setStatus(status: 'online' | 'away' | 'offline', isManual: boolean = true) {
+    // Update manual flags
+    if (isManual) {
+      this.manuallySetAway = (status === 'away');
+      this.manuallySetOffline = (status === 'offline');
+    } else {
+      // If it's an automatic change to away
+      this.manuallySetAway = false;
+      this.manuallySetOffline = false;
+    }
+    
     this.currentStatus = status;
     const user = this.userService.getUser();
     if (user) {
@@ -107,7 +119,8 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     if (this.activityTimeout) {
       clearTimeout(this.activityTimeout);
     }
-    this.setStatus('offline');
+    // Set offline status when component is destroyed
+    this.setStatus('offline', true);
   }
 
   // Toggle between dark and light themes

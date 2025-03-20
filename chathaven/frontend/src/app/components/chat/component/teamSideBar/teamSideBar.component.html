@@ -87,15 +87,15 @@
         ></i>
       </label>
       <div class="status-options">
-        <button class="status-option" (click)="setStatus('online'); closeAllMenus(); $event.stopPropagation()">
+        <button class="status-option" (click)="setStatus('online', true); closeAllMenus(); $event.stopPropagation()">
           <div class="status-indicator status-online"></div>
           <span>Online</span>
         </button>
-        <button class="status-option" (click)="setStatus('away'); closeAllMenus(); $event.stopPropagation()">
+        <button class="status-option" (click)="setStatus('away', true); closeAllMenus(); $event.stopPropagation()">
           <div class="status-indicator status-away"></div>
           <span>Away</span>
         </button>
-        <button class="status-option" (click)="setStatus('offline'); closeAllMenus(); $event.stopPropagation()">
+        <button class="status-option" (click)="setStatus('offline', true); closeAllMenus(); $event.stopPropagation()">
           <div class="status-indicator status-offline"></div>
           <span>Offline</span>
         </button>
