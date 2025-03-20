@@ -85,7 +85,7 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
       this.manuallySetAway = false;
       this.manuallySetOffline = false;
     }
-    
+
     this.currentStatus = status;
     const user = this.userService.getUser();
     if (user) {
@@ -110,7 +110,15 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
       this.inviteMemberList = invites.filter(
         (userToAdd) => userToAdd !== null
       ) as IUser[];
+      this.currentStatus = user.status || 'offline'; // Set initial status
     }
+
+    // Subscribe to status changes
+    this.userService.userStatus$.subscribe(status => {
+      if (status === 'online' || status === 'away' || status === 'offline') {
+        this.currentStatus = status;
+      }
+    });
     this.refreshTeamList();
   }
 
@@ -228,7 +236,7 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     // Don't close if clicking within the menu containers
     const userMenuContainer = document.querySelector('.user-menu-container');
     const statusMenuContainer = document.querySelector('.status-menu-container');
-    
+
     if (userMenuContainer && !userMenuContainer.contains(event.target as Node) &&
         statusMenuContainer && !statusMenuContainer.contains(event.target as Node)) {
       this.closeAllMenus();
