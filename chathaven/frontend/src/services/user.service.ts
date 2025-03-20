@@ -16,13 +16,16 @@ export class UserService {
   constructor(private backendService: BackendService) {}
 
   async setUser(user: IUser) {
+
+    localStorage.setItem('currentUserUID', user.userId);
+
     const success = await this.backendService.updateStatus(user.userId, 'online');
     if (success) {
       user.status = 'online';
-      this.userSubject.next(user);
-      this.userStatusSubject.next('online');
     }
-    localStorage.setItem('currentUserUID', user.userId);
+    
+    this.userSubject.next(user);
+    this.userStatusSubject.next('online');
   }
 
   getUser(): IUser | undefined {
