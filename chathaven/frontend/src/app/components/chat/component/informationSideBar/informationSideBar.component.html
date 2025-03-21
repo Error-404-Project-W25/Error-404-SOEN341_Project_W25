@@ -57,22 +57,31 @@
       class="tab-content"
       *ngIf="activeTab === 'team' && !isDirectMessage"
     >
-      <h3 style="margin-bottom: 5px">Team Information{{ teamTitle }}</h3>
-      <h4 style="margin-bottom: 5px">Description</h4>
-      <p>{{ teamDescription }}</p>
-      <h4 style="margin-bottom: 5px">Members</h4>
+      <h3>Team Information{{ teamTitle }}</h3>
+      <h4>Description</h4>
+      {{ teamDescription }}
+      <h4>Members</h4>
       <div class="list">
         <ul>
-          <li *ngFor="let member of teamMemberList" >
+          <li *ngFor="let member of teamMemberList">
             <div class="user-information">
               <div class="user-details">
                 <div class="user-header">
-                  <div class="status-indicator" [ngClass]="'status-' + member.status"></div>
-                  <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
+                  <div
+                    class="status-indicator"
+                    [ngClass]="'status-' + member.status"
+                  ></div>
+                  <i
+                    class="fas fa-user-circle member-icon"
+                    style="margin: 2px"
+                  ></i>
                   <div class="member-name">{{ member.username }}</div>
                 </div>
-                <div class="member-last-seen" *ngIf="member.status == 'offline'">
-                  Last seen: {{ member.lastSeen | date:'short' }}
+                <div
+                  class="member-last-seen"
+                  *ngIf="member.status == 'offline'"
+                >
+                  Last seen: {{ member.lastSeen | date : "short" }}
                 </div>
                 <div class="member-last-seen" *ngIf="member.status == 'away'">
                   Away
@@ -85,7 +94,6 @@
             <button
               (click)="createCoversation(member.userId)"
               class="member-button"
-
               title="Start Conversation"
             >
               <i class="far fa-comment-alt" style="font-size: 1rem"></i>
@@ -96,29 +104,38 @@
     </div>
 
     <div class="tab-content" *ngIf="activeTab === 'chat'">
-      <h3 style="margin-bottom: 5px">Chat Information{{ chatTitle }}</h3>
-      <h4 style="margin-bottom: 5px">Description</h4>
+      <h3>Chat Information{{ chatTitle }}</h3>
+      <h4>Description</h4>
       {{ chatDescription }}
-      <h4 style="margin-bottom: 5px">Members</h4>
+      <h4>Members</h4>
       <div class="list">
         <ul>
-          <li *ngFor="let member of chatMemberList" >
+          <li *ngFor="let member of chatMemberList">
             <div class="user-information">
               <div class="user-details">
                 <div class="user-header">
-                  <div class="status-indicator" [ngClass]="'status-' + member.status"></div>
-                  <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
+                  <div
+                    class="status-indicator"
+                    [ngClass]="'status-' + member.status"
+                  ></div>
+                  <i
+                    class="fas fa-user-circle member-icon"
+                    style="margin: 2px"
+                  ></i>
                   <div class="member-name">{{ member.username }}</div>
                 </div>
-                <div class="member-last-seen" *ngIf="member.status == 'offline'">
-                  Last seen: {{ member.lastSeen | date:'short' }}
+                <div
+                  class="member-last-seen"
+                  *ngIf="member.status == 'offline'"
+                >
+                  Last seen: {{ member.lastSeen | date : "short" }}
                 </div>
                 <div class="member-last-seen" *ngIf="member.status == 'away'">
                   Away
                 </div>
                 <div class="member-last-seen" *ngIf="member.status == 'online'">
-                Online
-              </div>
+                  Online
+                </div>
               </div>
             </div>
           </li>
@@ -127,19 +144,20 @@
     </div>
 
     <div class="tab-content" *ngIf="activeTab === 'invite' && isDirectMessage">
-      <h3 style="margin-bottom: 5px">Invite to Join Channel</h3>
-      <h4 style="margin-bottom: 5px">Invite</h4>
+      <h3>Invite to Join Channel</h3>
+      <h4>Invite</h4>
       <div class="list">
         <ul>
-          <li *ngFor="let invite of inviteList" >
+          <li *ngFor="let invite of inviteList">
             <div class="inbox-information">
-              <div class="member-name">{{ invite.channelId }}</div>
+              <div class="member-name">
+                {{ getChannelName(invite.channelId) }}
+              </div>
             </div>
             <div class="demande-container">
               <button
                 (click)="acceptRequest(invite)"
                 class="accept-button"
-
                 title="Accept"
               >
                 <i class="fas fa-check" style="font-size: 1rem"></i> Accept
@@ -147,7 +165,6 @@
               <button
                 (click)="declineRequest(invite)"
                 class="decline-button"
-
                 title="Decline"
               >
                 <i class="fas fa-times" style="font-size: 1rem"></i> Decline
@@ -162,11 +179,11 @@
       class="tab-content"
       *ngIf="activeTab === 'request' && !isDirectMessage"
     >
-      <h3 style="margin-bottom: 5px">Request to Join Channel</h3>
-      <h4 style="margin-bottom: 5px">Request</h4>
+      <h3>Request to Join Channel</h3>
+      <h4>Request</h4>
       <div class="list">
         <ul>
-          <li *ngFor="let request of requestList" >
+          <li *ngFor="let request of requestList">
             <div class="inbox-information">
               <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">
@@ -177,7 +194,6 @@
               <button
                 (click)="acceptRequest(request)"
                 class="accept-button"
-
                 title="Accept"
               >
                 <i class="fas fa-check" style="font-size: 1rem"></i> Accept
@@ -185,7 +201,6 @@
               <button
                 (click)="declineRequest(request)"
                 class="decline-button"
-
                 title="Decline"
               >
                 <i class="fas fa-times" style="font-size: 1rem"></i> Decline

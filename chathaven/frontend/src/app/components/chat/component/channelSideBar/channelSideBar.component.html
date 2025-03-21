@@ -59,6 +59,7 @@
         *ngFor="let channel of channelList"
         (click)="selectChannel(channel.channelId)"
         readonly
+        [ngClass]="{ 'channel-container-selected': selectedChannelId === channel.channelId }"
       >
         <div class="channel-information-container">
           <div class="notification-container">
@@ -106,7 +107,7 @@
           >
             <i class="fa fa-gear" style="font-size: 16px"></i>
           </button>
-          <button 
+          <button
             class="channel-button"
             [disabled]="!channel.members.includes(userId)"
             (click)="openLeaveChannelDialog(channel); $event.stopPropagation()"

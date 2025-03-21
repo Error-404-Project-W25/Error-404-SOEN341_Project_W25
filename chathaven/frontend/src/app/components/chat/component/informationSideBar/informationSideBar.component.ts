@@ -6,7 +6,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BackendService } from '@services/backend.service';
 import { UserService } from '@services/user.service';
-import { IUser, IInbox } from '@shared/interfaces';
+import { IUser, IInbox, IChannel } from '@shared/interfaces';
 import { DataService } from '@services/data.service';
 import { Subscription } from 'rxjs';
 
@@ -35,6 +35,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   teamDescription: string = '';
   chatDescription: string = '';
   activeTab: string = 'chat';
+
+  channeIdToChannelName: { [channelId: string]: string } = {};
 
   private statusSubscription?: Subscription;
 
@@ -76,39 +78,80 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.statusSubscription = this.userService.userStatus$.subscribe(
+      async (status) => {
+        const updatedUser = this.userService.getUser();
+        if (updatedUser) {
+          // Update status in team member list
+          const teamMemberIndex = this.teamMemberList.findIndex(
+            (m) => m.userId === updatedUser.userId
+          );
+          if (teamMemberIndex !== -1) {
+            this.teamMemberList[teamMemberIndex].status = status as
+              | 'online'
+              | 'away'
+              | 'offline';
+            this.teamMemberList[teamMemberIndex].lastSeen =
+              updatedUser.lastSeen;
+          }
 
-    this.statusSubscription = this.userService.userStatus$.subscribe(async (status) => {
-      const updatedUser = this.userService.getUser();
-      if (updatedUser) {
-        // Update status in team member list
-        const teamMemberIndex = this.teamMemberList.findIndex(m => m.userId === updatedUser.userId);
-        if (teamMemberIndex !== -1) {
-          this.teamMemberList[teamMemberIndex].status = status as 'online' | 'away' | 'offline';
-          this.teamMemberList[teamMemberIndex].lastSeen = updatedUser.lastSeen;
-        }
-
-        // Update status in chat member list
-        const chatMemberIndex = this.chatMemberList.findIndex(m => m.userId === updatedUser.userId);
-        if (chatMemberIndex !== -1) {
-          this.chatMemberList[chatMemberIndex].status = status as 'online' | 'away' | 'offline';
-          this.chatMemberList[chatMemberIndex].lastSeen = updatedUser.lastSeen;
+          // Update status in chat member list
+          const chatMemberIndex = this.chatMemberList.findIndex(
+            (m) => m.userId === updatedUser.userId
+          );
+          if (chatMemberIndex !== -1) {
+            this.chatMemberList[chatMemberIndex].status = status as
+              | 'online'
+              | 'away'
+              | 'offline';
+            this.chatMemberList[chatMemberIndex].lastSeen =
+              updatedUser.lastSeen;
+          }
         }
       }
-    });
+    );
+  }
+
+  async loadChannelName(): Promise<void> {
+    const uniqueChannelIds = [
+      ...new Set(this.inviteList.map((invite) => invite.channelId)),
+    ];
+    console.log('Unique Channel IDs: ', uniqueChannelIds);
+
+    for (const channelId of uniqueChannelIds) {
+      await this.backendService.getChannelById(channelId).then((channel) => {
+        if (channel) {
+          this.channeIdToChannelName[channelId] = channel.name;
+        }
+      });
+    }
   }
 
   ngOnInit() {
     this.refreshList();
   }
   refreshList() {
+    setTimeout(() => {
+      console.log('Waited for 5 seconds');
+    }, 5000);
+    this.requestList = [];
+    this.inviteList = [];
     this.backendService.getUserById(this.userId).then((user) => {
       if (user) {
-        const requestUserIds = new Set(this.requestList.map(req => req.userIdThatYouWantToAdd));
-        const inviteUserIds = new Set(this.inviteList.map(inv => inv.userIdThatYouWantToAdd));
-        requestUserIds.forEach(userId => {
+        const requestUserIds = new Set(
+          this.requestList.map((req) => req.userIdThatYouWantToAdd)
+        );
+        const inviteUserIds = new Set(
+          this.inviteList.map((inv) => inv.userIdThatYouWantToAdd)
+        );
+        requestUserIds.forEach((userId) => {
           if (inviteUserIds.has(userId)) {
-            const request = this.requestList.find(req => req.userIdThatYouWantToAdd === userId);
-            const invite = this.inviteList.find(inv => inv.userIdThatYouWantToAdd === userId);
+            const request = this.requestList.find(
+              (req) => req.userIdThatYouWantToAdd === userId
+            );
+            const invite = this.inviteList.find(
+              (inv) => inv.userIdThatYouWantToAdd === userId
+            );
             if (request && invite) {
               this.acceptRequest(request);
               this.declineInvite(invite);
@@ -124,10 +167,15 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
             console.log('Invite List: ', this.inviteList);
           }
         });
+        this.loadChannelName();
         console.log('Request list: ', this.requestList);
         console.log('Invite List: ', this.inviteList);
       }
     });
+  }
+
+  getChannelName(channelId: string): string {
+    return this.channeIdToChannelName[channelId] || channelId;
   }
 
   ngOnDestroy() {
@@ -209,7 +257,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
 
   private async refreshTeamMemberList() {
     if (!this.selectedTeamId) return;
-    
+
     const team = await this.backendService.getTeamById(this.selectedTeamId);
     if (team) {
       this.teamMemberList = [];
@@ -233,15 +281,19 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   private async updateMemberStatuses() {
     // Update team member statuses
     for (let i = 0; i < this.teamMemberList.length; i++) {
-      const updatedUser = await this.backendService.getUserById(this.teamMemberList[i].userId);
+      const updatedUser = await this.backendService.getUserById(
+        this.teamMemberList[i].userId
+      );
       if (updatedUser) {
         this.teamMemberList[i].status = updatedUser.status;
       }
     }
 
-    // Update chat member statuses  
+    // Update chat member statuses
     for (let i = 0; i < this.chatMemberList.length; i++) {
-      const updatedUser = await this.backendService.getUserById(this.chatMemberList[i].userId);
+      const updatedUser = await this.backendService.getUserById(
+        this.chatMemberList[i].userId
+      );
       if (updatedUser) {
         this.chatMemberList[i].status = updatedUser.status;
       }

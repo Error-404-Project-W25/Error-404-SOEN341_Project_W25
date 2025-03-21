@@ -1,5 +1,3 @@
-
-
 .container {
   font-family: Arial, Helvetica, sans-serif;
   display: flex;
@@ -7,7 +5,7 @@
   align-items: center;
   height: auto;
   width: 100%;
-  background-color: var(--pop-up-background-color);
+  background-color: var(--dark-background);
   overflow-x: hidden;
   flex-direction: column;
 }
@@ -15,7 +13,7 @@
 .h1 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 24px;
-  color: var(--pop-up-text-color);
+  color: var(--primary-text-color);
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -24,21 +22,18 @@
   font-family: Arial, Helvetica, sans-serif;
   height: auto;
   width: 400px;
-  background: linear-gradient(
-    var(--pop-up-background-color),
-    var(--pop-up-background-color)
-  )
-  padding-box,
-  linear-gradient(
-    145deg,
-    #5a5a5a, /* Lighter Grey */
-    #2c2c2c  /* Darker Grey */
-  )
-  border-box;
-  border: 2px solid var(--pop-up-border-color);
+  background: linear-gradient(var(--dark-background), var(--dark-background))
+      padding-box,
+    linear-gradient(
+        145deg,
+        #5a5a5a,
+        /* Lighter Grey */ #2c2c2c /* Darker Grey */
+      )
+      border-box;
+  border: 2px solid var(--border-color);
   padding: 32px 24px;
   font-size: 14px;
-  color: var(--pop-up-text-color);
+  color: var(--primary-text-color);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -67,11 +62,11 @@
   align-items: center;
   justify-content: center;
   font-family: inherit;
-  color: var(--pop-up-secondary-text-color);
+  color: var(--primary-text-color);
   font-weight: 600;
   width: 40%;
-  background: var(--pop-up-button-background);
-  border: 1px solid var(--pop-up-border-color);
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
   padding: 12px 16px;
   font-size: inherit;
   cursor: pointer;
@@ -80,16 +75,16 @@
 }
 
 .dialog-container button:hover {
-  background-color: var(--pop-up-highlight-color);
-  border-color: var(--pop-up-highlight-color);
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 /* Delete Button */
 .dialog-container .delete-btn {
-  background: var(--pop-up-delete-button);
-  color: var(--delete-button-text);
+  background: var(--error-color);
+  color: var(--primary-text-color);
 }
 
 .dialog-container .delete-btn:hover {
-  background: var(--pop-up-delete-hover);
+  background: var(--error-color);
 }
