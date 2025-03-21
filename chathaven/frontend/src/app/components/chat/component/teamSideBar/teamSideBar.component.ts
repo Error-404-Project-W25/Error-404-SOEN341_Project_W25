@@ -243,7 +243,7 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   }
 
   // Sign out the user and navigate to the home page
-  signOut() {
+  async signOut() {
     const user = this.userService.getUser();
     const userId = user?.userId;
 
@@ -253,7 +253,7 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
 
     socket.emit('disconnectUser', { userId }); 
 
-    this.userService.logout();
+    await this.userService.logout();
     this.router.navigate(['/home']);
   }
 

@@ -302,7 +302,7 @@ export class LoginComponent implements OnInit {
           );
 
           if (user) {
-            this.userService.setUser(user);
+            await this.userService.setUser(user);
             const userId = user?.userId;
             const socket = io('http://localhost:3000', {
               query: { userId },
