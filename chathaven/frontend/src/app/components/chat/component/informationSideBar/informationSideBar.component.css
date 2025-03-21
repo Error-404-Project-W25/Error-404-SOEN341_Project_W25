@@ -252,8 +252,7 @@ h3 h4 {
 .inbox-information {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  align-items:flex-start;
   gap: 10px;
   width: 15rem;
   overflow: hidden;

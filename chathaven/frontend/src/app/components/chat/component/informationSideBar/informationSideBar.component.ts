@@ -131,6 +131,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     this.refreshList();
   }
   refreshList() {
+    this.inviteList = [];
+    this.requestList = [];
     this.backendService.getUserById(this.userId).then((user) => {
       if (user) {
         const requestUserIds = new Set(
