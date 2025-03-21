@@ -34,6 +34,7 @@ export class TeamSidebarComponent {
     private dataService: DataService
   ) {
     this.dataService.currentTeamId.subscribe((teamId) => {
+      console.log('teamId', teamId);
       this.selectedTeamId = teamId;
     });
 

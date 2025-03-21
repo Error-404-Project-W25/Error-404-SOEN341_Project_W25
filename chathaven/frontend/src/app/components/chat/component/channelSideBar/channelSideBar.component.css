@@ -11,8 +11,6 @@
   margin: 0;
   max-width: 17.5rem;
   min-width: 17.5rem;
-  padding-bottom: 10px;
-  padding-top: 7px;
   width: auto;
 }
 
@@ -29,7 +27,6 @@
   padding: 0;
   position: relative;
   width: 100%;
-  border-bottom: 2px solid var(--background-color);
 }
 
 .main > .inp {
@@ -156,7 +153,7 @@
   align-items: center;
   background-color: var(--dark-muted-color);
   border: none;
-  border-radius: 10px;
+  border-radius: 5px;
   color: var(--muted-color);
   cursor: pointer;
   display: flex;
@@ -172,7 +169,8 @@
   white-space: nowrap;
 }
 
-.channel-container:hover {
+.channel-container:hover,
+.channel-container-selected {
   background-color: var(--hover-color);
   color: var(--primary-text-color);
 }

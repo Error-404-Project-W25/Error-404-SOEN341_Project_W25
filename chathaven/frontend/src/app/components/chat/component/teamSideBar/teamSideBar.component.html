@@ -49,8 +49,9 @@
         (click)="selectTeam(team.teamId)"
         readonly
         title="Select team {{ team.teamName }}"
+        [ngClass]="{ 'team-selected': selectedTeamId === team.teamId}"
       >
-        <a href="#">{{ team.teamName.charAt(0) }}</a>
+        {{ team.teamName.charAt(0) }}
       </li>
     </ul>
   </div>
