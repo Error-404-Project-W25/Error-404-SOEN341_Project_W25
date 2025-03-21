@@ -1,7 +1,13 @@
 import { TeamCreationDialog } from '../../dialogue/create-team/create-team.dialogue';
 import { AddTeamMemberDialog } from '../../dialogue/add-member-team/add-member-team.dialogue';
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnDestroy, HostListener } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+  HostListener,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ITeam, IUser } from '@shared/interfaces';
@@ -40,6 +46,7 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     private dataService: DataService
   ) {
     this.dataService.currentTeamId.subscribe((teamId) => {
+      console.log('teamId', teamId);
       this.selectedTeamId = teamId;
     });
 
@@ -78,28 +85,35 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
       }
 
       // Only set up idle timeout if currently online and not manually set to away or offline
-      if (this.currentStatus === 'online' && !this.manuallySetAway && !this.manuallySetOffline) {
+      if (
+        this.currentStatus === 'online' &&
+        !this.manuallySetAway &&
+        !this.manuallySetOffline
+      ) {
         this.activityTimeout = setTimeout(() => {
           this.setStatus('away', false); // Automatically set to away
         }, this.IDLE_TIMEOUT);
       }
     };
 
-    ['mousemove', 'keypress', 'click', 'scroll'].forEach(event => {
+    ['mousemove', 'keypress', 'click', 'scroll'].forEach((event) => {
       window.addEventListener(event, resetTimer);
     });
 
     resetTimer();
   }
 
-  async setStatus(status: 'online' | 'away' | 'offline', isManual: boolean = true) {
+  async setStatus(
+    status: 'online' | 'away' | 'offline',
+    isManual: boolean = true
+  ) {
     console.log(`Setting status to ${status}, manual: ${isManual}`);
-    
+
     // Update manual flags FIRST, before changing currentStatus
     if (isManual) {
       console.log(`Manual status change: ${status}`);
-      this.manuallySetAway = (status === 'away');
-      this.manuallySetOffline = (status === 'offline');
+      this.manuallySetAway = status === 'away';
+      this.manuallySetOffline = status === 'offline';
     } else if (status === 'online') {
       // If auto-changing to online, don't touch manual flags
       console.log('Auto status change to online');
@@ -109,14 +123,17 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
       this.manuallySetAway = false;
       this.manuallySetOffline = false;
     }
-    
+
     console.log(`manuallySetAway: ${this.manuallySetAway}`);
     console.log(`manuallySetOffline: ${this.manuallySetOffline}`);
-    
+
     this.currentStatus = status;
     const user = this.userService.getUser();
     if (user) {
-      const success = await this.backendService.updateStatus(user.userId, status);
+      const success = await this.backendService.updateStatus(
+        user.userId,
+        status
+      );
       if (success) {
         await this.userService.updateUserStatus(status);
       }
@@ -128,9 +145,9 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     const user = this.userService.getUser();
     if (user) {
       this.currentStatus = user.status;
-      this.manuallySetAway = (user.status === 'away');
-      this.manuallySetOffline = (user.status === 'offline');
-      
+      this.manuallySetAway = user.status === 'away';
+      this.manuallySetOffline = user.status === 'offline';
+
       const invites = await Promise.all(
         user.inbox
           .filter((inbox) => inbox.type === 'invite')
@@ -144,7 +161,6 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     }
     this.refreshTeamList();
   }
-
 
   ngOnDestroy() {
     if (this.activityTimeout) {
@@ -251,21 +267,28 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
       query: { userId },
     });
 
-    socket.emit('disconnectUser', { userId }); 
+    socket.emit('disconnectUser', { userId });
 
-    await this.userService.logout();
+    this.dataService.selectTeam('');
+    this.dataService.selectChannel('');
+    this.dataService.selectConversation('');
     this.router.navigate(['/home']);
+    await this.userService.logout();
   }
 
   async closeAllMenus() {
     // Clear the main menu checkbox
-    const menuToggle = document.querySelector('.menu-toggle-checkbox') as HTMLInputElement;
+    const menuToggle = document.querySelector(
+      '.menu-toggle-checkbox'
+    ) as HTMLInputElement;
     if (menuToggle) {
       menuToggle.checked = false;
     }
 
     // Clear the status menu checkbox
-    const statusToggle = document.querySelector('.status-toggle-checkbox') as HTMLInputElement;
+    const statusToggle = document.querySelector(
+      '.status-toggle-checkbox'
+    ) as HTMLInputElement;
     if (statusToggle) {
       statusToggle.checked = false;
     }
@@ -275,10 +298,16 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   handleDocumentClick(event: MouseEvent): void {
     // Don't close if clicking within the menu containers
     const userMenuContainer = document.querySelector('.user-menu-container');
-    const statusMenuContainer = document.querySelector('.status-menu-container');
-    
-    if (userMenuContainer && !userMenuContainer.contains(event.target as Node) &&
-        statusMenuContainer && !statusMenuContainer.contains(event.target as Node)) {
+    const statusMenuContainer = document.querySelector(
+      '.status-menu-container'
+    );
+
+    if (
+      userMenuContainer &&
+      !userMenuContainer.contains(event.target as Node) &&
+      statusMenuContainer &&
+      !statusMenuContainer.contains(event.target as Node)
+    ) {
       this.closeAllMenus();
     }
   }

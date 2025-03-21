@@ -19,6 +19,8 @@ import { ChannelSidebarComponent } from './component/channelSideBar/channelSideB
 import { ChatLogComponent } from './component/chatLog/chatLog.component';
 import { InformationSidebarComponent } from './component/informationSideBar/informationSideBar.component';
 
+import { HostListener } from '@angular/core';
+
 @Component({
   selector: 'app-chat',
   standalone: true,
@@ -36,8 +38,6 @@ import { InformationSidebarComponent } from './component/informationSideBar/info
 export class ChatComponent implements OnInit, OnDestroy {
   title = 'chatHaven';
   @Output() userId!: string;
-  @Output() invite!: string;
-  @Output() request!: string;
 
   isDarkTheme = true;
   isInformationOpen = true;
@@ -53,7 +53,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private dataService: DataService
+    private dataService: DataService,
   ) {
     this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
       this.isDarkTheme = isDarkTheme;
@@ -72,7 +72,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.handleInformatonBar();
     });
   }
-
   ngOnInit() {
     // Add event listener for window resize
     window.addEventListener('resize', this.handleResize.bind(this));

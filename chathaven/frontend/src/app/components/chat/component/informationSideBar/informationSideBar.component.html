@@ -53,11 +53,14 @@
       </label>
     </div>
 
-    <div class="tab-content" *ngIf="activeTab === 'team' && !isDirectMessage">
-      <h3 style="margin-bottom: 5px">Team Information{{ teamTitle }}</h3>
-      <h4 style="margin-bottom: 5px">Description</h4>
-      <p>{{ teamDescription }}</p>
-      <h4 style="margin-bottom: 5px">Members</h4>
+    <div
+      class="tab-content"
+      *ngIf="activeTab === 'team' && !isDirectMessage"
+    >
+      <h3>Team Information{{ teamTitle }}</h3>
+      <h4>Description</h4>
+      {{ teamDescription }}
+      <h4>Members</h4>
       <div class="list">
         <ul>
           <li *ngFor="let member of teamMemberList">
@@ -101,10 +104,10 @@
     </div>
 
     <div class="tab-content" *ngIf="activeTab === 'chat'">
-      <h3 style="margin-bottom: 5px">Chat Information{{ chatTitle }}</h3>
-      <h4 style="margin-bottom: 5px">Description</h4>
+      <h3>Chat Information{{ chatTitle }}</h3>
+      <h4>Description</h4>
       {{ chatDescription }}
-      <h4 style="margin-bottom: 5px">Members</h4>
+      <h4>Members</h4>
       <div class="list">
         <ul>
           <li *ngFor="let member of chatMemberList">
@@ -141,8 +144,8 @@
     </div>
 
     <div class="tab-content" *ngIf="activeTab === 'invite' && isDirectMessage">
-      <h3 style="margin-bottom: 5px">Invite to Join Channel</h3>
-      <h4 style="margin-bottom: 5px">Invite</h4>
+      <h3>Invite to Join Channel</h3>
+      <h4>Invite</h4>
       <div class="list">
         <ul>
           <li *ngFor="let invite of inviteList">
@@ -176,8 +179,8 @@
       class="tab-content"
       *ngIf="activeTab === 'request' && !isDirectMessage"
     >
-      <h3 style="margin-bottom: 5px">Request to Join Channel</h3>
-      <h4 style="margin-bottom: 5px">Request</h4>
+      <h3>Request to Join Channel</h3>
+      <h4>Request</h4>
       <div class="list">
         <ul>
           <li *ngFor="let request of requestList">
