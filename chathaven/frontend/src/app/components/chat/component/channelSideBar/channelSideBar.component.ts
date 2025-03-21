@@ -103,7 +103,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     // Fetch all channels without filtering by membership
     for (const channelId of channelListId) {
       const channel = await this.backendService.getChannelById(
-        this.selectedTeamId!,
         channelId
       );
 
@@ -213,7 +212,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   selectChannel(channelId: string): void {
     this.backendService
-      .getChannelById(this.selectedTeamId!, channelId)
+      .getChannelById(channelId)
       .then((channel) => {
         if (channel && channel.members.includes(this.userId || '')) {
           this.selectedChannelId = channel.channelId;

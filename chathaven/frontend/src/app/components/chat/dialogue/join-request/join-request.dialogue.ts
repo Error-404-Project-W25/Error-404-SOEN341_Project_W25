@@ -33,7 +33,7 @@ export class JoinRequestDialog {
       this.isDarkTheme = theme; // Set the theme based on the injected data
     });
     this.backendService
-      .getChannelById(this.selectedTeamId, this.selectedChannelId)
+      .getChannelById(this.selectedChannelId)
       .then((channel) => {
         if (channel) {
           this.channelTitle = channel.name; // Set the channel title
