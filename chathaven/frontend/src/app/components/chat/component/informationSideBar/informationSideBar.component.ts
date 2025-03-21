@@ -82,14 +82,16 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       if (updatedUser) {
         // Update status in team member list
         const teamMemberIndex = this.teamMemberList.findIndex(m => m.userId === updatedUser.userId);
-        if (teamMemberIndex !== -1 && (status === 'online' || status === 'away' || status === 'offline')) {
+        if (teamMemberIndex !== -1) {
           this.teamMemberList[teamMemberIndex].status = status as 'online' | 'away' | 'offline';
+          this.teamMemberList[teamMemberIndex].lastSeen = updatedUser.lastSeen;
         }
 
         // Update status in chat member list
         const chatMemberIndex = this.chatMemberList.findIndex(m => m.userId === updatedUser.userId);
-        if (chatMemberIndex !== -1 && (status === 'online' || status === 'away' || status === 'offline')) {
+        if (chatMemberIndex !== -1) {
           this.chatMemberList[chatMemberIndex].status = status as 'online' | 'away' | 'offline';
+          this.chatMemberList[chatMemberIndex].lastSeen = updatedUser.lastSeen;
         }
       }
     });

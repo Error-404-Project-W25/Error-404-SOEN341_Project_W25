@@ -196,6 +196,10 @@ export const updateStatus = async (req: Request, res: Response) => {
       return;
     }
 
+    if (status === 'offline') {
+      user.lastSeen = new Date();
+    }
+
     user.status = status;
     await user.save();
 
@@ -216,37 +220,3 @@ export const updateStatus = async (req: Request, res: Response) => {
   }
 };
 
-
-/**
- * Get the last seen time of a user
- * @param req userId
- * @param res returns the last seen time as a string -- Last Seen: 2 minutes ago
- */
-
-export const getLastSeenString = async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.body;
-
-    const user = await User.findOne({ userId });
-    if (!user) {
-      res.status(404).json({ error: 'User not found' });
-      return;
-    }
-
-    // Format last seen time
-    const lastSeenTime = user.lastSeen;
-    const lastSeenAgo = moment(lastSeenTime).fromNow(); // e.g., "2 minutes ago"
-
-    res.json({
-      success: true,
-      lastSeenString: ("Last seen " + lastSeenAgo)
-    });
-  } catch (error: any) {
-    console.error('Failed to get last seen', error.message);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to get last seen',
-      details: error.message,
-    });
-  }
-};
