@@ -35,9 +35,8 @@ export class DeleteMessageDialog {
     this.dataService.currentChannelId.subscribe((channelId) => {
       this.selectedChannelId = channelId;
     });
-    // this.selectedTeamId = data.teamId; // Set the team ID based on the injected data
     // this.selectedChannelId = data.channelId; // Set the channel ID based on the injected data
-    this.checkIfCreator(this.selectedTeamId, this.selectedChannelId); // Check if the user is the creator of the channel
+    this.checkIfCreator(this.selectedChannelId); // Check if the user is the creator of the channel
     this.dataService.isDarkTheme.subscribe((theme) => {
       this.isDarkTheme = theme; // Set the theme based on the injected data
     });
@@ -45,26 +44,21 @@ export class DeleteMessageDialog {
 
   //checking if its the creator of the channel
   private async checkIfCreator(
-    teamId: string,
     channelId: string
   ): Promise<void> {
-    const currentUser = this.userService.getUser(); // Get current user
+    const currentUser = this.userService.getUser(); 
     if (!currentUser) {
       console.error('User not found');
       return;
     }
 
     try {
-      // Step 1: Retrieve the channel to get its teamId
       const channel = await this.backendService.getChannelById(
-        teamId,
         channelId
-      ); // Pass currentUser.userId instead of teamId
+      ); 
 
       if (channel) {
-        channel.members[0] === currentUser.userId
-          ? (this.isCreator = true)
-          : (this.isCreator = false);
+        this.isCreator = channel.members[0] === currentUser.userId;
       }
     } catch (error) {
       console.error('Error checking channel creator:', error);

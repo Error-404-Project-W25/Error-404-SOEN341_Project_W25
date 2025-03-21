@@ -78,7 +78,6 @@ export class ChannelCreationDialog {
 
       const newChannel: IChannel | undefined =
         await this.backendService.getChannelById(
-          this.selectedTeamId,
           channelId
         );
 

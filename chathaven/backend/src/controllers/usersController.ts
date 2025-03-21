@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { User } from '../models/userModel';
 import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
 import { Team } from '../models/teamsModel';
-import { Channel } from '../models/channelsModel';
+import moment from 'moment';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
 
@@ -196,6 +196,10 @@ export const updateStatus = async (req: Request, res: Response) => {
       return;
     }
 
+    if (status === 'offline') {
+      user.lastSeen = new Date();
+    }
+
     user.status = status;
     await user.save();
 
@@ -215,3 +219,4 @@ export const updateStatus = async (req: Request, res: Response) => {
     console.error('Failed to update status', errorMessage);
   }
 };
+

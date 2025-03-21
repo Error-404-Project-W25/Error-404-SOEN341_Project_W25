@@ -56,8 +56,15 @@ export class UserService {
 
   async updateUserStatus(status: 'online' | 'away' | 'offline') {
     const currentUser = this.getUser();
+    
     if (currentUser) {
       currentUser.status = status;
+
+      if (status === 'offline') {
+        const lastSeen: Date = new Date((await this.backendService.getUserById(currentUser.userId))?.lastSeen || '');
+        currentUser.lastSeen = lastSeen;
+      }
+
       this.userSubject.next(currentUser);
       this.userStatusSubject.next(status);
     }

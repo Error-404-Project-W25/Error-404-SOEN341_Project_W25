@@ -279,7 +279,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       this.selectedChannelId = channel;
       if (this.selectedChannelId) {
         this.backendService
-          .getChannelById(this.selectedTeamId, this.selectedChannelId)
+          .getChannelById(this.selectedChannelId)
           .then((channel) => {
             console.log('Channel:', channel);
             this.chatTitle = channel?.name || '';

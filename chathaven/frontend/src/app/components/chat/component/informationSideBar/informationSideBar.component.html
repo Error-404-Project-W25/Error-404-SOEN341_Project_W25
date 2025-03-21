@@ -71,8 +71,11 @@
                   <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
                   <div class="member-name">{{ member.username }}</div>
                 </div>
-                <div class="member-last-seen" *ngIf="member.status !== 'online'">
+                <div class="member-last-seen" *ngIf="member.status == 'offline'">
                   Last seen: {{ member.lastSeen | date:'short' }}
+                </div>
+                <div class="member-last-seen" *ngIf="member.status == 'away'">
+                  Away
                 </div>
                 <div class="member-last-seen" *ngIf="member.status == 'online'">
                   Online
@@ -107,8 +110,11 @@
                   <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
                   <div class="member-name">{{ member.username }}</div>
                 </div>
-                <div class="member-last-seen" *ngIf="member.status !== 'online'">
+                <div class="member-last-seen" *ngIf="member.status == 'offline'">
                   Last seen: {{ member.lastSeen | date:'short' }}
+                </div>
+                <div class="member-last-seen" *ngIf="member.status == 'away'">
+                  Away
                 </div>
                 <div class="member-last-seen" *ngIf="member.status == 'online'">
                 Online
