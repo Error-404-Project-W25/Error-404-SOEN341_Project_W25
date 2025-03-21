@@ -186,7 +186,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       this.selectedChannelId = channel;
       if (this.selectedChannelId) {
         this.backendService
-          .getChannelById(this.selectedTeamId!, this.selectedChannelId!)
+          .getChannelById(this.selectedChannelId!)
           .then((channel) => {
             if (channel) {
               this.chatTitle = ' :' + channel.name;

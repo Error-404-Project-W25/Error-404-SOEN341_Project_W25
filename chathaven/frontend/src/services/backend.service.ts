@@ -300,10 +300,7 @@ export class BackendService {
     return false;
   }
 
-  async getChannelById(
-    teamId: string,
-    channelId: string
-  ): Promise<IChannel | undefined> {
+  async getChannelById(channelId: string): Promise<IChannel | undefined> {
     try {
       const response = await firstValueFrom(
         this.http.post<{
@@ -311,7 +308,6 @@ export class BackendService {
           error?: string;
           details?: string;
         }>(`${this.backendURL}/channels/getChannelById`, {
-          teamId,
           channelId,
         })
       );
