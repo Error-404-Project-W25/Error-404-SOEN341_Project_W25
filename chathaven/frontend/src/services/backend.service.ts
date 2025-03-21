@@ -561,27 +561,6 @@ export class BackendService {
       return undefined;
     }
   }
-
-  async ping (userId: string): Promise<Boolean> {
-    try {
-      const response = await firstValueFrom(
-        this.http.post<{ success: boolean; error?: string }>(
-          `${this.backendURL}/ping`,
-          { userId }
-        )
-      );
-
-      if (response.success) {
-        return true;
-      } else {
-        console.error('Server error:', response.error);
-        return false;
-      }
-    } catch (error) {
-      console.error('Error pinging server:', error);
-      return false;
-    }
-  }
  
   async getLastSeenString(userId: string): Promise<string | undefined> {
     try {

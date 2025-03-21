@@ -4,7 +4,6 @@ import { Request, Response } from 'express';
 import { User } from '../models/userModel';
 import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
 import { Team } from '../models/teamsModel';
-import { connectedUsers } from '../app';
 import moment from 'moment';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
@@ -217,47 +216,7 @@ export const updateStatus = async (req: Request, res: Response) => {
   }
 };
 
-export const ping = async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.body;
 
-    // Check if the userId exists in the connected users map
-    if (connectedUsers.has(userId)) {
-      // User is connected, update the lastSeen timestamp
-      const isConnected = true;
-      const user = await User.findOne({ userId });
-
-      if (!user) {
-        res.status(404).json({ error: 'User not found' });
-        return;
-      }
-
-      // Update the lastSeen timestamp
-      user.lastSeen = new Date();
-      await user.save();
-
-      res.json({
-        success: true,
-        message: isConnected ? 'User is active' : 'User is disconnected',
-        lastSeen: user.lastSeen,
-      });
-    }
-    else {
-      // User is not connected
-      res.json({
-        success: true,
-        message: 'User is disconnected',
-      });
-    }
-    } catch (error: any) {
-      console.error('Failed to ping user', error.message);
-      res.status(500).json({
-        success: false,
-        error: 'Failed to ping user',
-        details: error.message,
-      });
-    }
-  };
 /**
  * Get the last seen time of a user
  * @param req userId

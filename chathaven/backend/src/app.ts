@@ -16,6 +16,7 @@ import inboxRoutes from './routes/inboxRoutes';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { sendMessage, getMessages } from './controllers/messagesController';
+import { User } from './models/userModel';
 // import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
@@ -39,6 +40,12 @@ io.on('connection', (socket) => {
   if (userId) {
     connectedUsers.set(userId, socket.id); // Map the userId to their socketId
     console.log(`User ${userId} connected with socket id: ${socket.id}`);
+    User.findOneAndUpdate(
+      { userId },
+      { 
+        status: 'online'
+      }
+    ).exec();
   } else {
     console.log(`User connected without an ID: ${socket.id}`);
   }
@@ -47,6 +54,13 @@ io.on('connection', (socket) => {
   socket.on('disconnectUser', ({ userId }) => {
     if (userId) {
       connectedUsers.delete(userId); // Remove userId from the Map
+      User.findOneAndUpdate(
+        { userId },
+        { 
+          status: 'online',
+          lastSeen: new Date()
+        }
+      ).exec();
       console.log(`User ${userId} disconnected via sign-out`);
     }
   });
@@ -55,6 +69,13 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     if (userId) {
       connectedUsers.delete(userId); // Remove userId from the Map
+      User.findOneAndUpdate(
+        { userId },
+        { 
+          status: 'online',
+          lastSeen: new Date()
+        }
+      ).exec();
       console.log(`User ${userId} disconnected`);
     }
   });
