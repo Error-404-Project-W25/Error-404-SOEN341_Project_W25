@@ -43,8 +43,10 @@ io.on('connection', (socket) => {
     User.findOneAndUpdate(
       { userId },
       { 
-        status: 'online'
-      }
+        status: 'online',
+        lastSeen: new Date()
+      },
+      { new: true }
     ).exec();
   } else {
     console.log(`User connected without an ID: ${socket.id}`);
@@ -66,13 +68,13 @@ io.on('connection', (socket) => {
   });
 
   // Handle automatic disconnection
-  socket.on('disconnect', () => {
+  socket.on('disconnect', async () => {
     if (userId) {
       connectedUsers.delete(userId); // Remove userId from the Map
-      User.findOneAndUpdate(
+      await User.findOneAndUpdate(
         { userId },
         { 
-          status: 'online',
+          status: 'offline',
           lastSeen: new Date()
         }
       ).exec();
