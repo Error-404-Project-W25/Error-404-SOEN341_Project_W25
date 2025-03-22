@@ -53,7 +53,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         try {
           const team = await this.backendService.getTeamById(teamId);
           if (team) {
-            this.teamTitle = ' :' + team.teamName;
+            this.teamTitle = ': ' + team.teamName;
             this.teamDescription = team.description;
             this.teamMemberList = [];
             for (const memberId of team.members) {
@@ -239,7 +239,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
           .getChannelById(this.selectedChannelId!)
           .then((channel) => {
             if (channel) {
-              this.chatTitle = ' :' + channel.name;
+              this.chatTitle = ': ' + channel.name;
               this.chatDescription = channel.description;
               this.chatMemberList = [];
               for (const memberId of channel.members) {
