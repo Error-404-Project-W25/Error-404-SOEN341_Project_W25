@@ -2,9 +2,8 @@ import { IUser } from '@shared/interfaces';
 import { AuthStatus } from '../../types/authentication.types';
 import { Request, Response } from 'express';
 import { User } from '../models/userModel';
-import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
+import { signInUser, signOutUser, signUpUser } from '../utils/authenticateUtils';
 import { Team } from '../models/teamsModel';
-import moment from 'moment';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
 
