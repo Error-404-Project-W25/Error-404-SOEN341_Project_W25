@@ -333,34 +333,39 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   // Function to extract URLs from a text
-extractUrls(text: string): string[] {
-  const urlPattern = /https?:\/\/[^\s]+/g;
-  return text.match(urlPattern) || [];
-}
-
-// Function to split the text into parts (URLs and non-URLs)
-splitTextIntoSegments(text: string): { type: 'text' | 'url'; value: string }[] {
-  const urlPattern = /https?:\/\/[^\s]+/g;
-  let segments: { type: 'text' | 'url'; value: string }[] = [];
-  let lastIndex = 0;
-
-  text.replace(urlPattern, (match, index) => {
-    // Push non-URL text
-    if (index > lastIndex) {
-      segments.push({ type: 'text', value: text.substring(lastIndex, index) });
-    }
-    // Push the URL itself
-    segments.push({ type: 'url', value: match });
-    lastIndex = index + match.length;
-    return match;
-  });
-
-  // Push remaining text after the last URL
-  if (lastIndex < text.length) {
-    segments.push({ type: 'text', value: text.substring(lastIndex) });
+  extractUrls(text: string): string[] {
+    const urlPattern = /https?:\/\/[^\s]+/g;
+    return text.match(urlPattern) || [];
   }
 
-  return segments;
-}
+  // Function to split the text into parts (URLs and non-URLs)
+  splitTextIntoSegments(
+    text: string
+  ): { type: 'text' | 'url'; value: string }[] {
+    const urlPattern =
+      /(?:https?:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
+    let segments: { type: 'text' | 'url'; value: string }[] = [];
+    let lastIndex = 0;
 
+    text.replace(urlPattern, (match, index) => {
+      // Push non-URL text
+      if (index > lastIndex) {
+        segments.push({
+          type: 'text',
+          value: text.substring(lastIndex, index),
+        });
+      }
+      // Push the URL itself
+      segments.push({ type: 'url', value: match });
+      lastIndex = index + match.length;
+      return match;
+    });
+
+    // Push remaining text after the last URL
+    if (lastIndex < text.length) {
+      segments.push({ type: 'text', value: text.substring(lastIndex) });
+    }
+
+    return segments;
+  }
 }
