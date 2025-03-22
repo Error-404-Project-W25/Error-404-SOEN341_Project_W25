@@ -265,20 +265,20 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
         const socket = io('http://localhost:3000', {
           query: { userId: user.userId },
         });
-        
+
         // Emit disconnect event
         socket.emit('disconnectUser', { userId: user.userId });
         socket.disconnect();
       }
-  
+
       // Clear data and navigate before logout
       this.dataService.selectTeam('');
       this.dataService.selectChannel('');
       this.dataService.selectConversation('');
-      
+
       // Perform logout
       await this.userService.logout();
-      
+
       // Navigate to home
       this.router.navigate(['/home']);
     } catch (error) {
