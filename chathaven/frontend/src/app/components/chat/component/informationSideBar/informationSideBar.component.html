@@ -57,7 +57,7 @@
       class="tab-content"
       *ngIf="activeTab === 'team' && !isDirectMessage"
     >
-      <h3>Team Information{{ teamTitle }}</h3>
+      <h3>Team Information {{teamTitle }}</h3>
       <h4>Description</h4>
       {{ teamDescription }}
       <h4>Members</h4>
@@ -104,7 +104,7 @@
     </div>
 
     <div class="tab-content" *ngIf="activeTab === 'chat'">
-      <h3>Chat Information{{ chatTitle }}</h3>
+      <h3>Chat Information {{ chatTitle }}</h3>
       <h4>Description</h4>
       {{ chatDescription }}
       <h4>Members</h4>
