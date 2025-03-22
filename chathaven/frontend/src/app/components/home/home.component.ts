@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { GeminiService } from '@services/gemini.service';
 import { CommonModule } from '@angular/common'; // Add this import
 import { FormsModule } from '@angular/forms'; // Add this import
 import { UserService } from '@services/user.service';
+import { BackendService } from '@services/backend.service'; // Add this import
 
 @Component({
   selector: 'app-home',
@@ -22,7 +22,7 @@ export class HomeComponent {
   constructor(
     private router: Router,
     private userService: UserService,
-    private geminiService: GeminiService
+    private backendService: BackendService // private geminiService: GeminiService
   ) {}
 
   // On load / reload, check if user is logged in and go to chat if necessary
@@ -51,23 +51,24 @@ export class HomeComponent {
   sendMessage() {
     if (this.userMessage.trim()) {
       this.messages.push({ type: 'outgoing', content: this.userMessage });
-
-      this.geminiService.generateText(this.userMessage).subscribe({
-        next: (response) => {
+      this.backendService
+        .promptChatbot(this.userMessage)
+        .then((response) => {
           console.log('API Response:', response);
-          const aiResponse = response.candidates?.[0]?.content?.parts?.[0]?.text || "I'm here to assist with ChatHaven-related questions only.";
+          const aiResponse =
+            response ||
+            "I'm here to assist with ChatHaven-related questions only.";
           this.messages.push({ type: 'incoming', content: aiResponse });
-        },
-        error: (err) => {
+        })
+        .catch((err) => {
           console.error('API Error:', err);
           console.error('Error Details:', err.error); // Log more details
-          this.messages.push({ type: 'incoming', content: '⚠️ API Error: Unable to fetch response' });
-        }
-      });
-
+          this.messages.push({
+            type: 'incoming',
+            content: '⚠️ API Error: Unable to fetch response',
+          });
+        });
       this.userMessage = '';
     }
   }
-
-
 }
