@@ -2,8 +2,14 @@
   <div class="card" id="chatCard" style="display: none">
     <div class="chat-header">ChatHaven Bot</div>
     <div class="chat-window">
-      <ul class="message-list">
-        <div *ngFor="let msg of messages" [ngClass]="{'message incoming': msg.type === 'incoming', 'message outgoing': msg.type === 'outgoing'}">
+      <ul class="message-list" id="messageList">
+        <div
+          *ngFor="let msg of messages"
+          [ngClass]="{
+            'message incoming': msg.type === 'incoming',
+            'message outgoing': msg.type === 'outgoing'
+          }"
+        >
           <p>{{ msg.content }}</p>
         </div>
       </ul>
