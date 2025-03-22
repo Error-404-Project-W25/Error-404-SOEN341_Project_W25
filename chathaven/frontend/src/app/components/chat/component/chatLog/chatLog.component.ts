@@ -333,28 +333,34 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   // Function to extract URLs from a text
-  extractUrls(text: string): string[] {
-    const urlPattern = /https?:\/\/[^\s]+/g;
-    return text.trim().match(urlPattern) || [];
+extractUrls(text: string): string[] {
+  const urlPattern = /https?:\/\/[^\s]+/g;
+  return text.match(urlPattern) || [];
+}
+
+// Function to split the text into parts (URLs and non-URLs)
+splitTextIntoSegments(text: string): { type: 'text' | 'url'; value: string }[] {
+  const urlPattern = /https?:\/\/[^\s]+/g;
+  let segments: { type: 'text' | 'url'; value: string }[] = [];
+  let lastIndex = 0;
+
+  text.replace(urlPattern, (match, index) => {
+    // Push non-URL text
+    if (index > lastIndex) {
+      segments.push({ type: 'text', value: text.substring(lastIndex, index) });
+    }
+    // Push the URL itself
+    segments.push({ type: 'url', value: match });
+    lastIndex = index + match.length;
+    return match;
+  });
+
+  // Push remaining text after the last URL
+  if (lastIndex < text.length) {
+    segments.push({ type: 'text', value: text.substring(lastIndex) });
   }
 
-  // Add this method to the component class
-  public removeUrls(content: string): string {
-    return content.replace(/https?:\/\/[^\s]+/g, '');
-  }
+  return segments;
+}
 
-  // Function to check if a string is a valid URL
-  isUrl(text: string): boolean {
-    const urlPattern = new RegExp(
-      '^(https?:\\/\\/)?' + // Optional protocol
-        '((([a-zA-Z\\d]([a-zA-Z\\d-]*[a-zA-Z\\d])*)\\.)+[a-zA-Z]{2,}|' + // Domain name
-        '(\\d{1,3}\\.){3}\\d{1,3})' + // OR IPv4 address
-        '(\\:\\d+)?' + // Optional port
-        '(\\/[-a-zA-Z\\d%_.~+]*)*' + // Path
-        '(\\?[;&a-zA-Z\\d%_.~+=-]*)?' + // Query string
-        '(\\#[-a-zA-Z\\d_]*)?$', // Fragment
-      'i'
-    );
-    return urlPattern.test(text);
-  }
 }
