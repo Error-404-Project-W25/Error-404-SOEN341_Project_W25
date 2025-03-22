@@ -15,6 +15,7 @@ import {
   UserSignInData,
   UserAuthResponse,
 } from '@shared/user-auth.types';
+import { io } from 'socket.io-client';
 
 @Component({
   selector: 'app-login',
@@ -260,6 +261,13 @@ export class LoginComponent implements OnInit {
           );
           if (user) {
             this.userService.setUser(user);
+            const userId = user?.userId;
+            const socket = io('http://localhost:3000', {
+              query: { userId },
+            });
+            socket.on('connect', () => {
+              console.log('Connected to socket server');
+            });
             this.goToChat();
           }
         } else if (response.error) {
@@ -294,7 +302,12 @@ export class LoginComponent implements OnInit {
           );
 
           if (user) {
-            this.userService.setUser(user);
+            await this.userService.setUser(user);
+            const userId = user?.userId;
+            const socket = io('http://localhost:3000', {
+              query: { userId },
+            });
+            console.log('Connected to socket server');
             this.goToChat();
           }
         } else if (response.error) {

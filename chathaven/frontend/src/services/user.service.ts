@@ -9,12 +9,23 @@ import { BackendService } from './backend.service';
 export class UserService {
   private userSubject = new BehaviorSubject<IUser | undefined>(undefined);
   user$: Observable<IUser | undefined> = this.userSubject.asObservable();
+  
+  private userStatusSubject = new BehaviorSubject<string>('online');
+  userStatus$ = this.userStatusSubject.asObservable();
 
   constructor(private backendService: BackendService) {}
 
-  setUser(user: IUser) {
-    this.userSubject.next(user);
+  async setUser(user: IUser) {
+
     localStorage.setItem('currentUserUID', user.userId);
+
+    const success = await this.backendService.updateStatus(user.userId, 'online');
+    if (success) {
+      user.status = 'online';
+    }
+    
+    this.userSubject.next(user);
+    this.userStatusSubject.next('online');
   }
 
   getUser(): IUser | undefined {
@@ -31,7 +42,8 @@ export class UserService {
         localStorage.removeItem('currentUserUID');
         return false;
       }
-      this.setUser(user);
+
+      await this.setUser(user);
     }
     return true;
   }
@@ -42,9 +54,31 @@ export class UserService {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  logout() {
+  async updateUserStatus(status: 'online' | 'away' | 'offline') {
+    const currentUser = this.getUser();
+    
+    if (currentUser) {
+      currentUser.status = status;
+
+      if (status === 'offline') {
+        const lastSeen: Date = new Date((await this.backendService.getUserById(currentUser.userId))?.lastSeen || '');
+        currentUser.lastSeen = lastSeen;
+      }
+
+      this.userSubject.next(currentUser);
+      this.userStatusSubject.next(status);
+    }
+  }
+
+  async logout() {
+    const currentUser = this.getUser();
+    if (currentUser) {
+      await this.backendService.updateStatus(currentUser.userId, 'offline');
+      await this.updateUserStatus('offline');
+    }
+    
     this.userSubject.next(undefined);
     localStorage.clear();
-    this.backendService.logoutUser();
+    await this.backendService.logoutUser();
   }
 }

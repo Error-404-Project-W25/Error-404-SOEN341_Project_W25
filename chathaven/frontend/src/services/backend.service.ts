@@ -115,6 +115,26 @@ export class BackendService {
     return undefined;
   }
 
+  async updateStatus(userId: string, status: string): Promise<boolean> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ success: boolean; error?: string }>(
+          `${this.backendURL}/users/status`,
+          { userId, status }
+        )
+      );
+
+      if (response.success) {
+        return true;
+      } else {
+        console.error(response.error);
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+    return false;
+  }
+
   //////////////////////////// TEAMS ////////////////////////////
 
   // Get all teams of which the user is a member
@@ -280,10 +300,7 @@ export class BackendService {
     return false;
   }
 
-  async getChannelById(
-    teamId: string,
-    channelId: string
-  ): Promise<IChannel | undefined> {
+  async getChannelById(channelId: string): Promise<IChannel | undefined> {
     try {
       const response = await firstValueFrom(
         this.http.post<{
@@ -291,7 +308,6 @@ export class BackendService {
           error?: string;
           details?: string;
         }>(`${this.backendURL}/channels/getChannelById`, {
-          teamId,
           channelId,
         })
       );
@@ -541,4 +557,28 @@ export class BackendService {
       return undefined;
     }
   }
+ 
+  async getLastSeenString(userId: string): Promise<string | undefined> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ lastSeen?: string; error?: string }>(
+          `${this.backendURL}/users/lastSeen`,
+          { userId }
+        )
+      );
+
+      if (response.lastSeen) {
+        return response.lastSeen;
+      } else {
+        console.error(response.error);
+      }
+    } catch (error) {
+      console.error('Error getting last seen string:', error);
+    }
+    return undefined;
+  }
 }
+
+
+
+

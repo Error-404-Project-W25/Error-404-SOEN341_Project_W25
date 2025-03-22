@@ -221,22 +221,16 @@ export const addUserToChannel = async (
 
 /**
  * Get a channel by its ID
- * @param req teamId, channelId
+ * @param req channelId
  * @param res IChannel object
  */
 export const getChannelById = async (req: Request, res: Response) => {
-  const { teamId, channelId } = req.body;
-  if (!teamId || !channelId) {
+  const { channelId } = req.body;
+  if (!channelId) {
     res.status(400).json({ error: 'Missing required fields' });
     return;
   }
   try {
-    const team = await Team.findOne({ teamId });
-    if (!team) {
-      res.status(404).json({ error: 'Team not found' });
-      return;
-    }
-
     const channel: IChannel | null | undefined = await Channel.findOne({
       channelId,
     });
@@ -247,16 +241,10 @@ export const getChannelById = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({ channel });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res
-        .status(500)
-        .json({ error: 'Failed to get channel', details: error.message });
-    } else {
-      res
-        .status(500)
-        .json({ error: 'Failed to get channel', details: 'Unknown error' });
-    }
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ error: 'Failed to get channel', details: error.message });
   }
 };
 
