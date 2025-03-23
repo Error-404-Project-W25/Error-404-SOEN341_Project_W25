@@ -258,7 +258,6 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Modify the signOut function:
   async signOut() {
     try {
       const user = this.userService.getUser();
