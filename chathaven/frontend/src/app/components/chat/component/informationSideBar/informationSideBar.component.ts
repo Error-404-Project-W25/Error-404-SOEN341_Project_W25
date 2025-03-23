@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
 export class InformationSidebarComponent implements OnInit, OnDestroy {
-  @Input() userId: string = '';
+  @Input() loginUser: IUser | undefined = undefined;
 
   selectedTeamId: string | null = null;
   selectedChannelId: string | null = null;
@@ -47,129 +47,140 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     private backendService: BackendService,
     private dataService: DataService
   ) {
+    this.subscribeToTeamId();
+    this.subscribeToDirectMessage();
+    this.subscribeToUserStatus();
+  }
+
+  private subscribeToTeamId() {
     this.dataService.currentTeamId.subscribe(async (teamId) => {
       if (teamId) {
         this.selectedTeamId = teamId;
-        try {
-          const team = await this.backendService.getTeamById(teamId);
-          if (team) {
-            this.teamTitle = ': ' + team.teamName;
-            this.teamDescription = team.description;
-            this.teamMemberList = [];
-            for (const memberId of team.members) {
-              const user = await this.backendService.getUserById(memberId);
-              if (user) {
-                this.teamMemberList.push(user);
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Error refreshing team member list:', error);
-        }
+        await this.refreshTeamData(teamId);
       }
     });
+  }
 
+  private async refreshTeamData(teamId: string) {
+    try {
+      const team = await this.backendService.getTeamById(teamId);
+      if (team) {
+        this.teamTitle = ': ' + team.teamName;
+        this.teamDescription = team.description;
+        this.teamMemberList = await this.getMembersByIds(team.members);
+      }
+    } catch (error) {
+      console.error('Error refreshing team member list:', error);
+    }
+  }
+
+  private async getMembersByIds(memberIds: string[]): Promise<IUser[]> {
+    const members: IUser[] = [];
+    for (const memberId of memberIds) {
+      const user = await this.backendService.getUserById(memberId);
+      if (user) {
+        members.push(user);
+      }
+    }
+    return members;
+  }
+
+  private subscribeToDirectMessage() {
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
-      if (this.isDirectMessage) {
-        this.handleDirectMessage();
-      } else {
-        this.handleChannelMessage();
-      }
+      isDirectMessage
+        ? this.handleDirectMessage()
+        : this.handleChannelMessage();
     });
+  }
 
+  private subscribeToUserStatus() {
     this.statusSubscription = this.userService.userStatus$.subscribe(
       async (status) => {
         const updatedUser = this.userService.getUser();
         if (updatedUser) {
-          // Update status in team member list
-          const teamMemberIndex = this.teamMemberList.findIndex(
-            (m) => m.userId === updatedUser.userId
-          );
-          if (teamMemberIndex !== -1) {
-            this.teamMemberList[teamMemberIndex].status = status as
-              | 'online'
-              | 'away'
-              | 'offline';
-            this.teamMemberList[teamMemberIndex].lastSeen =
-              updatedUser.lastSeen;
-          }
-
-          // Update status in chat member list
-          const chatMemberIndex = this.chatMemberList.findIndex(
-            (m) => m.userId === updatedUser.userId
-          );
-          if (chatMemberIndex !== -1) {
-            this.chatMemberList[chatMemberIndex].status = status as
-              | 'online'
-              | 'away'
-              | 'offline';
-            this.chatMemberList[chatMemberIndex].lastSeen =
-              updatedUser.lastSeen;
-          }
+          this.updateMemberStatus(this.teamMemberList, updatedUser, status);
+          this.updateMemberStatus(this.chatMemberList, updatedUser, status);
         }
       }
     );
+  }
+
+  private updateMemberStatus(
+    memberList: IUser[],
+    updatedUser: IUser,
+    status: string
+  ) {
+    const memberIndex = memberList.findIndex(
+      (m) => m.userId === updatedUser.userId
+    );
+    if (memberIndex !== -1) {
+      memberList[memberIndex].status = status as 'online' | 'away' | 'offline';
+      memberList[memberIndex].lastSeen = updatedUser.lastSeen;
+    }
   }
 
   async loadChannelName(): Promise<void> {
     const uniqueChannelIds = [
       ...new Set(this.inviteList.map((invite) => invite.channelId)),
     ];
-    console.log('Unique Channel IDs: ', uniqueChannelIds);
-
     for (const channelId of uniqueChannelIds) {
-      await this.backendService.getChannelById(channelId).then((channel) => {
-        if (channel) {
-          this.channeIdToChannelName[channelId] = channel.name;
-        }
-      });
+      const channel = await this.backendService.getChannelById(channelId);
+      if (channel) {
+        this.channeIdToChannelName[channelId] = channel.name;
+      }
     }
   }
 
   ngOnInit() {
+    this.userService.user$.toPromise().then((user) => {
+      this.loginUser = user;
+      if (!this.loginUser) {
+        console.error('User not found');
+      }
+    });
     this.refreshList();
   }
+
   refreshList() {
-    setTimeout(() => {
-      console.log('Waited for 5 seconds');
-    }, 5000);
     this.requestList = [];
     this.inviteList = [];
-    this.backendService.getUserById(this.userId).then((user) => {
-      if (user) {
-        const requestUserIds = new Set(
-          this.requestList.map((req) => req.userIdThatYouWantToAdd)
+    if (this.loginUser) {
+      this.populateInboxLists();
+      this.loadChannelName();
+    }
+  }
+
+  private populateInboxLists() {
+    this.loginUser!.inbox.forEach((inbox) => {
+      if (inbox.type === 'request') {
+        this.requestList.push(inbox);
+      } else if (inbox.type === 'invite') {
+        this.inviteList.push(inbox);
+      }
+    });
+    this.handleDuplicateRequestsAndInvites();
+  }
+
+  private handleDuplicateRequestsAndInvites() {
+    const requestUserIds = new Set(
+      this.requestList.map((req) => req.userIdThatYouWantToAdd)
+    );
+    const inviteUserIds = new Set(
+      this.inviteList.map((inv) => inv.userIdThatYouWantToAdd)
+    );
+    requestUserIds.forEach((userId) => {
+      if (inviteUserIds.has(userId)) {
+        const request = this.requestList.find(
+          (req) => req.userIdThatYouWantToAdd === userId
         );
-        const inviteUserIds = new Set(
-          this.inviteList.map((inv) => inv.userIdThatYouWantToAdd)
+        const invite = this.inviteList.find(
+          (inv) => inv.userIdThatYouWantToAdd === userId
         );
-        requestUserIds.forEach((userId) => {
-          if (inviteUserIds.has(userId)) {
-            const request = this.requestList.find(
-              (req) => req.userIdThatYouWantToAdd === userId
-            );
-            const invite = this.inviteList.find(
-              (inv) => inv.userIdThatYouWantToAdd === userId
-            );
-            if (request && invite) {
-              this.acceptRequest(request);
-              this.declineInvite(invite);
-            }
-          }
-        });
-        user.inbox.forEach(async (inbox) => {
-          if (inbox.type === 'request') {
-            this.requestList.push(inbox);
-            console.log('Request list: ', this.requestList);
-          } else if (inbox.type === 'invite') {
-            this.inviteList.push(inbox);
-            console.log('Invite List: ', this.inviteList);
-          }
-        });
-        this.loadChannelName();
-        console.log('Request list: ', this.requestList);
-        console.log('Invite List: ', this.inviteList);
+        if (request && invite) {
+          this.acceptRequest(request);
+          this.declineInvite(invite);
+        }
       }
     });
   }
@@ -179,17 +190,16 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Add to existing ngOnDestroy
     if (this.statusSubscription) {
       this.statusSubscription.unsubscribe();
     }
   }
 
   async createCoversation(memberId: string) {
-    const sender = await this.backendService.getUserById(this.userId);
+    const sender = this.loginUser;
     const receiver = await this.backendService.getUserById(memberId);
-    const conversationName = `${sender?.username}, ${receiver?.username}`;
     if (sender && receiver?.userId) {
+      const conversationName = `${sender.username}, ${receiver.username}`;
       const conversationId = await this.backendService.createDirectMessages(
         conversationName,
         sender.userId,
@@ -208,105 +218,51 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   private handleDirectMessage() {
     this.dataService.currentConversationId.subscribe((conversationId) => {
       this.selectedConversationId = conversationId;
-      this.backendService
-        .getConversationById(this.selectedConversationId)
-        .then((conversation) => {
-          if (conversation) {
-            this.chatTitle = '';
-            const memberNames = conversation.conversationName
-              .split(',')
-              .map((name) => name.trim());
-            this.chatDescription =
-              'Conversation between ' + memberNames.join(', ');
-            this.chatMemberList = [];
-            for (const name of memberNames) {
-              this.backendService.getUserByUsername(name).then((user) => {
-                if (user) {
-                  this.chatMemberList.push(user);
-                }
-              });
-            }
-          }
-        });
+      this.refreshConversationData(conversationId);
     });
+  }
+
+  private async refreshConversationData(conversationId: string | null) {
+    if (conversationId) {
+      const conversation = await this.backendService.getConversationById(
+        conversationId
+      );
+      if (conversation) {
+        this.chatTitle = '';
+        const memberNames = conversation.conversationName
+          .split(',')
+          .map((name) => name.trim());
+        this.chatDescription = 'Conversation between ' + memberNames.join(', ');
+        this.chatMemberList = await this.getMembersByUsernames(memberNames);
+      }
+    }
+  }
+
+  private async getMembersByUsernames(usernames: string[]): Promise<IUser[]> {
+    const members: IUser[] = [];
+    for (const username of usernames) {
+      const user = await this.backendService.getUserByUsername(username);
+      if (user) {
+        members.push(user);
+      }
+    }
+    return members;
   }
 
   private handleChannelMessage() {
-    this.dataService.currentChannelId.subscribe((channel) => {
-      this.selectedChannelId = channel;
-      if (this.selectedChannelId) {
-        this.backendService
-          .getChannelById(this.selectedChannelId!)
-          .then((channel) => {
-            if (channel) {
-              this.chatTitle = ': ' + channel.name;
-              this.chatDescription = channel.description;
-              this.chatMemberList = [];
-              for (const memberId of channel.members) {
-                this.backendService.getUserById(memberId).then((user) => {
-                  if (user) {
-                    this.chatMemberList.push(user);
-                  }
-                });
-              }
-            }
-          });
-      }
+    this.dataService.currentChannelId.subscribe((channelId) => {
+      this.selectedChannelId = channelId;
+      this.refreshChannelData(channelId);
     });
   }
 
-  private async refreshTeamMemberList() {
-    if (!this.selectedTeamId) return;
-
-    const team = await this.backendService.getTeamById(this.selectedTeamId);
-    if (team) {
-      this.teamMemberList = [];
-      for (const memberId of team.members) {
-        const user = await this.backendService.getUserById(memberId);
-        if (user) {
-          user.status = user.status || 'offline';
-          user.lastSeen = user.lastSeen || new Date();
-          this.teamMemberList.push(user);
-        }
-      }
-    }
-  }
-
-  private async refreshChatMemberList() {
-    if (this.isDirectMessage) {
-      await this.handleDirectMessage();
-    } else {
-      await this.handleChannelMessage();
-    }
-    
-    // Ensure chat member statuses are properly set
-    for (const member of this.chatMemberList) {
-      const updatedUser = await this.backendService.getUserById(member.userId);
-      if (updatedUser) {
-        member.status = updatedUser.status || 'offline';
-        member.lastSeen = updatedUser.lastSeen || new Date();
-      }
-    }
-  }
-
-  private async updateMemberStatuses() {
-    // Update team member statuses
-    for (let i = 0; i < this.teamMemberList.length; i++) {
-      const updatedUser = await this.backendService.getUserById(
-        this.teamMemberList[i].userId
-      );
-      if (updatedUser) {
-        this.teamMemberList[i].status = updatedUser.status;
-      }
-    }
-
-    // Update chat member statuses
-    for (let i = 0; i < this.chatMemberList.length; i++) {
-      const updatedUser = await this.backendService.getUserById(
-        this.chatMemberList[i].userId
-      );
-      if (updatedUser) {
-        this.chatMemberList[i].status = updatedUser.status;
+  private async refreshChannelData(channelId: string | null) {
+    if (channelId) {
+      const channel = await this.backendService.getChannelById(channelId);
+      if (channel) {
+        this.chatTitle = ': ' + channel.name;
+        this.chatDescription = channel.description;
+        this.chatMemberList = await this.getMembersByIds(channel.members);
       }
     }
   }
@@ -316,34 +272,31 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   acceptRequest(request: IInbox) {
-    console.log('Accepting request: ', request);
-    this.backendService.response(this.userId, request.inboxId, 'accept');
-    this.refreshList();
+    this.respondToInbox(request, 'accept');
   }
 
   declineRequest(request: IInbox) {
-    console.log('Declining request:', request);
-    this.backendService.response(this.userId, request.inboxId, 'decline');
-    this.refreshList();
+    this.respondToInbox(request, 'decline');
   }
 
   acceptInvite(invite: IInbox) {
-    console.log('Accepting invite: ', invite);
-    this.backendService.response(
-      invite.userIdThatYouWantToAdd,
-      invite.inboxId,
-      'accept'
-    );
-    this.refreshList();
+    this.respondToInbox(invite, 'accept');
   }
 
   declineInvite(invite: IInbox) {
-    console.log('Declining invite:', invite);
-    this.backendService.response(
-      invite.userIdThatYouWantToAdd,
-      invite.inboxId,
-      'decline'
-    );
-    this.refreshList();
+    this.respondToInbox(invite, 'decline');
+  }
+
+  private respondToInbox(inbox: IInbox, response: 'accept' | 'decline') {
+    if (this.loginUser?.userId) {
+      this.backendService.response(
+        this.loginUser.userId,
+        inbox.inboxId,
+        response
+      );
+      this.refreshList();
+    } else {
+      console.error('User ID is undefined');
+    }
   }
 }

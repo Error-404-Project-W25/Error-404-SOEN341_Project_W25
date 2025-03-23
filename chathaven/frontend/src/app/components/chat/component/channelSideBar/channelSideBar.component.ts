@@ -23,29 +23,18 @@ import { RemoveMemberDialogComponent } from '../../dialogue/leave-channel/leave-
   imports: [CommonModule, FormsModule, MatButtonModule, MatDialogModule],
 })
 export class ChannelSidebarComponent implements OnInit, OnDestroy {
-  //verification if user is login
-  loginUser: IUser | null = null;
-
-  //input
-  @Input() userId: string = '';
   selectedTeamId: string | null = null;
   isDirectMessage: boolean = false;
-
-  //variables
   teamTitle: string = '';
-
+  loginUser: IUser | undefined = undefined;
+  loginUserId: string = '';
   selectedChannelId: string | null = null;
   channelList: IChannel[] = [];
   requestList: IInbox[] = [];
-
   selectedDirectMessageId: string | null = null;
   directMessageList: IConversation[] = [];
-  inviteList: IInbox[] = [];
-
   channels: IChannel[] = [];
   channelIdToLastMessage: { [channelId: string]: string } = {};
-
-  //output
   conversationId: string | null = null;
 
   constructor(
@@ -56,31 +45,20 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   ) {
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
-      if (isDirectMessage) {
-        console.log('refreshing direct message list');
-        this.refreshDirectMessageList();
-      } else {
-        this.dataService.currentTeamId.subscribe((teamId) => {
-          this.selectedTeamId = teamId;
-        });
-        this.refreshChannelList();
-      }
+      isDirectMessage
+        ? this.refreshDirectMessageList()
+        : this.refreshChannelList();
     });
-    this.backendService.getUserById(this.userId).then((user) => {
-      if (user) {
-        if (user.inbox) {
-          this.requestList = user.inbox.filter(
-            (inbox) => inbox.type === 'request'
-          );
-          this.inviteList = user.inbox.filter(
-            (inbox) => inbox.type === 'invite'
-          );
-        }
-      }
+    this.dataService.currentTeamId.subscribe((teamId) => {
+      this.selectedTeamId = teamId;
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loginUserId = this.userService.getUser()?.userId || '';
+    this.refreshChannelList();
+  }
+
   ngOnDestroy() {}
 
   isChannelInbox(channelId: string): boolean {
@@ -92,44 +70,39 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   async refreshChannelList() {
-    this.channelList = [];
     const list: IChannel[] = [];
-    let selectedTeam = this.selectedTeamId
+    this.channelList = [];
+    const selectedTeam = this.selectedTeamId
       ? await this.backendService.getTeamById(this.selectedTeamId)
       : null;
     this.teamTitle = selectedTeam?.teamName || '';
-    let channelListId = selectedTeam?.channels || [];
+    const channelListId = selectedTeam?.channels || [];
 
-    // Fetch all channels without filtering by membership
     for (const channelId of channelListId) {
-      const channel = await this.backendService.getChannelById(
-        channelId
-      );
-
+      const channel = await this.backendService.getChannelById(channelId);
       if (channel) {
         list.push(channel);
-        const lastMessage = await this.getConversationLastMessage(
-          channel.conversationId
-        );
-        this.channelIdToLastMessage[channel.channelId] = lastMessage || '';
+        this.channelIdToLastMessage[channel.channelId] =
+          (await this.getConversationLastMessage(channel.conversationId)) || '';
       }
     }
     this.channelList = list;
   }
 
-  refreshDirectMessageList() {
-    this.directMessageList = [];
+  async refreshDirectMessageList() {
     const list: IConversation[] = [];
-    this.loginUser = this.userService.getUser() || null;
-    let directMessageListId = this.loginUser?.directMessages || [];
-    directMessageListId.forEach(async (directMessageId) => {
+    this.directMessageList = [];
+    const directMessageListId =
+      this.userService.getUser()?.directMessages || [];
+
+    for (const directMessageId of directMessageListId) {
       const directMessage = await this.backendService.getConversationById(
         directMessageId
       );
       if (directMessage) {
         list.push(directMessage);
       }
-    });
+    }
     this.directMessageList = list;
     this.teamTitle = 'Direct Messages';
   }
@@ -139,7 +112,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       data: { selectedTeam: this.selectedTeamId },
     });
     dialogRef.afterClosed().subscribe((result) => {
-      if (result && result.channelId) {
+      if (result?.channelId) {
         this.dialog.open(AddChannelMembersDialogue, {
           data: {
             channelId: result.channelId,
@@ -176,6 +149,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.added) {
+        this.refreshChannelList();
       }
     });
   }
@@ -193,13 +167,13 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   openLeaveChannelDialog(channel: IChannel): void {
     const dialogRef = this.dialog.open(RemoveMemberDialogComponent, {
-      data: { 
+      data: {
         channelId: channel.channelId,
-        memberId: this.userId
-      }
+        memberId: this.userService.getUser()?.userId,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(success => {
+    dialogRef.afterClosed().subscribe((success) => {
       if (success) {
         this.refreshChannelList();
         if (this.selectedChannelId === channel.channelId) {
@@ -211,20 +185,23 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   selectChannel(channelId: string): void {
-    this.backendService
-      .getChannelById(channelId)
-      .then((channel) => {
-        if (channel && channel.members.includes(this.userId || '')) {
-          this.selectedChannelId = channel.channelId;
-          this.dataService.selectChannel(this.selectedChannelId);
-          this.dataService.selectConversation(channel.conversationId);
-        } else {
-          // alert('You are not a member of this channel');
-          this.dialog.open(JoinRequestDialog, {
-            data: { channelId: channelId, teamId: this.selectedTeamId },
-          });
+    this.backendService.getChannelById(channelId).then((channel) => {
+      if (
+        channel &&
+        channel.members.includes(this.userService.getUser()?.userId || '')
+      ) {
+        this.selectedChannelId = channel.channelId;
+        this.dataService.selectChannel(this.selectedChannelId);
+        this.dataService.selectConversation(channel.conversationId);
+        if (this.isDirectMessage) {
+          this.dataService.toggleIsDirectMessage(false);
         }
-      });
+      } else {
+        this.dialog.open(JoinRequestDialog, {
+          data: { channelId: channelId, teamId: this.selectedTeamId },
+        });
+      }
+    });
   }
 
   selectDirectMessage(directMessageId: string): void {
@@ -232,35 +209,28 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   isChannelMember(channel: IChannel): boolean {
-    return channel.members.includes(this.userId || '');
+    return channel.members.includes(this.userService.getUser()?.userId || '');
   }
 
   isPrivateChannel(channel: IChannel): boolean {
-    // Implement your logic to determine if a channel is private
-    // For example, check the channel name or another property
     return channel.name.toLowerCase().includes('private');
   }
 
   handleChannelSelection(channel: IChannel): void {
     if (this.isPrivateChannel(channel) && !this.isChannelMember(channel)) {
-      // Maybe show a tooltip/message that this is a private channel
       return;
     }
-
     this.selectChannel(channel.channelId);
   }
+
   async getConversationLastMessage(
     conversationId: string
   ): Promise<string | null> {
     try {
       const conversation = await this.backendService.getConversationById(
-        conversationId || ''
+        conversationId
       );
-      if (
-        conversation &&
-        conversation.messages &&
-        conversation.messages.length > 0
-      ) {
+      if (conversation?.messages?.length) {
         return (
           conversation.messages[conversation.messages.length - 1].content ||
           null
@@ -268,7 +238,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       }
       return null;
     } catch (error) {
-      console.log('error:', error);
       return null;
     }
   }

@@ -21,19 +21,17 @@ import { io } from 'socket.io-client';
   templateUrl: './teamSideBar.component.html',
   styleUrls: ['./teamSideBar.component.css'],
   standalone: true,
-  imports: [CommonModule], // Add CommonModule to imports
+  imports: [CommonModule],
 })
 export class TeamSidebarComponent implements OnInit, OnDestroy {
-  //variables
+  @Input() loginUser: IUser | undefined = undefined;
   teamList: ITeam[] = [];
-
-  //output
   isDarkTheme = true;
   isDirectMessage = false;
   selectedTeamId: string = '';
   inviteMemberList: IUser[] = [];
   private activityTimeout: any;
-  private readonly IDLE_TIMEOUT = 300000; // 5 minutes in milliseconds for time out (idle)
+  private readonly IDLE_TIMEOUT = 300000;
   currentStatus: string = 'online';
   private manuallySetAway: boolean = false;
   private manuallySetOffline: boolean = false;
@@ -46,7 +44,6 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     private dataService: DataService
   ) {
     this.dataService.currentTeamId.subscribe((teamId) => {
-      console.log('teamId', teamId);
       this.selectedTeamId = teamId;
     });
 
@@ -79,19 +76,17 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
         clearTimeout(this.activityTimeout);
       }
 
-      // If status was automatically set to away (not manually set), change back to online
       if (this.currentStatus === 'away' && !this.manuallySetAway) {
         this.setStatus('online', false);
       }
 
-      // Only set up idle timeout if currently online and not manually set to away or offline
       if (
         this.currentStatus === 'online' &&
         !this.manuallySetAway &&
         !this.manuallySetOffline
       ) {
         this.activityTimeout = setTimeout(() => {
-          this.setStatus('away', false); // Automatically set to away
+          this.setStatus('away', false);
         }, this.IDLE_TIMEOUT);
       }
     };
@@ -107,25 +102,13 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     status: 'online' | 'away' | 'offline',
     isManual: boolean = true
   ) {
-    console.log(`Setting status to ${status}, manual: ${isManual}`);
-
-    // Update manual flags FIRST, before changing currentStatus
     if (isManual) {
-      console.log(`Manual status change: ${status}`);
       this.manuallySetAway = status === 'away';
       this.manuallySetOffline = status === 'offline';
-    } else if (status === 'online') {
-      // If auto-changing to online, don't touch manual flags
-      console.log('Auto status change to online');
-    } else {
-      // If it's an automatic change to away, then set the automatic away flag
-      console.log('Auto status change to away');
+    } else if (status !== 'online') {
       this.manuallySetAway = false;
       this.manuallySetOffline = false;
     }
-
-    console.log(`manuallySetAway: ${this.manuallySetAway}`);
-    console.log(`manuallySetOffline: ${this.manuallySetOffline}`);
 
     this.currentStatus = status;
     const user = this.userService.getUser();
@@ -140,9 +123,9 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Initialize component and subscribe to user changes
   async ngOnInit() {
     const user = this.userService.getUser();
+    this.loginUser = user;
     if (user) {
       this.currentStatus = user.status;
       this.manuallySetAway = user.status === 'away';
@@ -178,39 +161,33 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Toggle between dark and light themes
   toggleTheme() {
     this.isDarkTheme = !this.isDarkTheme;
     this.dataService.toggleDarkMode(this.isDarkTheme);
   }
 
-  // Placeholder for selecting a direct message
   selectDirectMessage() {
-    this.dataService.selectChannel('');
+    this.dataService.resetAll();
     this.dataService.toggleIsDirectMessage(true);
   }
 
-  // Select a team by its ID
   selectTeam(teamId: string): void {
+    this.dataService.resetAll();
     this.dataService.selectTeam(teamId);
     this.dataService.toggleIsDirectMessage(false);
   }
 
-  // Refresh the team list by fetching updated user data
   async refreshTeamList(): Promise<void> {
-    const list: ITeam[] = [];
-    this.teamList = []; // Clear the team list to avoid duplicates
+    let list: ITeam[] = [];
+    this.teamList = [];
     if (await this.userService.checkIfLoggedIn()) {
-      const currUserId = this.userService.getUser()!.userId;
+      this.loginUser = this.userService.getUser();
 
-      const updatedUser: IUser | undefined =
-        await this.backendService.getUserById(currUserId);
-
-      if (!updatedUser) {
+      if (!this.loginUser) {
         return;
       }
-
-      for (const teamId of updatedUser.teams) {
+      list = [];
+      for (const teamId of this.loginUser.teams) {
         const team = await this.backendService.getTeamById(teamId);
         if (team) {
           list.push(team);
@@ -220,18 +197,14 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Open a dialog to create a new team
   openCreateTeamDialog(): void {
-    // Check if user is an admin
     if (this.userService.getUser()?.role !== 'admin') {
       alert('You do not have the necessary permissions to create a team.');
       return;
     }
-    // Open dialog to create a team
     const dialogRef = this.dialog.open(TeamCreationDialog, {
       data: {},
     });
-    // After dialog is closed
     dialogRef.afterClosed().subscribe(async (result) => {
       if (result && result.teamId) {
         const currUser = this.userService.getUser();
@@ -266,20 +239,12 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
           query: { userId: user.userId },
         });
 
-        // Emit disconnect event
         socket.emit('disconnectUser', { userId: user.userId });
         socket.disconnect();
       }
 
-      // Clear data and navigate before logout
-      this.dataService.selectTeam('');
-      this.dataService.selectChannel('');
-      this.dataService.selectConversation('');
-
-      // Perform logout
+      this.dataService.resetAll();
       await this.userService.logout();
-
-      // Navigate to home
       this.router.navigate(['/home']);
     } catch (error) {
       console.error('Error during sign out:', error);
@@ -287,7 +252,6 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   }
 
   async closeAllMenus() {
-    // Clear the main menu checkbox
     const menuToggle = document.querySelector(
       '.menu-toggle-checkbox'
     ) as HTMLInputElement;
@@ -295,7 +259,6 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
       menuToggle.checked = false;
     }
 
-    // Clear the status menu checkbox
     const statusToggle = document.querySelector(
       '.status-toggle-checkbox'
     ) as HTMLInputElement;
@@ -306,7 +269,6 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
 
   @HostListener('document:click', ['$event'])
   handleDocumentClick(event: MouseEvent): void {
-    // Don't close if clicking within the menu containers
     const userMenuContainer = document.querySelector('.user-menu-container');
     const statusMenuContainer = document.querySelector(
       '.status-menu-container'
