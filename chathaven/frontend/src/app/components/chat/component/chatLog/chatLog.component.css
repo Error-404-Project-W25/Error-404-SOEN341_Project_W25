@@ -430,3 +430,32 @@ ul {
   background-color: inherit; /* Quote container background */
   opacity: 0.5;
 }
+
+.link-preview {
+  max-width: 95%;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  margin-top: 5px;
+  padding: 10px;
+  background-color: var(--secondary-color);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.preview-title {
+  font-weight: bold;
+  color: var(--primary-text-color);
+}
+
+.preview-description {
+  color: var(--secondary-text-color);
+}
+
+.link-preview img {
+  max-width: 50%;
+  max-height: 50%;
+  width: auto;
+  height: auto;
+  border-radius: 5px;
+}
