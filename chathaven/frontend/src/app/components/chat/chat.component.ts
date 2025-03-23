@@ -4,7 +4,6 @@ import {
   OnDestroy,
   OnInit,
   CUSTOM_ELEMENTS_SCHEMA,
-  Output,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
@@ -19,15 +18,13 @@ import { ChannelSidebarComponent } from './component/channelSideBar/channelSideB
 import { ChatLogComponent } from './component/chatLog/chatLog.component';
 import { InformationSidebarComponent } from './component/informationSideBar/informationSideBar.component';
 
-import { HostListener } from '@angular/core';
-
 @Component({
   selector: 'app-chat',
   standalone: true,
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
   imports: [
-    CommonModule, // Add CommonModule to imports
+    CommonModule,
     TeamSidebarComponent,
     ChannelSidebarComponent,
     ChatLogComponent,
@@ -37,12 +34,10 @@ import { HostListener } from '@angular/core';
 })
 export class ChatComponent implements OnInit, OnDestroy {
   title = 'chatHaven';
-  @Output() userId!: string;
-
   isDarkTheme = true;
   isInformationOpen = true;
   isDirectMessage = false;
-
+  loginUser: IUser | undefined = undefined;
   selectedConversationId: string | null = null;
   selectedTeamId: string | null = null;
 
@@ -53,7 +48,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     public dialog: MatDialog,
     private userService: UserService,
-    private dataService: DataService,
+    private dataService: DataService
   ) {
     this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
       this.isDarkTheme = isDarkTheme;
@@ -72,8 +67,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.handleInformatonBar();
     });
   }
+
   ngOnInit() {
-    // Add event listener for window resize
     window.addEventListener('resize', this.handleResize.bind(this));
     this.handleResize();
 
@@ -83,15 +78,15 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.userService.user$.subscribe((user) => {
-      if (user) {
-        this.userId = user.userId;
+    this.userService.user$.toPromise().then((user) => {
+      this.loginUser = user;
+      if (!this.loginUser) {
+        console.error('User not found');
       }
     });
   }
 
   ngOnDestroy() {
-    // Remove event listener for window resize
     window.removeEventListener('resize', this.handleResize.bind(this));
   }
 
@@ -100,15 +95,8 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.dataService.toggleIsInformationOpen(this.isInformationOpen);
   }
 
-  /*
-   * Handles the resize event for the window.
-   * Adjusts the visibility of the team sidebar and the width of the chat box
-   * based on the window width.
-   */
   handleResize() {
-    if (window.innerWidth > 1135) {
-    } else {
-      console.log('window.innerWidth:', window.innerWidth);
+    if (window.innerWidth <= 1135) {
       this.dataService.toggleIsInformationOpen(false);
     }
     this.handleInformatonBar();
@@ -121,15 +109,9 @@ export class ChatComponent implements OnInit, OnDestroy {
     const emojiMartElement = document.querySelector(
       '.emoji-mart'
     ) as HTMLElement;
-    if (teamSidebar) {
-      console.log('isTeamListOpen:', this.isInformationOpen);
-      if (this.isInformationOpen) {
-        teamSidebar.style.display = 'flex';
-        emojiMartElement.style.right = '325px';
-      } else {
-        teamSidebar.style.display = 'none';
-        emojiMartElement.style.right = '0';
-      }
+    if (teamSidebar && emojiMartElement) {
+      teamSidebar.style.display = this.isInformationOpen ? 'flex' : 'none';
+      emojiMartElement.style.right = this.isInformationOpen ? '325px' : '0';
     }
   }
 }

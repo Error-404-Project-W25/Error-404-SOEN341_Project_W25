@@ -1,14 +1,14 @@
 <div class="chat-box" id="chat-box">
   <div class="channel-title-container">
-    <div class="back-btn-container">
-      <button class="back-btn" (click)="channelBack()" title="Back">
+    <div class="back-btn-container" *ngIf="selectedConversationId !== ''">
+      <button class="back-btn" (click)="resetAll()" title="Back">
         <i class="fa fa-angle-left" style="font-size: 24px"></i>
       </button>
     </div>
     <div class="channel-title">{{ chatTitle }}</div>
   </div>
   <div class="chat-log">
-    <ul *ngIf="isMessageLoading">
+    <ul *ngIf="isMessageLoading && selectedConversationId !== ''">
       <li class="loading" *ngFor="let _ of [].constructor(15)" readonly>
         <div class="loading-picture"></div>
         <div class="message-content">
@@ -19,7 +19,7 @@
       </li>
     </ul>
     <ul>
-      <li class="welcome-message">
+      <li class="welcome-message" *ngIf="selectedConversationId !== ''">
         <i class="fa fa-hashtag" style="font-size: 3rem"></i>
         <h1>Welcome to "{{ chatTitle }}"</h1>
         <p>This is the start of "{{ chatTitle }}"</p>
@@ -76,15 +76,39 @@
                 message.time | date : "yyyy/MM/dd,HH:mm"
               }}</span>
             </div>
+
             <article class="message-text" readonly>
-              <ng-container *ngFor="let segment of splitTextIntoSegments(message.content)">
+              <ng-container
+                *ngFor="let segment of splitTextIntoSegments(message.content)"
+              >
                 <span *ngIf="segment.type === 'text'">{{ segment.value }}</span>
-                <a *ngIf="segment.type === 'url'" [href]="segment.value" target="_blank" style="color: var(--primary-color)">
+                <a
+                  *ngIf="segment.type === 'url'"
+                  [href]="segment.value"
+                  target="_blank"
+                  style="color: var(--primary-color)"
+                >
                   {{ segment.value }}
                 </a>
               </ng-container>
             </article>
-
+            <ng-container
+              *ngFor="let segment of splitTextIntoSegments(message.content)"
+            >
+              <div *ngIf="segment.type === 'url'" class="link-preview">
+                <a [href]="segment.value" target="_blank">
+                  <ng-container *ngIf="previewData[segment.value] as data">
+                    <div class="preview-title">
+                      {{ data.hybridGraph.title }}
+                    </div>
+                    <div class="preview-description">
+                      {{ data.hybridGraph.description }}
+                    </div>
+                    <img [src]="data.hybridGraph.image" alt="Preview Image" />
+                  </ng-container>
+                </a>
+              </div>
+            </ng-container>
           </div>
         </div>
       </li>

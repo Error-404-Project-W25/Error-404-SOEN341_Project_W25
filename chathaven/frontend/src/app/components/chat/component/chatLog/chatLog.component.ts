@@ -1,3 +1,4 @@
+// filepath: c:\Users\super\OneDrive\Documents\VScodeProject\SOEN 341\Project\Error-404-SOEN341_Project_W25\chathaven\frontend\src\app\components\chat\component\chatLog\chatLog.component.ts
 import {
   Component,
   Input,
@@ -34,16 +35,14 @@ import { MatIconModule } from '@angular/material/icon';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ChatLogComponent implements OnInit, OnDestroy {
-  /*Emoji */
-
+  @Input() loginUser: IUser | undefined = undefined;
   showEmojiPicker = false;
   set: 'apple' | 'google' | 'twitter' | 'facebook' = 'twitter';
 
   isDarkTheme: boolean = true;
   isTeamListOpen: boolean = false;
-  newMessage: string = '';
   quoteMessage: IMessage | null = null;
-  loginUser: IUser | null = null;
+  newMessage: string = '';
   messages: IMessage[] = [];
   chatTitle: string = '';
   selectedChannelId: string = '';
@@ -52,9 +51,8 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   isDirectMessage: boolean = false;
   isMessageLoading: boolean = false;
 
-  testMessages: IMessage | null = null;
-
   userIdToName: { [userId: string]: string } = {};
+  previewData: { [url: string]: any } = {};
 
   constructor(
     private router: Router,
@@ -68,15 +66,15 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       this.selectedTeamId = teamId;
     });
     dataService.isDirectMessage.subscribe((isDirectMessage) => {
-      this.chatTitle = '';
-      this.selectedConversationId = '';
+      this.resetAll();
       this.isDirectMessage = isDirectMessage;
-      if (this.isDirectMessage) {
+      if (isDirectMessage) {
         this.handleDirectMessage();
       } else {
         this.handleChannelMessage();
       }
     });
+
     this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
       this.isDarkTheme = isDarkTheme;
     });
@@ -86,18 +84,10 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.testMessages = {
-      messageId: '1',
-      content: 'This is a test message',
-      sender: 'testUser',
-      time: new Date().toISOString(),
-    };
-    // Implementation for ngOnInit
+    this.loginUser = this.userService.getUser();
   }
 
-  ngOnDestroy() {
-    // Implementation for ngOnDestroy
-  }
+  ngOnDestroy() {}
 
   openDeleteDialog(messageId: string, messageText: string): void {
     const dialogRef = this.dialog.open(DeleteMessageDialog, {
@@ -110,34 +100,21 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      if (result) {
-        // Get the appropriate conversation ID
-        // const conversationId = this.selectedChannelObject?.conversationId || this.selectedConversationId;
+      if (result && this.selectedConversationId) {
+        const success = await this.backendService.deleteMessage(
+          this.selectedConversationId,
+          result
+        );
 
-        if (this.selectedConversationId) {
-          console.log(
-            'Deleting message:',
-            result,
-            'from conversation:',
-            this.selectedConversationId
+        if (success) {
+          this.messages = this.messages.filter(
+            (msg) => msg.messageId !== result
           );
-          const success = await this.backendService.deleteMessage(
-            this.selectedConversationId,
-            result
-          );
-
-          console.log('Delete message result:', success);
-
-          if (success) {
-            this.messages = this.messages.filter(
-              (msg) => msg.messageId !== result
-            );
-          } else {
-            console.error('Failed to delete message');
-          }
         } else {
-          console.error('No conversation ID found for deletion');
+          console.error('Failed to delete message');
         }
+      } else {
+        console.error('No conversation ID found for deletion');
       }
     });
   }
@@ -163,6 +140,15 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       this.messages = messages;
     }
 
+    for (const message of this.messages) {
+      const urls = this.extractUrls(message.content);
+      for (const url of urls) {
+        if (!this.previewData[url]) {
+          this.previewData[url] = await this.getOpenGraphData(url);
+        }
+      }
+    }
+
     this.isMessageLoading = false;
     setTimeout(() => this.scrollToBottom(), 50);
   }
@@ -171,19 +157,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     const chatLog = document.querySelector('.chat-log');
     if (chatLog) {
       chatLog.scrollTop = chatLog.scrollHeight;
-    }
-  }
-
-  async loadUserNames(): Promise<void> {
-    const uniqueSenderIds = [
-      ...new Set(this.messages.map((msg) => msg.sender)),
-    ];
-
-    for (const userId of uniqueSenderIds) {
-      const user = await this.backendService.getUserById(userId);
-      if (user) {
-        this.userIdToName[userId] = user.username;
-      }
     }
   }
 
@@ -199,13 +172,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
       const messageContent = this.newMessage;
       this.newMessage = '';
-      // Log the data being sent
-      console.log('Sending message:', {
-        messageContent,
-        senderId: sender.userId,
-        conversationId: this.selectedConversationId,
-        quoteMessageId: this.quoteMessage?.messageId,
-      });
 
       try {
         const success = await this.backendService.sendMessage(
@@ -225,6 +191,13 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
           this.messages.push(newMessage);
           this.userIdToName[sender.userId] = sender.username;
+
+          const urls = this.extractUrls(messageContent);
+          for (const url of urls) {
+            if (!this.previewData[url]) {
+              this.previewData[url] = await this.getOpenGraphData(url);
+            }
+          }
 
           setTimeout(() => this.scrollToBottom(), 0);
 
@@ -261,27 +234,26 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   private handleDirectMessage() {
-    console.log('Direct Message');
+    this.chatTitle = '';
     this.dataService.currentConversationId.subscribe((conversationId) => {
       this.selectedConversationId = conversationId;
       this.backendService
         .getConversationById(this.selectedConversationId)
         .then((name) => {
-          this.chatTitle = 'Direct Message: ' + name?.conversationName || '';
+          this.chatTitle = name?.conversationName || '';
         });
       this.loadMessages();
     });
   }
 
   private handleChannelMessage() {
-    console.log('Channel Message');
+    this.chatTitle = '';
     this.dataService.currentChannelId.subscribe((channel) => {
       this.selectedChannelId = channel;
       if (this.selectedChannelId) {
         this.backendService
           .getChannelById(this.selectedChannelId)
           .then((channel) => {
-            console.log('Channel:', channel);
             this.chatTitle = channel?.name || '';
             this.selectedConversationId = channel?.conversationId || '';
             this.loadMessages();
@@ -291,36 +263,14 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   toggleEmojiPicker() {
-    console.log(this.showEmojiPicker);
     this.showEmojiPicker = !this.showEmojiPicker;
   }
 
   addEmoji(event: { emoji: { native: string } }): void {
-    console.log(this.newMessage);
-    const { newMessage } = this;
-    console.log(newMessage);
-    console.log(`${event.emoji.native}`);
-    const text = `${newMessage}${event.emoji.native}`;
-
-    this.newMessage = text;
-    // this.showEmojiPicker = false;
-  }
-
-  onFocus() {
-    console.log('focus');
-    this.showEmojiPicker = false;
-  }
-  onBlur() {
-    console.log('onblur');
-  }
-
-  channelBack() {
-    this.dataService.selectChannel('');
-    this.dataService.selectConversation('');
+    this.newMessage += event.emoji.native;
   }
 
   quotingMessage(messageId: IMessage): void {
-    console.log('Message ID:', messageId);
     this.quoteMessage = messageId;
   }
 
@@ -332,13 +282,12 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     return this.messages.find((msg) => msg.messageId === messageId) || null;
   }
 
-  // Function to extract URLs from a text
   extractUrls(text: string): string[] {
-    const urlPattern = /https?:\/\/[^\s]+/g;
+    const urlPattern =
+      /(?:https?:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
     return text.match(urlPattern) || [];
   }
 
-  // Function to split the text into parts (URLs and non-URLs)
   splitTextIntoSegments(
     text: string
   ): { type: 'text' | 'url'; value: string }[] {
@@ -348,24 +297,55 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     let lastIndex = 0;
 
     text.replace(urlPattern, (match, index) => {
-      // Push non-URL text
       if (index > lastIndex) {
         segments.push({
           type: 'text',
           value: text.substring(lastIndex, index),
         });
       }
-      // Push the URL itself
       segments.push({ type: 'url', value: match });
       lastIndex = index + match.length;
       return match;
     });
 
-    // Push remaining text after the last URL
     if (lastIndex < text.length) {
       segments.push({ type: 'text', value: text.substring(lastIndex) });
     }
 
     return segments;
+  }
+
+  async getOpenGraphData(url: string): Promise<any> {
+    try {
+      // You need to sign up for an API key at https://www.opengraph.io/
+      const response = await fetch(
+        `https://opengraph.io/api/1.1/site/${encodeURIComponent(
+          url
+        )}?app_id=OPENGRAPH_API_KEY`
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching OpenGraph data:', error);
+      return null;
+    }
+  }
+
+  async previewLink(url: string): Promise<void> {
+    const ogData = await this.getOpenGraphData(url);
+    if (ogData) {
+      console.log('OpenGraph Data:', ogData);
+      // You can now use this data to display a preview in your component
+    }
+  }
+
+  resetAll() {
+    this.quoteMessage = null;
+    this.newMessage = '';
+    this.messages = [];
+    this.chatTitle = '';
+    this.selectedChannelId = '';
+    this.selectedTeamId = '';
+    this.selectedConversationId = '';
   }
 }

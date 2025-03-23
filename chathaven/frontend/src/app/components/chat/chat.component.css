@@ -147,7 +147,7 @@ chat-informartion-side-bar {
 }
 
 .team-list-toggle-button {
-  background-color: var(--secondary-color);
+  background-color: var(--dark-muted-color);
   border: none;
   border-radius: 10px;
   color: var(--primary-text-color);
