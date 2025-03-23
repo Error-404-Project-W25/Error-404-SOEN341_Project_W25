@@ -264,6 +264,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       for (const memberId of team.members) {
         const user = await this.backendService.getUserById(memberId);
         if (user) {
+          user.status = user.status || 'offline';
+          user.lastSeen = user.lastSeen || new Date();
           this.teamMemberList.push(user);
         }
       }
@@ -275,6 +277,15 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       await this.handleDirectMessage();
     } else {
       await this.handleChannelMessage();
+    }
+    
+    // Ensure chat member statuses are properly set
+    for (const member of this.chatMemberList) {
+      const updatedUser = await this.backendService.getUserById(member.userId);
+      if (updatedUser) {
+        member.status = updatedUser.status || 'offline';
+        member.lastSeen = updatedUser.lastSeen || new Date();
+      }
     }
   }
 
