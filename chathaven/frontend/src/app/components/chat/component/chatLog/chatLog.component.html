@@ -98,14 +98,16 @@
               <div *ngIf="segment.type === 'url'" class="link-preview">
                 <a [href]="segment.value" target="_blank">
                   <ng-container *ngIf="previewData[segment.value] as data">
-                    <div class="preview-title">
-                      {{ data.hybridGraph.title }}
-                    </div>
-                    <div class="preview-description">
-                      {{ data.hybridGraph.description }}
-                    </div>
-                    <div class="preview-img-container">
-                      <img [src]="data.hybridGraph.image" alt="Preview Image" />
+                    <div class="preview-container">
+                      <div class="preview-title">
+                        <!-- {{ data.hybridGraph.title }} -->
+                      </div>
+                      <div class="preview-description">
+                        <!-- {{ data.hybridGraph.description }} -->
+                      </div>
+                      <div class="preview-img-container">
+                        <!-- <img [src]="data.hybridGraph.image" alt="Preview Image" /> -->
+                      </div>
                     </div>
                   </ng-container>
                 </a>
