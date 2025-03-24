@@ -432,39 +432,48 @@ ul {
 }
 
 .link-preview {
-  width: 50%;
-  max-width: 50%;
-  min-width: 50%;
+  height: 20rem;
+  max-width: 25rem;
+  width: auto;
   border: 1px solid var(--border-color);
   border-radius: 5px;
   padding: 1rem;
   background-color: var(--secondary-color);
+  display: block;
+}
+
+.preview-container {
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  flex-direction: flex-start;
-  gap: 5rem;
+  gap: 0.5rem;
 }
 
 .preview-title {
+  width: inherit;
+  height: 1.25rem;
+  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: hidden;
   font-weight: bold;
   color: var(--primary-text-color);
 }
 
 .preview-description {
+  overflow: hidden;
+  height: 4.5rem;
   color: var(--secondary-text-color);
 }
 
-.preview-img-container{
+.preview-img-container {
+  height: 15rem;
   display: flex;
   height: 15rem;
-  object-fit: contain;
+  border-radius: 25%;
   justify-content: center;
 }
 .link-preview img {
-  max-height: inherit;
-  width: fit-content;
-  max-width: 100%;
-  min-width: 0;
-  height: fit-content;
-  border-radius: 5px;
+  object-fit: contain;
+  border-radius: 25%;
 }
