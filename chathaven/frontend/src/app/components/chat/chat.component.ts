@@ -96,7 +96,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   handleResize() {
-    if (window.innerWidth <= 1135) {
+    if (window.innerWidth <= 1440) {
       this.dataService.toggleIsInformationOpen(false);
     }
     this.handleInformatonBar();
