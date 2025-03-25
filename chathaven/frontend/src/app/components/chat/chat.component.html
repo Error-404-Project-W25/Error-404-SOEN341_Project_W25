@@ -11,7 +11,7 @@
     <chat-team-sidebar></chat-team-sidebar>
     <chat-channel-sidebar></chat-channel-sidebar>
     <chat-chat-log></chat-chat-log>
-    <chat-information-sidebar> </chat-information-sidebar>
+    <chat-information-sidebar *ngIf="isInformationOpen"> </chat-information-sidebar>
     <div class="button-container">
       <button class="team-list-toggle-button" title="Toggle Team List">
         <i
