@@ -52,6 +52,7 @@ emoji-mart {
   height: inherit;
   margin: 0;
   overflow: hidden;
+  text-overflow: ellipsis;
   padding-left: 5px;
   text-align: left;
   width: 100%;
@@ -122,6 +123,7 @@ emoji-mart {
   justify-content: center;
   width: 100%;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .message-header {
@@ -240,6 +242,7 @@ emoji-mart {
   cursor: pointer;
   transition-duration: 0.3s;
   overflow: hidden;
+  text-overflow: ellipsis;
   position: relative;
 }
 
@@ -432,13 +435,13 @@ ul {
 }
 
 .link-preview {
-  height: 20rem;
-  max-width: 25rem;
-  width: auto;
-  border: 1px solid var(--border-color);
+  height: 25rem;
+  max-width: 28rem;
+  width: 100%;
+  border-left: 5px solid var(--primary-color);
   border-radius: 5px;
   padding: 1rem;
-  background-color: var(--secondary-color);
+  background-color: var(--dark-muted-color);
   display: block;
 }
 
@@ -454,14 +457,20 @@ ul {
   width: inherit;
   height: 1.25rem;
   overflow: hidden;
-  overflow-y: hidden;
-  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-weight: bold;
   color: var(--primary-text-color);
 }
 
 .preview-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;  /* Allows up to 3 lines before truncating */
+  line-clamp: 3;  /* Standard property for compatibility */
+  -webkit-box-orient: vertical;
   overflow: hidden;
+  max-height: 4.5rem; /* Adjust this based on your design */
+  line-height: 1.5rem; /* Controls spacing between lines */
   height: 4.5rem;
   color: var(--secondary-text-color);
 }
