@@ -9,10 +9,36 @@
 <body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
   <div class="container">
     <chat-team-sidebar></chat-team-sidebar>
-    <chat-channel-sidebar></chat-channel-sidebar>
-    <chat-chat-log></chat-chat-log>
-    <chat-information-sidebar *ngIf="isInformationOpen"> </chat-information-sidebar>
-    <div class="button-container">
+    <chat-channel-sidebar
+      *ngIf="selectedTeamId || isDirectMessage"
+    ></chat-channel-sidebar>
+    <div
+      class="card-container"
+      id="card-container"
+      *ngIf="selectedConversationId === ''"
+    >
+      <div class="card">
+        <h2 *ngIf="selectedTeamId === '' && !isDirectMessage">
+          Please choose a team or go to direct message to continue
+        </h2>
+        <h2 *ngIf="isDirectMessage && selectedConversationId === ''">
+          Please choose a conversation to continue
+        </h2>
+        <h2 *ngIf="!isDirectMessage && selectedTeamId !== ''">
+          Please choose a channel to continue
+        </h2>
+      </div>
+    </div>
+    <chat-chat-log *ngIf="selectedConversationId"></chat-chat-log>
+    <chat-information-sidebar
+      *ngIf="isInformationOpen && selectedConversationId"
+    >
+    </chat-information-sidebar>
+    <div
+      class="button-container"
+      *ngIf="selectedConversationId"
+    >
+      <!-- (click) teamlist toggle -->
       <button class="team-list-toggle-button" title="Toggle Team List">
         <i
           class="fa"
