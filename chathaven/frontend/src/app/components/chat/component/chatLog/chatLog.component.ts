@@ -140,11 +140,13 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       this.messages = messages;
     }
 
+    const fetchedUrls = new Set<string>();
     for (const message of this.messages) {
       const urls = this.extractUrls(message.content);
       for (const url of urls) {
-        if (!this.previewData[url]) {
+        if (!this.previewData[url] && !fetchedUrls.has(url)) {
           this.previewData[url] = await this.getOpenGraphData(url);
+          fetchedUrls.add(url);
         }
       }
     }
@@ -193,9 +195,11 @@ export class ChatLogComponent implements OnInit, OnDestroy {
           this.userIdToName[sender.userId] = sender.username;
 
           const urls = this.extractUrls(messageContent);
+          const fetchedUrls = new Set<string>();
           for (const url of urls) {
-            if (!this.previewData[url]) {
+            if (!this.previewData[url] && !fetchedUrls.has(url)) {
               this.previewData[url] = await this.getOpenGraphData(url);
+              fetchedUrls.add(url);
             }
           }
 

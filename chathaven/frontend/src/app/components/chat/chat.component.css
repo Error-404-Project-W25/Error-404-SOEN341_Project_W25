@@ -4,6 +4,7 @@ body {
   height: 100vh;
   margin: 0;
   overflow: hidden;
+  text-overflow: ellipsis;
   padding: 0;
   width: 100vw;
   display: flex;
@@ -98,6 +99,7 @@ chat-informartion-side-bar {
   place-content: center;
   place-items: center;
   overflow: hidden;
+  text-overflow: ellipsis;
   border-radius: 20px;
 }
 

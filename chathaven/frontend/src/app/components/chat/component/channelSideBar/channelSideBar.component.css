@@ -90,6 +90,7 @@
   left: 0;
   top: 130%;
   overflow: hidden;
+  text-overflow: ellipsis;
   clip-path: inset(0% 0% 0% 0% round 10px);
   transition: all 0.4s;
   border: 1px solid var(--hover-color);
@@ -163,6 +164,7 @@
   min-height: 3rem;
   min-width: 100%;
   overflow: hidden;
+  text-overflow: ellipsis;
   padding: 2px;
   text-align: center;
   text-decoration: none;
@@ -206,6 +208,7 @@
   /* padding-left: 15px; */
   text-align: left;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 .channel-name {
   color: var(--primary-text-color);
@@ -214,6 +217,7 @@
   flex-grow: 1;
   text-align: left;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 .channel-last-message {
   color: var(--primary-text-color);
@@ -222,6 +226,7 @@
   text-align: left;
   opacity: 0.5;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 .channel-text-information {
   display: flex;
@@ -230,6 +235,7 @@
   align-items: flex-start;
   gap: 5px;
   overflow: hidden;
+  text-overflow: ellipsis;
   height: 2.75rem;
 }
 
@@ -313,6 +319,7 @@ ul {
   min-height: 3rem;
   min-width: 100%;
   overflow: hidden;
+  text-overflow: ellipsis;
   padding: 2px;
   text-align: center;
   justify-content: center;

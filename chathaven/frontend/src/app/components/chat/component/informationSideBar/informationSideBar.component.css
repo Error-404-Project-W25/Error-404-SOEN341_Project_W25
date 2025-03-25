@@ -14,7 +14,12 @@
   /* align-items: center; */
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-bottom: 1rem;
 }
 
@@ -43,6 +48,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 90%;
   margin: 0;
   overflow: hidden;
+  text-overflow: ellipsis;
   padding: 0;
   text-align: left;
   width: 90%;
@@ -87,6 +93,7 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 2.5rem; /*increasing min height to fit 2 lines*/
   min-width: 95%;
   overflow: hidden;
+  text-overflow: ellipsis;
   padding: 5px;
   text-align: center;
   text-decoration: none;
@@ -229,7 +236,7 @@ h1, h2, h3, h4, h5, h6 {
   gap: 10px;
   transform: translateZ(0);
   backface-visibility: hidden;
-  width: 100%
+  width: 100%;
 }
 
 .user-details {
@@ -238,6 +245,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: flex-start;
   width: 100%;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .user-header {
@@ -250,10 +258,11 @@ h1, h2, h3, h4, h5, h6 {
 .inbox-information {
   display: flex;
   flex-direction: row;
-  align-items:flex-start;
+  align-items: flex-start;
   gap: 10px;
   width: 15rem;
   overflow: hidden;
+  text-overflow: ellipsis;
   text-align: left;
 }
 
@@ -349,6 +358,7 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateZ(0);
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
 
