@@ -48,6 +48,13 @@ export class HomeComponent {
     }
   }
 
+  private scrollToBottom(): void {
+    const chatLog = document.querySelector('.chat-window');
+    if (chatLog) {
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+  }
+
   sendMessage() {
     if (this.userMessage.trim()) {
       this.messages.push({ type: 'outgoing', content: this.userMessage });
@@ -59,6 +66,7 @@ export class HomeComponent {
             response ||
             "I'm here to assist with ChatHaven-related questions only.";
           this.messages.push({ type: 'incoming', content: aiResponse });
+          setTimeout(() => this.scrollToBottom(), 50);
         })
         .catch((err) => {
           console.error('API Error:', err);
