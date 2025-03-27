@@ -18,6 +18,7 @@ import { UserService } from '@services/user.service';
 import { DataService } from '@services/data.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { MatIconModule } from '@angular/material/icon';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'chat-chat-log',
@@ -37,6 +38,7 @@ import { MatIconModule } from '@angular/material/icon';
 export class ChatLogComponent implements OnInit, OnDestroy {
   @Input() loginUser: IUser | undefined = undefined;
   showEmojiPicker = false;
+  showGifPicker = false;
   set: 'apple' | 'google' | 'twitter' | 'facebook' = 'twitter';
 
   isDarkTheme: boolean = true;
@@ -51,6 +53,13 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   isDirectMessage: boolean = false;
   isMessageLoading: boolean = false;
 
+  gifResults: any[] = [];
+  gifSearchQuery: string = '';
+  gifSelected: string = '';
+
+  giphyApiKey = '';
+  openGraphApiKey = '';
+
   userIdToName: { [userId: string]: string } = {};
   previewData: { [url: string]: any } = {};
 
@@ -60,7 +69,8 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private backendService: BackendService,
     private dataService: DataService,
-    private pickerModule: PickerModule
+    private pickerModule: PickerModule,
+    private http: HttpClient
   ) {
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
@@ -274,6 +284,73 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.newMessage += event.emoji.native;
   }
 
+  toggleGifPicker(): void {
+    this.showGifPicker = !this.showGifPicker;
+    this.gifResults = [];
+    const url = `https://api.giphy.com/v1/gifs/trending?api_key=${this.giphyApiKey}&limit=10`;
+
+    this.http.get<any>(url).subscribe((response) => {
+      this.gifResults = response.data.map(
+        (gif: any) => gif.images.original.url
+      ); // Only .gif URLs
+      console.log('Trending GIFs:', this.gifResults);
+    });
+  }
+
+  searchGifs() {
+    if (!this.gifSearchQuery.trim()) return;
+    const url = `https://api.giphy.com/v1/gifs/search?api_key=${this.giphyApiKey}&q=${this.gifSearchQuery}&limit=10`;
+
+    this.http.get<any>(url).subscribe((response) => {
+      this.gifResults = response.data.map(
+        (gif: any) => gif.images.original.url
+      ); // Only .gif URLs
+    });
+  }
+
+  async selectGif(gifUrl: string) {
+    const cleanUrl = gifUrl.split('?')[0]; // Removes everything after "?"
+    this.gifSelected = cleanUrl;
+    console.log('Selected GIF:', gifUrl);
+    if (this.gifSelected) {
+      const sender = this.userService.getUser();
+
+      if (!sender || !this.selectedConversationId) {
+        console.error('No sender or conversation ID found');
+        return;
+      }
+
+      try {
+        const success = await this.backendService.sendMessage(
+          this.gifSelected,
+          sender.userId,
+          this.selectedConversationId,
+          this.quoteMessage?.messageId
+        );
+
+        if (success) {
+          const newMessage: IMessage = {
+            messageId: Date.now().toString(),
+            content: this.gifSelected,
+            sender: sender.userId,
+            time: new Date().toISOString(),
+          };
+
+          this.messages.push(newMessage);
+          this.userIdToName[sender.userId] = sender.username;
+
+          setTimeout(() => this.scrollToBottom(), 0);
+
+          this.refreshMessages();
+        }
+      } catch (error) {
+        console.error('Error sending GIF:', error);
+        alert('Failed to send GIF. Please try again.');
+      }
+      this.gifSelected = '';
+    }
+  }
+
   quotingMessage(messageId: IMessage): void {
     this.quoteMessage = messageId;
   }
@@ -301,6 +378,12 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     let lastIndex = 0;
 
     text.replace(urlPattern, (match, index) => {
+      // if (match.endsWith('.gif')) {
+      //   // Skip GIF URLs
+      //   lastIndex = index + match.length;
+      //   return match;
+      // }
+
       if (index > lastIndex) {
         segments.push({
           type: 'text',
@@ -325,7 +408,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       const response = await fetch(
         `https://opengraph.io/api/1.1/site/${encodeURIComponent(
           url
-        )}?app_id=OPENGRAPH_API_KEY`
+        )}?app_id=${this.openGraphApiKey}`
       );
       const data = await response.json();
       return data;

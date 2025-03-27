@@ -177,6 +177,7 @@ emoji-mart {
   height: 3rem;
   padding: 10px;
   width: 100%;
+  color: var(--text-color);
 }
 
 .input-container input {
@@ -435,7 +436,7 @@ ul {
 }
 
 .link-preview {
-  height: 25rem;
+  height: fit-content;
   max-width: 28rem;
   width: 100%;
   border-left: 5px solid var(--primary-color);
@@ -443,6 +444,7 @@ ul {
   padding: 1rem;
   background-color: var(--dark-muted-color);
   display: block;
+  object-fit: contain;
 }
 
 .preview-container {
@@ -465,8 +467,8 @@ ul {
 
 .preview-description {
   display: -webkit-box;
-  -webkit-line-clamp: 3;  /* Allows up to 3 lines before truncating */
-  line-clamp: 3;  /* Standard property for compatibility */
+  -webkit-line-clamp: 3; /* Allows up to 3 lines before truncating */
+  line-clamp: 3; /* Standard property for compatibility */
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-height: 4.5rem; /* Adjust this based on your design */
@@ -484,5 +486,105 @@ ul {
 }
 .link-preview img {
   object-fit: contain;
-  border-radius: 25%;
+}
+
+.gif {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  border: 2px solid var(--primary-text-color);
+}
+
+.icon-container:hover {
+  border: 2px solid var(--primary-color);
+}
+
+.gif-card {
+  width: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--dark-muted-color);
+  position: fixed; /* Change to fixed to ensure it stays within the viewport */
+  bottom: 50px; /* Adjust bottom position */
+  right: 325px; /* Adjust right position */
+  border: 1px solid var(--border-color);
+}
+
+.git-header{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.gif-search {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: var(--dark-muted-color);
+}
+
+.gif-search input {
+  width: 100%;
+  height: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 0.1rem solid var(--border-color);
+}
+
+.gif-search button {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--primary-text-color);
+  cursor: pointer;
+  display: flex;
+  font-size: 1rem;
+  height: 2rem;
+  justify-content: center;
+  outline: none;
+  padding: 0.5rem;
+}
+
+.gif-search button:hover {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+.gif-card-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  max-height: 20rem;
+  width: 100%;
+  overflow-y: auto;
+  justify-items: center;
+  align-items: start;
+  scrollbar-width: none; /* Hide scrollbar */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.gif-card-list::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for WebKit browsers */
+}
+
+.gif-card-list img {
+  width: 100%;
+  object-fit: contain;
+  border-radius: 0.5rem;
 }

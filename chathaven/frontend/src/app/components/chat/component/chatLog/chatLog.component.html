@@ -81,12 +81,18 @@
               <ng-container
                 *ngFor="let segment of splitTextIntoSegments(message.content)"
               >
-                <span *ngIf="segment.type === 'text'">{{ segment.value }}</span>
+                <span
+                  *ngIf="segment.type === 'text'"
+                  style="color: var(--text-color); word-break: break-word"
+                  >{{ segment.value }}</span
+                >
                 <a
-                  *ngIf="segment.type === 'url'"
+                  *ngIf="
+                    segment.type === 'url' && !segment.value.endsWith('.gif')
+                  "
                   [href]="segment.value"
                   target="_blank"
-                  style="color: var(--primary-color)"
+                  style="color: var(--primary-color); word-break: break-word"
                 >
                   {{ segment.value }}
                 </a>
@@ -98,31 +104,34 @@
               <div *ngIf="segment.type === 'url'" class="link-preview">
                 <a [href]="segment.value" target="_blank">
                   <ng-container *ngIf="previewData[segment.value] as data">
-                    <div class="preview-container">
-                      <div class="preview-title">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua.
-                        <!-- {{ data.hybridGraph.title }} -->
-                      </div>
-                      <div class="preview-description">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Lorem ipsum dolor sit amet, consectetur
-                        adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Lorem ipsum dolor sit
-                        amet, consectetur adipiscing elit, sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua.
-                        <!-- {{ data.hybridGraph.description }} -->
-                      </div>
-                      <div class="preview-img-container">
-                        <img
-                          src="../../../../../assets/images/header.png"
-                          alt=""
-                        />
-                        <!-- <img [src]="data.hybridGraph.image" alt="Preview Image" /> -->
-                      </div>
+                    <div
+                      *ngIf="
+                        segment.value.endsWith('.gif');
+                        else previewContainer
+                      "
+                    >
+                      <img
+                        [src]="segment.value"
+                        alt="GIF Preview"
+                        class="gif"
+                      />
                     </div>
+                    <ng-template #previewContainer>
+                      <div class="preview-container">
+                        <div class="preview-title">
+                          <!-- {{ data.hybridGraph.title }} -->
+                        </div>
+                        <div class="preview-description">
+                          <!-- {{ data.hybridGraph.description }} -->
+                        </div>
+                        <div class="preview-img-container">
+                          <!-- <img
+                            [src]="data.hybridGraph.image"
+                            alt="Preview Image"
+                          /> -->
+                        </div>
+                      </div>
+                    </ng-template>
                   </ng-container>
                 </a>
               </div>
@@ -170,6 +179,38 @@
       (emojiSelect)="addEmoji($event)"
       title="Pick your emoji…"
     ></emoji-mart>
+    <button
+      class="input-container"
+      title="Pick a GIF"
+      (click)="toggleGifPicker()"
+    >
+      <div class="icon-container"><mat-icon>gif_2</mat-icon></div>
+    </button>
+    <div *ngIf="showGifPicker" class="gif-card">
+      <div class="gif-hearder">
+        <div class="gif-search">
+          <input
+            type="text"
+            [(ngModel)]="gifSearchQuery"
+            placeholder="Search for GIFs..."
+          />
+          <button mat-icon-button (click)="searchGifs()" title="Search GIFs">
+            <i class="fa fa-search" style="font-size: 24px"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="gif-card-list">
+        <div
+          *ngFor="let gif of gifResults"
+          class="gif-item"
+          (click)="selectGif(gif)"
+        >
+          <img [src]="gif" alt="GIF" />
+        </div>
+      </div>
+    </div>
+
     <button
       class="input-container"
       (click)="sendMessage()"
