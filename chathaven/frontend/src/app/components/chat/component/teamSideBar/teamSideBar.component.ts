@@ -258,22 +258,32 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Sign out the user and navigate to the home page
   async signOut() {
-    const user = this.userService.getUser();
-    const userId = user?.userId;
+    try {
+      const user = this.userService.getUser();
+      if (user?.userId) {
+        const socket = io('http://localhost:3000', {
+          query: { userId: user.userId },
+        });
 
-    const socket = io('http://localhost:3000', {
-      query: { userId },
-    });
+        // Emit disconnect event
+        socket.emit('disconnectUser', { userId: user.userId });
+        socket.disconnect();
+      }
 
-    socket.emit('disconnectUser', { userId });
+      // Clear data and navigate before logout
+      this.dataService.selectTeam('');
+      this.dataService.selectChannel('');
+      this.dataService.selectConversation('');
 
-    this.dataService.selectTeam('');
-    this.dataService.selectChannel('');
-    this.dataService.selectConversation('');
-    await this.userService.logout();
-    this.router.navigate(['/home']);
+      // Perform logout
+      await this.userService.logout();
+
+      // Navigate to home
+      this.router.navigate(['/home']);
+    } catch (error) {
+      console.error('Error during sign out:', error);
+    }
   }
 
   async closeAllMenus() {
