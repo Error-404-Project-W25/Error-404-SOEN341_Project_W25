@@ -63,10 +63,8 @@ export class HomeComponent {
         .promptChatbot(this.userMessage)
         .then((response) => {
           console.log('API Response:', response);
-          const aiResponse =
-            response ||
-            "I'm here to assist with ChatHaven-related questions only.";
-          this.messages.push({ type: 'incoming', content: aiResponse });
+          const aiResponse = response; // Removed fallback message
+          this.messages.push({ type: 'incoming', content: aiResponse || '⚠️ No response received' });
           setTimeout(() => this.scrollToBottom(), 50);
         })
         .catch((err) => {
