@@ -62,9 +62,11 @@ export class HomeComponent {
       this.backendService
         .promptChatbot(this.userMessage)
         .then((response) => {
-          console.log('API Response:', response);
+          if (!response) {
+            throw new Error('Empty response from API');
+          }
           const aiResponse = response; // Removed fallback message
-          this.messages.push({ type: 'incoming', content: aiResponse || '⚠️ No response received' });
+          this.messages.push({ type: 'incoming', content: aiResponse });
           setTimeout(() => this.scrollToBottom(), 50);
         })
         .catch((err) => {
