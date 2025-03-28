@@ -2,9 +2,15 @@
   <div class="card" id="chatCard" style="display: none">
     <div class="chat-header">ChatHaven Bot</div>
     <div class="chat-window">
-      <ul class="message-list">
-        <div *ngFor="let msg of messages" [ngClass]="{'message incoming': msg.type === 'incoming', 'message outgoing': msg.type === 'outgoing'}">
-          <p>{{ msg.content }}</p>
+      <ul class="message-list" id="messageList">
+        <div
+          *ngFor="let msg of messages"
+          [ngClass]="{
+            'message incoming': msg.type === 'incoming',
+            'message outgoing': msg.type === 'outgoing'
+          }"
+        >
+          <p [innerHTML]="msg.content | textToHtmlPipe"></p>
         </div>
       </ul>
     </div>
@@ -14,6 +20,7 @@
         type="text"
         class="message-input"
         placeholder="Type your message here"
+        (keyup.enter)="sendMessage()"
       />
       <button class="send-button" (click)="sendMessage()">Send</button>
     </div>

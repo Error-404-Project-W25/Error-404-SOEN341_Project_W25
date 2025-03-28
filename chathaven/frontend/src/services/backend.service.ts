@@ -557,7 +557,7 @@ export class BackendService {
       return undefined;
     }
   }
- 
+
   async getLastSeenString(userId: string): Promise<string | undefined> {
     try {
       const response = await firstValueFrom(
@@ -577,8 +577,26 @@ export class BackendService {
     }
     return undefined;
   }
+
+  ////////////////////// CHATBOT //////////////////////
+
+  async promptChatbot(prompt: string): Promise<string | undefined> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ response?: string; error?: string }>(
+          `${this.backendURL}/chatbot/prompt`,
+          { prompt }
+        )
+      );
+
+      if (response.response) {
+        return response.response;
+      } else {
+        console.error(response.error);
+      }
+    } catch (error) {
+      console.error('Error prompting chatbot:', error);
+    }
+    return undefined;
+  }
 }
-
-
-
-

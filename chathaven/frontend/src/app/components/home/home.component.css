@@ -643,7 +643,7 @@ nav {
 }
 
 .card {
-  width: 260px;
+  width: 20rem;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -661,7 +661,7 @@ nav {
 }
 
 .chat-window {
-  height: 220px;
+  height: 20rem;
   overflow-y: scroll;
 }
 
