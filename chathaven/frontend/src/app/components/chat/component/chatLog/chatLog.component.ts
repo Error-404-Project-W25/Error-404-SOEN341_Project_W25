@@ -287,7 +287,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   toggleGifPicker(): void {
     this.showGifPicker = !this.showGifPicker;
     this.gifResults = [];
-    const url = `https://api.giphy.com/v1/gifs/trending?api_key=${this.giphyApiKey}&limit=10`;
+    const url = `https://api.giphy.com/v1/gifs/trending?api_key=${this.giphyApiKey}&limit=25`;
 
     this.http.get<any>(url).subscribe((response) => {
       this.gifResults = response.data.map(
@@ -299,7 +299,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   searchGifs() {
     if (!this.gifSearchQuery.trim()) return;
-    const url = `https://api.giphy.com/v1/gifs/search?api_key=${this.giphyApiKey}&q=${this.gifSearchQuery}&limit=10`;
+    const url = `https://api.giphy.com/v1/gifs/search?api_key=${this.giphyApiKey}&q=${this.gifSearchQuery}&limit=25`;
 
     this.http.get<any>(url).subscribe((response) => {
       this.gifResults = response.data.map(

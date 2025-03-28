@@ -523,16 +523,17 @@ ul {
   border: 1px solid var(--border-color);
 }
 
-.git-header{
+.gif-header{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
+  align-items: center;
 }
 
 .gif-search {
   display: flex;
-  flex-direction: row;
+  width: 100%;
   gap: 0.5rem;
   border-radius: 0.5rem;
   background-color: var(--dark-muted-color);
