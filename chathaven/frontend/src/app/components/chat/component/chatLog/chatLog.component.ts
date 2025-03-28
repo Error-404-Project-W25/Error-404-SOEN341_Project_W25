@@ -278,23 +278,31 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   toggleEmojiPicker() {
     this.showEmojiPicker = !this.showEmojiPicker;
-  }
-
-  addEmoji(event: { emoji: { native: string } }): void {
-    this.newMessage += event.emoji.native;
+    if (this.showEmojiPicker) {
+      this.showGifPicker = false; // Close GIF picker if emoji picker is opened
+    }
   }
 
   toggleGifPicker(): void {
     this.showGifPicker = !this.showGifPicker;
-    this.gifResults = [];
-    const url = `https://api.giphy.com/v1/gifs/trending?api_key=${this.giphyApiKey}&limit=25`;
+    if (this.showGifPicker) {
+      this.showEmojiPicker = false; // Close emoji picker if GIF picker is opened
+    }
+    if (this.showGifPicker) {
+      this.gifResults = [];
+      const url = `https://api.giphy.com/v1/gifs/trending?api_key=${this.giphyApiKey}&limit=25`;
 
-    this.http.get<any>(url).subscribe((response) => {
-      this.gifResults = response.data.map(
-        (gif: any) => gif.images.original.url
-      ); // Only .gif URLs
-      console.log('Trending GIFs:', this.gifResults);
-    });
+      this.http.get<any>(url).subscribe((response) => {
+        this.gifResults = response.data.map(
+          (gif: any) => gif.images.original.url
+        ); // Only .gif URLs
+        console.log('Trending GIFs:', this.gifResults);
+      });
+    }
+  }
+
+  addEmoji(event: { emoji: { native: string } }): void {
+    this.newMessage += event.emoji.native;
   }
 
   searchGifs() {
@@ -406,9 +414,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     try {
       // You need to sign up for an API key at https://www.opengraph.io/
       const response = await fetch(
-        `https://opengraph.io/api/1.1/site/${encodeURIComponent(
-          url
-        )}?app_id=${this.openGraphApiKey}`
+        `https://opengraph.io/api/1.1/site/${encodeURIComponent(url)}?app_id=${
+          this.openGraphApiKey
+        }`
       );
       const data = await response.json();
       return data;
