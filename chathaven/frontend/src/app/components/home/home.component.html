@@ -10,7 +10,7 @@
             'message outgoing': msg.type === 'outgoing'
           }"
         >
-          <p>{{ msg.content }}</p>
+          <p [innerHTML]="msg.content | textToHtmlPipe"></p>
         </div>
       </ul>
     </div>

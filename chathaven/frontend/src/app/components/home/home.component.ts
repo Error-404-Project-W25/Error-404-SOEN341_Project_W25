@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common'; // Add this import
 import { FormsModule } from '@angular/forms'; // Add this import
 import { UserService } from '@services/user.service';
 import { BackendService } from '@services/backend.service'; // Add this import
+import { TextToHtmlPipe } from './../../../pipes/textToHtml.pipe'; // Add this import
 
 @Component({
   selector: 'app-home',
@@ -11,7 +12,7 @@ import { BackendService } from '@services/backend.service'; // Add this import
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, FormsModule], // Add this line
+  imports: [CommonModule, FormsModule, TextToHtmlPipe], // Add TextToHtmlPipe to imports
 })
 export class HomeComponent {
   isChatCardVisible: boolean = true; // Toggle chat visibility
