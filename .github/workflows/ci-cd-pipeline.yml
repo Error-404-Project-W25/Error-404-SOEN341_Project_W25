@@ -31,6 +31,7 @@ jobs:
           echo "DB_NAME=chatHavenDB" >> chathaven/.env
           echo "PORT=3000" >> chathaven/.env
           echo "FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> chathaven/.env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> chathaven/.env  # Add this line
 
       # Install backend dependencies
       - name: Install backend dependencies
