@@ -599,4 +599,28 @@ export class BackendService {
     }
     return undefined;
   }
+
+  ////////////////////// GIPHY //////////////////////
+
+  async getGifs(
+    query: string
+  ): Promise<{ url: string; title: string }[] | undefined> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{
+          gifs?: { url: string; title: string }[];
+          error?: string;
+        }>(`${this.backendURL}/gif/search/${query}`)
+      );
+
+      if (response.gifs) {
+        return response.gifs;
+      } else {
+        console.error(response.error);
+      }
+    } catch (error) {
+      console.error('Error fetching GIFs:', error);
+    }
+    return undefined;
+  }
 }

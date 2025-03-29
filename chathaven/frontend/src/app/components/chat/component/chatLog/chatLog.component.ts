@@ -288,17 +288,19 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.showGifPicker = !this.showGifPicker;
     if (this.showGifPicker) {
       this.showEmojiPicker = false; // Close emoji picker if GIF picker is opened
-    }
-    if (this.showGifPicker) {
       this.gifResults = [];
-      const url = `https://api.giphy.com/v1/gifs/trending?api_key=${this.giphyApiKey}&limit=25`;
+      this.searchGifs(); // Fetch trending GIFs by default
+    }
+  }
 
-      this.http.get<any>(url).subscribe((response) => {
-        this.gifResults = response.data.map(
-          (gif: any) => gif.images.original.url
-        ); // Only .gif URLs
-        console.log('Trending GIFs:', this.gifResults);
-      });
+  async searchGifs(): Promise<void> {
+    try {
+      const gifs = await this.backendService.getGifs(this.gifSearchQuery || 'trending');
+      if (gifs) {
+        this.gifResults = gifs.map((gif) => gif.url); // Extract GIF URLs
+      }
+    } catch (error) {
+      console.error('Error fetching GIFs:', error);
     }
   }
 
@@ -306,19 +308,8 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.newMessage += event.emoji.native;
   }
 
-  searchGifs() {
-    if (!this.gifSearchQuery.trim()) return;
-    const url = `https://api.giphy.com/v1/gifs/search?api_key=${this.giphyApiKey}&q=${this.gifSearchQuery}&limit=25`;
-
-    this.http.get<any>(url).subscribe((response) => {
-      this.gifResults = response.data.map(
-        (gif: any) => gif.images.original.url
-      ); // Only .gif URLs
-    });
-  }
-
   async selectGif(gifUrl: string) {
-    const cleanUrl = gifUrl.split('.gif')[0]; // Removes everything after "?"
+    const cleanUrl = gifUrl.split('?')[0]; // Removes everything after "?"
     this.gifSelected = cleanUrl;
     if (this.gifSelected) {
       const sender = this.userService.getUser();

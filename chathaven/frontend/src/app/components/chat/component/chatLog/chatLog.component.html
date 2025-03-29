@@ -184,10 +184,11 @@
     <div *ngIf="showGifPicker" class="gif-card">
       <div class="gif-header">
         <div class="gif-search">
-          <input
+            <input
             type="text"
             [(ngModel)]="gifSearchQuery"
             placeholder="Search for GIFs..."
+            (keyup.enter)="searchGifs()"
           />
           <button mat-icon-button (click)="searchGifs()" title="Search GIFs">
             <i class="fa fa-search" style="font-size: 24px"></i>
