@@ -18,6 +18,9 @@ import { RemoveMemberDialogComponent } from '../../dialogue/leave-channel/leave-
 interface SearchFilters {
   fromDate: string;
   toDate: string;
+  duringDate: string;
+  beforeDate: string;
+  afterDate: string;
 }
 
 @Component({
@@ -60,7 +63,10 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   showSearchFilters: boolean = false;
   searchFilters: SearchFilters = {
     fromDate: '',
-    toDate: ''
+    toDate: '',
+    duringDate: '',
+    beforeDate: '',
+    afterDate: ''
   };
 
   constructor(
@@ -243,6 +249,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   selectDirectMessage(directMessageId: string): void {
+    this.conversationId = directMessageId;
     this.dataService.selectConversation(directMessageId);
   }
 
@@ -299,35 +306,76 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   async performSearch() {
-    if (!this.searchQuery.trim() && !this.searchFilters.fromDate && !this.searchFilters.toDate) {
+    if (!this.searchQuery.trim() && !this.hasActiveFilters()) {
       this.searchResults = [];
       return;
     }
 
     try {
-      if (this.isDirectMessage && this.conversationId) {
+      if (this.isDirectMessage) {
+        const currentConversationId = this.conversationId;
+        if (!currentConversationId) {
+          console.error('No conversation selected');
+          return;
+        }
+
+        const filters = this.buildSearchFilters();
         this.searchResults = await this.backendService.searchDirectMessages(
-          this.conversationId,
+          currentConversationId,
           this.searchQuery,
-          this.searchFilters
+          filters
         );
+
+        // Add usernames to search results
+        for (const result of this.searchResults) {
+          const user = await this.backendService.getUserById(result.sender);
+          result.username = user?.username || 'Unknown User';
+        }
       } else if (this.selectedChannelId) {
         this.searchResults = await this.backendService.searchChannelMessages(
           this.selectedChannelId,
           this.searchQuery,
           this.searchFilters
         );
-      }
 
-      // Add usernames to search results
-      for (const result of this.searchResults) {
-        const user = await this.backendService.getUserById(result.sender);
-        result.username = user?.username || 'Unknown User';
+        // Add usernames to search results
+        for (const result of this.searchResults) {
+          const user = await this.backendService.getUserById(result.sender);
+          result.username = user?.username || 'Unknown User';
+        }
       }
     } catch (error) {
       console.error('Error searching messages:', error);
       this.searchResults = [];
     }
+  }
+
+  private hasActiveFilters(): boolean {
+    return !!(
+      this.searchFilters.fromDate ||
+      this.searchFilters.toDate ||
+      this.searchFilters.duringDate ||
+      this.searchFilters.beforeDate ||
+      this.searchFilters.afterDate
+    );
+  }
+
+  private buildSearchFilters() {
+    const filters: any = {};
+    
+    if (this.searchFilters.fromDate) {
+      filters.fromDate = new Date(this.searchFilters.fromDate).toISOString();
+    }
+    
+    if (this.searchFilters.toDate) {
+      filters.toDate = new Date(this.searchFilters.toDate).toISOString();
+    }
+    
+    if (this.searchFilters.duringDate) {
+      filters.duringDate = new Date(this.searchFilters.duringDate).toISOString();
+    }
+
+    return filters;
   }
 
   scrollToMessage(messageId: string) {
@@ -337,7 +385,10 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     this.showSearchFilters = false;
     this.searchFilters = {
       fromDate: '',
-      toDate: ''
+      toDate: '',
+      duringDate: '',
+      beforeDate: '',
+      afterDate: ''
     };
   }
 

@@ -56,57 +56,57 @@
         type="text" 
         [(ngModel)]="searchQuery"
         (input)="onSearch()"
+        (focus)="showSearchFilters = true"
         placeholder="Search messages..."
         class="search-input"
-        (focus)="showSearchFilters = true"
       />
       <i class="fas fa-search search-icon" (click)="onSearch()"></i>
     </div>
 
-    <!-- Search filters -->
-    <div class="search-filters" *ngIf="showSearchFilters">
+    <!-- Enhanced Search filters for Direct Messages -->
+    <div class="search-filters" *ngIf="showSearchFilters && isDirectMessage">
       <div class="filter-header">
-        <span>Search Filters</span>
+        <span>Search Options</span>
         <button class="close-filters" (click)="showSearchFilters = false">
           <i class="fas fa-times"></i>
         </button>
       </div>
-      <div class="filter-group">
-        <label>From Date:</label>
-        <input 
-          type="date" 
-          [(ngModel)]="searchFilters.fromDate"
-          (change)="onSearch()"
-        />
-      </div>
-      <div class="filter-group">
-        <label>To Date:</label>
-        <input 
-          type="date" 
-          [(ngModel)]="searchFilters.toDate"
-          (change)="onSearch()"
-        />
+
+      <div class="filter-section">
+        <div class="filter-group">
+          <label>Before:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="searchFilters.fromDate"
+            (change)="onSearch()"
+          />
+        </div>
+
+        <div class="filter-group">
+          <label>After:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="searchFilters.toDate"
+            (change)="onSearch()"
+          />
+        </div>
+
+        <div class="filter-group">
+          <label>During:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="searchFilters.duringDate"
+            (change)="onSearch()"
+          />
+        </div>
       </div>
     </div>
-
-    <!-- Search results -->
     <div class="search-results" *ngIf="searchResults.length > 0">
-      <!-- Jump to conversation/channel header -->
-      <div class="search-header">JUMP TO</div>
-      <!-- Results list -->
-      <div class="search-result" *ngFor="let result of searchResults" (click)="scrollToMessage(result.messageId)">
-        <div class="result-location">
-          <i class="fa" [ngClass]="result.isDirectMessage ? 'fa-user' : 'fa-hashtag'"></i>
-          <span>{{ result.channelName || result.conversationName }}</span>
-        </div>
-        <div class="result-content">
-          <div class="result-user">
-            <i class="fas fa-user-circle"></i>
-            <span>{{ result.username }}</span>
-          </div>
-          <div class="result-text" [innerHTML]="highlightText(result.content)"></div>
-          <div class="result-time">{{ result.timestamp | date:'shortTime' }}</div>
-        </div>
+      <div class="search-results-header">Search Results</div>
+      <div class="search-result-item" *ngFor="let result of searchResults" (click)="scrollToMessage(result.messageId)">
+        <div class="result-user">{{ result.username }}</div>
+        <div class="result-content" [innerHTML]="highlightText(result.content)"></div>
+        <div class="result-time">{{ result.time | date:'short' }}</div>
       </div>
     </div>
   </div>
