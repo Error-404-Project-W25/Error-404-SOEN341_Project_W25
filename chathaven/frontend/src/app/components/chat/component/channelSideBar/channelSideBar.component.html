@@ -49,6 +49,19 @@
       </section>
     </label>
   </div>
+  <!-- Search bar -->
+  <div class="search-wrapper">
+    <div class="search-container">
+      <input 
+        type="text" 
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+        placeholder="Search messages..."
+        class="search-input"
+      />
+      <i class="fas fa-search search-icon"></i>
+    </div>
+    <!-- Search results dropdown container here -->
 
   <div class="channel-list" id="channel-list" *ngIf="!isDirectMessage">
     <div *ngIf="channelList.length <= 0" class="loading"> Loading Channel ...</div>
