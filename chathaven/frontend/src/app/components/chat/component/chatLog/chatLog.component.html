@@ -112,18 +112,15 @@
                 <ng-template #nonGifUrl>
                   <a [href]="segment.value" target="_blank">
                     <ng-container *ngIf="previewData[segment.value] as data">
-                      <div class="preview-container" *ngIf="data.hybridGraph">
+                      <div class="preview-container">
                         <div class="preview-title">
-                          <!-- {{ data.hybridGraph.title }} -->
+                          {{ data.title }}
                         </div>
                         <div class="preview-description">
-                          <!-- {{ data.hybridGraph.description }} -->
+                          {{ data.description }}
                         </div>
                         <div class="preview-img-container">
-                          <!-- <img
-                            [src]="data.hybridGraph.image"
-                            alt="Preview Image"
-                          /> -->
+                          <img [src]="data.image" alt="Preview Image" />
                         </div>
                       </div>
                     </ng-container>
@@ -184,7 +181,7 @@
     <div *ngIf="showGifPicker" class="gif-card">
       <div class="gif-header">
         <div class="gif-search">
-            <input
+          <input
             type="text"
             [(ngModel)]="gifSearchQuery"
             placeholder="Search for GIFs..."

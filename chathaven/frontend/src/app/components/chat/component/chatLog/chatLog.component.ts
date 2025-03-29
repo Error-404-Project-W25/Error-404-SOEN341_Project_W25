@@ -57,8 +57,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   gifSearchQuery: string = '';
   gifSelected: string = '';
 
-  giphyApiKey = '';
-  openGraphApiKey = '';
 
   userIdToName: { [userId: string]: string } = {};
   previewData: { [url: string]: any } = {};
@@ -128,102 +126,120 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  async loadMessages(): Promise<void> {
-    if (!this.messages.length) {
-      this.isMessageLoading = true;
-    }
-
-    const messages = await this.backendService.getMessages(
-      this.selectedConversationId
-    );
-    if (messages) {
-      const uniqueSenderIds = [...new Set(messages.map((msg) => msg.sender))];
-      for (const userId of uniqueSenderIds) {
-        if (!this.userIdToName[userId]) {
-          const user = await this.backendService.getUserById(userId);
-          if (user) {
-            this.userIdToName[userId] = user.username;
-          }
-        }
-      }
-      this.messages = messages;
-    }
-
-    const fetchedUrls = new Set<string>();
-    for (const message of this.messages) {
-      const urls = this.extractUrls(message.content);
-      for (const url of urls) {
-        if (!this.previewData[url]) {
-          if (!url.endsWith('.gif')) {
-            this.previewData[url] = await this.getOpenGraphData(url);
-          }
-        }
-      }
-    }
-
-    this.isMessageLoading = false;
-    setTimeout(() => this.scrollToBottom(), 50);
-  }
-
   private scrollToBottom(): void {
     const chatLog = document.querySelector('.chat-log');
     if (chatLog) {
       chatLog.scrollTop = chatLog.scrollHeight;
     }
   }
+  async loadMessages(): Promise<void> {
+    if (!this.messages.length) {
+      this.isMessageLoading = true;
+    }
 
-  async sendMessage() {
-    if (this.newMessage) {
-      const sender = this.userService.getUser();
+    try {
+      const messages = await this.backendService.getMessages(
+        this.selectedConversationId
+      );
+      if (messages) {
+        const uniqueSenderIds = [...new Set(messages.map((msg) => msg.sender))];
 
-      if (!sender || !this.selectedConversationId) {
-        console.error('No sender or conversation ID found');
-        if (!this.selectedConversationId) alert('No conversation ID selected');
-        return;
-      }
-
-      const messageContent = this.newMessage;
-      this.newMessage = '';
-
-      try {
-        const success = await this.backendService.sendMessage(
-          messageContent,
-          sender.userId,
-          this.selectedConversationId,
-          this.quoteMessage?.messageId
-        );
-
-        if (success) {
-          const newMessage: IMessage = {
-            messageId: Date.now().toString(),
-            content: messageContent,
-            sender: sender.userId,
-            time: new Date().toISOString(),
-          };
-
-          this.messages.push(newMessage);
-          this.userIdToName[sender.userId] = sender.username;
-
-          const urls = this.extractUrls(messageContent);
-          const fetchedUrls = new Set<string>();
-          for (const url of urls) {
-            if (!this.previewData[url] && !fetchedUrls.has(url)) {
-              this.previewData[url] = await this.getOpenGraphData(url);
-              fetchedUrls.add(url);
+        for (const userId of uniqueSenderIds) {
+          if (!this.userIdToName[userId]) {
+            const user = await this.backendService.getUserById(userId);
+            if (user) {
+              this.userIdToName[userId] = user.username;
             }
           }
-
-          setTimeout(() => this.scrollToBottom(), 0);
-
-          this.refreshMessages();
         }
-      } catch (error) {
-        console.error('Error sending message:', error);
-        alert('Failed to send message. Please try again.');
+
+        this.messages = messages;
       }
-      this.quoteMessage = null;
+
+      // Fetch link previews (avoid fetching duplicate URLs)
+      const fetchedUrls = new Set<string>();
+      for (const message of this.messages) {
+        const urls = this.extractUrls(message.content);
+        for (const url of urls) {
+          if (
+            !this.previewData[url] &&
+            !url.endsWith('.gif') &&
+            !fetchedUrls.has(url)
+          ) {
+            this.previewData[url] = await this.backendService.getUrlPreview(
+              url
+            ); // Use BackendService
+            fetchedUrls.add(url);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading messages:', error);
+      alert('Failed to load messages. Please try again.');
     }
+
+    this.isMessageLoading = false;
+    setTimeout(() => this.scrollToBottom(), 50);
+  }
+
+  async sendMessage(): Promise<void> {
+    if (!this.newMessage.trim()) return;
+
+    const sender = this.userService.getUser();
+
+    if (!sender || !this.selectedConversationId) {
+      console.error('No sender or conversation ID found');
+      if (!this.selectedConversationId) alert('No conversation ID selected');
+      return;
+    }
+
+    const messageContent = this.newMessage.trim();
+    this.newMessage = '';
+
+    try {
+      const success = await this.backendService.sendMessage(
+        messageContent,
+        sender.userId,
+        this.selectedConversationId,
+        this.quoteMessage?.messageId
+      );
+
+      if (success) {
+        const newMessage: IMessage = {
+          messageId: Date.now().toString(),
+          content: messageContent,
+          sender: sender.userId,
+          time: new Date().toISOString(),
+        };
+
+        this.messages.push(newMessage);
+        this.userIdToName[sender.userId] = sender.username;
+
+        // Fetch link previews efficiently
+        const fetchedUrls = new Set<string>();
+        const urls = this.extractUrls(messageContent);
+        for (const url of urls) {
+          if (
+            !this.previewData[url] &&
+            !url.endsWith('.gif') &&
+            !fetchedUrls.has(url)
+          ) {
+            this.previewData[url] = await this.backendService.getUrlPreview(
+              url
+            ); // Use BackendService
+            fetchedUrls.add(url);
+          }
+        }
+
+        setTimeout(() => this.scrollToBottom(), 0);
+        this.refreshMessages();
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again.');
+    }
+
+    this.quoteMessage = null;
   }
 
   private async refreshMessages(): Promise<void> {
@@ -295,7 +311,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   async searchGifs(): Promise<void> {
     try {
-      const gifs = await this.backendService.getGifs(this.gifSearchQuery || 'trending');
+      const gifs = await this.backendService.getGifs(
+        this.gifSearchQuery || 'trending'
+      );
       if (gifs) {
         this.gifResults = gifs.map((gif) => gif.url); // Extract GIF URLs
       }
@@ -401,34 +419,20 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     return segments;
   }
 
-  async getOpenGraphData(url: string): Promise<any> {
+  async getLinkPreviewData(url: string): Promise<any> {
     try {
-      const response = await fetch(
-        `https://opengraph.io/api/1.1/site/${encodeURIComponent(url)}?app_id=${
-          this.openGraphApiKey
-        }`
-      );
-
-      if (response.status === 403) {
-        console.error(
-          'OpenGraph API returned 403 Forbidden. Check your API key or request limits.'
-        );
-        return { hybridGraph: null }; // Return a fallback object
-      }
-
-      const data = await response.json();
-      return data;
+      return await this.backendService.getUrlPreview(url); // Use BackendService
     } catch (error) {
-      console.error('Error fetching OpenGraph data:', error);
-      return { hybridGraph: null }; // Return a fallback object
+      console.error('Error fetching LinkPreview data:', error);
+      return null; // Return null as a fallback
     }
   }
 
   async previewLink(url: string): Promise<void> {
-    const ogData = await this.getOpenGraphData(url);
-    if (ogData) {
-      console.log('OpenGraph Data:', ogData);
-      // You can now use this data to display a preview in your component
+    const previewData = await this.getLinkPreviewData(url); // Use updated method
+    if (previewData) {
+      console.log('LinkPreview Data:', previewData);
+      // Use this data to display the preview in your component
     }
   }
 

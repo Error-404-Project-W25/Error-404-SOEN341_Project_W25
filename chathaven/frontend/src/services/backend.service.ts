@@ -623,4 +623,22 @@ export class BackendService {
     }
     return undefined;
   }
+
+  ///////////// URL PREVIEW /////////////
+  async getUrlPreview(url: string): Promise<any | undefined> {
+    try {
+      console.log('Requesting URL Preview for:', url); // Log the request
+      const response = await firstValueFrom(
+        this.http.post<{ title: string; description: string; image: string }>(
+          `${this.backendURL}/url-preview/preview`,
+          { url }
+        )
+      );
+      console.log('URL Preview Response:', response); // Log the response
+      return response;
+    } catch (error) {
+      console.error('Error fetching URL preview:', error);
+      return undefined;
+    }
+  }
 }
