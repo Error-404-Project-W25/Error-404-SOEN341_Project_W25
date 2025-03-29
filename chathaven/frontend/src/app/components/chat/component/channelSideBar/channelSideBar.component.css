@@ -396,6 +396,7 @@ ul {
   border-radius: 4px;
   max-height: 300px;
   overflow-y: auto;
+<<<<<<< HEAD
   z-index: 1001;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
@@ -444,56 +445,32 @@ ul {
   text-transform: uppercase;
   letter-spacing: 0.02em;
   border-bottom: 1px solid var(--border-color);
+=======
+  z-index: 1000;
+  margin: 4px 12px;
+>>>>>>> parent of 89672469 (implemented date search filter on frontend)
 }
 
 .search-result {
-  padding: 8px 16px;
-  cursor: pointer;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
 }
 
 .search-result:hover {
   background-color: var(--hover-color);
 }
 
-.result-location {
+.result-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  color: var(--muted-color);
-  font-size: 14px;
   margin-bottom: 4px;
 }
 
-.result-location i {
-  font-size: 12px;
-}
-
-.result-content {
-  margin-left: 20px;
-}
-
-.result-user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.result-username {
+  font-weight: 600;
   color: var(--primary-text-color);
-  font-size: 14px;
-  margin-bottom: 4px;
-}
-
-.result-user i {
-  font-size: 16px;
-  color: var(--muted-color);
-}
-
-.result-text {
-  color: var(--secondary-text-color);
-  font-size: 14px;
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .result-time {
@@ -501,11 +478,19 @@ ul {
   color: var(--muted-color);
 }
 
+.result-message {
+  color: var(--secondary-text-color);
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .highlight {
-  background-color: var(--primary-color);
-  color: var(--primary-text-color);
+  background-color: var(--secondary-color);
   padding: 0 2px;
   border-radius: 2px;
+<<<<<<< HEAD
   opacity: 0.7;
 }
 
@@ -591,6 +576,8 @@ ul {
 .filter-group input:focus {
   outline: none;
   border-color: var(--primary-color);
+=======
+>>>>>>> parent of 89672469 (implemented date search filter on frontend)
 }
 
 .filter-group input[type="date"] {

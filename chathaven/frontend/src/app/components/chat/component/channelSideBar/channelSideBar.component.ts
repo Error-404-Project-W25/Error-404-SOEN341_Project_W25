@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { DataService } from '@services/data.service';
 import { JoinRequestDialog } from '../../dialogue/join-request/join-request.dialogue';
 import { RemoveMemberDialogComponent } from '../../dialogue/leave-channel/leave-channel.dialogue';
 
+<<<<<<< HEAD
 interface SearchFilters {
   fromDate: string;
   toDate: string;
@@ -23,6 +24,8 @@ interface SearchFilters {
   afterDate: string;
 }
 
+=======
+>>>>>>> parent of 89672469 (implemented date search filter on frontend)
 @Component({
   selector: 'chat-channel-sidebar',
   templateUrl: './channelSideBar.component.html',
@@ -55,6 +58,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   //output
   conversationId: string | null = null;
+<<<<<<< HEAD
   @Output() messageSelected = new EventEmitter<string>();
 
   searchQuery: string = '';
@@ -68,6 +72,8 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     beforeDate: '',
     afterDate: ''
   };
+=======
+>>>>>>> parent of 89672469 (implemented date search filter on frontend)
 
   constructor(
     public dialog: MatDialog,
@@ -294,6 +300,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       return null;
     }
   }
+<<<<<<< HEAD
 
   onSearch() {
     if (this.searchDebouncer) {
@@ -397,4 +404,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     const regex = new RegExp(`(${this.searchQuery})`, 'gi');
     return text.replace(regex, '<span class="highlight">$1</span>');
   }
+=======
+>>>>>>> parent of 89672469 (implemented date search filter on frontend)
 }
