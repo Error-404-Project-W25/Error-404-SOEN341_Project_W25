@@ -1,9 +1,10 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { ChatService } from 'src/services/chat.service';
 import { CommonModule } from '@angular/common'; // Add this import
 import { FormsModule } from '@angular/forms'; // Add this import
 import { UserService } from '@services/user.service';
+import { BackendService } from '@services/backend.service'; // Add this import
+import { TextToHtmlPipe } from './../../../pipes/textToHtml.pipe'; // Add this import
 
 @Component({
   selector: 'app-home',
@@ -11,15 +12,19 @@ import { UserService } from '@services/user.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
   encapsulation: ViewEncapsulation.None,
-  imports: [CommonModule, FormsModule], // Add this line
+  imports: [CommonModule, FormsModule, TextToHtmlPipe], // Add TextToHtmlPipe to imports
 })
 export class HomeComponent {
-
   isChatCardVisible: boolean = true; // Toggle chat visibility
   userMessage: string = ''; // Stores user input
   messages: { type: 'incoming' | 'outgoing'; content: string }[] = [];
   isLoading: boolean = false; // Show loading while waiting for GPT response
-  constructor(private router: Router, private userService: UserService, private chatService: ChatService) {}
+
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private backendService: BackendService // private geminiService: GeminiService
+  ) {}
 
   // On load / reload, check if user is logged in and go to chat if necessary
   ngOnInit() {
@@ -44,41 +49,35 @@ export class HomeComponent {
     }
   }
 
-  async sendMessage() {
-    console.log(this.userMessage);
-    if (!this.userMessage.trim()) return; // Prevent empty messages
+  private scrollToBottom(): void {
+    const chatLog = document.querySelector('.chat-window');
+    if (chatLog) {
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+  }
 
-    // Add user's message to chat
-    this.messages.push({ type: 'outgoing', content: this.userMessage });
-
-    // Clear input field
-    const userInput = this.userMessage;
-    this.userMessage = '';
-    this.isLoading = true;
-
-    try {
-      // Get GPT response
-      this.chatService.chat(userInput).subscribe(
-        (response: string) => {
-          this.messages.push({ type: 'incoming', content: response });
-        },
-        (error) => {
+  sendMessage() {
+    if (this.userMessage.trim()) {
+      this.messages.push({ type: 'outgoing', content: this.userMessage });
+      this.backendService
+        .promptChatbot(this.userMessage)
+        .then((response) => {
+          if (!response) {
+            throw new Error('Empty response from API');
+          }
+          const aiResponse = response; // Removed fallback message
+          this.messages.push({ type: 'incoming', content: aiResponse });
+          setTimeout(() => this.scrollToBottom(), 50);
+        })
+        .catch((err) => {
+          console.error('API Error:', err);
+          console.error('Error Details:', err.error); // Log more details
           this.messages.push({
             type: 'incoming',
-            content: 'Error getting response.',
+            content: '⚠️ API Error: Unable to fetch response',
           });
-        },
-        () => {
-          this.isLoading = false;
-        }
-      );
-    } catch (error) {
-      this.messages.push({
-        type: 'incoming',
-        content: 'Error getting response.',
-      });
-    } finally {
-      this.isLoading = false;
+        });
+      this.userMessage = '';
     }
   }
 }
