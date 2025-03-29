@@ -38,7 +38,6 @@ import { HttpClient } from '@angular/common/http';
 export class ChatLogComponent implements OnInit, OnDestroy {
   @Input() loginUser: IUser | undefined = undefined;
   showEmojiPicker = false;
-  showGifPicker = false;
   set: 'apple' | 'google' | 'twitter' | 'facebook' = 'twitter';
 
   isDarkTheme: boolean = true;
@@ -52,13 +51,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   selectedConversationId: string = '';
   isDirectMessage: boolean = false;
   isMessageLoading: boolean = false;
-
-  gifResults: any[] = [];
-  gifSearchQuery: string = '';
-  gifSelected: string = '';
-
-  giphyApiKey = '';
-  openGraphApiKey = '';
 
   userIdToName: { [userId: string]: string } = {};
   previewData: { [url: string]: any } = {};
@@ -150,18 +142,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       this.messages = messages;
     }
 
-    const fetchedUrls = new Set<string>();
-    for (const message of this.messages) {
-      const urls = this.extractUrls(message.content);
-      for (const url of urls) {
-        if (!this.previewData[url]) {
-          if (!url.endsWith('.gif')) {
-            this.previewData[url] = await this.getOpenGraphData(url);
-          }
-        }
-      }
-    }
-
     this.isMessageLoading = false;
     setTimeout(() => this.scrollToBottom(), 50);
   }
@@ -204,15 +184,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
           this.messages.push(newMessage);
           this.userIdToName[sender.userId] = sender.username;
-
-          const urls = this.extractUrls(messageContent);
-          const fetchedUrls = new Set<string>();
-          for (const url of urls) {
-            if (!this.previewData[url] && !fetchedUrls.has(url)) {
-              this.previewData[url] = await this.getOpenGraphData(url);
-              fetchedUrls.add(url);
-            }
-          }
 
           setTimeout(() => this.scrollToBottom(), 0);
 
@@ -279,84 +250,10 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   toggleEmojiPicker() {
     this.showEmojiPicker = !this.showEmojiPicker;
-    if (this.showEmojiPicker) {
-      this.showGifPicker = false; // Close GIF picker if emoji picker is opened
-    }
-  }
-
-  toggleGifPicker(): void {
-    this.showGifPicker = !this.showGifPicker;
-    if (this.showGifPicker) {
-      this.showEmojiPicker = false; // Close emoji picker if GIF picker is opened
-    }
-    if (this.showGifPicker) {
-      this.gifResults = [];
-      const url = `https://api.giphy.com/v1/gifs/trending?api_key=${this.giphyApiKey}&limit=25`;
-
-      this.http.get<any>(url).subscribe((response) => {
-        this.gifResults = response.data.map(
-          (gif: any) => gif.images.original.url
-        ); // Only .gif URLs
-        console.log('Trending GIFs:', this.gifResults);
-      });
-    }
   }
 
   addEmoji(event: { emoji: { native: string } }): void {
     this.newMessage += event.emoji.native;
-  }
-
-  searchGifs() {
-    if (!this.gifSearchQuery.trim()) return;
-    const url = `https://api.giphy.com/v1/gifs/search?api_key=${this.giphyApiKey}&q=${this.gifSearchQuery}&limit=25`;
-
-    this.http.get<any>(url).subscribe((response) => {
-      this.gifResults = response.data.map(
-        (gif: any) => gif.images.original.url
-      ); // Only .gif URLs
-    });
-  }
-
-  async selectGif(gifUrl: string) {
-    const cleanUrl = gifUrl.split('.gif')[0]; // Removes everything after "?"
-    this.gifSelected = cleanUrl;
-    if (this.gifSelected) {
-      const sender = this.userService.getUser();
-
-      if (!sender || !this.selectedConversationId) {
-        console.error('No sender or conversation ID found');
-        return;
-      }
-
-      try {
-        const success = await this.backendService.sendMessage(
-          this.gifSelected,
-          sender.userId,
-          this.selectedConversationId,
-          this.quoteMessage?.messageId
-        );
-
-        if (success) {
-          const newMessage: IMessage = {
-            messageId: Date.now().toString(),
-            content: this.gifSelected,
-            sender: sender.userId,
-            time: new Date().toISOString(),
-          };
-
-          this.messages.push(newMessage);
-          this.userIdToName[sender.userId] = sender.username;
-
-          setTimeout(() => this.scrollToBottom(), 0);
-
-          this.refreshMessages();
-        }
-      } catch (error) {
-        console.error('Error sending GIF:', error);
-        alert('Failed to send GIF. Please try again.');
-      }
-      this.gifSelected = '';
-    }
   }
 
   quotingMessage(messageId: IMessage): void {
@@ -371,74 +268,31 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     return this.messages.find((msg) => msg.messageId === messageId) || null;
   }
 
-  extractUrls(text: string): string[] {
-    const urlPattern =
-      /(?:https?:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
-    return text.match(urlPattern) || [];
-  }
-
   splitTextIntoSegments(
     text: string
   ): { type: 'text' | 'url'; value: string }[] {
     const urlPattern =
       /(?:https?:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
-    let segments: { type: 'text' | 'url'; value: string }[] = [];
+    const segments: { type: 'text' | 'url'; value: string }[] = [];
+    let match;
     let lastIndex = 0;
 
-    text.replace(urlPattern, (match, index) => {
-      // if (match.endsWith('.gif')) {
-      //   // Skip GIF URLs
-      //   lastIndex = index + match.length;
-      //   return match;
-      // }
-
-      if (index > lastIndex) {
+    while ((match = urlPattern.exec(text)) !== null) {
+      if (match.index > lastIndex) {
         segments.push({
           type: 'text',
-          value: text.substring(lastIndex, index),
+          value: text.slice(lastIndex, match.index),
         });
       }
-      segments.push({ type: 'url', value: match });
-      lastIndex = index + match.length;
-      return match;
-    });
+      segments.push({ type: 'url', value: match[0] });
+      lastIndex = match.index + match[0].length;
+    }
 
     if (lastIndex < text.length) {
-      segments.push({ type: 'text', value: text.substring(lastIndex) });
+      segments.push({ type: 'text', value: text.slice(lastIndex) });
     }
 
     return segments;
-  }
-
-  async getOpenGraphData(url: string): Promise<any> {
-    try {
-      const response = await fetch(
-        `https://opengraph.io/api/1.1/site/${encodeURIComponent(url)}?app_id=${
-          this.openGraphApiKey
-        }`
-      );
-
-      if (response.status === 403) {
-        console.error(
-          'OpenGraph API returned 403 Forbidden. Check your API key or request limits.'
-        );
-        return { hybridGraph: null }; // Return a fallback object
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching OpenGraph data:', error);
-      return { hybridGraph: null }; // Return a fallback object
-    }
-  }
-
-  async previewLink(url: string): Promise<void> {
-    const ogData = await this.getOpenGraphData(url);
-    if (ogData) {
-      console.log('OpenGraph Data:', ogData);
-      // You can now use this data to display a preview in your component
-    }
   }
 
   resetAll() {
