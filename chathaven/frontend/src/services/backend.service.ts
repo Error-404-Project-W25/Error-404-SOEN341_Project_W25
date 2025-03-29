@@ -15,6 +15,11 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 
+interface SearchFilters {
+  fromDate: string;
+  toDate: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -370,6 +375,28 @@ export class BackendService {
     return false;
   }
 
+  async searchChannelMessages(
+    channelId: string, 
+    query: string,
+    filters: SearchFilters
+  ): Promise<any[]> {
+    try {
+      let url = `${this.backendURL}/channels/${channelId}/messages/search?q=${query}`;
+      if (filters.fromDate) {
+        url += `&fromDate=${filters.fromDate}`;
+      }
+      if (filters.toDate) {
+        url += `&toDate=${filters.toDate}`;
+      }
+      
+      const response = await firstValueFrom(this.http.get<any[]>(url));
+      return response || [];
+    } catch (error) {
+      console.error('Error searching channel messages:', error);
+      return [];
+    }
+  }
+
   //////////////////////////// MESSAGES ////////////////////////////
 
   async sendMessage(
@@ -447,6 +474,28 @@ export class BackendService {
       console.error('Error getting messages:', error);
     }
     return undefined;
+  }
+
+  async searchDirectMessages(
+    conversationId: string, 
+    query: string,
+    filters: SearchFilters
+  ): Promise<any[]> {
+    try {
+      let url = `${this.backendURL}/conversations/${conversationId}/messages/search?q=${query}`;
+      if (filters.fromDate) {
+        url += `&fromDate=${filters.fromDate}`;
+      }
+      if (filters.toDate) {
+        url += `&toDate=${filters.toDate}`;
+      }
+      
+      const response = await firstValueFrom(this.http.get<any[]>(url));
+      return response || [];
+    } catch (error) {
+      console.error('Error searching direct messages:', error);
+      return [];
+    }
   }
 
   ///////////// CONVERSATIONS ///

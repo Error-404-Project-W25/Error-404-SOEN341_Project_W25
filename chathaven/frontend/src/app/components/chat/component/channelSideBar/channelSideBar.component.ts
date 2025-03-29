@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +14,11 @@ import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remov
 import { DataService } from '@services/data.service';
 import { JoinRequestDialog } from '../../dialogue/join-request/join-request.dialogue';
 import { RemoveMemberDialogComponent } from '../../dialogue/leave-channel/leave-channel.dialogue';
+
+interface SearchFilters {
+  fromDate: string;
+  toDate: string;
+}
 
 @Component({
   selector: 'chat-channel-sidebar',
@@ -47,6 +52,16 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   //output
   conversationId: string | null = null;
+  @Output() messageSelected = new EventEmitter<string>();
+
+  searchQuery: string = '';
+  searchResults: any[] = [];
+  searchDebouncer: any;
+  showSearchFilters: boolean = false;
+  searchFilters: SearchFilters = {
+    fromDate: '',
+    toDate: ''
+  };
 
   constructor(
     public dialog: MatDialog,
@@ -271,5 +286,64 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       console.log('error:', error);
       return null;
     }
+  }
+
+  onSearch() {
+    if (this.searchDebouncer) {
+      clearTimeout(this.searchDebouncer);
+    }
+
+    this.searchDebouncer = setTimeout(() => {
+      this.performSearch();
+    }, 300);
+  }
+
+  async performSearch() {
+    if (!this.searchQuery.trim() && !this.searchFilters.fromDate && !this.searchFilters.toDate) {
+      this.searchResults = [];
+      return;
+    }
+
+    try {
+      if (this.isDirectMessage && this.conversationId) {
+        this.searchResults = await this.backendService.searchDirectMessages(
+          this.conversationId,
+          this.searchQuery,
+          this.searchFilters
+        );
+      } else if (this.selectedChannelId) {
+        this.searchResults = await this.backendService.searchChannelMessages(
+          this.selectedChannelId,
+          this.searchQuery,
+          this.searchFilters
+        );
+      }
+
+      // Add usernames to search results
+      for (const result of this.searchResults) {
+        const user = await this.backendService.getUserById(result.sender);
+        result.username = user?.username || 'Unknown User';
+      }
+    } catch (error) {
+      console.error('Error searching messages:', error);
+      this.searchResults = [];
+    }
+  }
+
+  scrollToMessage(messageId: string) {
+    this.messageSelected.emit(messageId);
+    this.searchQuery = '';
+    this.searchResults = [];
+    this.showSearchFilters = false;
+    this.searchFilters = {
+      fromDate: '',
+      toDate: ''
+    };
+  }
+
+  highlightText(text: string): string {
+    if (!this.searchQuery) return text;
+    const regex = new RegExp(`(${this.searchQuery})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
   }
 }
