@@ -154,9 +154,10 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     for (const message of this.messages) {
       const urls = this.extractUrls(message.content);
       for (const url of urls) {
-        if (!this.previewData[url] && !fetchedUrls.has(url)) {
-          this.previewData[url] = await this.getOpenGraphData(url);
-          fetchedUrls.add(url);
+        if (!this.previewData[url]) {
+          if (!url.endsWith('.gif')) {
+            this.previewData[url] = await this.getOpenGraphData(url);
+          }
         }
       }
     }
@@ -317,9 +318,8 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   async selectGif(gifUrl: string) {
-    const cleanUrl = gifUrl.split('?')[0]; // Removes everything after "?"
+    const cleanUrl = gifUrl.split('.gif')[0]; // Removes everything after "?"
     this.gifSelected = cleanUrl;
-    console.log('Selected GIF:', gifUrl);
     if (this.gifSelected) {
       const sender = this.userService.getUser();
 
@@ -412,17 +412,24 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   async getOpenGraphData(url: string): Promise<any> {
     try {
-      // You need to sign up for an API key at https://www.opengraph.io/
       const response = await fetch(
         `https://opengraph.io/api/1.1/site/${encodeURIComponent(url)}?app_id=${
           this.openGraphApiKey
         }`
       );
+
+      if (response.status === 403) {
+        console.error(
+          'OpenGraph API returned 403 Forbidden. Check your API key or request limits.'
+        );
+        return { hybridGraph: null }; // Return a fallback object
+      }
+
       const data = await response.json();
       return data;
     } catch (error) {
       console.error('Error fetching OpenGraph data:', error);
-      return null;
+      return { hybridGraph: null }; // Return a fallback object
     }
   }
 

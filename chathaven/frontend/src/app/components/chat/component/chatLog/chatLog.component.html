@@ -102,39 +102,33 @@
               *ngFor="let segment of splitTextIntoSegments(message.content)"
             >
               <div *ngIf="segment.type === 'url'" class="link-preview">
-                <a [href]="segment.value" target="_blank">
-                  <ng-container *ngIf="previewData[segment.value] as data">
-                    <div
-                      *ngIf="
-                        segment.value.endsWith('.gif');
-                        else previewContainer
-                      "
-                    >
-                      <p></p>
-                      <img
-                        [src]="segment.value"
-                        alt="GIF Preview"
-                        class="gif"
-                      />
-                    </div>
-                    <ng-template #previewContainer>
-                      <div class="preview-container">
+                <ng-container
+                  *ngIf="segment.value.endsWith('.gif'); else nonGifUrl"
+                >
+                  <a [href]="segment.value" target="_blank">
+                    <img [src]="segment.value" alt="GIF Preview" class="gif" />
+                  </a>
+                </ng-container>
+                <ng-template #nonGifUrl>
+                  <a [href]="segment.value" target="_blank">
+                    <ng-container *ngIf="previewData[segment.value] as data">
+                      <div class="preview-container" *ngIf="data.hybridGraph">
                         <div class="preview-title">
-                          <!-- {{ data.hybridGraph.title }} -->
+                          {{ data.hybridGraph.title }}
                         </div>
                         <div class="preview-description">
-                          <!-- {{ data.hybridGraph.description }} -->
+                          {{ data.hybridGraph.description }}
                         </div>
                         <div class="preview-img-container">
-                          <!-- <img
+                          <img
                             [src]="data.hybridGraph.image"
                             alt="Preview Image"
-                          /> -->
+                          />
                         </div>
                       </div>
-                    </ng-template>
-                  </ng-container>
-                </a>
+                    </ng-container>
+                  </a>
+                </ng-template>
               </div>
             </ng-container>
           </div>
