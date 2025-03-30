@@ -218,15 +218,25 @@ export const searchDirectMessages = async (req: Request, res: Response) => {
       // After Date: Show messages AFTER (but not including) the selected date
       if (filters.afterDate) {
         try {
-          const afterDate = new Date(filters.afterDate);
+          const inputDate = filters.afterDate.split('T')[0];
+          console.log(`Processing afterDate filter with date: ${inputDate}`);
+          
+          const afterDate = new Date(`${inputDate}T23:59:59.999Z`);
           
           if (isNaN(afterDate.getTime())) {
-            console.log(`Invalid afterDate: ${filters.afterDate}`);
+            console.log(`Invalid afterDate: ${inputDate}`);
           } else {
-            afterDate.setHours(23, 59, 59, 999); // End of the selected day
-            console.log(`Filtering messages after ${filters.afterDate} (${afterDate.toISOString()})`);
+            console.log(`Filtering messages after ${inputDate} (${afterDate.toISOString()})`);
             
             const originalCount = messages.length;
+            messages.slice(0, 3).forEach((msg, i) => {
+              try {
+                const msgDate = new Date(msg.time);
+                const isAfterFilter = msgDate > afterDate;
+                console.log(`Sample message ${i}: ${msg.time} -> Compare: ${isAfterFilter}`);
+              } catch (err) {}
+            });
+            
             messages = messages.filter(msg => {
               try {
                 const msgDate = new Date(msg.time);
