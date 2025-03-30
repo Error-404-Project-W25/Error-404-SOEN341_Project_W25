@@ -131,6 +131,11 @@ export const searchDirectMessages = async (req: Request, res: Response) => {
   try {
     const { conversationId, searchQuery, filters } = req.body;
 
+    console.log('--------- SEARCH REQUEST ---------');
+    console.log('Search query:', searchQuery || 'none');
+    console.log('Filters:', filters ? JSON.stringify(filters) : 'none');
+    console.log('--------------------------------');
+
     if (!conversationId) {
       res.status(400).json({ error: 'Missing conversation ID' });
       return;
@@ -153,48 +158,158 @@ export const searchDirectMessages = async (req: Request, res: Response) => {
     if (filters) {
       console.log('Received filters:', filters);
       
+      // Safely log message timestamps (with validation)
+      console.log('First few message timestamps:');
+      messages.slice(0, 5).forEach(msg => {
+        try {
+          const msgDate = new Date(msg.time);
+          // Check if date is valid before calling toISOString()
+          if (!isNaN(msgDate.getTime())) {
+            console.log(`- ${msg.time} (${msgDate.toISOString()})`);
+          } else {
+            console.log(`- ${msg.time} (INVALID DATE)`);
+          }
+        } catch (err: Error | any) {
+          console.log(`- ${msg.time} (ERROR: ${err.message})`);
+        }
+      });
+      
       // Before Date: Show messages BEFORE (but not including) the selected date
       if (filters.beforeDate) {
-        const beforeDate = new Date(filters.beforeDate);
-        beforeDate.setHours(0, 0, 0, 0); // Start of the selected day
-        messages = messages.filter(msg => new Date(msg.time) < beforeDate);
-        console.log(`Filtered to ${messages.length} messages before ${beforeDate.toISOString()}`);
-      } 
+        try {
+          const inputDate = filters.beforeDate.split('T')[0];
+          console.log(`Processing beforeDate filter with date: ${inputDate}`);
+          
+          const beforeDate = new Date(`${inputDate}T00:00:00.000Z`);
+          
+          if (isNaN(beforeDate.getTime())) {
+            console.log(`Invalid beforeDate: ${inputDate}`);
+          } else {
+            console.log(`Filtering messages before ${inputDate} (${beforeDate.toISOString()})`);
+            
+            const originalCount = messages.length;
+            // Log some message times to debug
+            messages.slice(0, 3).forEach((msg, i) => {
+              try {
+                const msgDate = new Date(msg.time);
+                const isBeforeFilter = msgDate < beforeDate;
+                console.log(`Sample message ${i}: ${msg.time} -> Compare: ${isBeforeFilter}`);
+              } catch (err) {}
+            });
+            
+            messages = messages.filter(msg => {
+              try {
+                const msgDate = new Date(msg.time);
+                // Only include valid dates in the comparison
+                return !isNaN(msgDate.getTime()) && msgDate < beforeDate;
+              } catch (err: Error | any) {
+                console.log(`Error processing message time: ${msg.time}, ${err.message}`);
+                return false;
+              }
+            });
+            
+            console.log(`Filtered from ${originalCount} to ${messages.length} messages before ${beforeDate.toISOString()}`);
+          }
+        } catch (err: Error | any) {
+          console.log(`Error processing beforeDate filter: ${err.message}`);
+        }
+      }
       
       // After Date: Show messages AFTER (but not including) the selected date
       if (filters.afterDate) {
-        const afterDate = new Date(filters.afterDate);
-        afterDate.setHours(23, 59, 59, 999); // End of the selected day
-        messages = messages.filter(msg => new Date(msg.time) > afterDate);
-        console.log(`Filtered to ${messages.length} messages after ${afterDate.toISOString()}`);
+        try {
+          const afterDate = new Date(filters.afterDate);
+          
+          if (isNaN(afterDate.getTime())) {
+            console.log(`Invalid afterDate: ${filters.afterDate}`);
+          } else {
+            afterDate.setHours(23, 59, 59, 999); // End of the selected day
+            console.log(`Filtering messages after ${filters.afterDate} (${afterDate.toISOString()})`);
+            
+            const originalCount = messages.length;
+            messages = messages.filter(msg => {
+              try {
+                const msgDate = new Date(msg.time);
+                return !isNaN(msgDate.getTime()) && msgDate > afterDate;
+              } catch (err: Error | any) {
+                console.log(`Error processing message time: ${msg.time}, ${err.message}`);
+                return false;
+              }
+            });
+            
+            console.log(`Filtered from ${originalCount} to ${messages.length} messages after ${afterDate.toISOString()}`);
+          }
+        } catch (err: Error | any) {
+          console.log(`Error processing afterDate filter: ${err.message}`);
+        }
       }
       
       // During Date: Show messages ONLY from the selected date
       if (filters.duringDate) {
-        const duringDateStr = filters.duringDate; // Should be in YYYY-MM-DD format
-        
-        const startOfDay = new Date(`${duringDateStr}T00:00:00`);
-        const endOfDay = new Date(`${duringDateStr}T23:59:59.999`);
-        
-        messages = messages.filter(msg => {
-          const msgDate = new Date(msg.time);
-          return msgDate >= startOfDay && msgDate <= endOfDay;
-        });
-        console.log(`Filtered to ${messages.length} messages during ${duringDateStr}`);
+        try {
+          const duringDateStr = filters.duringDate; // Should be in YYYY-MM-DD format
+          
+          const startOfDay = new Date(`${duringDateStr}T00:00:00`);
+          const endOfDay = new Date(`${duringDateStr}T23:59:59.999`);
+          
+          if (isNaN(startOfDay.getTime()) || isNaN(endOfDay.getTime())) {
+            console.log(`Invalid duringDate: ${duringDateStr}`);
+          } else {
+            console.log(`Filtering messages during ${duringDateStr} (${startOfDay.toISOString()} to ${endOfDay.toISOString()})`);
+            
+            const originalCount = messages.length;
+            messages = messages.filter(msg => {
+              try {
+                const msgDate = new Date(msg.time);
+                return !isNaN(msgDate.getTime()) && msgDate >= startOfDay && msgDate <= endOfDay;
+              } catch (err: Error | any) {
+                console.log(`Error processing message time: ${msg.time}, ${err.message}`);
+                return false;
+              }
+            });
+            
+            console.log(`Filtered from ${originalCount} to ${messages.length} messages during ${duringDateStr}`);
+          }
+        } catch (err: Error | any) {
+          console.log(`Error processing duringDate filter: ${err.message}`);
+        }
       }
       
+      // Legacy support - keep these if needed
       if (!filters.afterDate && filters.fromDate) {
-        const fromDate = new Date(filters.fromDate);
-        messages = messages.filter(msg => 
-          new Date(msg.time) >= fromDate
-        );
+        try {
+          const fromDate = new Date(filters.fromDate);
+          if (!isNaN(fromDate.getTime())) {
+            messages = messages.filter(msg => {
+              try {
+                const msgDate = new Date(msg.time);
+                return !isNaN(msgDate.getTime()) && msgDate >= fromDate;
+              } catch {
+                return false;
+              }
+            });
+          }
+        } catch (err: Error | any) {
+          console.log(`Error processing fromDate filter: ${err.message}`);
+        }
       }
       
       if (!filters.beforeDate && filters.toDate) {
-        const toDate = new Date(filters.toDate); 
-        messages = messages.filter(msg => 
-          new Date(msg.time) <= toDate
-        );
+        try {
+          const toDate = new Date(filters.toDate);
+          if (!isNaN(toDate.getTime())) {
+            messages = messages.filter(msg => {
+              try {
+                const msgDate = new Date(msg.time);
+                return !isNaN(msgDate.getTime()) && msgDate <= toDate;
+              } catch {
+                return false;
+              }
+            });
+          }
+        } catch (err: Error | any) {
+          console.log(`Error processing toDate filter: ${err.message}`);
+        }
       }
     }
 
