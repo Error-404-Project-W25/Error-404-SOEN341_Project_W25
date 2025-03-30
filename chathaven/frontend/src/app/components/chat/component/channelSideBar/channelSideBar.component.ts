@@ -306,6 +306,8 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       this.showSearchFilters = false;
       this.searchResults = [];
       
+      this.searchQuery = '';
+      
       this.searchFilters = {
         beforeDate: '',
         afterDate: '',
