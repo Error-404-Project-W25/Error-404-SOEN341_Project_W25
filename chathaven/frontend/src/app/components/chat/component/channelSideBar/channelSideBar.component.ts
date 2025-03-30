@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, Output, EventEmitter, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -292,6 +292,17 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.log('error:', error);
       return null;
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleClickOutside(event: MouseEvent) {
+    const searchWrapper = document.querySelector('.search-wrapper');
+    const target = event.target as HTMLElement;
+
+    if (searchWrapper && !searchWrapper.contains(target)) {
+      this.showSearchFilters = false;
+      this.searchResults = [];
     }
   }
 

@@ -50,7 +50,7 @@
     </label>
   </div>
   <!-- Search bar -->
-  <div class="search-wrapper">
+  <div class="search-wrapper" (click)="$event.stopPropagation()">
     <div class="search-container">
       <input 
         type="text" 
