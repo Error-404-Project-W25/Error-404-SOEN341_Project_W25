@@ -78,7 +78,8 @@
           <input 
             type="date" 
             [(ngModel)]="searchFilters.beforeDate"
-            (change)="onSearch()"
+            (change)="onDateFilterChange('beforeDate', $event)"
+            [disabled]="activeDateFilter !== null && activeDateFilter !== 'beforeDate'"
           />
         </div>
 
@@ -87,7 +88,8 @@
           <input 
             type="date" 
             [(ngModel)]="searchFilters.afterDate"
-            (change)="onSearch()"
+            (change)="onDateFilterChange('afterDate', $event)"
+            [disabled]="activeDateFilter !== null && activeDateFilter !== 'afterDate'"
           />
         </div>
 
@@ -96,7 +98,8 @@
           <input 
             type="date" 
             [(ngModel)]="searchFilters.duringDate"
-            (change)="onSearch()"
+            (change)="onDateFilterChange('duringDate', $event)" 
+            [disabled]="activeDateFilter !== null && activeDateFilter !== 'duringDate'"
           />
         </div>
       </div>

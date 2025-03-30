@@ -606,3 +606,9 @@ ul {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 1px var(--primary-color);
 }
+
+.filter-group input[type="date"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--dark-muted-color);
+}

@@ -65,6 +65,9 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     duringDate: '',
   };
 
+  // Add this new property 
+  activeDateFilter: 'beforeDate' | 'afterDate' | 'duringDate' | null = null;
+
   constructor(
     public dialog: MatDialog,
     private userService: UserService,
@@ -305,6 +308,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         afterDate: '',
         duringDate: ''
       };
+      this.activeDateFilter = null;
     }
   }
 
@@ -414,6 +418,24 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     if (!this.searchQuery) return text;
     const regex = new RegExp(`(${this.searchQuery})`, 'gi');
     return text.replace(regex, '<span class="highlight">$1</span>');
+  }
+
+  onDateFilterChange(filterType: 'beforeDate' | 'afterDate' | 'duringDate', event: any): void {
+    if (event.target.value) {
+      this.activeDateFilter = filterType;
+      
+      // Clear other filters
+      if (filterType !== 'beforeDate') this.searchFilters.beforeDate = '';
+      if (filterType !== 'afterDate') this.searchFilters.afterDate = '';
+      if (filterType !== 'duringDate') this.searchFilters.duringDate = '';
+    } else {
+      // If the filter was cleared, reset the active filter
+      if (this.activeDateFilter === filterType) {
+        this.activeDateFilter = null;
+      }
+    }
+    
+    this.onSearch();
   }
 }
 
