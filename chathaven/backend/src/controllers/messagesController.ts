@@ -170,6 +170,16 @@ export const searchDirectMessages = async (req: Request, res: Response) => {
                  msgDate.getDate() === during.getDate();
         });
       }
+      if (filters.beforeDate) {
+        messages = messages.filter(msg => 
+          new Date(msg.time) <= new Date(filters.beforeDate)
+        );
+      }
+      if (filters.afterDate) {
+        messages = messages.filter(msg => 
+          new Date(msg.time) >= new Date(filters.afterDate)
+        );
+      }
     }
 
     res.status(200).json({ messages });

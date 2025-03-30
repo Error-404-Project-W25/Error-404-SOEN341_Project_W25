@@ -16,11 +16,9 @@ import { JoinRequestDialog } from '../../dialogue/join-request/join-request.dial
 import { RemoveMemberDialogComponent } from '../../dialogue/leave-channel/leave-channel.dialogue';
 
 interface SearchFilters {
-  fromDate: string;
-  toDate: string;
-  duringDate: string;
-  beforeDate: string;
-  afterDate: string;
+  beforeDate?: string;  // Changed from fromDate
+  afterDate?: string;   // Changed from toDate
+  duringDate?: string;
 }
 
 @Component({
@@ -62,11 +60,9 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   searchDebouncer: any;
   showSearchFilters: boolean = false;
   searchFilters: SearchFilters = {
-    fromDate: '',
-    toDate: '',
-    duringDate: '',
     beforeDate: '',
-    afterDate: ''
+    afterDate: '',
+    duringDate: '',
   };
 
   constructor(
@@ -307,7 +303,8 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   onSearch() {
-    if (!this.searchQuery.trim()) {
+    // Only clear results if there's no search query AND no active filters
+    if (!this.searchQuery.trim() && !this.hasActiveFilters()) {
       this.searchResults = [];
       return;
     }
@@ -322,11 +319,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   async performSearch() {
-    if (!this.searchQuery.trim() && !this.hasActiveFilters()) {
-      this.searchResults = [];
-      return;
-    }
-
     try {
       if (this.isDirectMessage) {
         const allSearchResults: any[] = [];
@@ -334,7 +326,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
           const filters = this.buildSearchFilters();
           const results = await this.backendService.searchDirectMessages(
             conversation.conversationId,
-            this.searchQuery,
+            this.searchQuery.trim(), 
             filters
           );
           
@@ -354,7 +346,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       } else if (this.selectedChannelId) {
         this.searchResults = await this.backendService.searchChannelMessages(
           this.selectedChannelId,
-          this.searchQuery,
+          this.searchQuery.trim(),
           this.searchFilters
         );
 
@@ -372,27 +364,34 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   private hasActiveFilters(): boolean {
     return !!(
-      this.searchFilters.fromDate ||
-      this.searchFilters.toDate ||
-      this.searchFilters.duringDate ||
       this.searchFilters.beforeDate ||
-      this.searchFilters.afterDate
+      this.searchFilters.afterDate ||
+      this.searchFilters.duringDate
     );
   }
 
   private buildSearchFilters() {
     const filters: any = {};
     
-    if (this.searchFilters.fromDate) {
-      filters.fromDate = new Date(this.searchFilters.fromDate).toISOString();
+    if (this.searchFilters.beforeDate) {
+      // Set time to end of day for before date
+      const beforeDate = new Date(this.searchFilters.beforeDate);
+      beforeDate.setHours(23, 59, 59, 999);
+      filters.beforeDate = beforeDate.toISOString();
     }
     
-    if (this.searchFilters.toDate) {
-      filters.toDate = new Date(this.searchFilters.toDate).toISOString();
+    if (this.searchFilters.afterDate) {
+      // Set time to start of day for after date
+      const afterDate = new Date(this.searchFilters.afterDate);
+      afterDate.setHours(0, 0, 0, 0);
+      filters.afterDate = afterDate.toISOString();
     }
     
     if (this.searchFilters.duringDate) {
-      filters.duringDate = new Date(this.searchFilters.duringDate).toISOString();
+      // For during date, we need both start and end of day
+      const duringDate = new Date(this.searchFilters.duringDate);
+      duringDate.setHours(0, 0, 0, 0);
+      filters.duringDate = duringDate.toISOString();
     }
 
     return filters;
@@ -404,11 +403,9 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     this.searchResults = [];
     this.showSearchFilters = false;
     this.searchFilters = {
-      fromDate: '',
-      toDate: '',
-      duringDate: '',
       beforeDate: '',
-      afterDate: ''
+      afterDate: '',
+      duringDate: '',
     };
   }
 
