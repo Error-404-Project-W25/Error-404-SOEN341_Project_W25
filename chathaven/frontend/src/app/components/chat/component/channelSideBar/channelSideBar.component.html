@@ -64,7 +64,7 @@
     </div>
 
     <!-- Enhanced Search filters for Direct Messages -->
-    <div class="search-filters" *ngIf="showSearchFilters && isDirectMessage">
+    <div class="search-filters" *ngIf="showSearchFilters && isDirectMessage && searchResults.length === 0">
       <div class="filter-header">
         <span>Search Options</span>
         <button class="close-filters" (click)="showSearchFilters = false">
