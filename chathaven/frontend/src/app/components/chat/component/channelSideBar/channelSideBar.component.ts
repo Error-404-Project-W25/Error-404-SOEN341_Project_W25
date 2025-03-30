@@ -380,26 +380,22 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     const filters: any = {};
     
     if (this.searchFilters.beforeDate) {
-      // Set time to end of day for before date
       const beforeDate = new Date(this.searchFilters.beforeDate);
-      beforeDate.setHours(23, 59, 59, 999);
+      beforeDate.setHours(0, 0, 0, 0);
       filters.beforeDate = beforeDate.toISOString();
     }
     
     if (this.searchFilters.afterDate) {
-      // Set time to start of day for after date
       const afterDate = new Date(this.searchFilters.afterDate);
-      afterDate.setHours(0, 0, 0, 0);
+      afterDate.setHours(23, 59, 59, 999);
       filters.afterDate = afterDate.toISOString();
     }
     
     if (this.searchFilters.duringDate) {
-      // For during date, we need both start and end of day
-      const duringDate = new Date(this.searchFilters.duringDate);
-      duringDate.setHours(0, 0, 0, 0);
-      filters.duringDate = duringDate.toISOString();
+      filters.duringDate = this.searchFilters.duringDate; // YYYY-MM-DD format
     }
 
+    console.log('Sending filters to backend:', filters);
     return filters;
   }
 

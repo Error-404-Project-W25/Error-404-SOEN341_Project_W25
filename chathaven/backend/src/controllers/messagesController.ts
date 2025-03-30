@@ -151,33 +151,49 @@ export const searchDirectMessages = async (req: Request, res: Response) => {
     }
     
     if (filters) {
-      if (filters.fromDate) {
-        messages = messages.filter(msg => 
-          new Date(msg.time) >= new Date(filters.fromDate)
-        );
+      console.log('Received filters:', filters);
+      
+      // Before Date: Show messages BEFORE (but not including) the selected date
+      if (filters.beforeDate) {
+        const beforeDate = new Date(filters.beforeDate);
+        beforeDate.setHours(0, 0, 0, 0); // Start of the selected day
+        messages = messages.filter(msg => new Date(msg.time) < beforeDate);
+        console.log(`Filtered to ${messages.length} messages before ${beforeDate.toISOString()}`);
+      } 
+      
+      // After Date: Show messages AFTER (but not including) the selected date
+      if (filters.afterDate) {
+        const afterDate = new Date(filters.afterDate);
+        afterDate.setHours(23, 59, 59, 999); // End of the selected day
+        messages = messages.filter(msg => new Date(msg.time) > afterDate);
+        console.log(`Filtered to ${messages.length} messages after ${afterDate.toISOString()}`);
       }
-      if (filters.toDate) {
-        messages = messages.filter(msg => 
-          new Date(msg.time) <= new Date(filters.toDate)
-        );
-      }
+      
+      // During Date: Show messages ONLY from the selected date
       if (filters.duringDate) {
-        const during = new Date(filters.duringDate);
+        const duringDateStr = filters.duringDate; // Should be in YYYY-MM-DD format
+        
+        const startOfDay = new Date(`${duringDateStr}T00:00:00`);
+        const endOfDay = new Date(`${duringDateStr}T23:59:59.999`);
+        
         messages = messages.filter(msg => {
           const msgDate = new Date(msg.time);
-          return msgDate.getFullYear() === during.getFullYear() &&
-                 msgDate.getMonth() === during.getMonth() &&
-                 msgDate.getDate() === during.getDate();
+          return msgDate >= startOfDay && msgDate <= endOfDay;
         });
+        console.log(`Filtered to ${messages.length} messages during ${duringDateStr}`);
       }
-      if (filters.beforeDate) {
+      
+      if (!filters.afterDate && filters.fromDate) {
+        const fromDate = new Date(filters.fromDate);
         messages = messages.filter(msg => 
-          new Date(msg.time) <= new Date(filters.beforeDate)
+          new Date(msg.time) >= fromDate
         );
       }
-      if (filters.afterDate) {
+      
+      if (!filters.beforeDate && filters.toDate) {
+        const toDate = new Date(filters.toDate); 
         messages = messages.filter(msg => 
-          new Date(msg.time) >= new Date(filters.afterDate)
+          new Date(msg.time) <= toDate
         );
       }
     }
