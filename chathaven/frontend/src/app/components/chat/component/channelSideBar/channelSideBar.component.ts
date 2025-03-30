@@ -313,17 +313,21 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
     try {
       if (this.isDirectMessage) {
-        const currentConversationId = this.conversationId;
-        if (!currentConversationId) {
-          console.error('No conversation selected');
-          return;
+        const allSearchResults: any[] = [];
+        for (const conversation of this.directMessageList) {
+          const filters = this.buildSearchFilters();
+          const results = await this.backendService.searchDirectMessages(
+            conversation.conversationId,
+            this.searchQuery,
+            filters
+          );
+          
+          allSearchResults.push(...results);
         }
 
-        const filters = this.buildSearchFilters();
-        this.searchResults = await this.backendService.searchDirectMessages(
-          currentConversationId,
-          this.searchQuery,
-          filters
+        // Sort results by time
+        this.searchResults = allSearchResults.sort((a, b) => 
+          new Date(b.time).getTime() - new Date(a.time).getTime()
         );
 
         // Add usernames to search results

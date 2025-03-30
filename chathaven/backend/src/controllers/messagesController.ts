@@ -121,3 +121,60 @@ export const getMessages = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Error retrieving messages' });
   }
 };
+
+/**
+ * Search messages in a conversation
+ * @param req string conversationId, string searchQuery, object filters
+ * @param res returns array of messages
+ */
+export const searchDirectMessages = async (req: Request, res: Response) => {
+  try {
+    const { conversationId, searchQuery, filters } = req.body;
+
+    if (!conversationId) {
+      res.status(400).json({ error: 'Missing conversation ID' });
+      return;
+    }
+
+    const conversation = await Conversation.findOne({ conversationId });
+    if (!conversation) {
+      res.status(404).json({ error: 'Conversation not found' });
+      return;
+    }
+
+    let messages = conversation.messages;
+
+    if (searchQuery) {
+      messages = messages.filter(msg => 
+        msg.content.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    if (filters) {
+      if (filters.fromDate) {
+        messages = messages.filter(msg => 
+          new Date(msg.time) >= new Date(filters.fromDate)
+        );
+      }
+      if (filters.toDate) {
+        messages = messages.filter(msg => 
+          new Date(msg.time) <= new Date(filters.toDate)
+        );
+      }
+      if (filters.duringDate) {
+        const during = new Date(filters.duringDate);
+        messages = messages.filter(msg => {
+          const msgDate = new Date(msg.time);
+          return msgDate.getFullYear() === during.getFullYear() &&
+                 msgDate.getMonth() === during.getMonth() &&
+                 msgDate.getDate() === during.getDate();
+        });
+      }
+    }
+
+    res.status(200).json({ messages });
+  } catch (error) {
+    console.error('Error searching messages:', error);
+    res.status(500).json({ error: 'Error searching messages' });
+  }
+};
