@@ -449,6 +449,72 @@ export class BackendService {
     return undefined;
   }
 
+  async searchDirectMessages(
+    conversationId: string,
+    searchQuery: string,
+    filters?: {
+      fromDate?: string;
+      toDate?: string;
+      duringDate?: string;
+    }
+  ): Promise<IMessage[]> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ messages?: IMessage[]; error?: string }>(
+          `${this.backendURL}/messages/search/direct`,
+          {
+            conversationId,
+            searchQuery,
+            filters
+          }
+        )
+      );
+
+      if (response.messages) {
+        return response.messages;
+      } else {
+        console.error('Search error:', response.error);
+        return [];
+      }
+    } catch (error) {
+      console.error('Error searching direct messages:', error);
+      return [];
+    }
+  }
+
+  async searchChannelMessages(
+    channelId: string,
+    searchQuery: string,
+    filters?: {
+      fromDate?: string;
+      toDate?: string;
+      duringDate?: string;
+    }
+  ): Promise<IMessage[]> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ messages?: IMessage[]; error?: string }>(
+          `${this.backendURL}/messages/search/channel`,
+          {
+            channelId,
+            searchQuery,
+            filters
+          }
+        )
+      );
+
+      if (response.messages) {
+        return response.messages;
+      } else {
+        console.error('Search error:', response.error);
+        return [];
+      }
+    } catch (error) {
+      console.error('Error searching channel messages:', error);
+      return [];
+    }
+  }
+
   ///////////// CONVERSATIONS ///
 
   async createDirectMessages(

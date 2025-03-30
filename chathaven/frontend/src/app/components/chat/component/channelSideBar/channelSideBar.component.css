@@ -364,17 +364,24 @@ ul {
   color: white;
   font-size: 14px;
   box-sizing: border-box;
+  transition: all 0.3s ease; 
 }
 
 .search-input::placeholder {
-  color: var(--muted-color);
-  opacity: 0.8;
+  color: var(--primary-text-color);
 }
 
 .search-input:focus {
   outline: none;
   border-color: var(--primary-color);
-  color: white;
+  color: var(--primary-text-color); 
+  background-color: var(--hover-color);
+  box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.search-container:focus-within .search-icon {
+  color: var(--primary-text-color);
+  opacity: 1;
 }
 
 .search-icon {
@@ -396,7 +403,6 @@ ul {
   border-radius: 4px;
   max-height: 300px;
   overflow-y: auto;
-<<<<<<< HEAD
   z-index: 1001;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
@@ -445,10 +451,6 @@ ul {
   text-transform: uppercase;
   letter-spacing: 0.02em;
   border-bottom: 1px solid var(--border-color);
-=======
-  z-index: 1000;
-  margin: 4px 12px;
->>>>>>> parent of 89672469 (implemented date search filter on frontend)
 }
 
 .search-result {
@@ -490,7 +492,6 @@ ul {
   background-color: var(--secondary-color);
   padding: 0 2px;
   border-radius: 2px;
-<<<<<<< HEAD
   opacity: 0.7;
 }
 
@@ -576,8 +577,6 @@ ul {
 .filter-group input:focus {
   outline: none;
   border-color: var(--primary-color);
-=======
->>>>>>> parent of 89672469 (implemented date search filter on frontend)
 }
 
 .filter-group input[type="date"] {
