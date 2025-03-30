@@ -158,21 +158,23 @@ export const searchDirectMessages = async (req: Request, res: Response) => {
     if (filters) {
       console.log('Received filters:', filters);
       
-      // Safely log message timestamps (with validation)
-      console.log('First few message timestamps:');
-      messages.slice(0, 5).forEach(msg => {
-        try {
-          const msgDate = new Date(msg.time);
-          // Check if date is valid before calling toISOString()
-          if (!isNaN(msgDate.getTime())) {
-            console.log(`- ${msg.time} (${msgDate.toISOString()})`);
-          } else {
-            console.log(`- ${msg.time} (INVALID DATE)`);
+      // Only log timestamps if in development mode
+      const isDev = process.env.NODE_ENV !== 'production';
+      if (isDev) {
+        console.log('First few message timestamps:');
+        messages.slice(0, 5).forEach(msg => {
+          try {
+            const msgDate = new Date(msg.time);
+            if (!isNaN(msgDate.getTime())) {
+              console.log(`- ${msg.time} (${msgDate.toISOString()})`);
+            } else {
+              console.log(`- ${msg.time} (INVALID DATE)`);
+            }
+          } catch (err: Error | any) {
+            console.log(`- ${msg.time} (ERROR: ${err.message})`);
           }
-        } catch (err: Error | any) {
-          console.log(`- ${msg.time} (ERROR: ${err.message})`);
-        }
-      });
+        });
+      }
       
       // Before Date: Show messages BEFORE (but not including) the selected date
       if (filters.beforeDate) {

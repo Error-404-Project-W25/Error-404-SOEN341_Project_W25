@@ -61,6 +61,10 @@
         class="search-input"
       />
       <i class="fas fa-search search-icon"></i>
+      <div class="search-icon" [ngClass]="{'searching': isSearching}">
+        <i *ngIf="!isSearching" class="fas fa-search"></i>
+        <i *ngIf="isSearching" class="fas fa-spinner fa-spin"></i>
+      </div>
     </div>
 
     <!-- Enhanced Search filters for Direct Messages -->

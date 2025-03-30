@@ -68,6 +68,9 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   // Add this new property 
   activeDateFilter: 'beforeDate' | 'afterDate' | 'duringDate' | null = null;
 
+
+  isSearching: boolean = false;
+
   constructor(
     public dialog: MatDialog,
     private userService: UserService,
@@ -330,29 +333,41 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   async performSearch() {
     try {
+      // Show loading indicator
+      this.isSearching = true;
+      
       if (this.isDirectMessage) {
-        const allSearchResults: any[] = [];
-        for (const conversation of this.directMessageList) {
-          const filters = this.buildSearchFilters();
-          const results = await this.backendService.searchDirectMessages(
+        const filters = this.buildSearchFilters();
+        const searchPromises = this.directMessageList.map(conversation => 
+          this.backendService.searchDirectMessages(
             conversation.conversationId,
-            this.searchQuery.trim(), 
+            this.searchQuery.trim(),
             filters
-          );
-          
-          allSearchResults.push(...results);
-        }
-
+          )
+        );
+        
+        const searchResults = await Promise.all(searchPromises);
+        const allSearchResults = searchResults.flat();
+        
         // Sort results by time
         this.searchResults = allSearchResults.sort((a, b) => 
           new Date(b.time).getTime() - new Date(a.time).getTime()
         );
 
-        // Add usernames to search results
-        for (const result of this.searchResults) {
-          const user = await this.backendService.getUserById(result.sender);
-          result.username = user?.username || 'Unknown User';
-        }
+        const userIds = [...new Set(this.searchResults.map(msg => msg.sender))];
+        
+        const userPromises = userIds.map(id => this.backendService.getUserById(id));
+        const users = await Promise.all(userPromises);
+        
+        const userMap = new Map();
+        users.forEach(user => {
+          if (user) userMap.set(user.userId, user.username || 'Unknown User');
+        });
+        
+
+        this.searchResults.forEach(result => {
+          result.username = userMap.get(result.sender) || 'Unknown User';
+        });
       } else if (this.selectedChannelId) {
         this.searchResults = await this.backendService.searchChannelMessages(
           this.selectedChannelId,
@@ -360,15 +375,25 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
           this.searchFilters
         );
 
-        // Add usernames to search results
-        for (const result of this.searchResults) {
-          const user = await this.backendService.getUserById(result.sender);
-          result.username = user?.username || 'Unknown User';
-        }
+        const userIds = [...new Set(this.searchResults.map(msg => msg.sender))];
+        
+        const userPromises = userIds.map(id => this.backendService.getUserById(id));
+        const users = await Promise.all(userPromises);
+        
+        const userMap = new Map();
+        users.forEach(user => {
+          if (user) userMap.set(user.userId, user.username || 'Unknown User');
+        });
+        
+        this.searchResults.forEach(result => {
+          result.username = userMap.get(result.sender) || 'Unknown User';
+        });
       }
     } catch (error) {
       console.error('Error searching messages:', error);
       this.searchResults = [];
+    } finally {
+      this.isSearching = false;
     }
   }
 
