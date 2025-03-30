@@ -307,6 +307,11 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   onSearch() {
+    if (!this.searchQuery.trim()) {
+      this.searchResults = [];
+      return;
+    }
+
     if (this.searchDebouncer) {
       clearTimeout(this.searchDebouncer);
     }
