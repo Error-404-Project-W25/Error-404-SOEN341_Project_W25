@@ -15,7 +15,12 @@ export const requestToJoin = async (req: Request, res: Response) => {
         const inboxId = uuidv4();
 
         // If invite: add to userThatYouWantToAdd's inbox
-        if (type === "invite") {       
+        if (type === "invite") { 
+            const channel = await Channel.findOne({ channelId });
+            if (!channel) {
+                res.status(404).json({ error: 'Channel not found' });
+                return;
+            }      
             const user = await User.findOne({ userId: userIdThatYouWantToAdd });
             if (!user) {
                 res.status(404).json({ error: 'User not found' });

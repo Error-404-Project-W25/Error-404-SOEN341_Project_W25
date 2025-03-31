@@ -2,8 +2,9 @@ import { IUser } from '@shared/interfaces';
 import { AuthStatus } from '../../types/authentication.types';
 import { Request, Response } from 'express';
 import { User } from '../models/userModel';
-import { signInUser, signOutUser, signUpUser } from '../utils/authenticateUtils';
+import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
 import { Team } from '../models/teamsModel';
+import moment from 'moment';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
 
@@ -202,10 +203,12 @@ export const updateStatus = async (req: Request, res: Response) => {
     user.status = status;
     await user.save();
 
-    res.json({
-      success: true,
-      message: `The user status has been updated successfully to ${status}`,
+    res.json({ 
+      success: true ,
+      message:
+        `The user status has been updated successfully to ${status}`,
     });
+
   } catch (error: any) {
     const errorMessage = error.message;
     res.status(500).json({
@@ -216,3 +219,4 @@ export const updateStatus = async (req: Request, res: Response) => {
     console.error('Failed to update status', errorMessage);
   }
 };
+
