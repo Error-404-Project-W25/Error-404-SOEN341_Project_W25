@@ -320,8 +320,10 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   onSearch() {
-    // Only clear results if there's no search query AND no active filters
-    if (!this.searchQuery.trim() && !this.hasActiveFilters()) {
+    // Clear results if no search query AND no active filters AND no username
+    if (!this.searchQuery.trim() && 
+        !this.hasActiveFilters() && 
+        !this.searchFilters.username?.trim()) {
       this.searchResults = [];
       return;
     }
@@ -337,7 +339,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   async performSearch() {
     try {
-      // Show loading indicator
       this.isSearching = true;
       
       if (this.isDirectMessage) {
@@ -376,29 +377,45 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
           result.username = userMap.get(result.sender) || 'Unknown User';
         });
       } else {
-        // Channel search - updated to search all channels in the team
         const filters = this.buildSearchFilters();
+        
+        const isUsernameOnlySearch = !this.searchQuery.trim() && filters.username;
         
         // Only search channels the user is a member of
         const userChannels = this.channelList.filter(channel => 
           channel.members.includes(this.userId || '')
         );
         
-        const searchPromises = userChannels.map(channel => 
-          this.backendService.searchChannelMessages(
+        console.log(`Searching across ${userChannels.length} channels`);
+        
+        if (userChannels.length === 0) {
+          console.log('No channels to search in');
+          this.searchResults = [];
+          this.isSearching = false;
+          return;
+        }
+        
+        const searchPromises = userChannels.map(channel => {
+          console.log(`Searching channel: ${channel.name} (${channel.channelId})`);
+          return this.backendService.searchChannelMessages(
             channel.channelId,
-            this.searchQuery.trim(),
+            isUsernameOnlySearch ? '' : this.searchQuery.trim(), // Don't include text search if username-only
             filters
-          ).then(messages => messages.map(msg => ({
-            ...msg,
-            conversationId: channel.conversationId, 
-            channelId: channel.channelId,
-            channelName: channel.name
-          })))
-        );
+          ).then(messages => {
+            console.log(`Found ${messages.length} messages in channel ${channel.name}`);
+            return messages.map(msg => ({
+              ...msg,
+              conversationId: channel.conversationId,
+              channelId: channel.channelId,
+              channelName: channel.name
+            }));
+          });
+        });
         
         const searchResults = await Promise.all(searchPromises);
         const allSearchResults = searchResults.flat();
+        
+        console.log(`Total results found: ${allSearchResults.length}`);
         
         this.searchResults = allSearchResults.sort((a, b) => 
           new Date(b.time).getTime() - new Date(a.time).getTime()
@@ -410,7 +427,10 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         
         const userMap = new Map();
         users.forEach(user => {
-          if (user) userMap.set(user.userId, user.username || 'Unknown User');
+          if (user) {
+            userMap.set(user.userId, user.username || 'Unknown User');
+            console.log(`Mapped user ${user.userId} to ${user.username}`);
+          }
         });
         
         this.searchResults.forEach(result => {
@@ -429,7 +449,8 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     return !!(
       this.searchFilters.beforeDate ||
       this.searchFilters.afterDate ||
-      this.searchFilters.duringDate
+      this.searchFilters.duringDate ||
+      this.searchFilters.username?.trim()
     );
   }
 
