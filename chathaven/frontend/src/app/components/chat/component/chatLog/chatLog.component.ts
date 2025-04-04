@@ -339,16 +339,27 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     return this.messages.find((msg) => msg.messageId === messageId) || null;
   }
 
-  scrollToMessage(messageId: string): void {
-    setTimeout(() => {
+  scrollToMessage(messageId: string, maxRetries = 5): void {
+    const attemptScroll = (retryCount: number) => {
       const messageElement = document.getElementById(`message-${messageId}`);
+      
       if (messageElement) {
+        // Message found, scroll and highlight
         messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         messageElement.classList.add('highlighted-message');
         setTimeout(() => {
           messageElement.classList.remove('highlighted-message');
         }, 3000);
+      } else if (retryCount > 0) {
+        // Message not found, retry after a delay
+        console.log(`Message element not found, retrying... (${retryCount} attempts left)`);
+        setTimeout(() => attemptScroll(retryCount - 1), 500);
+      } else {
+        console.log('Failed to find message element after all retries');
       }
-    }, 100);
+    };
+
+    // Start the retry process after a small initial delay
+    setTimeout(() => attemptScroll(maxRetries), 100);
   }
 }

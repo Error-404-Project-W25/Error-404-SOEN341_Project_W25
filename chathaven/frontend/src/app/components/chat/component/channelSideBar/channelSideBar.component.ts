@@ -483,14 +483,16 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   scrollToMessage(messageId: string, conversationId: string) {
-    if (this.isDirectMessage) {
-      this.selectDirectMessage(conversationId);
+    const selectAndHighlight = () => {
       setTimeout(() => {
         this.dataService.selectMessage(messageId);
-      }, 300);
-    } 
-// For channels, we need to check if the user is a member
-    else {
+      }, 1000);
+    };
+
+    if (this.isDirectMessage) {
+      this.selectDirectMessage(conversationId);
+      selectAndHighlight();
+    } else {
       const channel = this.channelList.find(ch => ch.conversationId === conversationId);
       
       if (channel) {
@@ -498,10 +500,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
           this.selectedChannelId = channel.channelId;
           this.dataService.selectChannel(this.selectedChannelId);
           this.dataService.selectConversation(conversationId);
-          
-                    setTimeout(() => {
-            this.dataService.selectMessage(messageId);
-          }, 500); // Increased from 300 to 500ms
+          selectAndHighlight();
         } else {
 // User is not a member, open the join request dialog
           this.dialog.open(JoinRequestDialog, {
@@ -510,14 +509,14 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         }
       }
     }
-  
+
     this.searchQuery = '';
     this.searchResults = [];
     this.searchFilters = {
       beforeDate: '',
       afterDate: '',
       duringDate: '',
-      username: '' 
+      username: ''
     };
     this.activeDateFilter = null;
     this.showSearchFilters = false;
