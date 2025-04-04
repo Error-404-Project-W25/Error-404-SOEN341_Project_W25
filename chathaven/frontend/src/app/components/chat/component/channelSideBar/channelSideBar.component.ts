@@ -489,7 +489,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         this.dataService.selectMessage(messageId);
       }, 300);
     } 
-    // For channels, we need to check if the user is a member
+// For channels, we need to check if the user is a member
     else {
       const channel = this.channelList.find(ch => ch.conversationId === conversationId);
       
@@ -499,22 +499,20 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
           this.dataService.selectChannel(this.selectedChannelId);
           this.dataService.selectConversation(conversationId);
           
-          setTimeout(() => {
+                    setTimeout(() => {
             this.dataService.selectMessage(messageId);
-          }, 300);
+          }, 500); // Increased from 300 to 500ms
         } else {
-          // User is not a member, open the join request dialog
+// User is not a member, open the join request dialog
           this.dialog.open(JoinRequestDialog, {
             data: { channelId: channel.channelId, teamId: this.selectedTeamId }
           });
         }
       }
     }
-    
-
+  
     this.searchQuery = '';
     this.searchResults = [];
-    
     this.searchFilters = {
       beforeDate: '',
       afterDate: '',
@@ -522,7 +520,6 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       username: '' 
     };
     this.activeDateFilter = null;
-    
     this.showSearchFilters = false;
   }
 
