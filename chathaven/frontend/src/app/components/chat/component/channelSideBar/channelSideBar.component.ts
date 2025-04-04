@@ -462,17 +462,35 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   scrollToMessage(messageId: string, conversationId: string) {
-    // Select the conversation first
     if (this.isDirectMessage) {
       this.selectDirectMessage(conversationId);
-    } else {
-      this.selectChannel(conversationId);
+      setTimeout(() => {
+        this.dataService.selectMessage(messageId);
+      }, 300);
+    } 
+    // For channels, we need to check if the user is a member
+    else {
+      const channel = this.channelList.find(ch => ch.conversationId === conversationId);
+      
+      if (channel) {
+        if (channel.members.includes(this.userId)) {
+          this.selectedChannelId = channel.channelId;
+          this.dataService.selectChannel(this.selectedChannelId);
+          this.dataService.selectConversation(conversationId);
+          
+          setTimeout(() => {
+            this.dataService.selectMessage(messageId);
+          }, 300);
+        } else {
+          // User is not a member, open the join request dialog
+          this.dialog.open(JoinRequestDialog, {
+            data: { channelId: channel.channelId, teamId: this.selectedTeamId }
+          });
+        }
+      }
     }
     
-    setTimeout(() => {
-      this.dataService.selectMessage(messageId);
-    }, 300);
-    
+
     this.searchQuery = '';
     this.searchResults = [];
     
