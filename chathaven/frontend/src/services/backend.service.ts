@@ -21,6 +21,11 @@ import { io, Socket } from 'socket.io-client';
 export class BackendService {
   private backendURL: string = 'http://localhost:3000';
   private socket: Socket;
+  private messageCache = new Map<string, {
+    messages: IMessage[];
+    timestamp: number;
+  }>();
+  private CACHE_DURATION = 30000; // 30 seconds
 
   constructor(private http: HttpClient) {
     this.socket = io(this.backendURL);
@@ -431,6 +436,14 @@ export class BackendService {
   }
 
   async getMessages(conversationId: string): Promise<IMessage[] | undefined> {
+    // Check cache first
+    const cached = this.messageCache.get(conversationId);
+    const now = Date.now();
+    
+    if (cached && (now - cached.timestamp < this.CACHE_DURATION)) {
+      return cached.messages;
+    }
+
     try {
       const response = await firstValueFrom(
         this.http.get<{ messages?: IMessage[]; error?: string }>(
@@ -439,14 +452,19 @@ export class BackendService {
       );
 
       if (response.messages) {
+        this.messageCache.set(conversationId, {
+          messages: response.messages,
+          timestamp: now
+        });
         return response.messages;
-      } else {
-        console.error(response.error);
       }
+      
+      console.error(response.error);
+      return undefined;
     } catch (error) {
       console.error('Error getting messages:', error);
+      return undefined;
     }
-    return undefined;
   }
 
   async searchDirectMessages(

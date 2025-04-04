@@ -238,13 +238,17 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   selectChannel(channelId: string): void {
     this.backendService
       .getChannelById(channelId)
-      .then((channel) => {
+      .then(async (channel) => {
         if (channel && channel.members.includes(this.userId || '')) {
           this.selectedChannelId = channel.channelId;
+          
+          // Preload messages before updating UI
+          await this.backendService.getMessages(channel.conversationId);
+          
           this.dataService.selectChannel(this.selectedChannelId);
           this.dataService.selectConversation(channel.conversationId);
         } else {
-          // alert('You are not a member of this channel');
+// alert('You are not a member of this channel');
           this.dialog.open(JoinRequestDialog, {
             data: { channelId: channelId, teamId: this.selectedTeamId },
           });
@@ -486,7 +490,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     const selectAndHighlight = () => {
       setTimeout(() => {
         this.dataService.selectMessage(messageId);
-      }, 1000);
+      }, 300);
     };
 
     if (this.isDirectMessage) {
