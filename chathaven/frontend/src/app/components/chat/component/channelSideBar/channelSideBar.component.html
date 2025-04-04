@@ -67,7 +67,7 @@
       </div>
     </div>
 
-    <!-- Enhanced Search filters for Direct Messages -->
+    <!-- Search filters for Direct Messages -->
     <div class="search-filters" *ngIf="showSearchFilters && isDirectMessage && searchResults.length === 0">
       <div class="filter-header">
         <span>Search Options</span>
@@ -108,12 +108,68 @@
         </div>
       </div>
     </div>
+
+    <!-- Search filters for Channels - additionally with the username filter -->
+    <div class="search-filters" *ngIf="showSearchFilters && !isDirectMessage && searchResults.length === 0">
+      <div class="filter-header">
+        <span>Search Options</span>
+        <button class="close-filters" (click)="showSearchFilters = false">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-group">
+          <label>From User:</label>
+          <input 
+            type="text" 
+            [(ngModel)]="searchFilters.username"
+            placeholder="Enter username" 
+            (input)="onSearch()"
+          />
+        </div>
+
+        <div class="filter-group">
+          <label>Before:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="searchFilters.beforeDate"
+            (change)="onDateFilterChange('beforeDate', $event)"
+            [disabled]="activeDateFilter !== null && activeDateFilter !== 'beforeDate'"
+          />
+        </div>
+
+        <div class="filter-group">
+          <label>After:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="searchFilters.afterDate"
+            (change)="onDateFilterChange('afterDate', $event)"
+            [disabled]="activeDateFilter !== null && activeDateFilter !== 'afterDate'"
+          />
+        </div>
+
+        <div class="filter-group">
+          <label>During:</label>
+          <input 
+            type="date" 
+            [(ngModel)]="searchFilters.duringDate"
+            (change)="onDateFilterChange('duringDate', $event)" 
+            [disabled]="activeDateFilter !== null && activeDateFilter !== 'duringDate'"
+          />
+        </div>
+      </div>
+    </div>
+
     <div class="search-results" *ngIf="searchResults.length > 0">
       <div class="search-results-header">Search Results</div>
       <div class="search-result-item" 
            *ngFor="let result of searchResults" 
              (click)="scrollToMessage(result.messageId, result.conversationId || (isDirectMessage ? getSelectedConversationId() : selectedChannelId))">
-        <div class="result-user">{{ result.username }}</div>
+        <div class="result-header">
+          <div class="result-user">{{ result.username }}</div>
+          <div class="result-channel" *ngIf="!isDirectMessage">in #{{ result.channelName }}</div>
+        </div>
         <div class="result-content" [innerHTML]="highlightText(result.content)"></div>
         <div class="result-time">{{ result.time | date:'short' }}</div>
       </div>

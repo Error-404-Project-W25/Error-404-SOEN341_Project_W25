@@ -489,6 +489,7 @@ export class BackendService {
       fromDate?: string;
       toDate?: string;
       duringDate?: string;
+      username?: string;
     }
   ): Promise<IMessage[]> {
     try {
