@@ -345,7 +345,10 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
             conversation.conversationId,
             this.searchQuery.trim(),
             filters
-          )
+          ).then(messages => messages.map(msg => ({
+            ...msg,
+            conversationId: conversation.conversationId // Add conversationId to each message
+          })))
         );
         
         const searchResults = await Promise.all(searchPromises);
@@ -356,6 +359,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
           new Date(b.time).getTime() - new Date(a.time).getTime()
         );
 
+        // Rest of the code remains the same
         const userIds = [...new Set(this.searchResults.map(msg => msg.sender))];
         
         const userPromises = userIds.map(id => this.backendService.getUserById(id));
@@ -376,7 +380,11 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
           this.searchQuery.trim(),
           this.searchFilters
         );
-
+        
+        this.searchResults.forEach(result => {
+          result.conversationId = this.selectedChannelId;
+        });
+        
         const userIds = [...new Set(this.searchResults.map(msg => msg.sender))];
         
         const userPromises = userIds.map(id => this.backendService.getUserById(id));
@@ -429,16 +437,21 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     return filters;
   }
 
-  scrollToMessage(messageId: string) {
-    this.messageSelected.emit(messageId);
+  scrollToMessage(messageId: string, conversationId: string) {
+    // Select the conversation first
+    if (this.isDirectMessage) {
+      this.selectDirectMessage(conversationId);
+    } else {
+      this.selectChannel(conversationId);
+    }
+    
+    setTimeout(() => {
+      this.dataService.selectMessage(messageId);
+    }, 300);
+    
     this.searchQuery = '';
     this.searchResults = [];
     this.showSearchFilters = false;
-    this.searchFilters = {
-      beforeDate: '',
-      afterDate: '',
-      duringDate: '',
-    };
   }
 
   highlightText(text: string): string {
@@ -463,6 +476,18 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     }
     
     this.onSearch();
+  }
+
+  getSelectedConversationId(): string {
+    if (this.isDirectMessage) {
+      return this.conversationId || '';
+    } else {
+      let conversationId = '';
+      this.dataService.currentConversationId.subscribe(id => {
+        conversationId = id || '';
+      });
+      return this.selectedChannelId ? conversationId : '';
+    }
   }
 }
 

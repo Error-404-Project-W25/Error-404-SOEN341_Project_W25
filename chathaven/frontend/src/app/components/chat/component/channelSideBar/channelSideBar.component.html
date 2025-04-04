@@ -110,7 +110,9 @@
     </div>
     <div class="search-results" *ngIf="searchResults.length > 0">
       <div class="search-results-header">Search Results</div>
-      <div class="search-result-item" *ngFor="let result of searchResults" (click)="scrollToMessage(result.messageId)">
+      <div class="search-result-item" 
+           *ngFor="let result of searchResults" 
+             (click)="scrollToMessage(result.messageId, result.conversationId || (isDirectMessage ? getSelectedConversationId() : selectedChannelId))">
         <div class="result-user">{{ result.username }}</div>
         <div class="result-content" [innerHTML]="highlightText(result.content)"></div>
         <div class="result-time">{{ result.time | date:'short' }}</div>

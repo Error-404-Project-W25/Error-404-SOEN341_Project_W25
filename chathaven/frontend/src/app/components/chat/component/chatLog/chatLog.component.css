@@ -430,3 +430,15 @@ ul {
   background-color: inherit; /* Quote container background */
   opacity: 0.5;
 }
+
+.highlighted-message {
+  animation: highlight-pulse 2s ease-in-out;
+  background-color: var(--hover-color);
+  border-left: 3px solid var(--primary-color);
+}
+
+@keyframes highlight-pulse {
+  0% { background-color: var(--primary-color); opacity: 0.3; }
+  50% { background-color: var(--hover-color); opacity: 0.6; }
+  100% { background-color: transparent; }
+}

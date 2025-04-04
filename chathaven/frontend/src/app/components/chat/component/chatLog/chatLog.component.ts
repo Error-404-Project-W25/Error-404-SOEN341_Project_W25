@@ -85,7 +85,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.testMessages = {
       messageId: '1',
       content: 'This is a test message',
@@ -93,6 +93,13 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       time: new Date().toISOString(),
     };
     // Implementation for ngOnInit
+
+    // Listen for message selection events
+    this.dataService.selectedMessageId.subscribe(messageId => {
+      if (messageId) {
+        this.scrollToMessage(messageId);
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -330,5 +337,18 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   getMessageById(messageId: string): IMessage | null {
     return this.messages.find((msg) => msg.messageId === messageId) || null;
+  }
+
+  scrollToMessage(messageId: string): void {
+    setTimeout(() => {
+      const messageElement = document.getElementById(`message-${messageId}`);
+      if (messageElement) {
+        messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        messageElement.classList.add('highlighted-message');
+        setTimeout(() => {
+          messageElement.classList.remove('highlighted-message');
+        }, 3000);
+      }
+    }, 100);
   }
 }
