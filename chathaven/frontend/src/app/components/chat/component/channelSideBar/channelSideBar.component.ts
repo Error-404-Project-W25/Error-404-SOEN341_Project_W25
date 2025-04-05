@@ -35,6 +35,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   directMessageList: IConversation[] = [];
   channels: IChannel[] = [];
   channelIdToLastMessage: { [channelId: string]: string } = {};
+  directMessageIdToLastMessage: { [directMessageId: string]: string } = {};
   conversationId: string | null = null;
 
   constructor(
@@ -67,6 +68,9 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   getChannelLastMessage(channelId: string): string {
     return this.channelIdToLastMessage[channelId] || ' ';
+  }
+  getDirectMessageLastMessage(directMessageId: string): string {
+    return this.directMessageIdToLastMessage[directMessageId] || ' ';
   }
 
   async refreshChannelList() {
@@ -101,6 +105,8 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       );
       if (directMessage) {
         list.push(directMessage);
+        this.directMessageIdToLastMessage[directMessageId] =
+          (await this.getConversationLastMessage(directMessageId)) || '';
       }
     }
     this.directMessageList = list;

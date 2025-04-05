@@ -86,9 +86,7 @@
           <i
             style="display: flex; justify-content: center; align-items: center"
             class="fa"
-            [ngClass]="
-              isChannelMember(channel) ? 'fa-hashtag' : 'fa-lock'
-            "
+            [ngClass]="isChannelMember(channel) ? 'fa-hashtag' : 'fa-lock'"
             style="font-size: 16px; margin-right: 8px"
           >
           </i>
@@ -140,10 +138,6 @@
     <div *ngIf="directMessageList.length <= 0" class="loading">
       Loading DM ...
     </div>
-
-    <ul *ngIf="directMessageList.length <= 0">
-      <li class="loading" *ngFor="let _ of [].constructor(17)"></li>
-    </ul>
     <ul>
       <li
         class="channel-container"
@@ -164,7 +158,7 @@
           <div class="channel-text-information">
             <div class="channel-name">{{ dm.conversationName }}</div>
             <div class="channel-last-message">
-              {{ dm.messages[dm.messages.length - 1] }}
+              {{ getDirectMessageLastMessage(dm.conversationId) }}
             </div>
           </div>
         </div>

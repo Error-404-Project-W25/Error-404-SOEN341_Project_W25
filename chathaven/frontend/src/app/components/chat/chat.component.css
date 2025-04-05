@@ -38,6 +38,7 @@ body {
 }
 
 chat-team-side-bar {
+  position: relative;
   width: fit-content;
   flex: 0 0 auto;
   background-color: var(--background-color);
@@ -48,6 +49,7 @@ chat-team-side-bar {
 }
 
 chat-channel-side-bar {
+  position: relative;
   width: fit-content;
   flex: 0 0 auto;
   background-color: var(--dark-muted-color);
@@ -58,6 +60,7 @@ chat-channel-side-bar {
 }
 
 chat-chat-log {
+  position: relative;
   width: fit-content;
   flex-grow: 1;
   background-color: var(--secondary-color);
@@ -68,6 +71,7 @@ chat-chat-log {
 }
 
 chat-informartion-side-bar {
+  position: relative;
   width: fit-content;
   flex: 0 0 auto;
   background-color: var(--background-color);
