@@ -57,7 +57,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   gifSearchQuery: string = '';
   gifSelected: string = '';
 
-
   userIdToName: { [userId: string]: string } = {};
   previewData: { [url: string]: any } = {};
 

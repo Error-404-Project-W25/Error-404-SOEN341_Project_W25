@@ -371,6 +371,22 @@ ul {
   }
 }
 
+.pulse-animation {
+  animation: pulse 1s ease-in-out 2; /* Run the animation twice */
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--primary-color);
+  }
+  50% {
+    box-shadow: 0 0 10px 5px var(--primary-color);
+  }
+  100% {
+    box-shadow: 0 0 0 0 var(--primary-color);
+  }
+}
+
 .quote-container {
   justify-content: space-between;
   display: flex;
@@ -523,7 +539,7 @@ ul {
   border: 1px solid var(--border-color);
 }
 
-.gif-header{
+.gif-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
