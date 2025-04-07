@@ -230,7 +230,9 @@
 
       <ul
         class="command-recommendations"
-        *ngIf="recommendedCommands.length && isInputFocused"
+        *ngIf="
+          recommendedCommands.length && isInputFocused && searchQuery !== ''
+        "
       >
         <li
           *ngFor="let command of recommendedCommands"
