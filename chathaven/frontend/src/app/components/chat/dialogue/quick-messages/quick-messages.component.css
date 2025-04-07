@@ -1,0 +1,57 @@
+.quick-messages-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+
+  &.dark {
+    background-color: #2a2a2a;
+
+    .quick-message-button {
+      background-color: #3a3a3a;
+      color: #e0e0e0;
+      border: 1px solid #444;
+
+      &:hover {
+        background-color: #444;
+        border-color: #555;
+      }
+    }
+  }
+
+  &.light {
+    background-color: #f0f0f0;
+
+    .quick-message-button {
+      background-color: #ffffff;
+      color: #333;
+      border: 1px solid #ddd;
+
+      &:hover {
+        background-color: #f8f8f8;
+        border-color: #ccc;
+      }
+    }
+  }
+}
+
+.quick-message-button {
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+}
