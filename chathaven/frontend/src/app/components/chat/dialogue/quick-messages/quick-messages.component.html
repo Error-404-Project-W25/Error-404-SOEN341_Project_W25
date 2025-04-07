@@ -1,9 +1,5 @@
-<!-- quick-messages.component.html -->
 <div class="quick-messages-container">
-  <button
-    *ngFor="let message of messages"
-    class="quick-message-button"
-    (click)="selectMessage(message)">
+  <div class="quick-message" *ngFor="let message of quickMessages" (click)="onQuickMessageClick(message)">
     {{ message }}
-  </button>
+  </div>
 </div>
