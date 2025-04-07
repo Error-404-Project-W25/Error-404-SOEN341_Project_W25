@@ -365,19 +365,24 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   // Inbox Actions
   acceptRequest(request: IInbox) {
     this.respondToInbox(request, 'accept');
+    this.refreshChannelData(this.selectedChannelId);
+    this.refreshList();
   }
 
   declineRequest(request: IInbox) {
     this.respondToInbox(request, 'decline');
+    this.refreshList();
   }
 
   acceptInvite(invite: IInbox) {
-    console.log('Accepting invite:', invite);
     this.respondToInbox(invite, 'accept');
+    this.refreshChannelData(this.selectedChannelId);
+    this.refreshList();
   }
 
   declineInvite(invite: IInbox) {
     this.respondToInbox(invite, 'decline');
+    this.refreshList();
   }
 
   private async respondToInbox(inbox: IInbox, response: 'accept' | 'decline') {
