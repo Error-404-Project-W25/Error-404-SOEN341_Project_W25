@@ -13,6 +13,7 @@ import userRoutes from './routes/userRoutes';
 import conversationsRoutes from './routes/conversationsRoutes';
 import messagesRoutes from './routes/messagesRoutes';
 import inboxRoutes from './routes/inboxRoutes';
+import chatbotRoutes from './routes/chatbotRoutes';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { sendMessage, getMessages } from './controllers/messagesController';
@@ -42,7 +43,7 @@ io.on('connection', (socket) => {
     console.log(`User ${userId} connected with socket id: ${socket.id}`);
     User.findOneAndUpdate(
       { userId },
-      { 
+      {
         status: 'online',
         lastSeen: new Date()
       },
@@ -58,7 +59,7 @@ io.on('connection', (socket) => {
       connectedUsers.delete(userId); // Remove userId from the Map
       User.findOneAndUpdate(
         { userId },
-        { 
+        {
           status: 'online',
           lastSeen: new Date()
         }
@@ -73,7 +74,7 @@ io.on('connection', (socket) => {
       connectedUsers.delete(userId); // Remove userId from the Map
       await User.findOneAndUpdate(
         { userId },
-        { 
+        {
           status: 'offline',
           lastSeen: new Date()
         }
@@ -150,6 +151,7 @@ const startServer = async () => {
     app.use('/conversations', conversationsRoutes);
     app.use('/messages', messagesRoutes);
     app.use('/inbox', inboxRoutes);
+    app.use('/chatbot', chatbotRoutes);
 
     const PORT: number = Number(process.env.PORT) || 3000;
 
