@@ -1,1 +1,9 @@
-<p>quick-messages works!</p>
+<!-- quick-messages.component.html -->
+<div class="quick-messages-container">
+  <button
+    *ngFor="let message of messages"
+    class="quick-message-button"
+    (click)="selectMessage(message)">
+    {{ message }}
+  </button>
+</div>
