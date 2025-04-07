@@ -40,7 +40,7 @@ describe('chatbot', () => {
       });
     })
 
-    /*
+
     // Test case to check successful response
     describe('given all required fields are provided', () => {
       it('should return 200', async () => {
@@ -49,12 +49,15 @@ describe('chatbot', () => {
           .send({
             prompt: 'What is ChatHaven?',
           });
+
         expect(res.status).toEqual(200);
-        expect(res.body.response).toHaveProperty('response');
+        expect(typeof res.body.response).toBe('string');
+        expect(res.body.response).toContain('ChatHaven');
         console.log('Prompt sent successfully:', res.body.response);
       });
     });
 
+    /*
     // Test case to check error sending
     describe('given an error sending prompt', () => {
       it('should return 500', async () => {
@@ -70,8 +73,6 @@ describe('chatbot', () => {
           expect(res.body).toBe({ error: 'Error sending prompt' });
         }
       });
-    });
-
-     */
+    }); */
   });
 });
