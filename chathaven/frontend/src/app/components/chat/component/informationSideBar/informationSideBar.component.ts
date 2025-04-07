@@ -134,7 +134,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       isDirectMessage
         ? this.handleDirectMessage()
         : this.handleChannelMessage();
-        this.refreshList();
+      this.refreshList();
     });
   }
 
@@ -210,7 +210,9 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       console.log('User:', user);
       if (user) {
         this.requestList = user.inbox.filter(
-          (inbox: IInbox) => inbox.type === 'request' && inbox.channelId === this.selectedChannelId
+          (inbox: IInbox) =>
+            inbox.type === 'request' &&
+            inbox.channelId === this.selectedChannelId
         );
         this.inviteList = user.inbox.filter(
           (inbox: IInbox) => inbox.type === 'invite'
@@ -303,7 +305,9 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   async loadUserName(): Promise<void> {
     console.log('Loading channel names...');
     const uniqueUserIds = [
-      ...new Set(this.requestList.map((request) => request.userIdThatYouWantToAdd)),
+      ...new Set(
+        this.requestList.map((request) => request.userIdThatYouWantToAdd)
+      ),
     ];
     for (const userId of uniqueUserIds) {
       const user = await this.backendService.getUserById(userId);
@@ -398,14 +402,31 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const allMessages = await this.getAllMessages();
-    const query = this.searchQuery.toLowerCase();
+    const queryParts = this.searchQuery.toLowerCase().trim().split(/\s+/);
+    const parsedQuery: {
+      command?: string;
+      value?: string;
+      content?: string;
+    }[] = [];
 
-    const fromMatches = query.match(/from:\s*(\S+)/g) || [];
-    const hasMatches = query.match(/has:\s*(\S+)/g) || [];
-    const beforeMatches = query.match(/before:\s*(\S+)/g) || [];
-    const duringMatches = query.match(/during:\s*(\S+)/g) || [];
-    const afterMatches = query.match(/after:\s*(\S+)/g) || [];
+    for (let i = 0; i < queryParts.length; i++) {
+      const part = queryParts[i];
+      if (
+        Object.keys(this.commandDescriptions).some((command) =>
+          part.startsWith(command)
+        )
+      ) {
+        const value = queryParts[i + 1] || ''; // Get the next part as the value
+        parsedQuery.push({ command: part, value });
+        i++; // Skip the next part since it's already processed as a value
+      } else {
+        parsedQuery.push({ content: part });
+      }
+    }
+
+    console.log('Parsed Query:', parsedQuery);
+
+    const allMessages = await this.getAllMessages();
 
     this.searchResults = allMessages.filter((message) => {
       const senderUsername = this.getUsernameById(
@@ -413,57 +434,50 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
       )?.toLowerCase();
       const messageDate = this.normalizeDate(new Date(message.time));
 
-      for (const fromMatch of fromMatches) {
-        const fromValue = fromMatch.split(':')[1].trim();
-        if (senderUsername !== fromValue.toLowerCase()) {
+      for (const query of parsedQuery) {
+        if (
+          query.command === 'from:' &&
+          senderUsername !== query.value?.toLowerCase()
+        ) {
           return false;
         }
-      }
 
-      for (const hasMatch of hasMatches) {
-        const hasValue = hasMatch.split(':')[1].trim();
-        const urlPattern =
-          /(?:https?:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
-        if (hasValue === 'link' && !urlPattern.test(message.content)) {
+        if (query.command === 'has:' && query.value === 'link') {
+          const urlPattern =
+            /(?:https?:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
+          if (!urlPattern.test(message.content)) {
+            return false;
+          }
+        }
+
+        if (query.command === 'before:') {
+          const beforeDate = this.normalizeDate(new Date(query.value || ''));
+          if (messageDate > beforeDate) {
+            return false;
+          }
+        }
+
+        if (query.command === 'during:') {
+          const duringDate = this.normalizeDate(new Date(query.value || ''));
+          if (messageDate.toDateString() !== duringDate.toDateString()) {
+            return false;
+          }
+        }
+
+        if (query.command === 'after:') {
+          const afterDate = this.normalizeDate(new Date(query.value || ''));
+          if (messageDate < afterDate) {
+            return false;
+          }
+        }
+
+        if (
+          !query.command &&
+          query.content &&
+          !message.content.toLowerCase().includes(query.content)
+        ) {
           return false;
         }
-      }
-
-      for (const beforeMatch of beforeMatches) {
-        const beforeDate = this.normalizeDate(
-          new Date(beforeMatch.split(':')[1].trim())
-        );
-        if (messageDate >= beforeDate) {
-          return false;
-        }
-      }
-
-      for (const duringMatch of duringMatches) {
-        const duringDate = this.normalizeDate(
-          new Date(duringMatch.split(':')[1].trim())
-        );
-        if (messageDate.toDateString() !== duringDate.toDateString()) {
-          return false;
-        }
-      }
-
-      for (const afterMatch of afterMatches) {
-        const afterDate = this.normalizeDate(
-          new Date(afterMatch.split(':')[1].trim())
-        );
-        if (messageDate <= afterDate) {
-          return false;
-        }
-      }
-
-      if (
-        !fromMatches.length &&
-        !hasMatches.length &&
-        !beforeMatches.length &&
-        !duringMatches.length &&
-        !afterMatches.length
-      ) {
-        return message.content.toLowerCase().includes(query);
       }
 
       return true;
@@ -511,8 +525,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     this.recommendedCommands = [];
 
     const queryParts = query.split(/\s+/);
-    let lastPart = queryParts[queryParts.length - 1];
 
+    const lastPart = queryParts[queryParts.length - 1];
     const isExactCommand = Object.keys(this.commandDescriptions).some(
       (command) => lastPart.startsWith(command)
     );
@@ -557,21 +571,21 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         !query.match(/before:\s*\d{4}-\d{2}-\d{2}/):
         this.searchQuery = query.replace(
           /before:\s*\S*/g,
-          `before:${formattedDate}`
+          `before: ${formattedDate}`
         );
         break;
       case query.includes('after:') &&
         !query.match(/after:\s*\d{4}-\d{2}-\d{2}/):
         this.searchQuery = query.replace(
           /after:\s*\S*/g,
-          `after:${formattedDate}`
+          `after: ${formattedDate}`
         );
         break;
       case query.includes('during:') &&
         !query.match(/during:\s*\d{4}-\d{2}-\d{2}/):
         this.searchQuery = query.replace(
           /during:\s*\S*/g,
-          `during:${formattedDate}`
+          `during: ${formattedDate}`
         );
         break;
       default:
