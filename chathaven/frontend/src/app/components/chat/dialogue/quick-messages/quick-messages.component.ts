@@ -3,14 +3,15 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
   selector: 'app-quick-messages',
   templateUrl: './quick-messages.component.html',
-  styleUrls: ['./quick-messages.component.scss']
+  styleUrls: ['./quick-messages.component.css']
 })
 export class QuickMessagesComponent {
   @Input() messages: string[] = [
-    'Hey',
-    'Thanks',
     'Sounds good',
+    'Thank you',
     'I agree',
+    'Can you explain more?',
+    'Great!',
   ];
 
   @Input() theme: 'dark' | 'light' = 'dark';
