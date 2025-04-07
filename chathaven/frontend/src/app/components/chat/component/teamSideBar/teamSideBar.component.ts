@@ -130,19 +130,8 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
       this.currentStatus = user.status;
       this.manuallySetAway = user.status === 'away';
       this.manuallySetOffline = user.status === 'offline';
-
-      const invites = await Promise.all(
-        user.inbox
-          .filter((inbox) => inbox.type === 'invite')
-          .map((inbox) =>
-            this.backendService.getUserById(inbox.userIdThatYouWantToAdd)
-          )
-      );
-      this.inviteMemberList = invites.filter(
-        (userToAdd) => userToAdd !== null
-      ) as IUser[];
     }
-    this.refreshTeamList();
+    this.refreshList();
   }
 
   ngOnDestroy() {
@@ -177,7 +166,7 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
     this.dataService.toggleIsDirectMessage(false);
   }
 
-  async refreshTeamList(): Promise<void> {
+  async refreshList(): Promise<void> {
     let list: ITeam[] = [];
     this.teamList = [];
     if (await this.userService.checkIfLoggedIn()) {
@@ -194,6 +183,17 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
         }
       }
       this.teamList = list;
+      const invitePromises = this.loginUser.inbox
+        .filter((invite) => invite.type === 'invite')
+        .map(async (invite) => {
+          const userId = invite.userIdThatYouWantToAdd;
+          return await this.backendService.getUserById(userId);
+        });
+
+      const resolvedInvites = await Promise.all(invitePromises);
+      this.inviteMemberList = resolvedInvites.filter(
+        (user): user is IUser => user !== undefined
+      );
     }
   }
 
