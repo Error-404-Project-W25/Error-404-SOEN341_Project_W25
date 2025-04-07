@@ -16,6 +16,10 @@ describe('chatbot', () => {
     await startServer();
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks(); // Clear mocks before each test
+  });
+
   // Cleanup after tests
   afterAll(async () => {
     // Any cleanup logic if needed --> if any DB manipulation
@@ -57,10 +61,9 @@ describe('chatbot', () => {
       });
     });
 
-    /*
-    // Test case to check error sending
+      // Test case to check error sending
     describe('given an error sending prompt', () => {
-      it('should return 500', async () => {
+      it('should return 500', async () => { //test skipped until implemented
         const res = await request(server)
           .post('/chatbot/prompt')
           .send({ prompt: null });
@@ -70,9 +73,9 @@ describe('chatbot', () => {
 
         // If it doesn't fail, you can skip this case
         if (res.status === 500) {
-          expect(res.body).toBe({ error: 'Error sending prompt' });
+          expect(res.body).toEqual({ error: 'Error sending prompt' });
         }
       });
-    }); */
+    });
   });
 });
