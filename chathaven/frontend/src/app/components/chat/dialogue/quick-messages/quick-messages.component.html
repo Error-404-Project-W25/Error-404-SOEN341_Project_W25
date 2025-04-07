@@ -1,5 +1,6 @@
 <div class="quick-messages-container">
-  <div class="quick-message" *ngFor="let message of quickMessages" (click)="onQuickMessageClick(message)">
-    {{ message }}
-  </div>
+  <button (click)="sendQuickMessage('Thank you')">Thank You</button>
+  <button (click)="sendQuickMessage('Sorry')">Sorry</button>
+  <button (click)="sendQuickMessage('Hello')">Hello</button>
+  <button (click)="sendQuickMessage('Goodbye')">Goodbye</button>
 </div>

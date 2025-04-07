@@ -33,6 +33,7 @@ import { QuickMessagesComponent} from '../../dialogue/quick-messages/quick-messa
     MatDialogModule,
     PickerModule,
     MatIconModule,
+    QuickMessagesComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -261,8 +262,9 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   // Handle quick message selection
-  onQuickMessageSelected(message: string): void {
-    this.newMessage = message;
+  sendQuickMessage(message: string) {
+    this.newMessage = message;  // Set the message content
+    this.sendMessage();  // Send the message automatically
   }
 
   getUserName(userId: string): string {

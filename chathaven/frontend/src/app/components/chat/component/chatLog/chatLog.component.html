@@ -148,6 +148,10 @@
       <i class="fa fa-times" style="font-size: 24px"></i>
     </button>
   </div>
+
+  <!-- Quick Messages Component -->
+  <app-quick-messages (quickMessageSent)="sendQuickMessage($event)"></app-quick-messages>
+
   <div class="input-container">
     <input
       class="input-container"

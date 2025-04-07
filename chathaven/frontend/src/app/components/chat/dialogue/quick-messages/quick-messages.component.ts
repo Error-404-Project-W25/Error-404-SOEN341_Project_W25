@@ -3,22 +3,14 @@ import { Component, EventEmitter, Output } from '@angular/core';
 @Component({
   selector: 'app-quick-messages',
   templateUrl: './quick-messages.component.html',
-  styleUrls: ['./quick-messages.component.css']
+  styleUrls: ['./quick-messages.component.css'],
 })
 export class QuickMessagesComponent {
-  // List of predefined quick messages
-  quickMessages: string[] = [
-    'Sounds good!',
-    'Great work!',
-    'Thank you!',
-    'Can you explain?'
-  ];
+  // Create an event emitter to pass the message back to the parent
+  @Output() quickMessageSent: EventEmitter<string> = new EventEmitter<string>();
 
-  // Event emitter to send the selected message to the parent component
-  @Output() quickMessageSelected = new EventEmitter<string>();
-
-  // Handle the quick message selection
-  onQuickMessageClick(message: string) {
-    this.quickMessageSelected.emit(message);
+  // Method to send the quick message
+  sendQuickMessage(message: string): void {
+    this.quickMessageSent.emit(message); // Emit the message to the parent
   }
 }
