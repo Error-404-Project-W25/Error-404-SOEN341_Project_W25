@@ -53,6 +53,14 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   isDirectMessage: boolean = false;
   isMessageLoading: boolean = false;
 
+  // Sample predefined messages
+  quickMessages: string[] = [
+    'Hey',
+    'Thanks',
+    'Sounds good',
+    'I agree',
+  ];
+
   gifResults: any[] = [];
   gifSearchQuery: string = '';
   gifSelected: string = '';
@@ -257,6 +265,12 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       }
       this.messages = messages;
     }
+  }
+
+  // Handle quick message selection
+  onQuickMessageSelected(message: string): void {
+    this.newMessage = message;
+    this.sendMessage();
   }
 
   getUserName(userId: string): string {
