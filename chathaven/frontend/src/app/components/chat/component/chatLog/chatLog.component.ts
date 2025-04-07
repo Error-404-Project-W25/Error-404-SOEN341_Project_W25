@@ -19,6 +19,7 @@ import { DataService } from '@services/data.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
+import { QuickMessagesComponent} from '../../dialogue/quick-messages/quick-messages.component';
 
 @Component({
   selector: 'chat-chat-log',
@@ -52,14 +53,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   selectedConversationId: string = '';
   isDirectMessage: boolean = false;
   isMessageLoading: boolean = false;
-
-  // Sample predefined messages
-  quickMessages: string[] = [
-    'Hey',
-    'Thanks',
-    'Sounds good',
-    'I agree',
-  ];
 
   gifResults: any[] = [];
   gifSearchQuery: string = '';
@@ -270,7 +263,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   // Handle quick message selection
   onQuickMessageSelected(message: string): void {
     this.newMessage = message;
-    this.sendMessage();
   }
 
   getUserName(userId: string): string {
