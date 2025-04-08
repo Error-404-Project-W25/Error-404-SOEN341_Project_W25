@@ -127,6 +127,21 @@
             placeholder="Enter username" 
             (input)="onSearch()"
           />
+          
+          <!-- Username search results embedded directly under the username field -->
+          <div class="username-search-results" *ngIf="searchResults.length > 0 && searchFilters.username">
+            <div class="search-results-header">Search Results</div>
+            <div class="search-result-item" 
+                 *ngFor="let result of searchResults" 
+                 (click)="scrollToMessage(result.messageId, result.conversationId || (isDirectMessage ? getSelectedConversationId() : selectedChannelId))">
+              <div class="result-header">
+                <div class="result-user">{{ result.username }}</div>
+                <div class="result-channel" *ngIf="!isDirectMessage">in #{{ result.channelName }}</div>
+              </div>
+              <div class="result-content" [innerHTML]="highlightText(result.content)"></div>
+              <div class="result-time">{{ result.time | date:'short' }}</div>
+            </div>
+          </div>
         </div>
 
         <div class="filter-group">
@@ -161,7 +176,7 @@
       </div>
     </div>
 
-    <div class="search-results" *ngIf="searchResults.length > 0" [ngClass]="{'search-results-with-filter': showSearchFilters && !isDirectMessage && searchFilters.username}">
+    <div class="search-results" *ngIf="searchResults.length > 0 && !(showSearchFilters && !isDirectMessage && searchFilters.username)">
       <div class="search-results-header">Search Results</div>
       <div class="search-result-item" 
            *ngFor="let result of searchResults" 
