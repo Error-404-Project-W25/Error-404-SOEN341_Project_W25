@@ -522,6 +522,10 @@ ul {
   pointer-events: none; /* Allow clicks to pass through */
 }
 
+.search-results::before {
+  display: none;
+}
+
 .filter-header {
   display: flex;
   justify-content: space-between;
