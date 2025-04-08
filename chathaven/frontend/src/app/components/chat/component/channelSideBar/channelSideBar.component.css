@@ -510,8 +510,7 @@ ul {
   pointer-events: auto;
 }
 
-.search-filters::before,
-.search-results::before {
+.search-filters::before {
   content: '';
   position: fixed;
   top: 0;
