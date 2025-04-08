@@ -110,7 +110,7 @@
     </div>
 
     <!-- Search filters for Channels - additionally with the username filter -->
-    <div class="search-filters" *ngIf="showSearchFilters && !isDirectMessage && searchResults.length === 0">
+    <div class="search-filters" *ngIf="showSearchFilters && !isDirectMessage">
       <div class="filter-header">
         <span>Search Options</span>
         <button class="close-filters" (click)="showSearchFilters = false">
@@ -161,11 +161,11 @@
       </div>
     </div>
 
-    <div class="search-results" *ngIf="searchResults.length > 0">
+    <div class="search-results" *ngIf="searchResults.length > 0" [ngClass]="{'search-results-with-filter': showSearchFilters && !isDirectMessage && searchFilters.username}">
       <div class="search-results-header">Search Results</div>
       <div class="search-result-item" 
            *ngFor="let result of searchResults" 
-             (click)="scrollToMessage(result.messageId, result.conversationId || (isDirectMessage ? getSelectedConversationId() : selectedChannelId))">
+           (click)="scrollToMessage(result.messageId, result.conversationId || (isDirectMessage ? getSelectedConversationId() : selectedChannelId))">
         <div class="result-header">
           <div class="result-user">{{ result.username }}</div>
           <div class="result-channel" *ngIf="!isDirectMessage">in #{{ result.channelName }}</div>
