@@ -1,0 +1,75 @@
+@startuml
+
+class User {
+  + userId: String
+  + firstName: String
+  + lastName: String
+  + username: String
+  + email: String
+  + role: String
+  + teams: List<String>
+  + directMessages: List<String>
+  + inbox: List<Inbox>
+  + status: String
+  + lastSeen: Date
+  + createTeam(teamName: String): Team
+  + sendMessage(conversationId: String, content: String): Message
+  + respondToInbox(requestId: String, status: String): void
+}
+
+class Team {
+  + teamId: String
+  + teamName: String
+  + description: String
+  + admin: List<String>
+  + members: List<String>
+  + channels: List<String>
+  + createdAt: Date
+  + addMember(userId: String): void
+  + removeMember(userId: String): void
+  + createChannel(name: String): Channel
+}
+
+class Channel {
+  + channelId: String
+  + name: String
+  + description: String
+  + teamId: String
+  + members: List<String>
+  + conversationId: String
+  + addUser(userId: String): void
+  + removeUser(userId: String): void
+}
+
+class Conversation {
+  + conversationId: String
+  + conversationName: String
+  + messages: List<Message>
+  + addMessage(message: Message): void
+  + deleteMessage(messageId: String): void
+}
+
+class Message {
+  + messageId: String
+  + quotedMessageId: String
+  + content: String
+  + sender: String
+  + time: String
+}
+
+class Inbox {
+  + requestId: String
+  + senderId: String
+  + receiverId: String
+  + status: String
+  + updateStatus(status: String): void
+}
+
+User "1" -- "0..*" Team : belongs to
+User "1" -- "0..*" Conversation : participates in
+User "1" -- "0..*" Inbox : has
+Team "1" -- "0..*" Channel : contains
+Channel "1" -- "1" Conversation : linked to
+Conversation "1" -- "0..*" Message : contains
+
+@enduml
