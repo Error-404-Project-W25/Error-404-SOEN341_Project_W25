@@ -339,7 +339,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     return this.messages.find((msg) => msg.messageId === messageId) || null;
   }
 
-  scrollToMessage(messageId: string, maxRetries = 5): void {
+  scrollToMessage(messageId: string, maxRetries = 15): void {
     const attemptScroll = (retryCount: number) => {
       const messageElement = document.getElementById(`message-${messageId}`);
       
