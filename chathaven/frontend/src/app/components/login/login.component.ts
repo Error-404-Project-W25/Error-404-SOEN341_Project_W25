@@ -245,81 +245,52 @@ export class LoginComponent implements OnInit {
 
   /////////////////// REGISTER ///////////////////
 
-  async register() {
-    if (!this.validateSignUpForm()) {
+  async register(): Promise<void> {
+    if (this.signUpForm.password !== this.confirmPassword) {
+      console.error('Passwords do not match');
       return;
     }
 
     try {
-      const response: UserAuthResponse | undefined =
-        await this.backendService.registerUser(this.signUpForm);
-
-      if (response) {
-        if (response.uid) {
-          const user: IUser | undefined = await this.backendService.getUserById(
-            response.uid
-          );
-          if (user) {
-            this.userService.setUser(user);
-            const userId = user?.userId;
-            const socket = io('http://localhost:3000', {
-              query: { userId },
-            });
-            socket.on('connect', () => {
-              console.log('Connected to socket server');
-            });
-            this.goToChat();
-          }
-        } else if (response.error) {
-          alert(response.error); // TODO: make this a div
-          console.log('Error:', response.error);
-          console.log('Details:', response.details);
-        }
-        console.log('Message:', response.message);
+      const response = await this.backendService.loginUser(this.signUpForm);
+      if (!response || !response.uid) {
+        throw new Error('Invalid response or missing user ID');
       }
+
+      console.log(`User ID returned from backend: ${response.uid}`); // Log the userId
+
+      const user = await this.backendService.getUserById(response.uid);
+      if (!user) {
+        console.error('Failed to retrieve user data');
+        return; // Stop execution if user data cannot be retrieved
+      }
+
+      this.userService.setUser(user);
+      await this.router.navigate(['/chat']); // Ensure navigation happens after setting the user
     } catch (error) {
       console.error('Error registering user:', error);
-      alert('Failed to register user.');
     }
   }
 
   //////////////////// LOGIN ////////////////////
 
-  async login() {
-    if (!this.signInForm.email || !this.signInForm.password) {
-      alert('Email and password are required.');
-      return;
-    }
-
+  async login(): Promise<void> {
     try {
-      const response: UserAuthResponse | undefined =
-        await this.backendService.loginUser(this.signInForm);
-
-      if (response) {
-        if (response.uid) {
-          const user: IUser | undefined = await this.backendService.getUserById(
-            response.uid
-          );
-
-          if (user) {
-            await this.userService.setUser(user);
-            const userId = user?.userId;
-            const socket = io('http://localhost:3000', {
-              query: { userId },
-            });
-            console.log('Connected to socket server');
-            this.goToChat();
-          }
-        } else if (response.error) {
-          alert(response.error); // TODO: make this a div
-          console.log('Error:', response.error);
-          console.log('Details:', response.details);
-        }
-        console.log('Message:', response.message);
+      const response = await this.backendService.loginUser(this.signInForm);
+      if (!response || !response.uid) {
+        throw new Error('Invalid response or missing user ID');
       }
+
+      const user = await this.backendService.getUserById(response.uid);
+      if (!user) {
+        console.error('Failed to retrieve user data');
+        return; // Stop execution if user data cannot be retrieved
+      }
+
+      this.userService.setUser(user);
+      await this.router.navigate(['/chat']); // Ensure navigation happens after setting the user
     } catch (error) {
-      console.error('Error logging in:', error);
-      alert('Failed to log in.');
+      console.error('Error logging in user:', error);
     }
   }
 

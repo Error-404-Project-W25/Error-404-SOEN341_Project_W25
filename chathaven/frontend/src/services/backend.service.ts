@@ -74,6 +74,7 @@ export class BackendService {
 
   async getUserById(userId: string): Promise<IUser | undefined> {
     try {
+      console.log(`Fetching user with ID: ${userId}`); // Log the userId being fetched
       const response = await firstValueFrom(
         this.http.get<{ user?: IUser; error?: string }>(
           `${this.backendURL}/users/${userId}`
@@ -83,7 +84,7 @@ export class BackendService {
       if (response.user) {
         return response.user;
       } else if (response.error) {
-        console.error(response.error);
+        console.error(`Backend error: ${response.error}`);
       } else {
         console.error(`User with ID ${userId} not found`);
       }
