@@ -1,4 +1,3 @@
-// filepath: c:\Users\super\OneDrive\Documents\VScodeProject\SOEN 341\Project\Error-404-SOEN341_Project_W25\chathaven\frontend\src\app\components\chat\component\chatLog\chatLog.component.ts
 import {
   Component,
   Input,
