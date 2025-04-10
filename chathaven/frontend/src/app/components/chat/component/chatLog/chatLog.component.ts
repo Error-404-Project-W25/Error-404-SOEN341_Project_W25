@@ -18,7 +18,7 @@ import { DataService } from '@services/data.service';
 import { PickerModule } from '@ctrl/ngx-emoji-mart';
 import { MatIconModule } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
-import { QuickMessagesComponent} from '../../dialogue/quick-messages/quick-messages.component';
+import { QuickMessagesComponent } from '../../dialogue/quick-messages/quick-messages.component';
 
 @Component({
   selector: 'chat-chat-log',
@@ -91,8 +91,14 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loginUser = this.userService.getUser();
+    // Listen for message selection events
+    this.dataService.selectedMessageId.subscribe((messageId) => {
+      if (messageId) {
+        this.scrollToMessage(messageId);
+      }
+    });
   }
 
   ngOnDestroy() {}
@@ -262,8 +268,8 @@ export class ChatLogComponent implements OnInit, OnDestroy {
 
   // Handle quick message selection
   sendQuickMessage(message: string) {
-    this.newMessage = message;  // Set the message content
-    this.sendMessage();  // Send the message automatically
+    this.newMessage = message; // Set the message content
+    this.sendMessage(); // Send the message automatically
   }
 
   getUserName(userId: string): string {
@@ -450,5 +456,41 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     this.selectedChannelId = '';
     this.selectedTeamId = '';
     this.selectedConversationId = '';
+  }
+  scrollToMessage(messageId: string, maxRetries = 15): void {
+    const attemptScroll = (retryCount: number) => {
+      const messageElement = document.getElementById(`message-${messageId}`);
+      const chatLog = document.querySelector('.chat-log');
+
+      if (messageElement && chatLog) {
+        const chatLogRect = chatLog.getBoundingClientRect();
+        const messageRect = messageElement.getBoundingClientRect();
+        const scrollTop =
+          messageElement.offsetTop -
+          chatLogRect.height / 2 +
+          messageRect.height / 2;
+
+        chatLog.scrollTop = scrollTop;
+
+        // Add highlight class after scrolling completes
+        setTimeout(() => {
+          messageElement.classList.add('highlighted-message');
+          setTimeout(() => {
+            messageElement.classList.remove('highlighted-message');
+          }, 3000);
+        }, 100);
+      } else if (retryCount > 0) {
+        // Message not found, retry after a delay
+        console.log(
+          `Message element not found, retrying... (${retryCount} attempts left)`
+        );
+        setTimeout(() => attemptScroll(retryCount - 1), 500);
+      } else {
+        console.log('Failed to find message element after all retries');
+      }
+    };
+
+    // Start the retry process after a small initial delay
+    setTimeout(() => attemptScroll(maxRetries), 100);
   }
 }

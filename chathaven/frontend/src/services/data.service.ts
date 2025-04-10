@@ -21,6 +21,9 @@ export class DataService {
   private isInformationSelected = new BehaviorSubject<boolean>(true);
   isInformationOpen = this.isInformationSelected.asObservable();
 
+  private messageIdSource = new BehaviorSubject<string>('');
+  selectedMessageId = this.messageIdSource.asObservable();
+
   selectTeam(selectedTeamId: string) {
     this.teamId.next(selectedTeamId);
   }
@@ -51,5 +54,9 @@ export class DataService {
     this.channelId.next('');
     this.conversationId.next('');
     this.isDirectMessageSelected.next(false);
+  }
+
+  selectMessage(messageId: string) {
+    this.messageIdSource.next(messageId);
   }
 }

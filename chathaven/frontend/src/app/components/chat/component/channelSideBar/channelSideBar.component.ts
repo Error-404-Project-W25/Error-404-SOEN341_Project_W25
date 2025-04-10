@@ -1,4 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  EventEmitter,
+  HostListener,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +22,13 @@ import { TeamMemberRemovalDialog } from '../../dialogue/remove-member-team/remov
 import { DataService } from '@services/data.service';
 import { JoinRequestDialog } from '../../dialogue/join-request/join-request.dialogue';
 import { RemoveMemberDialogComponent } from '../../dialogue/leave-channel/leave-channel.dialogue';
+
+interface SearchFilters {
+  beforeDate: string;
+  afterDate: string;
+  duringDate: string;
+  username?: string; // Optional parameter for channel search
+}
 
 @Component({
   selector: 'chat-channel-sidebar',
@@ -37,6 +52,23 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   channelIdToLastMessage: { [channelId: string]: string } = {};
   directMessageIdToLastMessage: { [directMessageId: string]: string } = {};
   conversationId: string | null = null;
+  @Output() messageSelected = new EventEmitter<string>();
+
+  searchQuery: string = '';
+  searchResults: any[] = [];
+  searchDebouncer: any;
+  showSearchFilters: boolean = false;
+  searchFilters: SearchFilters = {
+    beforeDate: '',
+    afterDate: '',
+    duringDate: '',
+    username: '',
+  };
+
+  // Add this new property
+  activeDateFilter: 'beforeDate' | 'afterDate' | 'duringDate' | null = null;
+
+  isSearching: boolean = false;
 
   constructor(
     public dialog: MatDialog,
@@ -191,18 +223,17 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   selectChannel(channelId: string): void {
-    this.backendService.getChannelById(channelId).then((channel) => {
-      if (
-        channel &&
-        channel.members.includes(this.userService.getUser()?.userId || '')
-      ) {
+    this.backendService.getChannelById(channelId).then(async (channel) => {
+      if (channel && channel.members.includes(this.userService.getUser()?.userId || '')) {
         this.selectedChannelId = channel.channelId;
+
+        // Preload messages before updating UI
+        await this.backendService.getMessages(channel.conversationId);
+
         this.dataService.selectChannel(this.selectedChannelId);
         this.dataService.selectConversation(channel.conversationId);
-        if (this.isDirectMessage) {
-          this.dataService.toggleIsDirectMessage(false);
-        }
       } else {
+        // alert('You are not a member of this channel');
         this.dialog.open(JoinRequestDialog, {
           data: { channelId: channelId, teamId: this.selectedTeamId },
         });
@@ -211,6 +242,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   selectDirectMessage(directMessageId: string): void {
+    this.conversationId = directMessageId;
     this.dataService.selectConversation(directMessageId);
   }
 
@@ -245,6 +277,302 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       return null;
     } catch (error) {
       return null;
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  handleClickOutside(event: MouseEvent) {
+    const searchWrapper = document.querySelector('.search-wrapper');
+    const target = event.target as HTMLElement;
+
+    if (searchWrapper && !searchWrapper.contains(target)) {
+      this.showSearchFilters = false;
+      this.searchResults = [];
+
+      this.searchQuery = '';
+
+      this.searchFilters = {
+        beforeDate: '',
+        afterDate: '',
+        duringDate: '',
+      };
+      this.activeDateFilter = null;
+    }
+  }
+
+  onSearch() {
+    // Clear results if no search query AND no active filters AND no username
+    if (
+      !this.searchQuery.trim() &&
+      !this.hasActiveFilters() &&
+      !this.searchFilters.username?.trim()
+    ) {
+      this.searchResults = [];
+      return;
+    }
+
+    if (this.searchDebouncer) {
+      clearTimeout(this.searchDebouncer);
+    }
+
+    this.searchDebouncer = setTimeout(() => {
+      this.performSearch();
+    }, 300);
+  }
+
+  async performSearch() {
+    try {
+      this.isSearching = true;
+
+      if (this.isDirectMessage) {
+        // Direct message search (already working correctly)
+        const filters = this.buildSearchFilters();
+        const searchPromises = this.directMessageList.map((conversation) =>
+          this.backendService
+            .searchDirectMessages(
+              conversation.conversationId,
+              this.searchQuery.trim(),
+              filters
+            )
+            .then((messages) =>
+              messages.map((msg) => ({
+                ...msg,
+                conversationId: conversation.conversationId, // Add conversationId to each message
+              }))
+            )
+        );
+
+        const searchResults = await Promise.all(searchPromises);
+        const allSearchResults = searchResults.flat();
+
+        // Sort results by time
+        this.searchResults = allSearchResults.sort(
+          (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
+        );
+
+        // Add usernames to results
+        const userIds = [
+          ...new Set(this.searchResults.map((msg) => msg.sender)),
+        ];
+        const userPromises = userIds.map((id) =>
+          this.backendService.getUserById(id)
+        );
+        const users = await Promise.all(userPromises);
+
+        const userMap = new Map();
+        users.forEach((user) => {
+          if (user) userMap.set(user.userId, user.username || 'Unknown User');
+        });
+
+        this.searchResults.forEach((result) => {
+          result.username = userMap.get(result.sender) || 'Unknown User';
+        });
+      } else {
+        const filters = this.buildSearchFilters();
+
+        const isUsernameOnlySearch =
+          !this.searchQuery.trim() && filters.username;
+
+        // Only search channels the user is a member of
+        const userChannels = this.channelList.filter((channel) =>
+          channel.members.includes(this.userService.getUser()?.userId || '')
+        );
+
+        console.log(`Searching across ${userChannels.length} channels`);
+
+        if (userChannels.length === 0) {
+          console.log('No channels to search in');
+          this.searchResults = [];
+          this.isSearching = false;
+          return;
+        }
+
+        const searchPromises = userChannels.map((channel) => {
+          console.log(
+            `Searching channel: ${channel.name} (${channel.channelId})`
+          );
+          return this.backendService
+            .searchChannelMessages(
+              channel.channelId,
+              isUsernameOnlySearch ? '' : this.searchQuery.trim(), // Don't include text search if username-only
+              filters
+            )
+            .then((messages) => {
+              console.log(
+                `Found ${messages.length} messages in channel ${channel.name}`
+              );
+              return messages.map((msg) => ({
+                ...msg,
+                conversationId: channel.conversationId,
+                channelId: channel.channelId,
+                channelName: channel.name,
+              }));
+            });
+        });
+
+        const searchResults = await Promise.all(searchPromises);
+        const allSearchResults = searchResults.flat();
+
+        console.log(`Total results found: ${allSearchResults.length}`);
+
+        this.searchResults = allSearchResults.sort(
+          (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
+        );
+
+        const userIds = [
+          ...new Set(this.searchResults.map((msg) => msg.sender)),
+        ];
+        const userPromises = userIds.map((id) =>
+          this.backendService.getUserById(id)
+        );
+        const users = await Promise.all(userPromises);
+
+        const userMap = new Map();
+        users.forEach((user) => {
+          if (user) {
+            userMap.set(user.userId, user.username || 'Unknown User');
+            console.log(`Mapped user ${user.userId} to ${user.username}`);
+          }
+        });
+
+        this.searchResults.forEach((result) => {
+          result.username = userMap.get(result.sender) || 'Unknown User';
+        });
+      }
+    } catch (error) {
+      console.error('Error searching messages:', error);
+      this.searchResults = [];
+    } finally {
+      this.isSearching = false;
+    }
+  }
+
+  private hasActiveFilters(): boolean {
+    return !!(
+      this.searchFilters.beforeDate ||
+      this.searchFilters.afterDate ||
+      this.searchFilters.duringDate ||
+      this.searchFilters.username?.trim()
+    );
+  }
+
+  private buildSearchFilters() {
+    const filters: any = {};
+
+    if (this.searchFilters.beforeDate) {
+      filters.beforeDate = new Date(
+        this.searchFilters.beforeDate
+      ).toISOString();
+      console.log(
+        'Setting beforeDate filter:',
+        this.searchFilters.beforeDate,
+        '->',
+        filters.beforeDate
+      );
+    }
+
+    if (this.searchFilters.afterDate) {
+      filters.afterDate = this.searchFilters.afterDate;
+      console.log('Setting afterDate filter:', this.searchFilters.afterDate);
+    }
+
+    if (this.searchFilters.duringDate) {
+      filters.duringDate = this.searchFilters.duringDate;
+      console.log('Setting duringDate filter:', this.searchFilters.duringDate);
+    }
+
+    // Only add username filter if it exists and we're in channel mode
+    if (
+      !this.isDirectMessage &&
+      this.searchFilters.username &&
+      this.searchFilters.username.trim()
+    ) {
+      filters.username = this.searchFilters.username.trim();
+      console.log('Setting username filter:', filters.username);
+    }
+
+    console.log('Sending filters to backend:', filters);
+    return filters;
+  }
+
+  scrollToMessage(messageId: string, conversationId: string) {
+    const selectAndHighlight = () => {
+      setTimeout(() => {
+        this.dataService.selectMessage(messageId);
+      }, 300);
+    };
+
+    if (this.isDirectMessage) {
+      this.selectDirectMessage(conversationId);
+      selectAndHighlight();
+    } else {
+      const channel = this.channelList.find(
+        (ch) => ch.conversationId === conversationId
+      );
+
+      if (channel) {
+        if (channel.members.includes(this.userService.getUser()?.userId || '')) {
+          this.selectedChannelId = channel.channelId;
+          this.dataService.selectChannel(this.selectedChannelId);
+          this.dataService.selectConversation(conversationId);
+          selectAndHighlight();
+        } else {
+          // User is not a member, open the join request dialog
+          this.dialog.open(JoinRequestDialog, {
+            data: { channelId: channel.channelId, teamId: this.selectedTeamId },
+          });
+        }
+      }
+    }
+
+    this.searchQuery = '';
+    this.searchResults = [];
+    this.searchFilters = {
+      beforeDate: '',
+      afterDate: '',
+      duringDate: '',
+      username: '',
+    };
+    this.activeDateFilter = null;
+    this.showSearchFilters = false;
+  }
+
+  highlightText(text: string): string {
+    if (!this.searchQuery) return text;
+    const regex = new RegExp(`(${this.searchQuery})`, 'gi');
+    return text.replace(regex, '<span class="highlight">$1</span>');
+  }
+
+  onDateFilterChange(
+    filterType: 'beforeDate' | 'afterDate' | 'duringDate',
+    event: any
+  ): void {
+    if (event.target.value) {
+      this.activeDateFilter = filterType;
+
+      // Clear other filters
+      if (filterType !== 'beforeDate') this.searchFilters.beforeDate = '';
+      if (filterType !== 'afterDate') this.searchFilters.afterDate = '';
+      if (filterType !== 'duringDate') this.searchFilters.duringDate = '';
+    } else {
+      // If the filter was cleared, reset the active filter
+      if (this.activeDateFilter === filterType) {
+        this.activeDateFilter = null;
+      }
+    }
+
+    this.onSearch();
+  }
+
+  getSelectedConversationId(): string {
+    if (this.isDirectMessage) {
+      return this.conversationId || '';
+    } else {
+      let conversationId = '';
+      this.dataService.currentConversationId.subscribe((id) => {
+        conversationId = id || '';
+      });
+      return this.selectedChannelId ? conversationId : '';
     }
   }
 }
