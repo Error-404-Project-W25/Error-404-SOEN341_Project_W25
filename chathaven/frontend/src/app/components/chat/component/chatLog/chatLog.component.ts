@@ -256,7 +256,10 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     const messages = await this.backendService.getMessages(
       this.selectedConversationId
     );
-    this.messages = [];
+    if ((messages?.length ?? 0) === this.messages.length) {
+      console.log('No new messages to refresh');
+      return; // No need to refresh if the size is the same
+    }
     if (messages) {
       const uniqueSenderIds = [...new Set(messages.map((msg) => msg.sender))];
       for (const userId of uniqueSenderIds) {
