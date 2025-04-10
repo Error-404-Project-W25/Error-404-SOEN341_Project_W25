@@ -24,7 +24,7 @@
         <h1>Welcome to "{{ chatTitle }}"</h1>
         <p>This is the start of "{{ chatTitle }}"</p>
       </li>
-      <li class="message" *ngFor="let message of messages" readonly>
+      <li class="message" *ngFor="let message of messages" readonly [id]="'message-' + message.messageId">
         <div
           *ngIf="
             message.quotedMessageId &&
