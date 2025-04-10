@@ -99,6 +99,10 @@ export class ChatLogComponent implements OnInit, OnDestroy {
         this.scrollToMessage(messageId);
       }
     });
+
+    setInterval(() => {
+      this.refreshMessages();
+    }, 1000);
   }
 
   ngOnDestroy() {}
@@ -252,6 +256,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
     const messages = await this.backendService.getMessages(
       this.selectedConversationId
     );
+    this.messages = [];
     if (messages) {
       const uniqueSenderIds = [...new Set(messages.map((msg) => msg.sender))];
       for (const userId of uniqueSenderIds) {
@@ -264,6 +269,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       }
       this.messages = messages;
     }
+    this.scrollToBottom();
   }
 
   // Handle quick message selection
