@@ -17,7 +17,6 @@ import { TeamSidebarComponent } from './component/teamSideBar/teamSideBar.compon
 import { ChannelSidebarComponent } from './component/channelSideBar/channelSideBar.component';
 import { ChatLogComponent } from './component/chatLog/chatLog.component';
 import { InformationSidebarComponent } from './component/informationSideBar/informationSideBar.component';
-import { QuickMessagesComponent} from './dialogue/quick-messages/quick-messages.component';
 
 @Component({
   selector: 'app-chat',
@@ -30,7 +29,6 @@ import { QuickMessagesComponent} from './dialogue/quick-messages/quick-messages.
     ChannelSidebarComponent,
     ChatLogComponent,
     InformationSidebarComponent,
-    QuickMessagesComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -77,13 +75,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.userService.checkIfLoggedIn().then((isLoggedIn) => {
       if (!isLoggedIn) {
         this.router.navigate(['/login']);
-      }
-    });
-
-    this.userService.user$.toPromise().then((user) => {
-      this.loginUser = user;
-      if (!this.loginUser) {
-        console.error('User not found');
       }
     });
   }

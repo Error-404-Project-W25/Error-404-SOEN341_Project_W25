@@ -4,6 +4,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
   selector: 'app-quick-messages',
   templateUrl: './quick-messages.component.html',
   styleUrls: ['./quick-messages.component.css'],
+  standalone: true,
 })
 export class QuickMessagesComponent {
   // Create an event emitter to pass the message back to the parent

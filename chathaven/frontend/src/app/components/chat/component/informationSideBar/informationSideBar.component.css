@@ -128,7 +128,7 @@ h6 {
 }
 
 .member-button:hover {
-  color: var(--primary-text-color);
+  color: var(--primary-color);
 }
 
 .tab-container {
