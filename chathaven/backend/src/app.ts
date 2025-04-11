@@ -25,12 +25,12 @@ const app: Application = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:4200',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
-    credentials: true,
+    origin: "http://localhost:4200",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true
   },
-  transports: ['websocket', 'polling'],
+  transports: ['websocket', 'polling']
 });
 
 const connectedUsers = new Map<string, string>(); // Key: userId, Value: socketId
@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
         { userId },
         {
           status: 'online',
-          lastSeen: new Date(),
+          lastSeen: new Date()
         }
       ).exec();
       console.log(`User ${userId} disconnected via sign-out`);
@@ -119,6 +119,7 @@ io.on('connection', (socket) => {
   });
 });
 
+
 // Connect to database
 const DB_CONN_STRING = process.env.DB_CONN_STRING || '';
 const DB_NAME = process.env.DB_NAME || '';
@@ -155,13 +156,10 @@ const startServer = async () => {
     const PORT: number = Number(process.env.PORT) || 3000;
 
     if (process.env.NODE_ENV !== 'test') {
-      httpServer
-        .listen(PORT, () => console.log(`Server running on port ${PORT}`))
+      httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`))
         .on('error', (err: NodeJS.ErrnoException) => {
           if (err.code === 'EADDRINUSE') {
-            console.error(
-              `Port ${PORT} is already in use. Trying to close the port...`
-            );
+            console.error(`Port ${PORT} is already in use. Trying to close the port...`);
             // Find and kill the process using the port
             exec(`netstat -ano | findstr :${PORT}`, (err, stdout, stderr) => {
               if (err) {
@@ -175,12 +173,8 @@ const startServer = async () => {
                     console.error(`Error killing process ${pid}:`, err);
                     return;
                   }
-                  console.log(
-                    `Process ${pid} killed. Trying to restart the server...`
-                  );
-                  httpServer.listen(PORT, () =>
-                    console.log(`Server running on port ${PORT}`)
-                  );
+                  console.log(`Process ${pid} killed. Trying to restart the server...`);
+                  httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
                 });
               }
             });
@@ -201,3 +195,4 @@ const startServer = async () => {
 
 startServer();
 export { app, io, connectDB, startServer, connectedUsers };
+

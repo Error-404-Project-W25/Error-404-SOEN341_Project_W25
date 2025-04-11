@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { Messages } from '../models/messagesModel';
 import { Conversation } from '../models/conversationsModel';
 import { IMessage } from '@shared/interfaces';
 import { io } from '../app';
@@ -21,28 +20,29 @@ export const sendMessage = async (req: Request, res: Response) => {
       return;
     }
 
+    const conversation = await Conversation.findOne({ conversationId });
+    if (!conversation) {
+      res.status(404).json({ error: 'Conversation not found' });
+      return;
+    }
+
     const messageId: string = uuidv4();
     const time: string = new Date().toISOString();
 
-    const newMessage = new Messages({
+    const newMessage: IMessage = {
       messageId: messageId,
       content: content,
       sender: senderId,
       time: time,
-    });
+    };
 
     if (quotedMessageId) {
       newMessage.quotedMessageId = quotedMessageId;
     }
 
-    await newMessage.save();
-
-    const conversation = await Conversation.findOne({ conversationId });
-    if (conversation) {
-      conversation.messages.push(newMessage as IMessage);
-      await conversation.save();
-      io.to(conversationId).emit('sendMessage', newMessage as IMessage);
-    }
+    conversation.messages.push(newMessage);
+    await conversation.save();
+    io.to(conversationId).emit('sendMessage', newMessage);
     res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error sending message:', error);
@@ -67,27 +67,12 @@ export const deleteMessage = async (req: Request, res: Response) => {
       // Remove quotedMessageId field from messages that quote the deleted message
       conversation.messages.forEach((message) => {
         if (message.quotedMessageId === messageId) {
-          message.quotedMessageId = '';
+          message.quotedMessageId = undefined;
         }
       });
 
       await conversation.save();
       io.to(conversationId).emit('deleteMessage', messageId);
-    }
-
-    const message = await Messages.findOne({ messageId });
-    if (message) {
-      await message.deleteOne();
-    }
-
-    // Search for any messages that quote the deleted message
-    const messages = await Messages.find({ quotedMessageId: messageId });
-    if (messages) {
-      messages.forEach(async (message) => {
-        // Remove quotedMessageId field
-        delete message.quotedMessageId;
-        await message.save();
-      });
     }
 
     res.status(200).json({ success: true });
