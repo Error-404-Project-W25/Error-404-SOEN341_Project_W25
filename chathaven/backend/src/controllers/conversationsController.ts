@@ -38,25 +38,55 @@ export const createDirectMessages = async (req: Request, res: Response) => {
     const { conversationName, creatorId, addedUserId } = req.body;
     const conversationId: string = uuidv4();
 
+    if (!conversationName || !creatorId || !addedUserId) {
+      res.status(400).json({ error: 'Missing required fields' });
+      return;
+    }
+
+    // Prevent creating a conversation with yourself
+    if (creatorId === addedUserId) {
+      res
+        .status(400)
+        .json({ error: 'Cannot create a conversation with yourself' });
+      return;
+    }
+
+    // Check if a conversation already exists between the two users
+    // Get User of creatorId and addedUserId
+    const creator = await User.findOne({ userId: creatorId });
+    const addedUser = await User.findOne({ userId: addedUserId });
+    if (!creator || !addedUser) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    // Check if a conversation already exists between the two users
+    // See if there are any common conversationIds in their directMessages arrays
+    const existingConversation = await Conversation.findOne({
+      conversationId: {
+        $in: creator.directMessages.concat(addedUser.directMessages),
+      },
+    });
+
+    if (existingConversation) {
+      console.log('Conversation already exists:', existingConversation);
+      res.status(400).json({ error: 'Conversation already exists' });
+      return;
+    }
+
     const newConversation = await new Conversation({
       conversationId: conversationId,
       conversationName: conversationName,
       messages: [],
     }).save();
 
-    // Fetch the users
-    const creator = await User.findOne({ userId: creatorId });
-    const addedUser = await User.findOne({ userId: addedUserId });
+    // Add conversationId to the directMessages array of both users
+    creator.directMessages.push(conversationId);
+    addedUser.directMessages.push(conversationId);
 
-    if (creator && addedUser) {
-      // Add conversationId to the directMessages array of both users
-      creator.directMessages.push(conversationId);
-      addedUser.directMessages.push(conversationId);
-
-      // Save the updated user documents
-      await creator.save();
-      await addedUser.save();
-    }
+    // Save the updated user documents
+    await creator.save();
+    await addedUser.save();
 
     io.to(creatorId).emit('joinRoom', { conversationId });
     io.to(addedUserId).emit('joinRoom', { conversationId });
@@ -92,7 +122,9 @@ export const getConversationById = async (req: Request, res: Response) => {
  * @param req conversationId
  * @param res returns boolean (true or false)
  */
-export const deleteConversation = async (conversationId: string): Promise<boolean> => {
+export const deleteConversation = async (
+  conversationId: string
+): Promise<boolean> => {
   try {
     //const { conversationId } = req.body;
 
@@ -105,7 +137,6 @@ export const deleteConversation = async (conversationId: string): Promise<boolea
     // delete the conversation from the database
     await conversation.deleteOne();
     return true;
-
   } catch (error) {
     const errorMessage = (error as Error).message;
     console.error('Failed to delete conversation:', errorMessage);

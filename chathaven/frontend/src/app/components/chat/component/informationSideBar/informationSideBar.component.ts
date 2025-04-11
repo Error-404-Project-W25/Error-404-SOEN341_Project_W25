@@ -103,13 +103,12 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   // Lifecycle Hooks
-  ngOnInit() {
-    this.userService.user$.toPromise().then((user) => {
-      this.loginUser = user;
-      if (!this.loginUser) {
-        console.error('User not found');
-      }
-    });
+  async ngOnInit() {
+    this.loginUser = this.userService.getUser();
+
+    if (!this.loginUser) {
+      console.error('User not found');
+    }
   }
 
   ngOnDestroy() {
