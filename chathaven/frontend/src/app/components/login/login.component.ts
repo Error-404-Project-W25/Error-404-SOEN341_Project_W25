@@ -246,31 +246,46 @@ export class LoginComponent implements OnInit {
   /////////////////// REGISTER ///////////////////
 
   async register(): Promise<void> {
+    if (!this.validateSignUpForm()) {
+      return;
+    }
+
     if (this.signUpForm.password !== this.confirmPassword) {
       console.error('Passwords do not match');
       return;
     }
 
     try {
-      const response = await this.backendService.loginUser(this.signUpForm);
+      const response = await this.backendService.registerUser(this.signUpForm);
+
       if (!response || !response.uid) {
         throw new Error('Invalid response or missing user ID');
       }
 
-      console.log(`User ID returned from backend: ${response.uid}`); // Log the userId
+      console.log(`User ID returned from backend: ${response.uid}`);
+
+      // Auto-login after registration (send correct payload)
+      await this.backendService.loginUser({
+        email: this.signUpForm.email,
+        password: this.signUpForm.password
+      });
 
       const user = await this.backendService.getUserById(response.uid);
+
       if (!user) {
         console.error('Failed to retrieve user data');
-        return; // Stop execution if user data cannot be retrieved
+        return;
       }
 
       this.userService.setUser(user);
-      await this.router.navigate(['/chat']); // Ensure navigation happens after setting the user
+      await this.router.navigate(['/chat']); // Navigate after setting user
+
     } catch (error) {
       console.error('Error registering user:', error);
+      alert('Registration failed. Please try again.');
     }
   }
+
 
   //////////////////// LOGIN ////////////////////
 
