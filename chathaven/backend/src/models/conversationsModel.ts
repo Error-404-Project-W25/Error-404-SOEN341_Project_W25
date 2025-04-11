@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { messageSchema } from './messagesModel';
 import { IConversation } from '../../../shared/interfaces';
 
 // Schema for conversation
@@ -7,7 +6,18 @@ const conversationSchema = new Schema(
   {
     conversationId: { type: String, unique: true },
     conversationName: { type: String, required: true },
-    messages : { type: [messageSchema], default: [] },
+    messages: {
+      type: [
+        {
+          messageId: { type: String, required: true },
+          quotedMessageId: { type: String, required: false },
+          content: { type: String, required: true },
+          sender: { type: String, required: true }, // userId
+          time: { type: String, required: true },
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: false,
@@ -25,4 +35,7 @@ conversationSchema.set('toJSON', {
 });
 
 export { conversationSchema };
-export const Conversation = mongoose.model<IConversation>('Conversation', conversationSchema);
+export const Conversation = mongoose.model<IConversation>(
+  'Conversation',
+  conversationSchema
+);
