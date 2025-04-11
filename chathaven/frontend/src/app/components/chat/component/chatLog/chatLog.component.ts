@@ -92,7 +92,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loginUser = this.userService.getUser();
     // Listen for message selection events
     this.dataService.selectedMessageId.subscribe((messageId) => {
       if (messageId) {

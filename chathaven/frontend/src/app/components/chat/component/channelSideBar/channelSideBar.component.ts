@@ -78,6 +78,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   ) {
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
+      console.log('isDirectMessage:', isDirectMessage);
       isDirectMessage
         ? this.refreshDirectMessageList()
         : this.refreshChannelList();
@@ -88,7 +89,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.loginUserId = this.userService.getUser()?.userId || '';
+    this.refreshDirectMessageList();
     this.refreshChannelList();
   }
 
@@ -128,6 +129,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
   async refreshDirectMessageList() {
     const list: IConversation[] = [];
     this.directMessageList = [];
+    console.log("User", this.userService.getUser());
     const directMessageListId =
       this.userService.getUser()?.directMessages || [];
 

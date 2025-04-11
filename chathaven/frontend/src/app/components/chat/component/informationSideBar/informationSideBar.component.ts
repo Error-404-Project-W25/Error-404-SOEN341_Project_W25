@@ -83,7 +83,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   selectedDate: Date | null = null;
 
   // Miscellaneous
-  activeTab: string = 'chat';
+  activeTab: string = 'search';
   isDirectMessage: boolean = false;
   isInputFocused: boolean = false;
   isSelectingCommand: boolean = false;
@@ -103,14 +103,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   // Lifecycle Hooks
-  ngOnInit() {
-    this.userService.user$.toPromise().then((user) => {
-      this.loginUser = user;
-      if (!this.loginUser) {
-        console.error('User not found');
-      }
-    });
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     if (this.statusSubscription) {
@@ -121,7 +114,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   // Subscriptions
   private subscribeToTeamId() {
     this.dataService.currentTeamId.subscribe(async (teamId) => {
-      if (teamId) {
+      if (teamId && teamId !== '') {
         this.selectedTeamId = teamId;
         await this.refreshTeamData(teamId);
       }
@@ -188,6 +181,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
           .map((name) => name.trim());
         this.chatDescription = 'Conversation between ' + memberNames.join(', ');
         this.chatMemberList = await this.getMembersByUsernames(memberNames);
+        console.log(this.chatMemberList);
+        console.log('Conversation:', conversation);
       }
     }
   }
@@ -262,6 +257,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
 
   private async getMembersByUsernames(usernames: string[]): Promise<IUser[]> {
     const members: IUser[] = [];
+    console.log('Usernames:', usernames);
     for (const username of usernames) {
       const user = await this.backendService.getUserByUsername(username);
       if (user) {
@@ -338,8 +334,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   async createCoversation(memberId: string) {
     const sender = this.userService.getUser();
     const receiver = await this.backendService.getUserById(memberId);
-    console.log('Sender:', sender);
-    console.log('Receiver:', receiver);
     if (sender && receiver?.userId) {
       const conversationName = `${sender.username}, ${receiver.username}`;
       const conversationId = await this.backendService.createDirectMessages(
