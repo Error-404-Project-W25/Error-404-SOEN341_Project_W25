@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BackendService } from '@services/backend.service';
 import { DataService } from '@services/data.service';
@@ -9,48 +9,52 @@ import { UserService } from '@services/user.service';
   templateUrl: './join-request.dialogue.html',
   styleUrls: ['./join-request.dialogue.css', '../../../../../assets/theme.css'],
 })
-export class JoinRequestDialog {
-  isDarkTheme: boolean = false; // Dark theme by default
-  selectedTeamId: string = ''; // Selected team ID
-  selectedChannelId: string = ''; // Selected channel ID
-  channelTitle: string = ''; // Channel title
+export class JoinRequestDialog implements OnInit {
+  isDarkTheme: boolean = false;
+  selectedTeamId: string = '';
+  selectedChannelId: string = '';
+  channelTitle: string = '';
 
   constructor(
-    public dialogRef: MatDialogRef<JoinRequestDialog>, // Dialog reference
+    public dialogRef: MatDialogRef<JoinRequestDialog>,
     @Inject(MAT_DIALOG_DATA)
-    public data: {
-      channelId: string;
-    }, // Injected data (message info)
+    public data: { channelId: string },
     private userService: UserService,
     private backendService: BackendService,
     private dataService: DataService
   ) {
+    this.selectedChannelId = this.data.channelId;
+
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
     });
-    this.selectedChannelId = this.data.channelId; // Set the selected channel ID
+
     this.dataService.isDarkTheme.subscribe((theme) => {
-      this.isDarkTheme = theme; // Set the theme based on the injected data
+      this.isDarkTheme = theme;
     });
-    this.backendService
-      .getChannelById(this.selectedChannelId)
-      .then((channel) => {
-        if (channel) {
-          this.channelTitle = channel.name; // Set the channel title
-        }
-      });
   }
 
-  // Close the dialog without performing any action (Cancel)
+  async ngOnInit() {
+    try {
+      const channel = await this.backendService.getChannelById(
+        this.selectedChannelId
+      );
+      if (channel) {
+        this.channelTitle = channel.name;
+      }
+    } catch (error) {
+      console.error('Error fetching channel:', error);
+    }
+  }
+
   onCancel() {
     console.log('Cancel');
     this.dialogRef.close();
   }
 
-  // Confirm deletion, close the dialog, and pass the message ID back for removal
   onConfirm() {
     console.log('Confirm');
-    const user = this.userService.getUser(); // Get the current user ID
+    const user = this.userService.getUser();
     if (user?.userId) {
       this.backendService.requestToJoin(
         'request',

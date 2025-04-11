@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
@@ -25,7 +25,7 @@ import { DataService } from '@services/data.service';
   templateUrl: './add-member-channel.dialogue.html',
   styleUrls: ['./add-member-channel.dialogue.css'],
 })
-export class AddChannelMembersDialogue {
+export class AddChannelMembersDialogue implements OnInit {
   isDarkTheme: boolean = false;
   searchQuery = '';
   found = '';
@@ -43,7 +43,14 @@ export class AddChannelMembersDialogue {
       theme: boolean;
     }
   ) {
-    this.backendService.getTeamById(this.data.teamId).then(async (team) => {
+    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
+      this.isDarkTheme = isDarkTheme;
+    });
+  }
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const team = await this.backendService.getTeamById(this.data.teamId);
       if (team) {
         const members = await Promise.all(
           team.members.map((memberId) =>
@@ -56,10 +63,9 @@ export class AddChannelMembersDialogue {
       } else {
         console.error('Team not found');
       }
-    });
-    this.dataService.isDarkTheme.subscribe((isDarkTheme) => {
-      this.isDarkTheme = isDarkTheme;
-    });
+    } catch (error) {
+      console.error('Error fetching team members:', error);
+    }
   }
 
   search() {
@@ -71,11 +77,9 @@ export class AddChannelMembersDialogue {
         const td = tr[i].getElementsByTagName('td')[0];
         if (td) {
           const txtValue = td.textContent || td.innerText;
-          if (txtValue.toUpperCase().indexOf(input) > -1) {
-            tr[i].style.display = '';
-          } else {
-            tr[i].style.display = 'none';
-          }
+          tr[i].style.display = txtValue.toUpperCase().includes(input)
+            ? ''
+            : 'none';
         }
       }
     }
@@ -86,12 +90,9 @@ export class AddChannelMembersDialogue {
     const checkboxes = document.querySelectorAll(
       'input[type="checkbox"]:checked'
     );
-    console.log('Checkboxes:', checkboxes);
     checkboxes.forEach((checkbox) => {
       if (checkbox instanceof HTMLInputElement) {
-        console.log('Checkbox:', checkbox);
         checkedValues.push(checkbox.value);
-        console.log('Checked values:', checkedValues);
       }
     });
     this.memberIdsToAdd = checkedValues;
@@ -99,9 +100,8 @@ export class AddChannelMembersDialogue {
 
   async addMembersToChannel() {
     this.getCheckedValues();
-    console.log('1Adding members:', this.memberIdsToAdd);
     for (const memberId of this.memberIdsToAdd) {
-      this.backendService.requestToJoin(
+      await this.backendService.requestToJoin(
         'invite',
         memberId,
         this.data.channelId

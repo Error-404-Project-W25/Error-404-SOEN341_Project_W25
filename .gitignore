@@ -42,3 +42,7 @@ node_modules
 
 # Environment variables
 /chathaven/.env
+
+# SonarQube
+chathaven/sonar-project.properties
+/chathaven/backend/.scannerwork
