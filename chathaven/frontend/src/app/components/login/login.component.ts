@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   loginError = false;
 
   // Data Models
-  signInForm: UserSignInData = { email: '', password: '' };
+  signInForm: UserSignInData = {email: '', password: ''};
   signUpForm: RegistrationData = {
     firstName: '',
     lastName: '',
@@ -67,7 +67,8 @@ export class LoginComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private userService: UserService
-  ) {} // Inject ActivatedRoute
+  ) {
+  } // Inject ActivatedRoute
 
   ngOnInit() {
     // Check for query parameters when the component loads
@@ -245,67 +246,84 @@ export class LoginComponent implements OnInit {
 
   /////////////////// REGISTER ///////////////////
 
-  async register(): Promise<void> {
+  /////////////////// REGISTER ///////////////////
+
+  async register() {
     if (!this.validateSignUpForm()) {
       return;
     }
 
-    if (this.signUpForm.password !== this.confirmPassword) {
-      console.error('Passwords do not match');
-      return;
-    }
-
     try {
-      const response = await this.backendService.registerUser(this.signUpForm);
+      const response: UserAuthResponse | undefined =
+        await this.backendService.registerUser(this.signUpForm);
 
-      if (!response || !response.uid) {
-        throw new Error('Invalid response or missing user ID');
+      if (response) {
+        if (response.uid) {
+          const user: IUser | undefined = await this.backendService.getUserById(
+            response.uid
+          );
+          if (user) {
+            this.userService.setUser(user);
+            const userId = user?.userId;
+            const socket = io('http://localhost:3000', {
+              query: { userId },
+            });
+            socket.on('connect', () => {
+              console.log('Connected to socket server');
+            });
+            this.goToChat();
+          }
+        } else if (response.error) {
+          alert(response.error); // TODO: make this a div
+          console.log('Error:', response.error);
+          console.log('Details:', response.details);
+        }
+        console.log('Message:', response.message);
       }
-
-      console.log(`User ID returned from backend: ${response.uid}`);
-
-      // Auto-login after registration (send correct payload)
-      await this.backendService.loginUser({
-        email: this.signUpForm.email,
-        password: this.signUpForm.password
-      });
-
-      const user = await this.backendService.getUserById(response.uid);
-
-      if (!user) {
-        console.error('Failed to retrieve user data');
-        return;
-      }
-
-      this.userService.setUser(user);
-      await this.router.navigate(['/chat']); // Navigate after setting user
-
     } catch (error) {
       console.error('Error registering user:', error);
-      alert('Registration failed. Please try again.');
+      alert('Failed to register user.');
     }
   }
 
 
   //////////////////// LOGIN ////////////////////
 
-  async login(): Promise<void> {
+  async login() {
+    if (!this.signInForm.email || !this.signInForm.password) {
+      alert('Email and password are required.');
+      return;
+    }
+
     try {
-      const response = await this.backendService.loginUser(this.signInForm);
-      if (!response || !response.uid) {
-        throw new Error('Invalid response or missing user ID');
-      }
+      const response: UserAuthResponse | undefined =
+        await this.backendService.loginUser(this.signInForm);
 
-      const user = await this.backendService.getUserById(response.uid);
-      if (!user) {
-        console.error('Failed to retrieve user data');
-        return; // Stop execution if user data cannot be retrieved
-      }
+      if (response) {
+        if (response.uid) {
+          const user: IUser | undefined = await this.backendService.getUserById(
+            response.uid
+          );
 
-      this.userService.setUser(user);
-      await this.router.navigate(['/chat']); // Ensure navigation happens after setting the user
+          if (user) {
+            await this.userService.setUser(user);
+            const userId = user?.userId;
+            const socket = io('http://localhost:3000', {
+              query: { userId },
+            });
+            console.log('Connected to socket server');
+            this.goToChat();
+          }
+        } else if (response.error) {
+          alert(response.error); // TODO: make this a div
+          console.log('Error:', response.error);
+          console.log('Details:', response.details);
+        }
+        console.log('Message:', response.message);
+      }
     } catch (error) {
-      console.error('Error logging in user:', error);
+      console.error('Error logging in:', error);
+      alert('Failed to log in.');
     }
   }
 

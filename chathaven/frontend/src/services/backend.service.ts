@@ -39,7 +39,7 @@ export class BackendService {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/register`, {
-          registrationData,
+          registrationData,  // wrap the data like this
         })
       );
       return response;
@@ -55,7 +55,7 @@ export class BackendService {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/login`, {
-          signInData,
+          signInData, // wrap it like this
         })
       );
       return response;
@@ -440,7 +440,7 @@ export class BackendService {
     // Check cache first
     const cached = this.messageCache.get(conversationId);
     const now = Date.now();
-    
+
     if (cached && (now - cached.timestamp < this.CACHE_DURATION)) {
       return cached.messages;
     }
@@ -459,7 +459,7 @@ export class BackendService {
         });
         return response.messages;
       }
-      
+
       console.error(response.error);
       return undefined;
     } catch (error) {
