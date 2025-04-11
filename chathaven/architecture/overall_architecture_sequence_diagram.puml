@@ -1,0 +1,246 @@
+@startuml
+actor User
+participant "Frontend (Angular)" as Frontend
+participant "Backend (Node.js/Express)" as Backend
+database "Database (MongoDB)" as Database
+participant "External API" as ExternalAPI
+
+== User Authentication ==
+User -> Frontend: Enter login credentials
+Frontend -> Backend: POST /login (credentials)
+Backend -> Database: Validate user credentials
+Database --> Backend: Success/Failure
+Backend --> Frontend: Login success/failure
+Frontend -> User: Display login result
+
+User -> Frontend: Register new account
+Frontend -> Backend: POST /register (user details)
+Backend -> Database: Insert user into Users collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Registration success/failure
+Frontend -> User: Display registration result
+
+User -> Frontend: Logout
+Frontend -> Backend: POST /logout
+Backend -> Database: Update user status to offline
+Database --> Backend: Success
+Backend --> Frontend: Logout success
+Frontend -> User: Redirect to home page
+
+== Team Management ==
+User -> Frontend: Create a new team
+Frontend -> Backend: POST /teams/create (team details)
+Backend -> Database: Insert team into Teams collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display team creation result
+
+User -> Frontend: Add member to team
+Frontend -> Backend: POST /teams/addMember (teamId, memberId)
+Backend -> Database: Add member to team
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display result
+
+User -> Frontend: Remove member from team
+Frontend -> Backend: POST /teams/removeMember (teamId, memberId)
+Backend -> Database: Remove member from team
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display result
+
+User -> Frontend: View team details
+Frontend -> Backend: GET /teams/details (teamId)
+Backend -> Database: Fetch team details
+Database --> Backend: Team details
+Backend --> Frontend: Response (Team details)
+Frontend -> User: Display team details
+
+== Channel Management ==
+User -> Frontend: Create a new channel
+Frontend -> Backend: POST /channels/create (channel details)
+Backend -> Database: Insert channel into Channels collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display channel creation result
+
+User -> Frontend: Edit channel details
+Frontend -> Backend: POST /channels/edit (channelId, new details)
+Backend -> Database: Update channel details
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display result
+
+User -> Frontend: Delete a channel
+Frontend -> Backend: DELETE /channels/delete (channelId)
+Backend -> Database: Remove channel from Channels collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display result
+
+User -> Frontend: Join a channel
+Frontend -> Backend: POST /channels/join (channelId, userId)
+Backend -> Database: Add user to channel's member list
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display join channel result
+
+User -> Frontend: Leave a channel
+Frontend -> Backend: POST /channels/leave (channelId, userId)
+Backend -> Database: Remove user from channel's member list
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display leave channel result
+
+== Messaging ==
+User -> Frontend: Send message
+Frontend -> Backend: POST /messages (message content, userId, channelId)
+Backend -> Database: Insert message into Messages collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display confirmation or error
+
+User -> Frontend: Delete message
+Frontend -> Backend: POST /messages/delete (messageId)
+Backend -> Database: Remove message from Messages collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display result
+
+User -> Frontend: Quote a message
+Frontend -> Backend: POST /messages/quote (messageId, content)
+Backend -> Database: Insert quoted message into Messages collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display quoted message
+
+User -> Frontend: View messages in a channel
+Frontend -> Backend: GET /messages?channelId=<id>
+Backend -> Database: Query Messages collection by channelId
+Database --> Backend: List of messages
+Backend --> Frontend: Response (List of messages)
+Frontend -> User: Display messages in chat log
+
+User -> Frontend: Start a direct message
+Frontend -> Backend: POST /directMessages/create (senderId, receiverId)
+Backend -> Database: Create a new conversation
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (conversationId)
+Frontend -> User: Open direct message conversation
+
+User -> Frontend: Search messages with filters
+Frontend -> Backend: GET /messages/search (filters)
+Backend -> Database: Query Messages collection with filters
+Database --> Backend: Filtered messages
+Backend --> Frontend: Response (Filtered messages)
+Frontend -> User: Display search results
+
+== Chat Enhancements ==
+User -> Frontend: Open emoji picker
+Frontend -> User: Display emoji picker
+User -> Frontend: Select emoji
+Frontend -> User: Add emoji to message
+
+User -> Frontend: Search for GIFs
+Frontend -> Backend: GET /gif/search (query)
+Backend -> ExternalAPI: Query GIF API
+ExternalAPI --> Backend: List of GIFs
+Backend --> Frontend: Response (List of GIFs)
+Frontend -> User: Display GIFs
+
+User -> Frontend: Share a link
+Frontend -> Backend: POST /url-preview/preview (link)
+Backend -> ExternalAPI: Fetch link preview data
+ExternalAPI --> Backend: Preview data (title, description, image)
+Backend --> Frontend: Response (Preview data)
+Frontend -> User: Display link preview
+
+User -> Frontend: Select quick message
+Frontend -> User: Add quick message to input
+
+== Chatbot Integration ==
+User -> Frontend: Ask a question to chatbot
+Frontend -> Backend: POST /chatbot/prompt (question)
+Backend -> ExternalAPI: Query chatbot API
+ExternalAPI --> Backend: Chatbot response
+Backend --> Frontend: Response (Chatbot answer)
+Frontend -> User: Display chatbot response
+
+== Inbox Management ==
+User -> Frontend: Handle join request
+Frontend -> Backend: POST /inbox/request (details)
+Backend -> Database: Add request to Inbox collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display result
+
+User -> Frontend: Handle invitation
+Frontend -> Backend: POST /inbox/invite (details)
+Backend -> Database: Add invitation to Inbox collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display result
+
+User -> Frontend: Accept or decline request/invitation
+Frontend -> Backend: POST /inbox/response (decision)
+Backend -> Database: Update Inbox collection
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display result
+
+== User Status ==
+User -> Frontend: Change status (online/away/offline)
+Frontend -> Backend: POST /users/status (userId, status)
+Backend -> Database: Update user status
+Database --> Backend: Success/Failure
+Backend --> Frontend: Response (Success/Failure)
+Frontend -> User: Display updated status
+
+== Dark Mode ==
+User -> Frontend: Toggle dark mode
+Frontend -> User: Update theme
+
+== Sidebar Navigation ==
+User -> Frontend: Select team
+Frontend -> Backend: GET /teams/details (teamId)
+Backend -> Database: Fetch team details
+Database --> Backend: Team details
+Backend --> Frontend: Response (Team details)
+Frontend -> User: Display team sidebar
+
+User -> Frontend: Select channel
+Frontend -> Backend: GET /channels/details (channelId)
+Backend -> Database: Fetch channel details
+Database --> Backend: Channel details
+Backend --> Frontend: Response (Channel details)
+Frontend -> User: Display channel sidebar
+
+User -> Frontend: Open information sidebar
+Frontend -> User: Display chat details and member lists
+
+== Search Functionality ==
+User -> Frontend: Search messages with advanced commands
+Frontend -> Backend: GET /messages/search (commands)
+Backend -> Database: Query Messages collection with commands
+Database --> Backend: Filtered messages
+Backend --> Frontend: Response (Filtered messages)
+Frontend -> User: Display search results
+
+User -> Frontend: Use calendar for date-based search
+Frontend -> User: Display calendar
+User -> Frontend: Select date
+Frontend -> Backend: GET /messages/search (date filters)
+Backend -> Database: Query Messages collection with date filters
+Database --> Backend: Filtered messages
+Backend --> Frontend: Response (Filtered messages)
+Frontend -> User: Display search results
+
+== Real-Time Updates ==
+User -> Frontend: Send/receive real-time updates
+Frontend -> Backend: Socket.IO communication
+Backend -> Database: Update data in real-time
+Database --> Backend: Success
+Backend --> Frontend: Real-time updates
+Frontend -> User: Display real-time updates
+
+@enduml

@@ -24,6 +24,7 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  text-overflow: ellipsis;
   display: flex;
   /* flex-direction: column; */
   position: relative;

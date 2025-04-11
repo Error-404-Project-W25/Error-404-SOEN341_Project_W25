@@ -62,6 +62,10 @@ export class ChannelCreationDialog {
       return;
     }
 
+    console.log('Creating channel:', this.channelName, this.description);
+    console.log('Selected team ID:', this.selectedTeamId);
+    console.log('Current user ID:', currentUser.userId);
+
     try {
       const channelId: string | undefined =
         await this.backendService.createChannel(

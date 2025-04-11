@@ -1,5 +1,5 @@
 <div class="chat-bot">
-  <div class="card" id="chatCard" style="display: none">
+  <div class="card" id="chatCard" *ngIf="isChatCardOpen">
     <div class="chat-header">ChatHaven Bot</div>
     <div class="chat-window">
       <ul class="message-list" id="messageList">

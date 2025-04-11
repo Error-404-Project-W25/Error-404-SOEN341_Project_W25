@@ -8,10 +8,9 @@
 />
 <body [class.dark-theme]="isDarkTheme" [class.light-theme]="!isDarkTheme">
   <div class="container">
-    <chat-team-sidebar [userId]="userId"></chat-team-sidebar>
+    <chat-team-sidebar></chat-team-sidebar>
     <chat-channel-sidebar
       *ngIf="selectedTeamId || isDirectMessage"
-      [userId]="userId"
     ></chat-channel-sidebar>
     <div
       class="card-container"
@@ -30,21 +29,23 @@
         </h2>
       </div>
     </div>
-    <chat-chat-log
-      *ngIf="selectedConversationId"
-      [userId]="userId"
-    ></chat-chat-log>
-    <chat-information-sidebar *ngIf="selectedConversationId" [userId]="userId">
+    <chat-chat-log *ngIf="selectedConversationId"></chat-chat-log>
+    <chat-information-sidebar
+      *ngIf="isInformationOpen && selectedConversationId"
+    >
     </chat-information-sidebar>
-    <div class="button-container" *ngIf="selectedConversationId">
+    <div
+      class="button-container"
+      *ngIf="selectedConversationId"
+    >
       <!-- (click) teamlist toggle -->
       <button class="team-list-toggle-button" title="Toggle Team List">
-      <i
-        class="fa"
-        (click)="toggleInformationBar()"
-        [ngClass]="isInformationOpen ? 'fa-times' : 'fa-bars'"
-        style="font-size: 24px"
-      ></i>
+        <i
+          class="fa"
+          (click)="toggleInformationBar()"
+          [ngClass]="isInformationOpen ? 'fa-times' : 'fa-bars'"
+          style="font-size: 24px"
+        ></i>
       </button>
     </div>
   </div>

@@ -18,6 +18,8 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { sendMessage, getMessages } from './controllers/messagesController';
 import { User } from './models/userModel';
+import gifRoutes from './routes/gifRoutes';
+import urlPreviewRoutes from './routes/urlPreviewRoutes';
 // import { runAuthTests } from '../tests/authenticate.test';
 
 const app: Application = express();
@@ -45,7 +47,7 @@ io.on('connection', (socket) => {
       { userId },
       {
         status: 'online',
-        lastSeen: new Date()
+        lastSeen: new Date(),
       },
       { new: true }
     ).exec();
@@ -76,7 +78,7 @@ io.on('connection', (socket) => {
         { userId },
         {
           status: 'offline',
-          lastSeen: new Date()
+          lastSeen: new Date(),
         }
       ).exec();
       console.log(`User ${userId} disconnected`);
@@ -152,6 +154,8 @@ const startServer = async () => {
     app.use('/messages', messagesRoutes);
     app.use('/inbox', inboxRoutes);
     app.use('/chatbot', chatbotRoutes);
+    app.use('/gif', gifRoutes); // Ensure this line is present and correct
+    app.use('/url-preview', urlPreviewRoutes); // Add this line
 
     const PORT: number = Number(process.env.PORT) || 3000;
 

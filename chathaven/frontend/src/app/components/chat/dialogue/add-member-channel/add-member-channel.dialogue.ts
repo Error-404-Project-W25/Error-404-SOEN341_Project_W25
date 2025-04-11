@@ -11,6 +11,7 @@ import { NgFor } from '@angular/common';
 import { IUser } from '@shared/interfaces';
 import { BackendService } from '@services/backend.service';
 import { DataService } from '@services/data.service';
+import { UserService } from '@services/user.service';
 
 @Component({
   selector: 'app-add-member-channel-pop-up',
@@ -36,6 +37,7 @@ export class AddChannelMembersDialogue implements OnInit {
     private dialogRef: MatDialogRef<AddChannelMembersDialogue>,
     private backendService: BackendService,
     private dataService: DataService,
+    private userService: UserService,
     @Inject(MAT_DIALOG_DATA)
     public data: {
       channelId: string;
@@ -52,13 +54,16 @@ export class AddChannelMembersDialogue implements OnInit {
     try {
       const team = await this.backendService.getTeamById(this.data.teamId);
       if (team) {
-        const members = await Promise.all(
-          team.members.map((memberId) =>
-            this.backendService.getUserById(memberId)
+        this.teamMembers = (
+          await Promise.all(
+            team.members.map((memberId) =>
+              this.backendService.getUserById(memberId)
+            )
           )
-        );
-        this.teamMembers = members.filter(
-          (member): member is IUser => member !== undefined
+        ).filter(
+          (member): member is IUser =>
+            member !== undefined &&
+            member.userId !== this.userService.getUser()?.userId
         );
       } else {
         console.error('Team not found');

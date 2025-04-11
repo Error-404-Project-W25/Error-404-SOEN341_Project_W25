@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   loginError = false;
 
   // Data Models
-  signInForm: UserSignInData = { email: '', password: '' };
+  signInForm: UserSignInData = {email: '', password: ''};
   signUpForm: RegistrationData = {
     firstName: '',
     lastName: '',
@@ -67,7 +67,8 @@ export class LoginComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private userService: UserService
-  ) {} // Inject ActivatedRoute
+  ) {
+  } // Inject ActivatedRoute
 
   ngOnInit() {
     // Check for query parameters when the component loads
@@ -245,6 +246,8 @@ export class LoginComponent implements OnInit {
 
   /////////////////// REGISTER ///////////////////
 
+  /////////////////// REGISTER ///////////////////
+
   async register() {
     if (!this.validateSignUpForm()) {
       return;
@@ -282,6 +285,7 @@ export class LoginComponent implements OnInit {
       alert('Failed to register user.');
     }
   }
+
 
   //////////////////// LOGIN ////////////////////
 

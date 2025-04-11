@@ -38,7 +38,7 @@ export class DataService {
 
   toggleIsDirectMessage(isDirectMessage: boolean) {
     this.isDirectMessageSelected.next(isDirectMessage);
-    this.conversationId.next('');
+    // this.conversationId.next('');
   }
 
   toggleDarkMode(isDarkTheme: boolean) {
@@ -47,6 +47,13 @@ export class DataService {
 
   toggleIsInformationOpen(isInformationOpen: boolean) {
     this.isInformationSelected.next(isInformationOpen);
+  }
+
+  resetAll() {
+    this.teamId.next('');
+    this.channelId.next('');
+    this.conversationId.next('');
+    this.isDirectMessageSelected.next(false);
   }
 
   selectMessage(messageId: string) {
