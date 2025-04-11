@@ -39,7 +39,7 @@ export class BackendService {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/register`, {
-          registrationData,  // wrap the data like this
+          registrationData,  // <- wrap it properly
         })
       );
       return response;
@@ -55,7 +55,7 @@ export class BackendService {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/login`, {
-          signInData, // wrap it like this
+          signInData,  // <- wrapping it like this sends { signInData: {...} }
         })
       );
       return response;
