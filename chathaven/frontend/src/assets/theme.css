@@ -19,19 +19,19 @@
 
 .light-theme {
   --primary-color: #f0483e;
-  --secondary-color: #e0e0e0;
-  --background-color: #ffffff;
-  --primary-text-color: #000000;
-  --secondary-text-color: #6c757d;
-  --hover-color: #d3d3d3;
-  --border-color: #ccc;
-  --accent-color: #ff6b6b;
-  --error-color: #d32f2f;
-  --success-color: #4caf50;
-  --muted-color: #6c757d;
-  --dark-muted-color: #b5bac1;
-  --light-muted-color: #2b2d31;
-  --dark-background: #f0f0f0;
+  --secondary-color: #f1f3f5;
+  --background-color: #f8f9fa;
+  --primary-text-color: #212529;
+  --secondary-text-color: #495057;
+  --hover-color: #dfe3e6;
+  --border-color: #dee2e6;
+  --accent-color: #ff4757;
+  --error-color: #c62828;
+  --success-color: #2e7d32;
+  --muted-color: #868e96;
+  --dark-muted-color: #d1d6db;
+  --light-muted-color: #e9ecef;
+  --dark-background: #f8f9fa;
   --light-background: #ffffff;
-  --dark-text: #333333;
+  --dark-text: #343a40;
 }

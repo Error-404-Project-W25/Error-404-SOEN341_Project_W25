@@ -1,0 +1,23 @@
+.quick-messages-container {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+/* Styling for the button */
+.quick-messages-container button {
+  padding: 8px 16px;
+  border: 2px solid #ff6b6b; /* Thin red border */
+  background-color: rgba(255, 71, 87, 0); /* Transparent background */
+  color: #ff4757; /* Red text color */
+  cursor: pointer;
+  border-radius: 12px; /* Rounded corners */
+  font-size: 14px; /* Optional: Adjust text size */
+  transition: background-color 0.3s, color 0.3s; /* Optional: Smooth transition for hover */
+}
+
+/* Button hover effect */
+.quick-messages-container button:hover {
+  background-color: rgba(255, 71, 87, 0.1); /* Light background on hover */
+  color: #ff474f; /* Slightly darker red for text color on hover */
+}

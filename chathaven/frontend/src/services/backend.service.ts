@@ -39,7 +39,7 @@ export class BackendService {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/register`, {
-          registrationData,
+          registrationData,  // <- wrap it properly
         })
       );
       return response;
@@ -55,7 +55,7 @@ export class BackendService {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/login`, {
-          signInData,
+          signInData,  // <- wrapping it like this sends { signInData: {...} }
         })
       );
       return response;
@@ -79,6 +79,7 @@ export class BackendService {
 
   async getUserById(userId: string): Promise<IUser | undefined> {
     try {
+      console.log(`Fetching user with ID: ${userId}`); // Log the userId being fetched
       const response = await firstValueFrom(
         this.http.get<{ user?: IUser; error?: string }>(
           `${this.backendURL}/users/${userId}`
@@ -88,7 +89,7 @@ export class BackendService {
       if (response.user) {
         return response.user;
       } else if (response.error) {
-        console.error(response.error);
+        console.error(`Backend error: ${response.error}`);
       } else {
         console.error(`User with ID ${userId} not found`);
       }
@@ -439,7 +440,7 @@ export class BackendService {
     // Check cache first
     const cached = this.messageCache.get(conversationId);
     const now = Date.now();
-    
+
     if (cached && (now - cached.timestamp < this.CACHE_DURATION)) {
       return cached.messages;
     }
@@ -458,7 +459,7 @@ export class BackendService {
         });
         return response.messages;
       }
-      
+
       console.error(response.error);
       return undefined;
     } catch (error) {
@@ -683,5 +684,45 @@ export class BackendService {
       console.error('Error prompting chatbot:', error);
     }
     return undefined;
+  }
+
+  ////////////////////// GIPHY //////////////////////
+
+  async getGifs(
+    query: string
+  ): Promise<{ url: string; title: string }[] | undefined> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<{
+          gifs?: { url: string; title: string }[];
+          error?: string;
+        }>(`${this.backendURL}/gif/search/${query}`)
+      );
+
+      if (response.gifs) {
+        return response.gifs;
+      } else {
+        console.error(response.error);
+      }
+    } catch (error) {
+      console.error('Error fetching GIFs:', error);
+    }
+    return undefined;
+  }
+
+  ///////////// URL PREVIEW /////////////
+  async getUrlPreview(url: string): Promise<any | undefined> {
+    try {
+      const response = await firstValueFrom(
+        this.http.post<{ title: string; description: string; image: string }>(
+          `${this.backendURL}/url-preview/preview`,
+          { url }
+        )
+      );
+      return response;
+    } catch (error) {
+      console.error('Error fetching URL preview:', error);
+      return undefined;
+    }
   }
 }

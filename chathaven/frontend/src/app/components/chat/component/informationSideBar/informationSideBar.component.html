@@ -51,13 +51,19 @@
           </div>
         </span>
       </label>
+      <label class="radio">
+        <input
+          type="radio"
+          name="radio"
+          (click)="changeTab('search')"
+          [checked]="activeTab === 'search'"
+        />
+        <span class="name">Search</span>
+      </label>
     </div>
 
-    <div
-      class="tab-content"
-      *ngIf="activeTab === 'team' && !isDirectMessage"
-    >
-      <h3>Team Information {{teamTitle }}</h3>
+    <div class="tab-content" *ngIf="activeTab === 'team' && !isDirectMessage">
+      <h3>Team Information {{ teamTitle }}</h3>
       <h4>Description</h4>
       {{ teamDescription }}
       <h4>Members</h4>
@@ -156,14 +162,14 @@
             </div>
             <div class="demande-container">
               <button
-                (click)="acceptRequest(invite)"
+                (click)="acceptInvite(invite)"
                 class="accept-button"
                 title="Accept"
               >
                 <i class="fas fa-check" style="font-size: 1rem"></i> Accept
               </button>
               <button
-                (click)="declineRequest(invite)"
+                (click)="acceptInvite(invite)"
                 class="decline-button"
                 title="Decline"
               >
@@ -187,7 +193,7 @@
             <div class="inbox-information">
               <i class="fas fa-user-circle member-icon" style="margin: 2px"></i>
               <div class="member-name">
-                {{ request.userIdThatYouWantToAdd }}
+                {{ getUserName(request.userIdThatYouWantToAdd) }}
               </div>
             </div>
             <div class="demande-container">
@@ -205,6 +211,63 @@
               >
                 <i class="fas fa-times" style="font-size: 1rem"></i> Decline
               </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tab-content" *ngIf="activeTab === 'search'">
+      <h3>Search Message:</h3>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search..."
+        [(ngModel)]="searchQuery"
+        (focus)="isInputFocused = true"
+      />
+      <h3>Search Result:</h3>
+
+      <ul
+        class="command-recommendations"
+        *ngIf="
+          recommendedCommands.length && isInputFocused && searchQuery !== ''
+        "
+      >
+        <li
+          *ngFor="let command of recommendedCommands"
+          (click)="selectedCommand(command)"
+        >
+          <b>{{ command }}</b>
+          <br />
+          <span (click)="selectedCommand(command)">{{
+            commandDescriptions[command]
+          }}</span>
+        </li>
+      </ul>
+      <div class="calendar">
+        <mat-calendar
+          *ngIf="showCalendar"
+          [(selected)]="selectedDate"
+          (selectedChange)="onDateSelected($event)"
+        ></mat-calendar>
+      </div>
+      <div class="list">
+        <ul>
+          <li
+            *ngFor="let message of searchResults"
+            (click)="scrollToMessage(message.messageId)"
+          >
+            <div class="message">
+              <div class="message-header">
+                <div class="message-sender">
+                  {{ getUsernameById(message.sender) }}
+                </div>
+                <div class="message-time">
+                  {{ message.time | date : "short" }}
+                </div>
+              </div>
+              <div class="message-content">{{ message.content }}</div>
             </div>
           </li>
         </ul>

@@ -1,10 +1,17 @@
 <div class="channel-sidebar" id="side-bar-2">
   <div class="channel-sidebar-title-container">
     <label class="main">
-      {{ teamTitle }}
+      <div>{{ teamTitle }}</div>
       <input class="inp" checked="" type="checkbox" readonly />
-      <i class="fa fa-bars" style="font-size: 24px; margin-left: 8px"></i>
-      <section class="dropdown-team-setting-container">
+      <i
+        class="fa fa-bars"
+        style="font-size: 24px; margin-left: 8px"
+        *ngIf="selectedTeamId !== ''"
+      ></i>
+      <section
+        class="dropdown-team-setting-container"
+        *ngIf="selectedTeamId !== ''"
+      >
         <!-- (click) Team Setting -->
         <div class="dropdown-team-setting-list" readonly title="Team Settings">
           <i class="fa fa-gear" style="font-size: 24px; margin-right: 8px"></i
@@ -191,16 +198,24 @@
     </div>
   </div>
 
-  <div class="channel-list" id="channel-list" *ngIf="!isDirectMessage">
-    <div *ngIf="channelList.length <= 0" class="loading"> Loading Channel ...</div>
-    <ul >
+  <div
+    class="channel-list"
+    id="channel-list"
+    *ngIf="!isDirectMessage && selectedTeamId !== ''"
+  >
+    <div *ngIf="channelList.length <= 0" class="loading">
+      Loading Channel ...
+    </div>
+    <ul>
       <li
         class="channel-container"
-        [ngStyle]="{ opacity: channel.members.includes(userId) ? 1 : 0.5 }"
+        [ngStyle]="{ opacity: isChannelMember(channel) ? 1 : 0.5 }"
         *ngFor="let channel of channelList"
         (click)="selectChannel(channel.channelId)"
         readonly
-        [ngClass]="{ 'channel-container-selected': selectedChannelId === channel.channelId }"
+        [ngClass]="{
+          'channel-container-selected': selectedChannelId === channel.channelId
+        }"
       >
         <div class="channel-information-container">
           <div class="notification-container">
@@ -212,9 +227,7 @@
           <i
             style="display: flex; justify-content: center; align-items: center"
             class="fa"
-            [ngClass]="
-              channel.members.includes(userId) ? 'fa-hashtag' : 'fa-lock'
-            "
+            [ngClass]="isChannelMember(channel) ? 'fa-hashtag' : 'fa-lock'"
             style="font-size: 16px; margin-right: 8px"
           >
           </i>
@@ -229,7 +242,7 @@
           <!--(click) add member to channel-->
           <button
             class="channel-button"
-            [disabled]="!channel.members.includes(userId)"
+            [disabled]="!isChannelMember(channel)"
             (click)="
               openAddMemberChannelDialog(channel); $event.stopPropagation()
             "
@@ -241,7 +254,7 @@
           <!-- (click) open channel setting -->
           <button
             class="channel-button"
-            [disabled]="!channel.members.includes(userId)"
+            [disabled]="!isChannelMember(channel)"
             (click)="openEditChannelDialog(channel)"
             readonly
             title="Channel Settings"
@@ -250,7 +263,7 @@
           </button>
           <button
             class="channel-button"
-            [disabled]="!channel.members.includes(userId)"
+            [disabled]="!isChannelMember(channel)"
             (click)="openLeaveChannelDialog(channel); $event.stopPropagation()"
             readonly
             title="Leave Channel"
@@ -263,11 +276,9 @@
   </div>
 
   <div class="channel-list" id="dm-list" *ngIf="isDirectMessage">
-    <div *ngIf="directMessageList.length <= 0" class="loading"> Loading DM ...</div>
-
-    <ul *ngIf="directMessageList.length <= 0">
-      <li class="loading" *ngFor="let _ of [].constructor(17)"></li>
-    </ul>
+    <div *ngIf="directMessageList.length <= 0" class="loading">
+      Loading DM ...
+    </div>
     <ul>
       <li
         class="channel-container"
@@ -288,7 +299,7 @@
           <div class="channel-text-information">
             <div class="channel-name">{{ dm.conversationName }}</div>
             <div class="channel-last-message">
-              {{ dm.messages[dm.messages.length - 1] }}
+              {{ getDirectMessageLastMessage(dm.conversationId) }}
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ import { TextToHtmlPipe } from './../../../pipes/textToHtml.pipe'; // Add this i
   imports: [CommonModule, FormsModule, TextToHtmlPipe], // Add TextToHtmlPipe to imports
 })
 export class HomeComponent {
-  isChatCardVisible: boolean = true; // Toggle chat visibility
+  isChatCardOpen: boolean = false; // Fix: Renamed for clarity and proper binding
   userMessage: string = ''; // Stores user input
   messages: { type: 'incoming' | 'outgoing'; content: string }[] = [];
   isLoading: boolean = false; // Show loading while waiting for GPT response
@@ -41,12 +41,7 @@ export class HomeComponent {
   }
 
   toggleChatCard() {
-    const chatCard = document.getElementById('chatCard');
-    if (chatCard?.style.display === 'none') {
-      chatCard.style.display = 'block';
-    } else if (chatCard) {
-      chatCard.style.display = 'none';
-    }
+    this.isChatCardOpen = !this.isChatCardOpen; // Fix: Use Angular binding instead of direct DOM manipulation
   }
 
   private scrollToBottom(): void {
@@ -58,26 +53,18 @@ export class HomeComponent {
 
   sendMessage() {
     if (this.userMessage.trim()) {
-      this.messages.push({ type: 'outgoing', content: this.userMessage });
+      const userMessageContent = this.userMessage; // Store the user message
+      this.messages.push({ type: 'outgoing', content: userMessageContent });
+      this.userMessage = ''; // Clear the input immediately for better UX
+
       this.backendService
-        .promptChatbot(this.userMessage)
+        .promptChatbot(userMessageContent)
         .then((response) => {
-          if (!response) {
-            throw new Error('Empty response from API');
-          }
-          const aiResponse = response; // Removed fallback message
-          this.messages.push({ type: 'incoming', content: aiResponse });
-          setTimeout(() => this.scrollToBottom(), 50);
+          this.messages.push({ type: 'incoming', content: response ?? 'No response received' });
         })
-        .catch((err) => {
-          console.error('API Error:', err);
-          console.error('Error Details:', err.error); // Log more details
-          this.messages.push({
-            type: 'incoming',
-            content: '⚠️ API Error: Unable to fetch response',
-          });
+        .finally(() => {
+          this.scrollToBottom();
         });
-      this.userMessage = '';
     }
   }
 }

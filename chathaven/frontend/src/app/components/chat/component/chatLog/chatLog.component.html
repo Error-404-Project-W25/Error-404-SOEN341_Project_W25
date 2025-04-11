@@ -1,14 +1,14 @@
 <div class="chat-box" id="chat-box">
   <div class="channel-title-container">
-    <div class="back-btn-container">
-      <button class="back-btn" (click)="channelBack()" title="Back">
+    <div class="back-btn-container" *ngIf="selectedConversationId !== ''">
+      <button class="back-btn" (click)="resetAll()" title="Back">
         <i class="fa fa-angle-left" style="font-size: 24px"></i>
       </button>
     </div>
     <div class="channel-title">{{ chatTitle }}</div>
   </div>
   <div class="chat-log">
-    <ul *ngIf="isMessageLoading">
+    <ul *ngIf="isMessageLoading && selectedConversationId !== ''">
       <li class="loading" *ngFor="let _ of [].constructor(15)" readonly>
         <div class="loading-picture"></div>
         <div class="message-content">
@@ -19,12 +19,17 @@
       </li>
     </ul>
     <ul>
-      <li class="welcome-message">
+      <li class="welcome-message" *ngIf="selectedConversationId !== ''">
         <i class="fa fa-hashtag" style="font-size: 3rem"></i>
         <h1>Welcome to "{{ chatTitle }}"</h1>
         <p>This is the start of "{{ chatTitle }}"</p>
       </li>
-      <li class="message" *ngFor="let message of messages" readonly [id]="'message-' + message.messageId">
+      <li
+        class="message"
+        *ngFor="let message of messages"
+        [id]="'message-' + message.messageId"
+        readonly
+      >
         <div
           *ngIf="
             message.quotedMessageId &&
@@ -76,9 +81,58 @@
                 message.time | date : "yyyy/MM/dd,HH:mm"
               }}</span>
             </div>
+
             <article class="message-text" readonly>
-              {{ message.content }}
+              <ng-container
+                *ngFor="let segment of splitTextIntoSegments(message.content)"
+              >
+                <span
+                  *ngIf="segment.type === 'text'"
+                  style="color: var(--text-color); word-break: break-word"
+                  >{{ segment.value }}</span
+                >
+                <a
+                  *ngIf="
+                    segment.type === 'url' && !segment.value.endsWith('.gif')
+                  "
+                  [href]="segment.value"
+                  target="_blank"
+                  style="color: var(--primary-color); word-break: break-word"
+                >
+                  {{ segment.value }}
+                </a>
+              </ng-container>
             </article>
+            <ng-container
+              *ngFor="let segment of splitTextIntoSegments(message.content)"
+            >
+              <div *ngIf="segment.type === 'url'" class="link-preview">
+                <ng-container
+                  *ngIf="segment.value.endsWith('.gif'); else nonGifUrl"
+                >
+                  <a [href]="segment.value" target="_blank">
+                    <img [src]="segment.value" alt="GIF Preview" class="gif" />
+                  </a>
+                </ng-container>
+                <ng-template #nonGifUrl>
+                  <a [href]="segment.value" target="_blank">
+                    <ng-container *ngIf="previewData[segment.value] as data">
+                      <div class="preview-container">
+                        <div class="preview-title">
+                          {{ data.title }}
+                        </div>
+                        <div class="preview-description">
+                          {{ data.description }}
+                        </div>
+                        <div class="preview-img-container">
+                          <img [src]="data.image" alt="Preview Image" />
+                        </div>
+                      </div>
+                    </ng-container>
+                  </a>
+                </ng-template>
+              </div>
+            </ng-container>
           </div>
         </div>
       </li>
@@ -94,6 +148,10 @@
       <i class="fa fa-times" style="font-size: 24px"></i>
     </button>
   </div>
+
+  <!-- Quick Messages Component -->
+  <app-quick-messages (quickMessageSent)="sendQuickMessage($event)"></app-quick-messages>
+
   <div class="input-container">
     <input
       class="input-container"
@@ -122,6 +180,39 @@
       (emojiSelect)="addEmoji($event)"
       title="Pick your emoji…"
     ></emoji-mart>
+    <button
+      class="input-container"
+      title="Pick a GIF"
+      (click)="toggleGifPicker()"
+    >
+      <div class="icon-container"><mat-icon>gif_2</mat-icon></div>
+    </button>
+    <div *ngIf="showGifPicker" class="gif-card">
+      <div class="gif-header">
+        <div class="gif-search">
+          <input
+            type="text"
+            [(ngModel)]="gifSearchQuery"
+            placeholder="Search for GIFs..."
+            (keyup.enter)="searchGifs()"
+          />
+          <button mat-icon-button (click)="searchGifs()" title="Search GIFs">
+            <i class="fa fa-search" style="font-size: 24px"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="gif-card-list">
+        <div
+          *ngFor="let gif of gifResults"
+          class="gif-item"
+          (click)="selectGif(gif)"
+        >
+          <img [src]="gif" alt="GIF" />
+        </div>
+      </div>
+    </div>
+
     <button
       class="input-container"
       (click)="sendMessage()"
