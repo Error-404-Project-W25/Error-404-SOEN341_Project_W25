@@ -371,6 +371,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
           this.dataService.triggerDirectMessagesRefresh();
 
           this.dataService.toggleIsDirectMessage(true);
+          this.activeTab = 'chat';
 
           alert('Direct Message successfully created');
         } else {
