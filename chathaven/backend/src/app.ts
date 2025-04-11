@@ -27,7 +27,7 @@ const app: Application = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: ['http://localhost:4200', 'http://localhost:9876'], // Allow both origins
+    origin: 'http://localhost:4200',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true,
@@ -141,14 +141,7 @@ const startServer = async () => {
   try {
     await connectDB();
     // After successful connection, start the server
-    app.use(
-      cors({
-        origin: ['http://localhost:4200', 'http://localhost:9876'], // Allow both origins
-        methods: ['GET', 'POST'],
-        allowedHeaders: ['Content-Type'],
-        credentials: true,
-      })
-    );
+    app.use(cors());
     app.use(express.json());
 
     // Register routes
