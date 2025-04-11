@@ -4,7 +4,6 @@ import { Request, Response } from 'express';
 import { User } from '../models/userModel';
 import { signInUser, signOutUser, signUpUser } from '../utils/authenticate';
 import { Team } from '../models/teamsModel';
-import moment from 'moment';
 
 ////////////////////////// AUTHENTICATION //////////////////////////
 

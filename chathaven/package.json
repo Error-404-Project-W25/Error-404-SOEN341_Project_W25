@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "sonar": "sonar-scanner"
+  },
   "dependencies": {
     "jest": "^29.7.0"
   },
