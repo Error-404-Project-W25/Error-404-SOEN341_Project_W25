@@ -207,7 +207,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     if (isLoggedIn) {
       const userId = this.userService.getUser()?.userId;
       const user = await this.backendService.getUserById(userId!);
-      console.log('User:', user);
       if (user) {
         this.requestList = user.inbox.filter(
           (inbox: IInbox) =>
@@ -221,8 +220,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         console.error('User is undefined');
       }
     }
-    console.log('Request List:', this.requestList);
-    console.log('Invite List:', this.inviteList);
     this.handleDuplicateRequestsAndInvites();
   }
 
@@ -289,7 +286,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   async loadChannelName(): Promise<void> {
-    console.log('Loading channel names...');
     const uniqueChannelIds = [
       ...new Set(this.inviteList.map((invite) => invite.channelId)),
     ];
@@ -299,11 +295,9 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         this.channeIdToChannelName[channelId] = channel.name;
       }
     }
-    console.log('Channel ID to Channel Name:', this.channeIdToChannelName);
   }
 
   async loadUserName(): Promise<void> {
-    console.log('Loading channel names...');
     const uniqueUserIds = [
       ...new Set(
         this.requestList.map((request) => request.userIdThatYouWantToAdd)
@@ -315,7 +309,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         this.userIdToUserName[userId] = user.username;
       }
     }
-    console.log('Channel ID to Channel Name:', this.channeIdToChannelName);
   }
 
   getChannelName(channelId: string): string {
@@ -343,8 +336,10 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   async createCoversation(memberId: string) {
-    const sender = this.loginUser;
+    const sender = this.userService.getUser();
     const receiver = await this.backendService.getUserById(memberId);
+    console.log('Sender:', sender);
+    console.log('Receiver:', receiver);
     if (sender && receiver?.userId) {
       const conversationName = `${sender.username}, ${receiver.username}`;
       const conversationId = await this.backendService.createDirectMessages(
@@ -428,8 +423,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         parsedQuery.push({ content: part });
       }
     }
-
-    console.log('Parsed Query:', parsedQuery);
 
     const allMessages = await this.getAllMessages();
 

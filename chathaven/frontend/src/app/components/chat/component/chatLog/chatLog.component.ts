@@ -257,7 +257,6 @@ export class ChatLogComponent implements OnInit, OnDestroy {
       this.selectedConversationId
     );
     if ((messages?.length ?? 0) === this.messages.length) {
-      console.log('No new messages to refresh');
       return; // No need to refresh if the size is the same
     }
     if (messages) {
@@ -450,11 +449,7 @@ export class ChatLogComponent implements OnInit, OnDestroy {
   }
 
   async previewLink(url: string): Promise<void> {
-    const previewData = await this.getLinkPreviewData(url); // Use updated method
-    if (previewData) {
-      console.log('LinkPreview Data:', previewData);
-      // Use this data to display the preview in your component
-    }
+    await this.getLinkPreviewData(url); // Use updated method
   }
 
   resetAll() {

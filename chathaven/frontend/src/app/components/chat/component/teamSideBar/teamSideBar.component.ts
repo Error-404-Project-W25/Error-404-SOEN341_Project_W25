@@ -158,6 +158,9 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   selectDirectMessage() {
     this.dataService.resetAll();
     this.dataService.toggleIsDirectMessage(true);
+
+    // Refresh the DM list to include the newly created DM
+    this.refreshList();
   }
 
   selectTeam(teamId: string): void {
