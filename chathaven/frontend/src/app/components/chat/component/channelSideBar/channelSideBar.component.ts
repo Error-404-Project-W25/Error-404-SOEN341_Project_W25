@@ -75,20 +75,27 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private backendService: BackendService,
     private dataService: DataService
-  ) {}
-
-  ngOnInit(): void {
-    // Subscribe to DM mode changes
+  ) {
     this.dataService.isDirectMessage.subscribe((isDirectMessage) => {
       this.isDirectMessage = isDirectMessage;
       isDirectMessage
         ? this.refreshDirectMessageList()
         : this.refreshChannelList();
     });
+
+    // ADD THIS
+    this.dataService.refreshDirectMessages$.subscribe(() => {
+      this.refreshDirectMessageList();
+    });
+
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
     });
+  }
+
+  ngOnInit() {
     this.loginUserId = this.userService.getUser()?.userId || '';
+    this.refreshChannelList();
   }
 
   ngOnDestroy() {}
@@ -223,10 +230,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
 
   selectChannel(channelId: string): void {
     this.backendService.getChannelById(channelId).then(async (channel) => {
-      if (
-        channel &&
-        channel.members.includes(this.userService.getUser()?.userId || '')
-      ) {
+      if (channel && channel.members.includes(this.userService.getUser()?.userId || '')) {
         this.selectedChannelId = channel.channelId;
 
         // Preload messages before updating UI
@@ -513,9 +517,7 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
       );
 
       if (channel) {
-        if (
-          channel.members.includes(this.userService.getUser()?.userId || '')
-        ) {
+        if (channel.members.includes(this.userService.getUser()?.userId || '')) {
           this.selectedChannelId = channel.channelId;
           this.dataService.selectChannel(this.selectedChannelId);
           this.dataService.selectConversation(conversationId);

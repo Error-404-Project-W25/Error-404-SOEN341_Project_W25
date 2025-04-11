@@ -103,13 +103,14 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   // Lifecycle Hooks
-  ngOnInit() {
-    this.userService.user$.toPromise().then((user) => {
-      this.loginUser = user;
-      if (!this.loginUser) {
-        console.error('User not found');
-      }
-    });
+  async ngOnInit() {
+    this.loginUser = this.userService.getUser();
+    if (!this.loginUser) {
+      this.loginUser = await this.userService.user$.toPromise();
+    }
+    if (!this.loginUser) {
+      console.error('User not found');
+    }
   }
 
   ngOnDestroy() {
@@ -345,20 +346,45 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   async createCoversation(memberId: string) {
     const sender = this.loginUser;
     const receiver = await this.backendService.getUserById(memberId);
+
     if (sender && receiver?.userId) {
       const conversationName = `${sender.username}, ${receiver.username}`;
-      const conversationId = await this.backendService.createDirectMessages(
-        conversationName,
-        sender.userId,
-        receiver.userId
-      );
-      this.dataService.selectTeam('');
-      this.dataService.selectChannel('');
-      if (conversationId) {
-        this.dataService.selectConversation(conversationId.conversationId);
+
+      try {
+        const conversation = await this.backendService.createDirectMessages(
+          conversationName,
+          sender.userId,
+          receiver.userId
+        );
+
+        if (conversation?.conversationId) {
+          this.dataService.selectTeam('');
+          this.dataService.selectChannel('');
+          this.dataService.selectConversation(conversation.conversationId);
+          
+          // Manually add new conversationId to loginUser for local refresh
+          if (this.loginUser?.directMessages) {
+            this.loginUser.directMessages.push(conversation.conversationId);
+          }
+
+          // Trigger refresh of Direct Message list
+          this.dataService.triggerDirectMessagesRefresh();
+
+          this.dataService.toggleIsDirectMessage(true);
+          this.activeTab = 'chat';
+
+          alert('Direct Message successfully created');
+        } else {
+          alert('Failed to create conversation');
+        }
+      } catch (error) {
+        console.error('Error creating conversation:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        alert(`Failed to create conversation: ${errorMessage}`);
       }
-      this.dataService.toggleIsDirectMessage(true);
-      alert('Direct Messages successfully created');
+    } else {
+      console.error('Sender or Receiver not found');
+      alert('Failed to create conversation: Sender or Receiver not found');
     }
   }
 
@@ -573,21 +599,21 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
 
     switch (true) {
       case query.includes('before:') &&
-        !query.match(/before:\s*\d{4}-\d{2}-\d{2}/):
+      !query.match(/before:\s*\d{4}-\d{2}-\d{2}/):
         this.searchQuery = query.replace(
           /before:\s*\S*/g,
           `before: ${formattedDate}`
         );
         break;
       case query.includes('after:') &&
-        !query.match(/after:\s*\d{4}-\d{2}-\d{2}/):
+      !query.match(/after:\s*\d{4}-\d{2}-\d{2}/):
         this.searchQuery = query.replace(
           /after:\s*\S*/g,
           `after: ${formattedDate}`
         );
         break;
       case query.includes('during:') &&
-        !query.match(/during:\s*\d{4}-\d{2}-\d{2}/):
+      !query.match(/during:\s*\d{4}-\d{2}-\d{2}/):
         this.searchQuery = query.replace(
           /during:\s*\S*/g,
           `during: ${formattedDate}`
