@@ -105,12 +105,12 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   // Lifecycle Hooks
   async ngOnInit() {
     this.loginUser = this.userService.getUser();
-      if (!this.loginUser) {
-        this.loginUser = await this.userService.user$.toPromise();
-      }
-      if (!this.loginUser) {
-        console.error('User not found');
-      }
+    if (!this.loginUser) {
+      this.loginUser = await this.userService.user$.toPromise();
+    }
+    if (!this.loginUser) {
+      console.error('User not found');
+    }
   }
 
   ngOnDestroy() {
@@ -361,13 +361,16 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
           this.dataService.selectTeam('');
           this.dataService.selectChannel('');
           this.dataService.selectConversation(conversation.conversationId);
+          
+          // Manually add new conversationId to loginUser for local refresh
+          if (this.loginUser?.directMessages) {
+            this.loginUser.directMessages.push(conversation.conversationId);
+          }
 
           // Trigger refresh of Direct Message list
           this.dataService.triggerDirectMessagesRefresh();
 
           this.dataService.toggleIsDirectMessage(true);
-
-          await this.refreshList(); // Optional: refresh inbox/requests after DM created
 
           alert('Direct Message successfully created');
         } else {
@@ -595,21 +598,21 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
 
     switch (true) {
       case query.includes('before:') &&
-        !query.match(/before:\s*\d{4}-\d{2}-\d{2}/):
+      !query.match(/before:\s*\d{4}-\d{2}-\d{2}/):
         this.searchQuery = query.replace(
           /before:\s*\S*/g,
           `before: ${formattedDate}`
         );
         break;
       case query.includes('after:') &&
-        !query.match(/after:\s*\d{4}-\d{2}-\d{2}/):
+      !query.match(/after:\s*\d{4}-\d{2}-\d{2}/):
         this.searchQuery = query.replace(
           /after:\s*\S*/g,
           `after: ${formattedDate}`
         );
         break;
       case query.includes('during:') &&
-        !query.match(/during:\s*\d{4}-\d{2}-\d{2}/):
+      !query.match(/during:\s*\d{4}-\d{2}-\d{2}/):
         this.searchQuery = query.replace(
           /during:\s*\S*/g,
           `during: ${formattedDate}`
