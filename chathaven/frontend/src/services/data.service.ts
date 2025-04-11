@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable()
 export class DataService {
@@ -23,6 +23,10 @@ export class DataService {
 
   private messageIdSource = new BehaviorSubject<string>('');
   selectedMessageId = this.messageIdSource.asObservable();
+
+  // ADD THIS FOR DM REFRESH
+  private refreshDirectMessagesSource = new Subject<void>();
+  refreshDirectMessages$ = this.refreshDirectMessagesSource.asObservable();
 
   selectTeam(selectedTeamId: string) {
     this.teamId.next(selectedTeamId);
@@ -58,5 +62,10 @@ export class DataService {
 
   selectMessage(messageId: string) {
     this.messageIdSource.next(messageId);
+  }
+
+  // ADD THIS FUNCTION TO TRIGGER REFRESH
+  triggerDirectMessagesRefresh() {
+    this.refreshDirectMessagesSource.next();
   }
 }

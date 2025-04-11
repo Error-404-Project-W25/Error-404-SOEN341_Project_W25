@@ -82,6 +82,12 @@ export class ChannelSidebarComponent implements OnInit, OnDestroy {
         ? this.refreshDirectMessageList()
         : this.refreshChannelList();
     });
+
+    // ADD THIS
+    this.dataService.refreshDirectMessages$.subscribe(() => {
+      this.refreshDirectMessageList();
+    });
+
     this.dataService.currentTeamId.subscribe((teamId) => {
       this.selectedTeamId = teamId;
     });

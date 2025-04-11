@@ -64,7 +64,9 @@ export const createDirectMessages = async (req: Request, res: Response) => {
     // See if there are any common conversationIds in their directMessages arrays
     const existingConversation = await Conversation.findOne({
       conversationId: {
-        $in: creator.directMessages.concat(addedUser.directMessages),
+        $in: creator.directMessages.filter((id) =>
+          addedUser.directMessages.includes(id)
+        ),
       },
     });
 

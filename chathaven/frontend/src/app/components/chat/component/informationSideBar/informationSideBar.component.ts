@@ -105,10 +105,12 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   // Lifecycle Hooks
   async ngOnInit() {
     this.loginUser = this.userService.getUser();
-
-    if (!this.loginUser) {
-      console.error('User not found');
-    }
+      if (!this.loginUser) {
+        this.loginUser = await this.userService.user$.toPromise();
+      }
+      if (!this.loginUser) {
+        console.error('User not found');
+      }
   }
 
   ngOnDestroy() {
@@ -344,20 +346,41 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   async createCoversation(memberId: string) {
     const sender = this.loginUser;
     const receiver = await this.backendService.getUserById(memberId);
+
     if (sender && receiver?.userId) {
       const conversationName = `${sender.username}, ${receiver.username}`;
-      const conversationId = await this.backendService.createDirectMessages(
-        conversationName,
-        sender.userId,
-        receiver.userId
-      );
-      this.dataService.selectTeam('');
-      this.dataService.selectChannel('');
-      if (conversationId) {
-        this.dataService.selectConversation(conversationId.conversationId);
+
+      try {
+        const conversation = await this.backendService.createDirectMessages(
+          conversationName,
+          sender.userId,
+          receiver.userId
+        );
+
+        if (conversation?.conversationId) {
+          this.dataService.selectTeam('');
+          this.dataService.selectChannel('');
+          this.dataService.selectConversation(conversation.conversationId);
+
+          // Trigger refresh of Direct Message list
+          this.dataService.triggerDirectMessagesRefresh();
+
+          this.dataService.toggleIsDirectMessage(true);
+
+          await this.refreshList(); // Optional: refresh inbox/requests after DM created
+
+          alert('Direct Message successfully created');
+        } else {
+          alert('Failed to create conversation');
+        }
+      } catch (error) {
+        console.error('Error creating conversation:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        alert(`Failed to create conversation: ${errorMessage}`);
       }
-      this.dataService.toggleIsDirectMessage(true);
-      alert('Direct Messages successfully created');
+    } else {
+      console.error('Sender or Receiver not found');
+      alert('Failed to create conversation: Sender or Receiver not found');
     }
   }
 
