@@ -39,7 +39,7 @@ export class BackendService {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/register`, {
-          registrationData, // <- wrap it properly
+          registrationData,  // <- wrap it properly
         })
       );
       return response;
@@ -55,7 +55,7 @@ export class BackendService {
     try {
       const response: UserAuthResponse = await firstValueFrom(
         this.http.post<UserAuthResponse>(`${this.backendURL}/auth/login`, {
-          signInData, // <- wrapping it like this sends { signInData: {...} }
+          signInData,  // <- wrapping it like this sends { signInData: {...} }
         })
       );
       return response;
@@ -79,6 +79,7 @@ export class BackendService {
 
   async getUserById(userId: string): Promise<IUser | undefined> {
     try {
+      console.log(`Fetching user with ID: ${userId}`); // Log the userId being fetched
       const response = await firstValueFrom(
         this.http.get<{ user?: IUser; error?: string }>(
           `${this.backendURL}/users/${userId}`
@@ -263,6 +264,7 @@ export class BackendService {
           console.error(response.error);
           console.error(response.details);
         } else if (response.channelId) {
+          console.log(response.message);
           return response.channelId;
         }
       } else {
@@ -398,6 +400,7 @@ export class BackendService {
       );
 
       if (response.success) {
+        console.log('Message sent successfully:', response);
         return true;
       } else {
         console.error('Server error:', response.error);
@@ -438,7 +441,7 @@ export class BackendService {
     const cached = this.messageCache.get(conversationId);
     const now = Date.now();
 
-    if (cached && now - cached.timestamp < this.CACHE_DURATION) {
+    if (cached && (now - cached.timestamp < this.CACHE_DURATION)) {
       return cached.messages;
     }
 
@@ -452,7 +455,7 @@ export class BackendService {
       if (response.messages) {
         this.messageCache.set(conversationId, {
           messages: response.messages,
-          timestamp: now,
+          timestamp: now
         });
         return response.messages;
       }
@@ -460,11 +463,7 @@ export class BackendService {
       console.error(response.error);
       return undefined;
     } catch (error) {
-      console.error(
-        'Error getting messages for conversationId:',
-        conversationId,
-        error
-      );
+      console.error('Error getting messages:', error);
       return undefined;
     }
   }
@@ -475,6 +474,7 @@ export class BackendService {
     filters?: {
       fromDate?: string;
       toDate?: string;
+      duringDate?: string;
     }
   ): Promise<IMessage[]> {
     try {
@@ -484,7 +484,7 @@ export class BackendService {
           {
             conversationId,
             searchQuery,
-            filters,
+            filters
           }
         )
       );
@@ -518,7 +518,7 @@ export class BackendService {
           {
             channelId,
             searchQuery,
-            filters,
+            filters
           }
         )
       );
@@ -568,11 +568,6 @@ export class BackendService {
   async getConversationById(
     conversationId: string
   ): Promise<IConversation | undefined> {
-    if (!conversationId) {
-      console.error('Invalid conversationId:', conversationId);
-      return undefined;
-    }
-
     try {
       const response = await firstValueFrom(
         this.http.get<{ conversation?: IConversation; error?: string }>(

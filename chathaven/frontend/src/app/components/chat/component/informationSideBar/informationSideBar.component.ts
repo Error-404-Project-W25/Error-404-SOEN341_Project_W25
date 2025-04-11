@@ -83,7 +83,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   selectedDate: Date | null = null;
 
   // Miscellaneous
-  activeTab: string = 'search';
+  activeTab: string = 'chat';
   isDirectMessage: boolean = false;
   isInputFocused: boolean = false;
   isSelectingCommand: boolean = false;
@@ -103,7 +103,13 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   // Lifecycle Hooks
-  ngOnInit() {}
+  async ngOnInit() {
+    this.loginUser = this.userService.getUser();
+
+    if (!this.loginUser) {
+      console.error('User not found');
+    }
+  }
 
   ngOnDestroy() {
     if (this.statusSubscription) {
@@ -114,7 +120,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   // Subscriptions
   private subscribeToTeamId() {
     this.dataService.currentTeamId.subscribe(async (teamId) => {
-      if (teamId && teamId !== '') {
+      if (teamId) {
         this.selectedTeamId = teamId;
         await this.refreshTeamData(teamId);
       }
@@ -181,8 +187,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
           .map((name) => name.trim());
         this.chatDescription = 'Conversation between ' + memberNames.join(', ');
         this.chatMemberList = await this.getMembersByUsernames(memberNames);
-        console.log(this.chatMemberList);
-        console.log('Conversation:', conversation);
       }
     }
   }
@@ -202,6 +206,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
     if (isLoggedIn) {
       const userId = this.userService.getUser()?.userId;
       const user = await this.backendService.getUserById(userId!);
+      console.log('User:', user);
       if (user) {
         this.requestList = user.inbox.filter(
           (inbox: IInbox) =>
@@ -215,6 +220,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         console.error('User is undefined');
       }
     }
+    console.log('Request List:', this.requestList);
+    console.log('Invite List:', this.inviteList);
     this.handleDuplicateRequestsAndInvites();
   }
 
@@ -257,7 +264,6 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
 
   private async getMembersByUsernames(usernames: string[]): Promise<IUser[]> {
     const members: IUser[] = [];
-    console.log('Usernames:', usernames);
     for (const username of usernames) {
       const user = await this.backendService.getUserByUsername(username);
       if (user) {
@@ -282,6 +288,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   async loadChannelName(): Promise<void> {
+    console.log('Loading channel names...');
     const uniqueChannelIds = [
       ...new Set(this.inviteList.map((invite) => invite.channelId)),
     ];
@@ -291,9 +298,11 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         this.channeIdToChannelName[channelId] = channel.name;
       }
     }
+    console.log('Channel ID to Channel Name:', this.channeIdToChannelName);
   }
 
   async loadUserName(): Promise<void> {
+    console.log('Loading channel names...');
     const uniqueUserIds = [
       ...new Set(
         this.requestList.map((request) => request.userIdThatYouWantToAdd)
@@ -305,6 +314,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         this.userIdToUserName[userId] = user.username;
       }
     }
+    console.log('Channel ID to Channel Name:', this.channeIdToChannelName);
   }
 
   getChannelName(channelId: string): string {
@@ -332,7 +342,7 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
   }
 
   async createCoversation(memberId: string) {
-    const sender = this.userService.getUser();
+    const sender = this.loginUser;
     const receiver = await this.backendService.getUserById(memberId);
     if (sender && receiver?.userId) {
       const conversationName = `${sender.username}, ${receiver.username}`;
@@ -417,6 +427,8 @@ export class InformationSidebarComponent implements OnInit, OnDestroy {
         parsedQuery.push({ content: part });
       }
     }
+
+    console.log('Parsed Query:', parsedQuery);
 
     const allMessages = await this.getAllMessages();
 

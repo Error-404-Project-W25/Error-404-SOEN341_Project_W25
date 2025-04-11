@@ -124,6 +124,13 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    const user = this.userService.getUser();
+    this.loginUser = user;
+    if (user) {
+      this.currentStatus = user.status;
+      this.manuallySetAway = user.status === 'away';
+      this.manuallySetOffline = user.status === 'offline';
+    }
     this.refreshList();
   }
 
@@ -151,9 +158,6 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
   selectDirectMessage() {
     this.dataService.resetAll();
     this.dataService.toggleIsDirectMessage(true);
-
-    // Refresh the DM list to include the newly created DM
-    this.refreshList();
   }
 
   selectTeam(teamId: string): void {
@@ -191,8 +195,6 @@ export class TeamSidebarComponent implements OnInit, OnDestroy {
         (user): user is IUser => user !== undefined
       );
     }
-    console.log('Team list:', this.teamList);
-    console.log('Invite member list:', this.inviteMemberList);
   }
 
   // Open a dialog to create a new team
