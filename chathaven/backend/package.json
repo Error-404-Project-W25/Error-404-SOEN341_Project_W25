@@ -17,6 +17,7 @@
     "dotenv": "latest",
     "express": "^4.21.2",
     "firebase": "^11.2.0",
+    "moment": "^2.30.1",
     "mongodb": "latest",
     "mongoose": "latest",
     "mongoose-sequence": "^6.0.1",
